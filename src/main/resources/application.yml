@@ -1,0 +1,6 @@
+spring:
+  config:
+    additional-location: config/
+  profiles:
+    active: local
+#    active: dev
