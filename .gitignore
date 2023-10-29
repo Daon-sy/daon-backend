@@ -36,5 +36,4 @@ out/
 ### VS Code ###
 .vscode/
 
-local/postgresql/db/
-local/application/
+local/application/db/
