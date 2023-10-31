@@ -4,8 +4,10 @@ import com.daon.backend.member.dto.SignInRequestDto;
 import com.daon.backend.member.dto.SignUpRequestDto;
 import com.daon.backend.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,13 +26,19 @@ public class MemberApiController {
     public ResponseEntity<Void> signUp(@RequestBody SignUpRequestDto signUpRequestDto) {
         memberService.signUp(signUpRequestDto);
 
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+        return ResponseEntity.status(HttpStatus.CREATED)
+                .build();
     }
 
     @PostMapping("/sign-in")
-    public ResponseEntity<UUID> signIn(@RequestBody SignInRequestDto signInRequestDto) {
+    public ResponseEntity<Void> signIn(@RequestBody SignInRequestDto signInRequestDto) {
         UUID result = memberService.signIn(signInRequestDto);
 
-        return ResponseEntity.ok().body(result);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Member-Id", result.toString());
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .build();
     }
 }
