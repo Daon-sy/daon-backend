@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Getter
@@ -15,9 +16,10 @@ public class SignUpRequestDto {
     @Email
     private String email;
 
-    @NotNull
+    @NotEmpty
     private String password;
 
+    @NotEmpty
     private String name;
 
     @Builder

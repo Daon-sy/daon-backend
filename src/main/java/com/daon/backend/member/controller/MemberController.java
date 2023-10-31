@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -22,7 +23,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/sign-up")
-    public ResponseEntity<Void> signUp(@RequestBody SignUpRequestDto signUpRequestDto) {
+    public ResponseEntity<Void> signUp(@RequestBody @Valid SignUpRequestDto signUpRequestDto) {
         memberService.signUp(signUpRequestDto);
 
         return ResponseEntity.status(HttpStatus.CREATED)
@@ -30,7 +31,7 @@ public class MemberController {
     }
 
     @PostMapping("/sign-in")
-    public ResponseEntity<Void> signIn(@RequestBody SignInRequestDto signInRequestDto) {
+    public ResponseEntity<Void> signIn(@RequestBody @Valid SignInRequestDto signInRequestDto) {
         UUID result = memberService.signIn(signInRequestDto);
 
         HttpHeaders headers = new HttpHeaders();
