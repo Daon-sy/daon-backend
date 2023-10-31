@@ -24,6 +24,7 @@ public class Member extends BaseTimeEntity {
     @Column(name = "member_id", updatable = false, length = 16)
     private UUID id;
 
+    @Column(unique = true)
     private String email;
 
     private String password;
