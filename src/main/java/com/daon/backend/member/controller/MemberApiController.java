@@ -21,10 +21,10 @@ public class MemberApiController {
     private final MemberService memberService;
 
     @PostMapping("/sign-up")
-    public ResponseEntity<UUID> signUp(@RequestBody SignUpRequestDto signUpRequestDto) {
-        UUID result = memberService.signUp(signUpRequestDto);
+    public ResponseEntity<Void> signUp(@RequestBody SignUpRequestDto signUpRequestDto) {
+        memberService.signUp(signUpRequestDto);
 
-        return ResponseEntity.status(HttpStatus.CREATED).body(result);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
     @PostMapping("/sign-in")
