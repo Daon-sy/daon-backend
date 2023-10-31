@@ -18,13 +18,14 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.context.WebApplicationContext;
 
+import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @Transactional
 @AutoConfigureMockMvc
 @SpringBootTest
-class MemberApiControllerTest {
+class MemberControllerTest {
 
     @Autowired
     protected MockMvc mockMvc;
@@ -87,7 +88,8 @@ class MemberApiControllerTest {
 
         // then
         result
-                .andExpect(status().isOk());
+                .andExpect(status().isOk())
+                .andExpect(header().string("Member-Id", notNullValue()));
     }
 
     private static SignUpRequestDto getSignUpRequestDto() {
