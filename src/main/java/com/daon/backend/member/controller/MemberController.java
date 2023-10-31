@@ -35,7 +35,7 @@ public class MemberController {
         UUID result = memberService.signIn(signInRequestDto);
 
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Member-Id", result.toString());
+        headers.set(HttpHeaders.AUTHORIZATION, result.toString());
 
         return ResponseEntity.status(HttpStatus.OK)
                 .headers(headers)
