@@ -1,6 +1,6 @@
 package com.daon.backend.member.dto;
 
-import lombok.Builder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,6 +9,7 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class SignInRequestDto {
 
     @Email
@@ -16,10 +17,4 @@ public class SignInRequestDto {
 
     @NotBlank
     private String password;
-
-    @Builder
-    public SignInRequestDto(String email, String password) {
-        this.email = email;
-        this.password = password;
-    }
 }

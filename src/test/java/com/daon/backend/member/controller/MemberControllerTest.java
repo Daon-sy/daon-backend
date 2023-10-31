@@ -75,10 +75,7 @@ class MemberControllerTest {
 
         final String loginId = "test@email.com";
         final String loginPassword = "1234";
-        final SignInRequestDto requestDto = SignInRequestDto.builder()
-                .email(loginId)
-                .password(loginPassword)
-                .build();
+        final SignInRequestDto requestDto = new SignInRequestDto(loginId, loginPassword);
         final String requestBody = objectMapper.writeValueAsString(requestDto);
 
         // when
