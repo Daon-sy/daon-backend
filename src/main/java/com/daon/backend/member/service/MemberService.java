@@ -31,10 +31,7 @@ public class MemberService {
         String requestEmail = signInRequestDto.getEmail();
         Member findMember = memberRepository.findByEmail(requestEmail)
                 .orElseThrow(() -> new IllegalArgumentException("not found email: " + requestEmail));
-
-        if (!findMember.getPassword().equals(signInRequestDto.getPassword())) {
-            throw new IllegalArgumentException("password does not match");
-        }
+        findMember.checkPassword(signInRequestDto.getPassword());
 
         return findMember.getId();
     }

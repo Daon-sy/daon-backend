@@ -36,4 +36,10 @@ public class Member extends BaseTimeEntity {
         this.password = password;
         this.name = name;
     }
+
+    public void checkPassword(String password) {
+        if (!this.password.equals(password)) {
+            throw new IllegalArgumentException("password does not match");
+        }
+    }
 }
