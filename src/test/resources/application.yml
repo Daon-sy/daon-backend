@@ -4,3 +4,7 @@ spring:
     url: jdbc:h2:mem:mem_db
     username: sa
     password:
+
+cors:
+  allowed-origins:
+    http://localhost
