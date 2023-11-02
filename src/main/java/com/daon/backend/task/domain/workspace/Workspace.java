@@ -35,17 +35,22 @@ public class Workspace extends BaseTimeEntity {
     private List<WorkspaceParticipant> participants = new ArrayList<>();
 
     @Builder
-    public Workspace(String title, String description, Division division, String imageUrl, Subject subject, String joinCode) {
+    public Workspace(String title, String description, Division division, String imageUrl, Subject subject, String joinCode, WorkspaceParticipant participant) {
         this.title = title;
         this.description = description;
         this.division = division;
         this.imageUrl = imageUrl;
         this.subject = subject;
         this.joinCode = joinCode;
+        this.participants.add(participant);
     }
 
     public void addParticipant(String memberId, Profile profile) {
-        participants.add(new WorkspaceParticipant(this, profile, memberId));
+        this.participants.add(new WorkspaceParticipant(this, profile, memberId));
+    }
+
+    public void addParticipant(WorkspaceParticipant participant) {
+        this.participants.add(participant);
     }
 
 }
