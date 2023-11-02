@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -21,6 +20,8 @@ import java.util.UUID;
 public class MemberController {
 
     private final MemberService memberService;
+
+    private static final String BEARER_TYPE = "Bearer ";
 
     @PostMapping("/sign-up")
     public ResponseEntity<Void> signUp(@RequestBody @Valid SignUpRequestDto signUpRequestDto) {
@@ -32,13 +33,10 @@ public class MemberController {
 
     @PostMapping("/sign-in")
     public ResponseEntity<Void> signIn(@RequestBody @Valid SignInRequestDto signInRequestDto) {
-        UUID result = memberService.signIn(signInRequestDto);
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.set("Member-Id", result.toString());
+        String token = memberService.signIn(signInRequestDto);
 
         return ResponseEntity.status(HttpStatus.OK)
-                .headers(headers)
+                .headers(httpHeaders -> httpHeaders.add(HttpHeaders.AUTHORIZATION, BEARER_TYPE + token))
                 .build();
     }
 }

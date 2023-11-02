@@ -1,38 +1,40 @@
 package com.daon.backend.member.service;
 
 import com.daon.backend.member.domain.Member;
-import com.daon.backend.member.infrastructure.MemberJpaRepository;
+import com.daon.backend.member.domain.MemberRepository;
+import com.daon.backend.member.domain.PasswordEncoder;
 import com.daon.backend.member.dto.SignInRequestDto;
 import com.daon.backend.member.dto.SignUpRequestDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.UUID;
 
 @RequiredArgsConstructor
 @Transactional
 @Service
 public class MemberService {
 
-    private final MemberJpaRepository memberRepository;
+    private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final TokenService tokenService;
 
-    /**
-     * 회원가입
-     */
-    public UUID signUp(SignUpRequestDto signUpRequestDto) {
-        return memberRepository.save(signUpRequestDto.toEntity()).getId();
+    public void signUp(SignUpRequestDto signUpRequestDto) {
+        if (memberRepository.findByEmail(signUpRequestDto.getEmail()).isPresent()) {
+            throw new IllegalArgumentException("exists member: " + signUpRequestDto.getEmail());
+        }
+
+        Member member = signUpRequestDto.toEntity(passwordEncoder);
+        memberRepository.save(member);
     }
 
-    /**
-     * 로그인
-     */
-    public UUID signIn(SignInRequestDto signInRequestDto) {
+    public String signIn(SignInRequestDto signInRequestDto) {
         String requestEmail = signInRequestDto.getEmail();
         Member findMember = memberRepository.findByEmail(requestEmail)
-                .orElseThrow(() -> new IllegalArgumentException("not found email: " + requestEmail));
-        findMember.checkPassword(signInRequestDto.getPassword());
+                .orElseThrow(() -> new BadCredentialsException("not found email: " + requestEmail));
 
-        return findMember.getId();
+        findMember.checkPassword(signInRequestDto.getPassword(), passwordEncoder);
+
+        return tokenService.createMemberAccessToken(findMember.getId().toString());
     }
 }

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.security.authentication.BadCredentialsException;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -32,15 +33,16 @@ public class Member extends BaseTimeEntity {
     private String name;
 
     @Builder
-    public Member(String email, String password, String name) {
+    public Member(String email, String password, String name, PasswordEncoder passwordEncoder) {
         this.email = email;
-        this.password = password;
+        this.password = passwordEncoder.encode(password);
         this.name = name;
     }
 
-    public void checkPassword(String password) {
-        if (!this.password.equals(password)) {
-            throw new IllegalArgumentException("password does not match");
+    public void checkPassword(String targetPassword, PasswordEncoder passwordEncoder) {
+        if (!passwordEncoder.match(targetPassword, this.password)) {
+            throw new BadCredentialsException(""); // Todo 수정 예정
         }
     }
+
 }

@@ -1,8 +1,8 @@
 package com.daon.backend.member.controller;
 
-import com.daon.backend.member.infrastructure.MemberJpaRepository;
 import com.daon.backend.member.dto.SignInRequestDto;
 import com.daon.backend.member.dto.SignUpRequestDto;
+import com.daon.backend.member.infrastructure.MemberJpaRepository;
 import com.daon.backend.member.service.MemberService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,7 +20,8 @@ import org.springframework.web.context.WebApplicationContext;
 
 import static org.hamcrest.Matchers.notNullValue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @Transactional
 @AutoConfigureMockMvc
@@ -86,7 +87,7 @@ class MemberControllerTest {
         // then
         result
                 .andExpect(status().isOk())
-                .andExpect(header().string("Member-Id", notNullValue()));
+                .andExpect(header().string("Authorization", notNullValue()));
     }
 
     private static SignUpRequestDto getSignUpRequestDto() {
