@@ -2,7 +2,6 @@ package com.daon.backend.task.domain.workspace;
 
 import com.daon.backend.config.BaseTimeEntity;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -27,11 +26,25 @@ public class WorkspaceParticipant extends BaseTimeEntity {
     private String memberId;
 
     // TODO 역할 필요
-    @Builder
+    @Enumerated(EnumType.STRING)
+    private Role role;
 
-    public WorkspaceParticipant(Workspace workspace, Profile profile, String memberId) {
+    public static WorkspaceParticipant withWorkspaceAdminRole(Workspace workspace, Profile profile, String memberId) {
+        return new WorkspaceParticipant(workspace, profile, memberId, Role.WORKSPACE_ADMIN);
+    }
+
+    public static WorkspaceParticipant withProjectAdminRole(Workspace workspace, Profile profile, String memberId) {
+        return new WorkspaceParticipant(workspace, profile, memberId, Role.PROJECT_ADMIN);
+    }
+
+    public static WorkspaceParticipant withBasicParticipantRole(Workspace workspace, Profile profile, String memberId) {
+        return new WorkspaceParticipant(workspace, profile, memberId, Role.BASIC_PARTICIPANT);
+    }
+
+    private WorkspaceParticipant(Workspace workspace, Profile profile, String memberId, Role role) {
         this.workspace = workspace;
         this.profile = profile;
         this.memberId = memberId;
+        this.role = role;
     }
 }

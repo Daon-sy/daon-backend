@@ -49,7 +49,7 @@ public class Workspace extends BaseTimeEntity {
     }
 
     public void addParticipant(String memberId, Profile profile) {
-        this.participants.add(new WorkspaceParticipant(this, profile, memberId));
+        this.participants.add(WorkspaceParticipant.withWorkspaceAdminRole(this, profile, memberId));
     }
 
 }
