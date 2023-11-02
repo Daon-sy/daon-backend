@@ -4,6 +4,7 @@ import com.daon.backend.config.BaseTimeEntity;
 import com.daon.backend.task.domain.workspace.Workspace;
 import com.daon.backend.task.domain.workspace.WorkspaceParticipant;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -32,6 +33,7 @@ public class Project extends BaseTimeEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<Board> boards = new ArrayList<>();
 
+    @Builder
     public Project(Workspace workspace, String title, String description) {
         this.workspace = workspace;
         this.title = title;

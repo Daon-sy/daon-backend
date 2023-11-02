@@ -31,26 +31,25 @@ public class Workspace extends BaseTimeEntity {
 
     private String joinCode;
 
+    // @Transactional 끝나는 시점에 DB에 저장됌
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "workspace", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<WorkspaceParticipant> participants = new ArrayList<>();
 
     @Builder
-    public Workspace(String title, String description, Division division, String imageUrl, Subject subject, String joinCode, WorkspaceParticipant participant) {
+    public Workspace(String title, String description, Division division,
+                     String imageUrl, Subject subject, String joinCode, WorkspaceCreator creator) {
         this.title = title;
         this.description = description;
         this.division = division;
         this.imageUrl = imageUrl;
         this.subject = subject;
         this.joinCode = joinCode;
-        this.participants.add(participant);
+        // 생성자를 관리자로 등록
+        addParticipant(creator.getMemberId(), creator.getProfile());
     }
 
     public void addParticipant(String memberId, Profile profile) {
         this.participants.add(new WorkspaceParticipant(this, profile, memberId));
-    }
-
-    public void addParticipant(WorkspaceParticipant participant) {
-        this.participants.add(participant);
     }
 
 }

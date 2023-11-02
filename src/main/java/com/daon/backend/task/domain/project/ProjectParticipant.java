@@ -3,6 +3,7 @@ package com.daon.backend.task.domain.project;
 import com.daon.backend.config.BaseTimeEntity;
 import com.daon.backend.task.domain.workspace.WorkspaceParticipant;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -27,6 +28,7 @@ public class ProjectParticipant extends BaseTimeEntity {
     // 회원 기본키
     private String memberId;
 
+    @Builder
     public ProjectParticipant(Project project, WorkspaceParticipant workspaceParticipant, String memberId) {
         this.project = project;
         this.workspaceParticipant = workspaceParticipant;

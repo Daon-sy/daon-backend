@@ -2,6 +2,7 @@ package com.daon.backend.task.domain.workspace;
 
 import com.daon.backend.config.BaseTimeEntity;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,6 +27,7 @@ public class WorkspaceParticipant extends BaseTimeEntity {
     private String memberId;
 
     // TODO 역할 필요
+    @Builder
 
     public WorkspaceParticipant(Workspace workspace, Profile profile, String memberId) {
         this.workspace = workspace;
