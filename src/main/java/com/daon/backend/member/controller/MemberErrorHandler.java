@@ -2,6 +2,7 @@ package com.daon.backend.member.controller;
 
 import com.daon.backend.common.exception.DomainSpecificAdvice;
 import com.daon.backend.common.response.ApiResponse;
+import com.daon.backend.member.domain.PasswordMismatchException;
 import com.daon.backend.member.service.AlreadyExistsMemberException;
 import com.daon.backend.member.service.NotFoundEmailException;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +26,15 @@ public class MemberErrorHandler {
     public ResponseEntity<ApiResponse<Void>> notFoundEmailExceptionHandle(NotFoundEmailException e) {
         log.error("{}", e.getMessage());
 
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(ApiResponse.createError("존재하지 않는 이메일입니다."));
+    }
+
+    @ExceptionHandler(PasswordMismatchException.class)
+    public ResponseEntity<ApiResponse<Void>> passwordMismatchExceptionHandle(PasswordMismatchException e) {
+        log.error("{}", e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                .body(ApiResponse.createError("비밀번호가 일치하지 않습니다."));
     }
 }
