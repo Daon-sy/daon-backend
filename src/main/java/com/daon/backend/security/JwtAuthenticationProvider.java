@@ -1,4 +1,4 @@
-package com.daon.backend.jwt.infrastructure;
+package com.daon.backend.security;
 
 import com.daon.backend.jwt.domain.JwtService;
 import com.daon.backend.jwt.domain.Payload;
@@ -25,9 +25,13 @@ public class JwtAuthenticationProvider {
         }
 
         Payload payload = jwtService.parse(accessToken);
-        String id = payload.getId();
+        String memberId = payload.getId();
         String role = payload.getRole();
 
-        return new UsernamePasswordAuthenticationToken(id, null, Collections.singleton(new SimpleGrantedAuthority(role)));
+        return new UsernamePasswordAuthenticationToken(
+                new MemberPrincipal(memberId),
+                null,
+                Collections.singleton(new SimpleGrantedAuthority(role))
+        );
     }
 }
