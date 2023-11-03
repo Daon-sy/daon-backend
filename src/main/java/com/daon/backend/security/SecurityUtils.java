@@ -6,10 +6,8 @@ public class SecurityUtils {
 
     public static MemberPrincipal getMemberPrincipal() {
         Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        if (principal == null) {
-            throw new MemberNotAuthenticatedException();
-        }
+        if (principal instanceof MemberPrincipal) return (MemberPrincipal) principal;
 
-        return (MemberPrincipal) principal;
+        throw new MemberNotAuthenticatedException();
     }
 }
