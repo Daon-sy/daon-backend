@@ -4,9 +4,13 @@ import com.daon.backend.task.domain.workspace.Workspace;
 import com.daon.backend.task.domain.workspace.WorkspaceCreator;
 import com.daon.backend.task.domain.workspace.WorkspaceRepository;
 import com.daon.backend.task.dto.request.CreateWorkspaceRequestDto;
+import com.daon.backend.task.dto.response.WorkspaceListResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -31,6 +35,15 @@ public class WorkspaceService {
         );
 
         return workspaceRepository.save(workspace).getId();
+    }
+
+    public WorkspaceListResponseDto findAllWorkspace() {
+        String memberId = sessionMemberProvider.getMemberId();
+        return new WorkspaceListResponseDto(
+                workspaceRepository.findWorkspacesByMemberId(memberId).stream()
+                        .map(WorkspaceListResponseDto.WorkspaceSummary::new)
+                        .collect(Collectors.toList())
+        );
     }
 
 }

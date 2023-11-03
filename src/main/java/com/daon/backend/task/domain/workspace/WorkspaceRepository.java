@@ -6,6 +6,6 @@ public interface WorkspaceRepository {
 
     Workspace save(Workspace workspace);
 
-    List<Workspace> findAllWorkspace();
+    List<Workspace> findWorkspacesByMemberId(String memberId);
 
 }

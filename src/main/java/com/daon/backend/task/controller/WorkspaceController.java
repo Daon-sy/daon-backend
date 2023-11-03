@@ -3,13 +3,11 @@ package com.daon.backend.task.controller;
 import com.daon.backend.common.response.ApiResponse;
 import com.daon.backend.task.dto.request.CreateWorkspaceRequestDto;
 import com.daon.backend.task.dto.response.CreateWorkspaceResponseDto;
+import com.daon.backend.task.dto.response.WorkspaceListResponseDto;
 import com.daon.backend.task.service.WorkspaceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -27,5 +25,11 @@ public class WorkspaceController {
     ) {
         Long workspaceId = workspaceService.createWorkspace(requestDto);
         return ApiResponse.createSuccess(new CreateWorkspaceResponseDto(workspaceId));
+    }
+
+    @GetMapping
+    public ApiResponse<WorkspaceListResponseDto> workspaceList() {
+        WorkspaceListResponseDto workspaceListResponseDto = workspaceService.findAllWorkspace();
+        return ApiResponse.createSuccess(workspaceListResponseDto);
     }
 }
