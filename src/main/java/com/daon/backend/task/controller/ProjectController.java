@@ -7,6 +7,7 @@ import com.daon.backend.task.dto.response.ProjectListResponseDto;
 import com.daon.backend.task.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -19,6 +20,7 @@ public class ProjectController {
 
     private final ProjectService projectService;
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public ApiResponse<CreateProjectResponseDto> createProject(
             @PathVariable Long workspaceId,
