@@ -1,7 +1,5 @@
-package com.daon.backend.config.security;
+package com.daon.backend.security;
 
-import com.daon.backend.jwt.infrastructure.JwtAuthenticationFilter;
-import com.daon.backend.jwt.infrastructure.JwtAuthenticationProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

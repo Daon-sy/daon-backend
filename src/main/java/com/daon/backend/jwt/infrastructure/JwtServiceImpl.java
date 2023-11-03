@@ -1,6 +1,6 @@
 package com.daon.backend.jwt.infrastructure;
 
-import com.daon.backend.config.security.Role;
+import com.daon.backend.security.Role;
 import com.daon.backend.jwt.domain.JwtService;
 import com.daon.backend.jwt.domain.Payload;
 import io.jsonwebtoken.Claims;

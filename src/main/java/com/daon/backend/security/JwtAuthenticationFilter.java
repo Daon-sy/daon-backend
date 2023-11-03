@@ -1,4 +1,4 @@
-package com.daon.backend.jwt.infrastructure;
+package com.daon.backend.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;

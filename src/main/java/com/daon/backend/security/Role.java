@@ -1,4 +1,4 @@
-package com.daon.backend.config.security;
+package com.daon.backend.security;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
