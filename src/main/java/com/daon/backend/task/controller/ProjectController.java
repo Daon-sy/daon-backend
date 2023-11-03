@@ -3,6 +3,7 @@ package com.daon.backend.task.controller;
 import com.daon.backend.common.response.ApiResponse;
 import com.daon.backend.task.dto.request.CreateProjectRequestDto;
 import com.daon.backend.task.dto.response.CreateProjectResponseDto;
+import com.daon.backend.task.dto.response.ProjectListResponseDto;
 import com.daon.backend.task.service.ProjectService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,5 +26,11 @@ public class ProjectController {
     ) {
         Long projectId = projectService.createProject(workspaceId, requestDto);
         return ApiResponse.createSuccess(new CreateProjectResponseDto(projectId));
+    }
+
+    @GetMapping
+    public ApiResponse<ProjectListResponseDto> projectList(@PathVariable Long workspaceId) {
+        ProjectListResponseDto projectListResponseDto = projectService.findAllProjectInWorkspace(workspaceId);
+        return ApiResponse.createSuccess(projectListResponseDto);
     }
 }
