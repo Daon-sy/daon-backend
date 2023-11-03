@@ -7,9 +7,10 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public enum TaskProgressStatus {
 
-    PENDING("대기중"),
+    TODO("해야할 일"),
     PROCEEDING("진행중"),
-    COMPLETED("완료됨")
+    COMPLETED("완료됨"),
+    PENDING("보류중"),
     ;
 
     private final String description;
