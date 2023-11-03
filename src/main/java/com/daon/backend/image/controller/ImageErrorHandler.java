@@ -1,5 +1,6 @@
 package com.daon.backend.image.controller;
 
+import com.daon.backend.common.exception.DomainSpecificAdvice;
 import com.daon.backend.common.response.ErrorResponse;
 import com.daon.backend.image.service.EmptyImageException;
 import com.daon.backend.image.service.ImageIOException;
@@ -8,10 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
-@RestControllerAdvice
+@DomainSpecificAdvice
 public class ImageErrorHandler {
 
     @ExceptionHandler(EmptyImageException.class)
