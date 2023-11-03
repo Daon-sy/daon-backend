@@ -44,9 +44,9 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests()
 //                .antMatchers("/api/admin/**").hasRole(Role.ADMIN.name())
-                .antMatchers("/api/**").hasRole(Role.MEMBER.name()) // 임시 설정
-                .antMatchers("/**").permitAll()
-                .anyRequest().authenticated()
+                .antMatchers("/api/members/**").hasRole(Role.MEMBER.name())
+                .antMatchers("/api/images/**").hasRole(Role.MEMBER.name())
+                .anyRequest().permitAll()
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtAuthenticationProvider), UsernamePasswordAuthenticationFilter.class)
                 .build();
@@ -56,7 +56,9 @@ public class SecurityConfig {
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(allowedOrigins);
-        configuration.setAllowedMethods(List.of("GET", "POST", "PATCH", "PUT", "DELETE"));
+        configuration.setAllowedMethods(List.of("GET", "POST", "PATCH", "PUT", "DELETE", "OPTION"));
+        configuration.setAllowedHeaders(List.of("*"));
+        configuration.setExposedHeaders(List.of("*"));
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
