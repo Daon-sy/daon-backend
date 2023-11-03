@@ -34,10 +34,12 @@ public class Project extends BaseTimeEntity {
     private List<Board> boards = new ArrayList<>();
 
     @Builder
-    public Project(Workspace workspace, String title, String description) {
+    public Project(Workspace workspace, String title, String description, ProjectCreator projectCreator) {
         this.workspace = workspace;
         this.title = title;
         this.description = description;
+
+        addParticipant(projectCreator.getMemberId(), projectCreator.getWorkspaceParticipant());
     }
 
     public void addParticipant(String memberId, WorkspaceParticipant workspaceParticipant) {
