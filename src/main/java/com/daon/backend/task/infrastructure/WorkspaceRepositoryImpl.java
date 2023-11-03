@@ -12,7 +12,7 @@ import java.util.List;
 public class WorkspaceRepositoryImpl implements WorkspaceRepository {
 
     private final WorkspaceJpaRepository workspaceJpaRepository;
-
+    private final WorkspaceParticipantJpaRepository workspaceParticipantJpaRepository;
 
     @Override
     public Workspace save(Workspace workspace) {
@@ -20,7 +20,8 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
     }
 
     @Override
-    public List<Workspace> findAllWorkspace() {
-        return workspaceJpaRepository.findAll();
+    public List<Workspace> findWorkspacesByMemberId(String memberId) {
+        // 회원 아이디로
+        return workspaceParticipantJpaRepository.findWorkspacesByMemberId(memberId);
     }
 }

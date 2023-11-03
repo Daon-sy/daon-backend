@@ -8,5 +8,6 @@ import lombok.Getter;
 public class WorkspaceCreator {
 
     private String memberId;
-    private Profile profile;
+    private String profileName;
+    private String profileImageUrl;
 }
