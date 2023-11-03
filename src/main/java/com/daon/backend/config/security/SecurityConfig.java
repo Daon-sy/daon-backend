@@ -1,6 +1,5 @@
 package com.daon.backend.config.security;
 
-import com.daon.backend.jwt.domain.JwtService;
 import com.daon.backend.jwt.infrastructure.JwtAuthenticationFilter;
 import com.daon.backend.jwt.infrastructure.JwtAuthenticationProvider;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +26,6 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfig {
 
     private final JwtAuthenticationProvider jwtAuthenticationProvider;
-    private final JwtService jwtService;
 
     @Value("${cors.allowed-origins}")
     private List<String> allowedOrigins;
@@ -50,7 +48,7 @@ public class SecurityConfig {
                 .antMatchers("/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .addFilterBefore(new JwtAuthenticationFilter(jwtService, jwtAuthenticationProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthenticationFilter(jwtAuthenticationProvider), UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 
