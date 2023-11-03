@@ -8,3 +8,18 @@ spring:
 cors:
   allowed-origins:
     http://localhost
+
+cloud:
+  aws:
+    credentials:
+      access-key: 123123
+      secret-key: 123123123
+    s3:
+      bucket: daon-test
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
+s3:
+  dir-name: test
