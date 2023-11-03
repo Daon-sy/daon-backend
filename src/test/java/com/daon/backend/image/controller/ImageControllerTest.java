@@ -9,11 +9,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -23,16 +23,21 @@ import org.springframework.util.ResourceUtils;
 import java.io.FileInputStream;
 import java.nio.charset.StandardCharsets;
 
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
+
 @Slf4j
 @AutoConfigureMockMvc
-@Import({S3MockConfig.class,
-        S3ImageFileService.class})
-@WebMvcTest(ImageController.class)
+@Import({
+        S3MockConfig.class,
+        S3ImageFileService.class
+})
+@WebMvcTest(controllers = ImageController.class)
 public class ImageControllerTest {
 
     @Autowired
     MockMvc mockMvc;
 
+    @WithMockUser(roles = "MEMBER")
     @Test
     @DisplayName("이미지 업로드 테스트")
     void imageUploadTest() throws Exception {
@@ -51,6 +56,7 @@ public class ImageControllerTest {
                         .header(HttpHeaders.AUTHORIZATION, "any-user-id")
                         .contentType(MediaType.MULTIPART_FORM_DATA)
                         .characterEncoding(StandardCharsets.UTF_8)
+                        .with(csrf())
         );
 
         //then
