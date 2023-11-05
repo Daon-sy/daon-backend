@@ -1,6 +1,6 @@
 package com.daon.backend.task.controller;
 
-import com.daon.backend.common.response.ApiResponse;
+import com.daon.backend.common.response.CommonResponse;
 import com.daon.backend.task.dto.request.CreateProjectRequestDto;
 import com.daon.backend.task.dto.response.CreateProjectResponseDto;
 import com.daon.backend.task.dto.response.ProjectListResponseDto;
@@ -22,17 +22,17 @@ public class ProjectController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public ApiResponse<CreateProjectResponseDto> createProject(
+    public CommonResponse<CreateProjectResponseDto> createProject(
             @PathVariable Long workspaceId,
             @RequestBody @Valid CreateProjectRequestDto requestDto
     ) {
         Long projectId = projectService.createProject(workspaceId, requestDto);
-        return ApiResponse.createSuccess(new CreateProjectResponseDto(projectId));
+        return CommonResponse.createSuccess(new CreateProjectResponseDto(projectId));
     }
 
     @GetMapping
-    public ApiResponse<ProjectListResponseDto> projectList(@PathVariable Long workspaceId) {
+    public CommonResponse<ProjectListResponseDto> projectList(@PathVariable Long workspaceId) {
         ProjectListResponseDto projectListResponseDto = projectService.findAllProjectInWorkspace(workspaceId);
-        return ApiResponse.createSuccess(projectListResponseDto);
+        return CommonResponse.createSuccess(projectListResponseDto);
     }
 }

@@ -1,6 +1,6 @@
 package com.daon.backend.image.controller;
 
-import com.daon.backend.common.response.ApiResponse;
+import com.daon.backend.common.response.CommonResponse;
 import com.daon.backend.image.dto.UploadImageResponseDto;
 import com.daon.backend.image.service.ImageFileService;
 import com.daon.backend.image.service.UploadedImage;
@@ -21,8 +21,8 @@ public class ImageController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public ApiResponse<UploadImageResponseDto> uploadImage(@RequestParam("image") MultipartFile imageFile) {
+    public CommonResponse<UploadImageResponseDto> uploadImage(@RequestParam("image") MultipartFile imageFile) {
         UploadedImage uploadedImage = imageFileService.upload(imageFile);
-        return ApiResponse.createSuccess(new UploadImageResponseDto(uploadedImage.getUrl()));
+        return CommonResponse.createSuccess(new UploadImageResponseDto(uploadedImage.getUrl()));
     }
 }

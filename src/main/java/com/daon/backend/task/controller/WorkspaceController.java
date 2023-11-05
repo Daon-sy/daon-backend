@@ -1,6 +1,6 @@
 package com.daon.backend.task.controller;
 
-import com.daon.backend.common.response.ApiResponse;
+import com.daon.backend.common.response.CommonResponse;
 import com.daon.backend.task.dto.request.CreateWorkspaceRequestDto;
 import com.daon.backend.task.dto.response.CreateWorkspaceResponseDto;
 import com.daon.backend.task.dto.response.WorkspaceListResponseDto;
@@ -22,16 +22,16 @@ public class WorkspaceController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public ApiResponse<CreateWorkspaceResponseDto> createWorkspace(
+    public CommonResponse<CreateWorkspaceResponseDto> createWorkspace(
             @RequestBody @Valid CreateWorkspaceRequestDto requestDto
     ) {
         Long workspaceId = workspaceService.createWorkspace(requestDto);
-        return ApiResponse.createSuccess(new CreateWorkspaceResponseDto(workspaceId));
+        return CommonResponse.createSuccess(new CreateWorkspaceResponseDto(workspaceId));
     }
 
     @GetMapping
-    public ApiResponse<WorkspaceListResponseDto> workspaceList() {
+    public CommonResponse<WorkspaceListResponseDto> workspaceList() {
         WorkspaceListResponseDto workspaceListResponseDto = workspaceService.findAllWorkspace();
-        return ApiResponse.createSuccess(workspaceListResponseDto);
+        return CommonResponse.createSuccess(workspaceListResponseDto);
     }
 }
