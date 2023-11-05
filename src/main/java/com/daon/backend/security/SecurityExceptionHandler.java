@@ -1,14 +1,14 @@
 package com.daon.backend.security;
 
+import com.daon.backend.common.exception.DomainSpecificAdvice;
 import com.daon.backend.common.response.ApiResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
-@RestControllerAdvice
+@DomainSpecificAdvice
 public class SecurityExceptionHandler {
 
     @ExceptionHandler(MemberNotAuthenticatedException.class)

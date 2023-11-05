@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface WorkspaceParticipantJpaRepository extends JpaRepository<WorkspaceParticipant, Long> {
 
@@ -13,4 +14,6 @@ public interface WorkspaceParticipantJpaRepository extends JpaRepository<Workspa
            "from WorkspaceParticipant wsp " +
            "where wsp.memberId = :memberId")
     List<Workspace> findWorkspacesByMemberId(String memberId);
+
+    Optional<WorkspaceParticipant> findByWorkspaceAndMemberId(Workspace workspace, String memberId);
 }

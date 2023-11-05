@@ -61,6 +61,6 @@ public class ImageControllerTest {
 
         //then
         perform.andExpect(MockMvcResultMatchers.status().isCreated())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.imageUrl").isNotEmpty());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.data.imageUrl").isNotEmpty());
     }
 }
