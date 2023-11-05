@@ -53,6 +53,9 @@ dependencies {
     // s3 mock test
     testImplementation 'io.findify:s3mock_2.13:0.2.6'
 
+	// swagger
+	implementation 'org.springdoc:springdoc-openapi-ui:1.6.11'
+
 	compileOnly 'org.projectlombok:lombok'
 	testCompileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
