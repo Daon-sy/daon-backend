@@ -1,18 +1,17 @@
 package com.daon.backend.task.service;
 
-import com.daon.backend.task.domain.workspace.Profile;
-import com.daon.backend.task.domain.workspace.Workspace;
-import com.daon.backend.task.domain.workspace.WorkspaceCreator;
-import com.daon.backend.task.domain.workspace.WorkspaceRepository;
+import com.daon.backend.task.domain.workspace.*;
 import com.daon.backend.task.dto.request.CheckJoinCodeRequestDto;
 import com.daon.backend.task.dto.request.CreateWorkspaceRequestDto;
 import com.daon.backend.task.dto.request.JoinWorkspaceRequestDto;
+import com.daon.backend.task.dto.response.FindProfileResponseDto;
 import com.daon.backend.task.dto.response.JoinWorkspaceResponseDto;
 import com.daon.backend.task.dto.response.WorkspaceListResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -80,5 +79,15 @@ public class WorkspaceService {
     public void createPersonalWorkspace(WorkspaceCreator workspaceCreator) {
         Workspace personalWorkspace = Workspace.createOfPersonal(workspaceCreator);
         workspaceRepository.save(personalWorkspace);
+    }
+
+    public FindProfileResponseDto findProfile(Long workspaceId) {
+        String memberId = sessionMemberProvider.getMemberId();
+        Workspace findWorkspace = workspaceRepository.findWorkspaceById(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+        WorkspaceParticipant findWorkspaceParticipant = workspaceRepository.findWorkspaceParticipantByWorkspaceAndMemberId(findWorkspace, memberId)
+                .orElseThrow(() -> new NotWorkspaceParticipantException(memberId, findWorkspace.getId()));
+
+        return new FindProfileResponseDto(findWorkspaceParticipant);
     }
 }

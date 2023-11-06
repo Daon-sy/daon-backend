@@ -5,6 +5,7 @@ import com.daon.backend.task.dto.request.CheckJoinCodeRequestDto;
 import com.daon.backend.task.dto.request.CreateWorkspaceRequestDto;
 import com.daon.backend.task.dto.request.JoinWorkspaceRequestDto;
 import com.daon.backend.task.dto.response.CreateWorkspaceResponseDto;
+import com.daon.backend.task.dto.response.FindProfileResponseDto;
 import com.daon.backend.task.dto.response.JoinWorkspaceResponseDto;
 import com.daon.backend.task.dto.response.WorkspaceListResponseDto;
 import com.daon.backend.task.service.WorkspaceService;
@@ -69,6 +70,13 @@ public class WorkspaceController {
     @PostMapping("/join")
     public CommonResponse<JoinWorkspaceResponseDto> joinWorkspace(@RequestBody @Valid JoinWorkspaceRequestDto requestDto) {
         JoinWorkspaceResponseDto result = workspaceService.joinWorkspace(requestDto);
+
+        return CommonResponse.createSuccess(result);
+    }
+
+    @GetMapping("/{workspaceId}/profile/me")
+    public CommonResponse<FindProfileResponseDto> findProfile(@PathVariable("workspaceId") Long workspaceId) {
+        FindProfileResponseDto result = workspaceService.findProfile(workspaceId);
 
         return CommonResponse.createSuccess(result);
     }
