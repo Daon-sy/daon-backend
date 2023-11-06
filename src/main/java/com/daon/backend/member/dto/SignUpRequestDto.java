@@ -2,7 +2,6 @@ package com.daon.backend.member.dto;
 
 import com.daon.backend.member.domain.Member;
 import com.daon.backend.member.domain.PasswordEncoder;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,13 +20,6 @@ public class SignUpRequestDto {
 
     @NotBlank
     private String name;
-
-    @Builder
-    public SignUpRequestDto(String email, String password, String name) {
-        this.email = email;
-        this.password = password;
-        this.name = name;
-    }
 
     public Member toEntity(PasswordEncoder passwordEncoder) {
         return Member.builder()

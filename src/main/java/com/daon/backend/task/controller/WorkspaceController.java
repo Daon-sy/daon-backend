@@ -1,6 +1,7 @@
 package com.daon.backend.task.controller;
 
 import com.daon.backend.common.response.CommonResponse;
+import com.daon.backend.task.dto.request.CheckJoinCodeRequestDto;
 import com.daon.backend.task.dto.request.CreateWorkspaceRequestDto;
 import com.daon.backend.task.dto.response.CreateWorkspaceResponseDto;
 import com.daon.backend.task.dto.response.WorkspaceListResponseDto;
@@ -46,5 +47,12 @@ public class WorkspaceController {
     public CommonResponse<WorkspaceListResponseDto> workspaceList() {
         WorkspaceListResponseDto workspaceListResponseDto = workspaceService.findAllWorkspace();
         return CommonResponse.createSuccess(workspaceListResponseDto);
+    }
+
+    @PostMapping("/code")
+    public CommonResponse<Void> checkJoinCode(@RequestBody @Valid CheckJoinCodeRequestDto requestDto) {
+        workspaceService.checkJoinCode(requestDto);
+
+        return CommonResponse.createSuccess(null);
     }
 }

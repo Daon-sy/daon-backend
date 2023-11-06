@@ -85,6 +85,12 @@ public class Workspace extends BaseTimeEntity {
         this.participants.add(WorkspaceParticipant.withBasicParticipantRole(this, profile, memberId));
     }
 
+    public void checkJoinCode(String joinCode) {
+        if (!this.joinCode.equals(joinCode)) {
+            throw new JoinCodeMismatchException(joinCode);
+        }
+    }
+
     private String generateJoinCode() {
         return UUID.randomUUID().toString().replace("-", "").substring(0, 10);
     }

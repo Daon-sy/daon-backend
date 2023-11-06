@@ -3,6 +3,7 @@ package com.daon.backend.task.service;
 import com.daon.backend.task.domain.workspace.Workspace;
 import com.daon.backend.task.domain.workspace.WorkspaceCreator;
 import com.daon.backend.task.domain.workspace.WorkspaceRepository;
+import com.daon.backend.task.dto.request.CheckJoinCodeRequestDto;
 import com.daon.backend.task.dto.request.CreateWorkspaceRequestDto;
 import com.daon.backend.task.dto.response.WorkspaceListResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -46,4 +47,11 @@ public class WorkspaceService {
         );
     }
 
+    public void checkJoinCode(CheckJoinCodeRequestDto requestDto) {
+        String requestedJoinCode = requestDto.getJoinCode();
+        // TODO 초대링크 도입 후 수정
+        Workspace workspace = workspaceRepository.findWorkspaceByJoinCode(requestedJoinCode)
+                .orElseThrow();
+        workspace.checkJoinCode(requestedJoinCode);
+    }
 }

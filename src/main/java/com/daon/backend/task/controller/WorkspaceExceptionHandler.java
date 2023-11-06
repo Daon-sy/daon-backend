@@ -2,6 +2,7 @@ package com.daon.backend.task.controller;
 
 import com.daon.backend.common.exception.DomainSpecificAdvice;
 import com.daon.backend.common.response.CommonResponse;
+import com.daon.backend.task.domain.workspace.JoinCodeMismatchException;
 import com.daon.backend.task.domain.workspace.NotWorkspaceParticipantException;
 import com.daon.backend.task.domain.workspace.WorkspaceNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -25,5 +26,11 @@ public class WorkspaceExceptionHandler {
         log.info("{}", e.getMessage());
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(CommonResponse.createError("해당 워크스페이스에 접근 권한이 없습니다."));
+    }
+
+    public ResponseEntity<CommonResponse<Void>> joinCodeMismatchException(JoinCodeMismatchException e) {
+        log.info("{}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(CommonResponse.createError("초대 코드가 일치하지 않습니다."));
     }
 }
