@@ -1,15 +1,18 @@
 package com.daon.backend.task.service;
 
+import com.daon.backend.task.domain.workspace.Profile;
 import com.daon.backend.task.domain.workspace.Workspace;
 import com.daon.backend.task.domain.workspace.WorkspaceCreator;
 import com.daon.backend.task.domain.workspace.WorkspaceRepository;
+import com.daon.backend.task.dto.request.CheckJoinCodeRequestDto;
 import com.daon.backend.task.dto.request.CreateWorkspaceRequestDto;
+import com.daon.backend.task.dto.request.JoinWorkspaceRequestDto;
+import com.daon.backend.task.dto.response.JoinWorkspaceResponseDto;
 import com.daon.backend.task.dto.response.WorkspaceListResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,7 +33,8 @@ public class WorkspaceService {
                 new WorkspaceCreator(
                         sessionMemberProvider.getMemberId(),
                         requestDto.getProfile().getName(),
-                        requestDto.getProfile().getImageUrl()
+                        requestDto.getProfile().getImageUrl(),
+                        requestDto.getProfile().getEmail()
                 )
         );
 
@@ -46,4 +50,29 @@ public class WorkspaceService {
         );
     }
 
+    public void checkJoinCode(CheckJoinCodeRequestDto requestDto) {
+        String requestedJoinCode = requestDto.getJoinCode();
+        // TODO 초대링크 도입 후 수정
+        Workspace workspace = workspaceRepository.findWorkspaceByJoinCode(requestedJoinCode)
+                .orElseThrow();
+        workspace.checkJoinCode(requestedJoinCode);
+    }
+
+    @Transactional
+    public JoinWorkspaceResponseDto joinWorkspace(JoinWorkspaceRequestDto requestDto) {
+        String requestedJoinCode = requestDto.getJoinCode();
+        // TODO 초대링크 도입 후 수정
+        Workspace workspace = workspaceRepository.findWorkspaceByJoinCode(requestedJoinCode)
+                .orElseThrow();
+
+        String memberId = sessionMemberProvider.getMemberId();
+        Profile profile = new Profile(
+                requestDto.getProfile().getName(),
+                requestDto.getProfile().getImageUrl(),
+                requestDto.getProfile().getEmail()
+        );
+        workspace.addParticipant(memberId, profile);
+
+        return new JoinWorkspaceResponseDto(workspace.getId());
+    }
 }

@@ -3,32 +3,16 @@ package com.daon.backend.task.dto.request;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.validation.Valid;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 @Getter
 @NoArgsConstructor
-public class CreateWorkspaceRequestDto {
+public class JoinWorkspaceRequestDto {
 
-    @Valid
-    private WorkspaceInfo workspace;
+    private String joinCode;
 
-    @Valid
     private WorkspaceProfileInfo profile;
-
-    @Getter
-    @NoArgsConstructor
-    public static class WorkspaceInfo {
-
-        @NotBlank
-        private String name;
-
-        private String imageUrl;
-
-        private String description;
-
-        private String subject;
-    }
 
     @Getter
     @NoArgsConstructor
@@ -39,7 +23,7 @@ public class CreateWorkspaceRequestDto {
 
         private String imageUrl;
 
+        @Email
         private String email;
     }
-
 }

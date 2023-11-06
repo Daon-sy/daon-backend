@@ -51,7 +51,7 @@ public class Workspace extends BaseTimeEntity {
         this.participants.add(
                 WorkspaceParticipant.withWorkspaceAdminRole(
                         this,
-                        new Profile(creator.getProfileName(), creator.getProfileImageUrl()),
+                        new Profile(creator.getProfileName(), creator.getProfileImageUrl(), creator.getProfileEmail()),
                         creator.getMemberId()
                 )
         );
@@ -83,6 +83,12 @@ public class Workspace extends BaseTimeEntity {
 
     public void addParticipant(String memberId, Profile profile) {
         this.participants.add(WorkspaceParticipant.withBasicParticipantRole(this, profile, memberId));
+    }
+
+    public void checkJoinCode(String joinCode) {
+        if (!this.joinCode.equals(joinCode)) {
+            throw new JoinCodeMismatchException(joinCode);
+        }
     }
 
     private String generateJoinCode() {
