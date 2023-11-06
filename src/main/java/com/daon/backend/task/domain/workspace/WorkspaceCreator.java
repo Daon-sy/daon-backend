@@ -10,4 +10,5 @@ public class WorkspaceCreator {
     private String memberId;
     private String profileName;
     private String profileImageUrl;
+    private String profileEmail;
 }

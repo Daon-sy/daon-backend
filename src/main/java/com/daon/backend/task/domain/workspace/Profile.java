@@ -13,10 +13,12 @@ public class Profile {
 
     private String name;
     private String imageUrl;
+    private String email;
 
-    public Profile(String name, String imageUrl) {
+    public Profile(String name, String imageUrl, String email) {
         this.name = name;
         this.imageUrl = imageUrl;
+        this.email = email;
     }
 
 }

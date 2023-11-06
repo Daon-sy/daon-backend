@@ -38,6 +38,8 @@ public class CreateWorkspaceRequestDto {
         private String name;
 
         private String imageUrl;
+
+        private String email;
     }
 
 }

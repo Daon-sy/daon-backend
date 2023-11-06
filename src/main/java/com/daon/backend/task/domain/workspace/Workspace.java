@@ -51,7 +51,7 @@ public class Workspace extends BaseTimeEntity {
         this.participants.add(
                 WorkspaceParticipant.withWorkspaceAdminRole(
                         this,
-                        new Profile(creator.getProfileName(), creator.getProfileImageUrl()),
+                        new Profile(creator.getProfileName(), creator.getProfileImageUrl(), creator.getProfileEmail()),
                         creator.getMemberId()
                 )
         );
