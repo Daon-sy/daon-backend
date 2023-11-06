@@ -26,7 +26,7 @@ public class WorkspaceService {
     @Transactional
     public Long createWorkspace(CreateWorkspaceRequestDto requestDto) {
         Workspace workspace = Workspace.createOfGroup(
-                requestDto.getWorkspace().getName(),
+                requestDto.getWorkspace().getTitle(),
                 requestDto.getWorkspace().getDescription(),
                 requestDto.getWorkspace().getImageUrl(),
                 requestDto.getWorkspace().getSubject(),
@@ -74,5 +74,11 @@ public class WorkspaceService {
         workspace.addParticipant(memberId, profile);
 
         return new JoinWorkspaceResponseDto(workspace.getId());
+    }
+
+    @Transactional
+    public void createPersonalWorkspace(WorkspaceCreator workspaceCreator) {
+        Workspace personalWorkspace = Workspace.createOfPersonal(workspaceCreator);
+        workspaceRepository.save(personalWorkspace);
     }
 }
