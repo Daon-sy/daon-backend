@@ -62,9 +62,11 @@ public class Workspace extends BaseTimeEntity {
     }
 
     public static Workspace createOfPersonal(WorkspaceCreator creator) {
+        String defaultTitleSuffix = "님의 개인 워크스페이스 공간";
+
         return Workspace.builder()
                 .division(Division.PERSONAL)
-                .title(creator.getProfileName())
+                .title(creator.getProfileName() + defaultTitleSuffix)
                 .creator(creator)
                 .build();
     }

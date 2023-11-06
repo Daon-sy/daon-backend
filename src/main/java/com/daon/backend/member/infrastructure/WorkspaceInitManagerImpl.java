@@ -14,11 +14,10 @@ public class WorkspaceInitManagerImpl implements WorkspaceInitManager {
 
     @Override
     public void init(String memberId, String name) {
-        String defaultTitleSuffix = "님의 개인 워크스페이스 공간";
 
         WorkspaceCreator creator = WorkspaceCreator.builder()
                 .memberId(memberId)
-                .profileName(name + defaultTitleSuffix)
+                .profileName(name)
                 .build();
         workspaceService.createPersonalWorkspace(creator);
     }
