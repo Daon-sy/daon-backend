@@ -51,6 +51,10 @@ public class WorkspaceController {
         return CommonResponse.createSuccess(workspaceListResponseDto);
     }
 
+    @Operation(summary = "참여코드 확인", description = "참여코드 확인 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "참여코드 확인 성공")
+    })
     @PostMapping("/code")
     public CommonResponse<Void> checkJoinCode(@RequestBody @Valid CheckJoinCodeRequestDto requestDto) {
         workspaceService.checkJoinCode(requestDto);
