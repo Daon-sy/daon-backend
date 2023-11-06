@@ -51,20 +51,20 @@ public class Workspace extends BaseTimeEntity {
         this.participants.add(
                 WorkspaceParticipant.withWorkspaceAdminRole(
                         this,
-                        new Profile(creator.getProfileName(), creator.getProfileImageUrl(), creator.getProfileEmail()),
+                        new Profile(
+                                creator.getProfileName(),
+                                creator.getProfileImageUrl(),
+                                creator.getProfileEmail()
+                        ),
                         creator.getMemberId()
                 )
         );
     }
 
-    public static Workspace createOfPersonal(String title, String description, String imageUrl,
-                                             String subject, WorkspaceCreator creator) {
+    public static Workspace createOfPersonal(WorkspaceCreator creator) {
         return Workspace.builder()
                 .division(Division.PERSONAL)
-                .title(title)
-                .description(description)
-                .imageUrl(imageUrl)
-                .subject(subject)
+                .title(creator.getProfileName())
                 .creator(creator)
                 .build();
     }

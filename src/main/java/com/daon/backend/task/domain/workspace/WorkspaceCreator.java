@@ -1,14 +1,21 @@
 package com.daon.backend.task.domain.workspace;
 
-import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@AllArgsConstructor
 public class WorkspaceCreator {
 
     private String memberId;
     private String profileName;
     private String profileImageUrl;
     private String profileEmail;
+
+    @Builder
+    public WorkspaceCreator(String memberId, String profileName, String profileImageUrl, String profileEmail) {
+        this.memberId = memberId;
+        this.profileName = profileName;
+        this.profileImageUrl = profileImageUrl;
+        this.profileEmail = profileEmail;
+    }
 }
