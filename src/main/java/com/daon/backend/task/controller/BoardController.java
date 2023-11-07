@@ -2,7 +2,6 @@ package com.daon.backend.task.controller;
 
 import com.daon.backend.common.response.CommonResponse;
 import com.daon.backend.task.dto.request.CreateBoardRequestDto;
-import com.daon.backend.task.dto.response.CreateBoardResponseDto;
 import com.daon.backend.task.dto.response.FindBoardsResponseDto;
 import com.daon.backend.task.service.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -27,12 +26,12 @@ public class BoardController {
     })
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public CommonResponse<CreateBoardResponseDto> createBoard(@PathVariable("workspaceId") Long workspaceId,
+    public CommonResponse<Void> createBoard(@PathVariable("workspaceId") Long workspaceId,
                                                               @PathVariable("projectId") Long projectId,
                                                               @RequestBody @Valid CreateBoardRequestDto requestDto) {
-        CreateBoardResponseDto result = boardService.createBoard(workspaceId, projectId, requestDto);
+        boardService.createBoard(workspaceId, projectId, requestDto);
 
-        return CommonResponse.createSuccess(result);
+        return CommonResponse.createSuccess(null);
     }
 
     @GetMapping
