@@ -5,7 +5,7 @@ import com.daon.backend.common.response.CommonResponse;
 import com.daon.backend.task.domain.workspace.JoinCodeMismatchException;
 import com.daon.backend.task.domain.workspace.NotWorkspaceParticipantException;
 import com.daon.backend.task.domain.workspace.WorkspaceNotFoundException;
-import com.daon.backend.task.service.SameMemberExistsException;
+import com.daon.backend.task.domain.workspace.SameMemberExistsException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

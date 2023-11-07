@@ -12,11 +12,13 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-@Entity @Getter
+@Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Project extends BaseTimeEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "project_id")
     private Long id;
 
@@ -30,7 +32,7 @@ public class Project extends BaseTimeEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<ProjectParticipant> participants = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<Board> boards = new ArrayList<>();
 
     @Builder
@@ -50,4 +52,15 @@ public class Project extends BaseTimeEntity {
         this.boards.add(new Board(this, title));
     }
 
+    public void removeBoard(Long boardId) {
+        this.boards.removeIf(board -> board.getId().equals(boardId));
+    }
+
+    public void throwIfTitleExist(String title) {
+        boards.stream()
+                .filter(board -> board.getTitle().equals(title))
+                .findFirst().ifPresent(board -> {
+                    throw new SameBoardExistsException(title);
+                });
+    }
 }
