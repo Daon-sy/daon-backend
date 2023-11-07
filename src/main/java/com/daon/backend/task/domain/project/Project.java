@@ -30,7 +30,7 @@ public class Project extends BaseTimeEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<ProjectParticipant> participants = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<Board> boards = new ArrayList<>();
 
     @Builder
@@ -50,4 +50,7 @@ public class Project extends BaseTimeEntity {
         this.boards.add(new Board(this, title));
     }
 
+    public void removeBoard(Long boardId) {
+        this.boards.removeIf(board -> board.getId().equals(boardId));
+    }
 }

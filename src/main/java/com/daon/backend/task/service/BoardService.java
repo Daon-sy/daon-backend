@@ -4,9 +4,13 @@ import com.daon.backend.task.domain.project.*;
 import com.daon.backend.task.domain.workspace.ProjectNotFoundException;
 import com.daon.backend.task.dto.request.CreateBoardRequestDto;
 import com.daon.backend.task.dto.response.CreateBoardResponseDto;
+import com.daon.backend.task.dto.response.FindBoardsResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -30,5 +34,19 @@ public class BoardService {
         Board savedBoard = boardRepository.save(board);
 
         return new CreateBoardResponseDto(savedBoard.getId());
+    }
+
+    public FindBoardsResponseDto findBoards(Long workspaceId, Long projectId) {
+        List<Board> findBoards = boardRepository.findBoardsByWorkspaceIdAndProjectId(workspaceId, projectId);
+
+        if (findBoards.size() == 0) {
+            throw new BoardNotFoundException(workspaceId, projectId);
+        }
+
+        return new FindBoardsResponseDto(
+                findBoards.stream()
+                        .map(FindBoardsResponseDto.BoardInfo::new)
+                        .collect(Collectors.toList())
+        );
     }
 }

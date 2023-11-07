@@ -5,6 +5,8 @@ import com.daon.backend.task.domain.project.BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Repository
 public class BoardRepositoryImpl implements BoardRepository {
@@ -19,5 +21,10 @@ public class BoardRepositoryImpl implements BoardRepository {
     @Override
     public boolean existsBoardByTitle(String title) {
         return boardJpaRepository.existsBoardByTitle(title);
+    }
+
+    @Override
+    public List<Board> findBoardsByWorkspaceIdAndProjectId(Long workspaceId, Long projectId) {
+        return boardJpaRepository.findBoardsByWorkspaceIdAndProjectId(workspaceId, projectId);
     }
 }

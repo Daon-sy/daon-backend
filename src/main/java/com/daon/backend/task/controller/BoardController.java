@@ -3,6 +3,7 @@ package com.daon.backend.task.controller;
 import com.daon.backend.common.response.CommonResponse;
 import com.daon.backend.task.dto.request.CreateBoardRequestDto;
 import com.daon.backend.task.dto.response.CreateBoardResponseDto;
+import com.daon.backend.task.dto.response.FindBoardsResponseDto;
 import com.daon.backend.task.service.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -30,6 +31,14 @@ public class BoardController {
                                                               @PathVariable("projectId") Long projectId,
                                                               @RequestBody @Valid CreateBoardRequestDto requestDto) {
         CreateBoardResponseDto result = boardService.createBoard(workspaceId, projectId, requestDto);
+
+        return CommonResponse.createSuccess(result);
+    }
+
+    @GetMapping
+    public CommonResponse<FindBoardsResponseDto> findBoards(@PathVariable("workspaceId") Long workspaceId,
+                                                            @PathVariable("projectId") Long projectId) {
+        FindBoardsResponseDto result = boardService.findBoards(workspaceId, projectId);
 
         return CommonResponse.createSuccess(result);
     }
