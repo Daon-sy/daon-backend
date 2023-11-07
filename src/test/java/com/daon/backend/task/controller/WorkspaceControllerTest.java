@@ -1,10 +1,13 @@
 package com.daon.backend.task.controller;
 
+import com.daon.backend.task.domain.workspace.Role;
 import com.daon.backend.task.domain.workspace.Workspace;
 import com.daon.backend.task.domain.workspace.WorkspaceCreator;
 import com.daon.backend.task.dto.request.CheckJoinCodeRequestDto;
 import com.daon.backend.task.dto.request.CreateWorkspaceRequestDto;
 import com.daon.backend.task.dto.request.JoinWorkspaceRequestDto;
+import com.daon.backend.task.dto.response.FindParticipantsResponseDto;
+import com.daon.backend.task.dto.response.FindProfileResponseDto;
 import com.daon.backend.task.dto.response.JoinWorkspaceResponseDto;
 import com.daon.backend.task.dto.response.WorkspaceListResponseDto;
 import com.daon.backend.task.service.WorkspaceService;
@@ -17,7 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -29,6 +31,7 @@ import java.util.List;
 
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.doNothing;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -85,7 +88,7 @@ class WorkspaceControllerTest {
 
         // when
         ResultActions result = mockMvc.perform(post(url)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(APPLICATION_JSON_VALUE)
                 .content(requestBody));
 
         // then
@@ -126,7 +129,7 @@ class WorkspaceControllerTest {
 
         // when
         ResultActions result = mockMvc.perform(get(url)
-                .contentType(MediaType.APPLICATION_JSON_VALUE));
+                .contentType(APPLICATION_JSON_VALUE));
 
         // then
         result
@@ -153,7 +156,7 @@ class WorkspaceControllerTest {
 
         // when
         ResultActions result = mockMvc.perform(post(url)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(APPLICATION_JSON_VALUE)
                 .content(requestBody)
         );
 
@@ -185,7 +188,7 @@ class WorkspaceControllerTest {
 
         // when
         ResultActions result = mockMvc.perform(post(url)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(APPLICATION_JSON_VALUE)
                 .content(requestBody)
         );
 
@@ -197,11 +200,71 @@ class WorkspaceControllerTest {
 
     }
 
+    @DisplayName("findProfile(): 프로필 조회")
     @Test
-    void findProfile() {
+    void findProfile() throws Exception {
+        final String url = "/api/workspaces/{workspaceId}/profile/me";
+        final Long workspaceId = 1L;
+
+        FindProfileResponseDto responseDto = new FindProfileResponseDto(
+                1L,
+                "홍길동",
+                "https://xxx.xxxx.xxxx",
+                "test@gmail.com",
+                Role.BASIC_PARTICIPANT
+        );
+
+        given(workspaceService.findProfile(Mockito.anyLong()))
+                .willReturn(responseDto);
+
+        // when
+        ResultActions result = mockMvc.perform(get(url, workspaceId)
+                .contentType(APPLICATION_JSON_VALUE));
+
+        // then
+        result
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.participantId").value(1L))
+                .andExpect(jsonPath("$.data.name").value("홍길동"))
+                .andExpect(jsonPath("$.data.imageUrl").value("https://xxx.xxxx.xxxx"))
+                .andExpect(jsonPath("$.data.email").value("test@gmail.com"))
+                .andExpect(jsonPath("$.data.role").value("BASIC_PARTICIPANT"));
     }
 
+    @DisplayName("findParticipants(): 워크스페이스 구성원 목록 조회")
     @Test
-    void findParticipants() {
+    void findParticipants() throws Exception {
+        // given
+        final String url = "/api/workspaces/{workspaceId}/participants";
+        final Long workspaceId = 1L;
+
+        FindParticipantsResponseDto responseDto = new FindParticipantsResponseDto(
+                List.of(
+                        new FindParticipantsResponseDto.ParticipantProfile(
+                                workspaceId,
+                                "홍길동",
+                                "test@gmail.com",
+                                "https://xxx.xxxx.xxxx",
+                                Role.BASIC_PARTICIPANT
+                        )
+                )
+        );
+
+        given(workspaceService.findParticipants(workspaceId))
+                .willReturn(responseDto);
+
+        // when
+        ResultActions result = mockMvc.perform(get(url, workspaceId)
+                .contentType(APPLICATION_JSON_VALUE));
+
+        // then
+        result
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.totalCount").value(1))
+                .andExpect(jsonPath("$.data.participants[0].participantId").value(1L))
+                .andExpect(jsonPath("$.data.participants[0].name").value("홍길동"))
+                .andExpect(jsonPath("$.data.participants[0].imageUrl").value("https://xxx.xxxx.xxxx"))
+                .andExpect(jsonPath("$.data.participants[0].email").value("test@gmail.com"))
+                .andExpect(jsonPath("$.data.participants[0].role").value("BASIC_PARTICIPANT"));
     }
 }
