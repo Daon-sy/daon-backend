@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -24,6 +25,7 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfig {
 
     private final JwtAuthenticationProvider jwtAuthenticationProvider;
+    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
     @Value("${cors.allowed-origins}")
     private List<String> allowedOrigins;
@@ -33,18 +35,28 @@ public class SecurityConfig {
 
         return http
                 .headers().frameOptions().disable()
+
                 .and()
                 .httpBasic().disable()
                 .formLogin().disable()
                 .csrf().disable()
                 .cors(withDefaults())
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
                 .and()
                 .authorizeRequests()
 //                .antMatchers("/api/admin/**").hasRole(Role.ADMIN.name())
+                .antMatchers("/api/auth/**").permitAll()
                 .antMatchers("/api/members/**").hasRole(Role.MEMBER.name())
                 .antMatchers("/api/images/**").hasRole(Role.MEMBER.name())
+                .antMatchers("/api/workspaces/**").hasRole(Role.MEMBER.name())
                 .anyRequest().permitAll()
+
+                .and()
+                .exceptionHandling()
+                // TODO 403 분기
+                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtAuthenticationProvider), UsernamePasswordAuthenticationFilter.class)
                 .build();
@@ -55,8 +67,9 @@ public class SecurityConfig {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(allowedOrigins);
         configuration.setAllowedMethods(List.of("GET", "POST", "PATCH", "PUT", "DELETE", "OPTION"));
-        configuration.setAllowedHeaders(List.of("*"));
-        configuration.setExposedHeaders(List.of("*"));
+        configuration.setAllowedHeaders(List.of(HttpHeaders.AUTHORIZATION, HttpHeaders.CONTENT_TYPE));
+        configuration.setExposedHeaders(List.of(HttpHeaders.AUTHORIZATION));
+        configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

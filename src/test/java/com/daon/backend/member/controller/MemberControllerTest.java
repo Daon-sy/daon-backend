@@ -1,6 +1,6 @@
 package com.daon.backend.member.controller;
 
-import com.daon.backend.member.dto.SignInRequestDto;
+import com.daon.backend.auth.dto.SignInRequestDto;
 import com.daon.backend.member.dto.SignUpRequestDto;
 import com.daon.backend.member.infrastructure.MemberJpaRepository;
 import com.daon.backend.member.service.MemberService;
@@ -70,7 +70,7 @@ class MemberControllerTest {
     @Test
     void signIn() throws Exception {
         // given
-        final String url = "/api/sign-in";
+        final String url = "/api/auth/sign-in";
         final SignUpRequestDto signUpRequestDto = getSignUpRequestDto();
         memberService.signUp(signUpRequestDto);
 
