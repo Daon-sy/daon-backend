@@ -33,8 +33,10 @@ public class BoardService {
     }
 
     public FindBoardsResponseDto findBoards(Long workspaceId, Long projectId) {
-        List<Board> findBoards = boardRepository.findBoardsByWorkspaceIdAndProjectId(workspaceId, projectId);
+        Project findProject = projectRepository.findProjectByIdAndWorkspaceId(projectId, workspaceId)
+                .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
+        List<Board> findBoards = findProject.getBoards();
         if (findBoards.size() == 0) {
             throw new BoardNotFoundException(workspaceId, projectId);
         }
