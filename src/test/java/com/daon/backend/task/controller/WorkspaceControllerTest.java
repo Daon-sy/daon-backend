@@ -84,7 +84,7 @@ class WorkspaceControllerTest {
         given(workspaceService.createWorkspace(Mockito.any(CreateWorkspaceRequestDto.class)))
                 .willReturn(workspaceId);
 
-        final String requestBody = objectMapper.writeValueAsString(requestDto);
+        String requestBody = objectMapper.writeValueAsString(requestDto);
 
         // when
         ResultActions result = mockMvc.perform(post(url)
