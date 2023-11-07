@@ -4,7 +4,6 @@ import com.daon.backend.task.domain.workspace.Role;
 import com.daon.backend.task.domain.workspace.WorkspaceParticipant;
 import lombok.Getter;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
