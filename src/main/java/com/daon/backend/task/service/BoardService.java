@@ -1,6 +1,9 @@
 package com.daon.backend.task.service;
 
-import com.daon.backend.task.domain.project.*;
+import com.daon.backend.task.domain.project.Board;
+import com.daon.backend.task.domain.project.BoardNotFoundException;
+import com.daon.backend.task.domain.project.Project;
+import com.daon.backend.task.domain.project.ProjectRepository;
 import com.daon.backend.task.domain.workspace.ProjectNotFoundException;
 import com.daon.backend.task.dto.request.CreateBoardRequestDto;
 import com.daon.backend.task.dto.response.FindBoardsResponseDto;
@@ -16,7 +19,6 @@ import java.util.stream.Collectors;
 @Service
 public class BoardService {
 
-    private final BoardRepository boardRepository;
     private final ProjectRepository projectRepository;
 
     @Transactional
@@ -25,10 +27,7 @@ public class BoardService {
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
         String title = requestDto.getTitle();
-        if (boardRepository.existsBoardByTitle(title)) {
-            throw new SameBoardExistsException(title);
-        }
-
+        findProject.throwIfTitleExist(title);
         findProject.addBoard(title);
     }
 
