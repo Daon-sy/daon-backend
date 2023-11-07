@@ -1,7 +1,7 @@
 package com.daon.backend.security;
 
-import com.daon.backend.jwt.domain.JwtService;
-import com.daon.backend.jwt.domain.Payload;
+import com.daon.backend.auth.domain.JwtManager;
+import com.daon.backend.auth.domain.Payload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -16,15 +16,14 @@ import java.util.Collections;
 @Service
 public class JwtAuthenticationProvider {
 
-    private final JwtService jwtService;
+    private final JwtManager jwtManager;
 
     protected Authentication authenticateAccessToken(String accessToken) {
-        if (!jwtService.validate(accessToken)) {
-            log.info("is invalid token");
+        if (!jwtManager.validate(accessToken)) {
             return null;
         }
 
-        Payload payload = jwtService.parse(accessToken);
+        Payload payload = jwtManager.parse(accessToken);
         String memberId = payload.getId();
         String role = payload.getRole();
 

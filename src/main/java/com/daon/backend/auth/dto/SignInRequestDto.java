@@ -1,4 +1,4 @@
-package com.daon.backend.member.dto;
+package com.daon.backend.auth.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;

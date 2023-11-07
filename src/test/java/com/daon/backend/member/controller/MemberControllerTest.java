@@ -1,6 +1,6 @@
 package com.daon.backend.member.controller;
 
-import com.daon.backend.member.dto.SignInRequestDto;
+import com.daon.backend.auth.dto.SignInRequestDto;
 import com.daon.backend.member.dto.SignUpRequestDto;
 import com.daon.backend.member.infrastructure.MemberJpaRepository;
 import com.daon.backend.member.service.MemberService;
