@@ -70,7 +70,7 @@ class MemberControllerTest {
     @Test
     void signIn() throws Exception {
         // given
-        final String url = "/api/sign-in";
+        final String url = "/api/auth/sign-in";
         final SignUpRequestDto signUpRequestDto = getSignUpRequestDto();
         memberService.signUp(signUpRequestDto);
 

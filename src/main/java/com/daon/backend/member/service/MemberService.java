@@ -15,6 +15,7 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final WorkspaceInitManager workspaceInitManager;
 
     @Transactional
     public void signUp(SignUpRequestDto signUpRequestDto) {
