@@ -1,5 +1,6 @@
 package com.daon.backend.task.dto.response;
 
+import com.daon.backend.task.domain.workspace.Role;
 import com.daon.backend.task.domain.workspace.WorkspaceParticipant;
 import lombok.Getter;
 
@@ -28,7 +29,7 @@ public class FindParticipantsResponseDto {
 
         private String imageUrl;
 
-        private String roleDescription;
+        private Role role;
 
 
         public ParticipantProfile(WorkspaceParticipant workspaceParticipant) {
@@ -36,7 +37,7 @@ public class FindParticipantsResponseDto {
             this.name = workspaceParticipant.getProfile().getName();
             this.imageUrl = workspaceParticipant.getProfile().getImageUrl();
             this.email = workspaceParticipant.getProfile().getEmail();
-            this.roleDescription = workspaceParticipant.getRole().getRoleDescription();
+            this.role = workspaceParticipant.getRole();
         }
     }
 }

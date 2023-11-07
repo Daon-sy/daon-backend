@@ -11,13 +11,13 @@ public class FindProfileResponseDto {
     private String name;
     private String imageUrl;
     private String email;
-    private String roleDescription;
+    private Role role;
 
     public FindProfileResponseDto(WorkspaceParticipant workspaceParticipant) {
         this.participantId = workspaceParticipant.getId();
         this.name = workspaceParticipant.getProfile().getName();
         this.imageUrl = workspaceParticipant.getProfile().getImageUrl();
         this.email = workspaceParticipant.getProfile().getEmail();
-        this.roleDescription = workspaceParticipant.getRole().getRoleDescription();
+        this.role = workspaceParticipant.getRole();
     }
 }
