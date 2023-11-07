@@ -48,6 +48,9 @@ dependencies {
 	implementation "io.jsonwebtoken:jjwt-impl:${jjwtVersion}"
 	implementation "io.jsonwebtoken:jjwt-jackson:${jjwtVersion}"
 
+	// reids
+	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
 	// s3
 	implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
     // s3 mock test

@@ -3,7 +3,6 @@ package com.daon.backend.member.service;
 import com.daon.backend.member.domain.Member;
 import com.daon.backend.member.domain.MemberRepository;
 import com.daon.backend.member.domain.PasswordEncoder;
-import com.daon.backend.member.dto.SignInRequestDto;
 import com.daon.backend.member.dto.SignUpRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,7 +15,6 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
-    private final TokenService tokenService;
     private final WorkspaceInitManager workspaceInitManager;
 
     @Transactional
@@ -28,16 +26,5 @@ public class MemberService {
         Member member = signUpRequestDto.toEntity(passwordEncoder);
         memberRepository.save(member);
         workspaceInitManager.init(member.getId().toString(), member.getName());
-    }
-
-    @Transactional
-    public String signIn(SignInRequestDto signInRequestDto) {
-        String requestEmail = signInRequestDto.getEmail();
-        Member findMember = memberRepository.findByEmail(requestEmail)
-                .orElseThrow(() -> new NotFoundEmailException(requestEmail));
-
-        findMember.checkPassword(signInRequestDto.getPassword(), passwordEncoder);
-
-        return tokenService.createMemberAccessToken(findMember.getId().toString());
     }
 }

@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  redis:
+    container_name: daon-redis
+    image: redis:7.0.4
+    restart: always
+    ports:
+      - "6379:6379"
+    environment:
+      TZ: Asia/Seoul
+    networks:
+      default:
