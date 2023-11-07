@@ -34,6 +34,10 @@ public class BoardController {
         return CommonResponse.createSuccess(null);
     }
 
+    @Operation(summary = "보드 목록 조회", description = "보드 목록 조회 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "보드 목록 조회 성공")
+    })
     @GetMapping
     public CommonResponse<FindBoardsResponseDto> findBoards(@PathVariable("workspaceId") Long workspaceId,
                                                             @PathVariable("projectId") Long projectId) {
