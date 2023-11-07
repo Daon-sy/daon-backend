@@ -15,4 +15,9 @@ public class BoardRepositoryImpl implements BoardRepository {
     public Board save(Board board) {
         return boardJpaRepository.save(board);
     }
+
+    @Override
+    public boolean existsBoardByTitle(String title) {
+        return boardJpaRepository.existsBoardByTitle(title);
+    }
 }

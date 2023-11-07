@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
+
 @RequiredArgsConstructor
 @RequestMapping("/api/workspaces/{workspaceId}/projects/{projectId}/boards")
 @RestController
@@ -26,7 +28,7 @@ public class BoardController {
     @PostMapping
     public CommonResponse<CreateBoardResponseDto> createBoard(@PathVariable("workspaceId") Long workspaceId,
                                                               @PathVariable("projectId") Long projectId,
-                                                              @RequestBody CreateBoardRequestDto requestDto) {
+                                                              @RequestBody @Valid CreateBoardRequestDto requestDto) {
         CreateBoardResponseDto result = boardService.createBoard(workspaceId, projectId, requestDto);
 
         return CommonResponse.createSuccess(result);
