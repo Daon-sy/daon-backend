@@ -30,7 +30,7 @@ public class FindParticipantsResponseDto {
 
         private String imageUrl;
 
-        private Role role;
+        private String roleDescription;
 
 
         public ParticipantProfile(WorkspaceParticipant workspaceParticipant) {
@@ -38,7 +38,7 @@ public class FindParticipantsResponseDto {
             this.name = workspaceParticipant.getProfile().getName();
             this.imageUrl = workspaceParticipant.getProfile().getImageUrl();
             this.email = workspaceParticipant.getProfile().getEmail();
-            this.role = workspaceParticipant.getRole();
+            this.roleDescription = workspaceParticipant.getRole().getRoleDescription();
         }
     }
 }
