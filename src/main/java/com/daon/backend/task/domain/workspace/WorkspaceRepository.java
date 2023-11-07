@@ -14,4 +14,8 @@ public interface WorkspaceRepository {
     Optional<WorkspaceParticipant> findWorkspaceParticipantByWorkspaceAndMemberId(Workspace workspace, String memberId);
 
     Optional<Workspace> findWorkspaceByJoinCode(String joinCode);
+
+    List<WorkspaceParticipant> findWorkspaceParticipantsByWorkspaceId(Long workspaceId);
+
+    boolean existsWorkspaceParticipantByMemberIdAndWorkspaceId(String memberId, Long workspaceId);
 }

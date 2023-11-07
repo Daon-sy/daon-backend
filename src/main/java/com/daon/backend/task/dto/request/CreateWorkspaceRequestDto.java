@@ -21,7 +21,7 @@ public class CreateWorkspaceRequestDto {
     public static class WorkspaceInfo {
 
         @NotBlank
-        private String name;
+        private String title;
 
         private String imageUrl;
 

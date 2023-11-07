@@ -16,4 +16,8 @@ public interface WorkspaceParticipantJpaRepository extends JpaRepository<Workspa
     List<Workspace> findWorkspacesByMemberId(String memberId);
 
     Optional<WorkspaceParticipant> findByWorkspaceAndMemberId(Workspace workspace, String memberId);
+
+    List<WorkspaceParticipant> findWorkspaceParticipantsByWorkspaceId(Long workspaceId);
+
+    boolean existsWorkspaceParticipantByMemberIdAndWorkspaceId(String memberId, Long workspaceId);
 }

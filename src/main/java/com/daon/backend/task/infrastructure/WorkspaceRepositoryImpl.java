@@ -41,4 +41,14 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
     public Optional<Workspace> findWorkspaceByJoinCode(String joinCode) {
         return workspaceJpaRepository.findWorkspaceByJoinCode(joinCode);
     }
+
+    @Override
+    public List<WorkspaceParticipant> findWorkspaceParticipantsByWorkspaceId(Long workspaceId) {
+        return workspaceParticipantJpaRepository.findWorkspaceParticipantsByWorkspaceId(workspaceId);
+    }
+
+    @Override
+    public boolean existsWorkspaceParticipantByMemberIdAndWorkspaceId(String memberId, Long workspaceId) {
+        return workspaceParticipantJpaRepository.existsWorkspaceParticipantByMemberIdAndWorkspaceId(memberId, workspaceId);
+    }
 }

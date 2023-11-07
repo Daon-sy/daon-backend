@@ -4,9 +4,7 @@ import com.daon.backend.common.response.CommonResponse;
 import com.daon.backend.task.dto.request.CheckJoinCodeRequestDto;
 import com.daon.backend.task.dto.request.CreateWorkspaceRequestDto;
 import com.daon.backend.task.dto.request.JoinWorkspaceRequestDto;
-import com.daon.backend.task.dto.response.CreateWorkspaceResponseDto;
-import com.daon.backend.task.dto.response.JoinWorkspaceResponseDto;
-import com.daon.backend.task.dto.response.WorkspaceListResponseDto;
+import com.daon.backend.task.dto.response.*;
 import com.daon.backend.task.service.WorkspaceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -51,6 +49,10 @@ public class WorkspaceController {
         return CommonResponse.createSuccess(workspaceListResponseDto);
     }
 
+    @Operation(summary = "참여코드 확인", description = "참여코드 확인 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "참여코드 확인 성공")
+    })
     @PostMapping("/code")
     public CommonResponse<Void> checkJoinCode(@RequestBody @Valid CheckJoinCodeRequestDto requestDto) {
         workspaceService.checkJoinCode(requestDto);
@@ -65,6 +67,28 @@ public class WorkspaceController {
     @PostMapping("/join")
     public CommonResponse<JoinWorkspaceResponseDto> joinWorkspace(@RequestBody @Valid JoinWorkspaceRequestDto requestDto) {
         JoinWorkspaceResponseDto result = workspaceService.joinWorkspace(requestDto);
+
+        return CommonResponse.createSuccess(result);
+    }
+
+    @Operation(summary = "프로필 조회", description = "그룹 워크스페이스 내 프로필 조회 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "프로필 조회 성공")
+    })
+    @GetMapping("/{workspaceId}/profile/me")
+    public CommonResponse<FindProfileResponseDto> findProfile(@PathVariable("workspaceId") Long workspaceId) {
+        FindProfileResponseDto result = workspaceService.findProfile(workspaceId);
+
+        return CommonResponse.createSuccess(result);
+    }
+
+    @Operation(summary = "워크스페이스 구성원 목록 조회", description = "워크스페이스 구성원 목록 조회 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "워크스페이스 구성원 목록 조회 성공")
+    })
+    @GetMapping("/{workspaceId}/participants")
+    public CommonResponse<FindParticipantsResponseDto> findParticipants(@PathVariable("workspaceId") Long workspaceId) {
+        FindParticipantsResponseDto result = workspaceService.findParticipants(workspaceId);
 
         return CommonResponse.createSuccess(result);
     }
