@@ -1,9 +1,11 @@
 package com.daon.backend.task.controller;
 
-import com.daon.backend.task.domain.workspace.Division;
 import com.daon.backend.task.domain.workspace.Workspace;
 import com.daon.backend.task.domain.workspace.WorkspaceCreator;
+import com.daon.backend.task.dto.request.CheckJoinCodeRequestDto;
 import com.daon.backend.task.dto.request.CreateWorkspaceRequestDto;
+import com.daon.backend.task.dto.request.JoinWorkspaceRequestDto;
+import com.daon.backend.task.dto.response.JoinWorkspaceResponseDto;
 import com.daon.backend.task.dto.response.WorkspaceListResponseDto;
 import com.daon.backend.task.service.WorkspaceService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,6 +28,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.doNothing;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -60,20 +63,20 @@ class WorkspaceControllerTest {
         final String url = "/api/workspaces";
         final Long workspaceId = 1L;
 
-        final CreateWorkspaceRequestDto.WorkspaceInfo workspaceInfo =
+        CreateWorkspaceRequestDto.WorkspaceInfo workspaceInfo =
                 CreateWorkspaceRequestDto.WorkspaceInfo.builder()
                         .title("테스트 워크스페이스")
                         .imageUrl("https://xxx.xxxx.xxxx")
                         .subject("테스트")
                         .description("테스트 용도로 생성")
                         .build();
-        final CreateWorkspaceRequestDto.WorkspaceProfileInfo workspaceProfileInfo =
+        CreateWorkspaceRequestDto.WorkspaceProfileInfo workspaceProfileInfo =
                 CreateWorkspaceRequestDto.WorkspaceProfileInfo.builder()
                         .name("홍길동")
                         .imageUrl("https://xxx.xxxx.xxxx")
                         .email("test@gmail.com")
                         .build();
-        final CreateWorkspaceRequestDto requestDto = new CreateWorkspaceRequestDto(workspaceInfo, workspaceProfileInfo);
+        CreateWorkspaceRequestDto requestDto = new CreateWorkspaceRequestDto(workspaceInfo, workspaceProfileInfo);
 
         given(workspaceService.createWorkspace(Mockito.any(CreateWorkspaceRequestDto.class)))
                 .willReturn(workspaceId);
@@ -97,6 +100,7 @@ class WorkspaceControllerTest {
         // given
         final String url = "/api/workspaces";
         final String memberId = "uuid";
+
         WorkspaceCreator creator = WorkspaceCreator.builder()
                 .memberId(memberId)
                 .profileName("홍길동")
@@ -135,12 +139,62 @@ class WorkspaceControllerTest {
                 .andExpect(jsonPath("$.data.workspaces[1].division").value("GROUP"));
     }
 
+    @DisplayName("checkJoinCode(): 참여코드 확인")
     @Test
-    void checkJoinCode() {
+    void checkJoinCode() throws Exception {
+        // given
+        final String url = "/api/workspaces/code";
+        final String joinCode = "joinCode";
+
+        CheckJoinCodeRequestDto requestDto = new CheckJoinCodeRequestDto(joinCode);
+        doNothing().when(workspaceService).checkJoinCode(requestDto);
+
+        String requestBody = objectMapper.writeValueAsString(requestDto);
+
+        // when
+        ResultActions result = mockMvc.perform(post(url)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(requestBody)
+        );
+
+        // then
+        result.andExpect(status().isOk());
     }
 
+    @DisplayName("joinWorkspace(): 워크스페이스 참여")
     @Test
-    void joinWorkspace() {
+    void joinWorkspace() throws Exception {
+        // given
+        final String url = "/api/workspaces/join";
+        final String joinCode = "joinCode";
+        final Long workspaceId = 1L;
+
+        JoinWorkspaceRequestDto requestDto = new JoinWorkspaceRequestDto(
+                joinCode,
+                new JoinWorkspaceRequestDto.WorkspaceProfileInfo(
+                        "홍길동",
+                        "https://xxx.xxxx.xxxx",
+                        "test@gmail.com"
+                )
+        );
+        JoinWorkspaceResponseDto responseDto = new JoinWorkspaceResponseDto(workspaceId);
+        given(workspaceService.joinWorkspace(Mockito.any(JoinWorkspaceRequestDto.class)))
+                .willReturn(responseDto);
+
+        String requestBody = objectMapper.writeValueAsString(requestDto);
+
+        // when
+        ResultActions result = mockMvc.perform(post(url)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(requestBody)
+        );
+
+        // then
+        result
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.data.workspaceId").value(workspaceId));
+
+
     }
 
     @Test
