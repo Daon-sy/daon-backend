@@ -124,8 +124,10 @@ class WorkspaceControllerTest {
                         new WorkspaceListResponseDto.WorkspaceSummary(workspace2)
                 );
 
+        WorkspaceListResponseDto responseDto = new WorkspaceListResponseDto(workspaceList);
+
         given(workspaceService.findAllWorkspace())
-                .willReturn(new WorkspaceListResponseDto(workspaceList));
+                .willReturn(responseDto);
 
         // when
         ResultActions result = mockMvc.perform(get(url)
@@ -134,12 +136,12 @@ class WorkspaceControllerTest {
         // then
         result
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.totalCount").value(2))
-                .andExpect(jsonPath("$.data.workspaces[0].title").value("홍길동님의 개인 워크스페이스 공간"))
-                .andExpect(jsonPath("$.data.workspaces[0].division").value("PERSONAL"))
-                .andExpect(jsonPath("$.data.workspaces[1].title").value("테스트 워크스페이스"))
-                .andExpect(jsonPath("$.data.workspaces[1].imageUrl").value("https://xxx.xxxx.xxxx"))
-                .andExpect(jsonPath("$.data.workspaces[1].division").value("GROUP"));
+                .andExpect(jsonPath("$.data.totalCount").value(responseDto.getWorkspaces().size()))
+                .andExpect(jsonPath("$.data.workspaces[0].title").value(responseDto.getWorkspaces().get(0).getTitle()))
+                .andExpect(jsonPath("$.data.workspaces[0].division").value(responseDto.getWorkspaces().get(0).getDivision()))
+                .andExpect(jsonPath("$.data.workspaces[1].title").value(responseDto.getWorkspaces().get(1).getTitle()))
+                .andExpect(jsonPath("$.data.workspaces[1].imageUrl").value(responseDto.getWorkspaces().get(1).getImageUrl()))
+                .andExpect(jsonPath("$.data.workspaces[1].division").value(responseDto.getWorkspaces().get(1).getDivision()));
     }
 
     @DisplayName("checkJoinCode(): 참여코드 확인")
@@ -224,11 +226,11 @@ class WorkspaceControllerTest {
         // then
         result
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.participantId").value(1L))
-                .andExpect(jsonPath("$.data.name").value("홍길동"))
-                .andExpect(jsonPath("$.data.imageUrl").value("https://xxx.xxxx.xxxx"))
-                .andExpect(jsonPath("$.data.email").value("test@gmail.com"))
-                .andExpect(jsonPath("$.data.role").value("BASIC_PARTICIPANT"));
+                .andExpect(jsonPath("$.data.participantId").value(responseDto.getParticipantId()))
+                .andExpect(jsonPath("$.data.name").value(responseDto.getName()))
+                .andExpect(jsonPath("$.data.imageUrl").value(responseDto.getImageUrl()))
+                .andExpect(jsonPath("$.data.email").value(responseDto.getEmail()))
+                .andExpect(jsonPath("$.data.role").value(responseDto.getRole().name()));
     }
 
     @DisplayName("findParticipants(): 워크스페이스 구성원 목록 조회")
@@ -260,11 +262,11 @@ class WorkspaceControllerTest {
         // then
         result
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.totalCount").value(1))
-                .andExpect(jsonPath("$.data.participants[0].participantId").value(1L))
-                .andExpect(jsonPath("$.data.participants[0].name").value("홍길동"))
-                .andExpect(jsonPath("$.data.participants[0].imageUrl").value("https://xxx.xxxx.xxxx"))
-                .andExpect(jsonPath("$.data.participants[0].email").value("test@gmail.com"))
-                .andExpect(jsonPath("$.data.participants[0].role").value("BASIC_PARTICIPANT"));
+                .andExpect(jsonPath("$.data.totalCount").value(responseDto.getTotalCount()))
+                .andExpect(jsonPath("$.data.participants[0].participantId").value(responseDto.getParticipants().get(0).getParticipantId()))
+                .andExpect(jsonPath("$.data.participants[0].name").value(responseDto.getParticipants().get(0).getName()))
+                .andExpect(jsonPath("$.data.participants[0].imageUrl").value(responseDto.getParticipants().get(0).getImageUrl()))
+                .andExpect(jsonPath("$.data.participants[0].email").value(responseDto.getParticipants().get(0).getEmail()))
+                .andExpect(jsonPath("$.data.participants[0].role").value(responseDto.getParticipants().get(0).getRole().name()));
     }
 }
