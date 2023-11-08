@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -26,19 +28,29 @@ public class Task extends BaseTimeEntity {
 
     private LocalDateTime endDate;
 
-    @Enumerated(EnumType.STRING)
-
     private boolean emergency;
+
+    @OneToMany(mappedBy = "task")
+    private List<TaskBookmark> taskBookmarks = new ArrayList<>();
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator_id")
     private ProjectParticipant creator;
 
+    @Enumerated(EnumType.STRING)
     private TaskProgressStatus progressStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "workspace_partipant_id")
     private WorkspaceParticipant workspaceParticipant;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "project_id")
+    private Project project;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "board_id")
+    private Board board;
 
     @Builder
     public Task(String title, String content, LocalDateTime startDate, LocalDateTime endDate,

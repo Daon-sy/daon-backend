@@ -26,6 +26,9 @@ public class Project extends BaseTimeEntity {
     @JoinColumn(name = "workspace_id")
     private Workspace workspace;
 
+    @OneToMany(mappedBy = "project")
+    private List<Task> tasks = new ArrayList<>();
+
     private String title;
     private String description;
 

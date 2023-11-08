@@ -1,9 +1,7 @@
 package com.daon.backend.task.controller;
 
 import com.daon.backend.common.response.CommonResponse;
-import com.daon.backend.task.dto.response.ProjectListResponseDto;
 import com.daon.backend.task.dto.response.TaskListResponseDto;
-import com.daon.backend.task.service.ProjectService;
 import com.daon.backend.task.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -30,8 +28,9 @@ public class TaskController {
             @ApiResponse(responseCode = "200", description = "할일 목록 조회 성공")
     })
     @GetMapping
-    public CommonResponse<TaskListResponseDto> taskList(@PathVariable Long workspaceId, Long projectId) {
-        TaskListResponseDto taskListResponseDto = taskService.findAllTaskInProject(workspaceId, projectId);
-        return CommonResponse.createSuccess(taskListResponseDto);
+    public CommonResponse<TaskListResponseDto> findTasks(@PathVariable Long workspaceId,
+                                                         @PathVariable Long projectId) {
+        TaskListResponseDto result = taskService.findAllTaskInProject(workspaceId, projectId);
+        return CommonResponse.createSuccess(result);
     }
 }

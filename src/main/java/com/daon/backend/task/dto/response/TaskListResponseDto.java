@@ -1,27 +1,26 @@
 package com.daon.backend.task.dto.response;
 
-import com.daon.backend.task.domain.project.*;
-import com.daon.backend.task.domain.workspace.Profile;
+import com.daon.backend.task.domain.project.Task;
+import com.daon.backend.task.domain.project.TaskBookmark;
+import com.daon.backend.task.domain.project.TaskProgressStatus;
 import com.daon.backend.task.domain.workspace.WorkspaceParticipant;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Getter
 @NoArgsConstructor
 public class TaskListResponseDto {
 
-    private Long workspaceId;
-    private Long projectId;
+
     private List<TaskSummary> tasks;
 
-    public TaskListResponseDto(Long workspaceId, Long projectId, List<TaskSummary> tasks) {
-        this.workspaceId = workspaceId;
-        this.projectId = projectId;
+    public TaskListResponseDto(List<TaskSummary> tasks) {
         this.tasks = tasks;
     }
 
@@ -39,8 +38,8 @@ public class TaskListResponseDto {
         private String name;
         private String profileImageUrl;
 
-        public TaskManager(Long participantId, WorkspaceParticipant workspaceParticipant) {
-            this.participantId = participantId;
+        public TaskManager(WorkspaceParticipant workspaceParticipant) {
+            this.participantId = workspaceParticipant.getId();
             this.name = workspaceParticipant.getProfile().getName();
             this.profileImageUrl = workspaceParticipant.getProfile().getImageUrl();
         }
@@ -52,23 +51,26 @@ public class TaskListResponseDto {
 
         private Long taskId;
         private String title;
-        private LocalDate startDate;
-        private LocalDate endDate;
+        private LocalDateTime startDate;
+        private LocalDateTime endDate;
         private TaskProgressStatus progressStatus;
-        private BoardSummary board;
         private boolean emergency;
-        private TaskBookmark taskBookmark;
+        private BoardSummary board;
+        private boolean bookmark;
+        private TaskManager taskManager;
 
-        public TaskSummary(Task task, BoardSummary board, TaskBookmark taskBookmark) {
+        public TaskSummary(Task task) {
+
             this.taskId = task.getId();
             this.title = task.getTitle();
+            this.startDate = task.getStartDate();
+            this.endDate = task.getEndDate();
             this.progressStatus = task.getProgressStatus();
-            this.board = board;
             this.emergency = task.isEmergency();
-            this.taskBookmark = taskBookmark;
-
+            this.board = new BoardSummary(task.getBoard().getId(), task.getBoard().getTitle());
+            this.bookmark = task.getTaskBookmarks().stream()
+                    .anyMatch(p -> p.getId().equals(task.getWorkspaceParticipant().getId()));
+            this.taskManager = new TaskManager(task.getWorkspaceParticipant());
         }
-
-
     }
 }

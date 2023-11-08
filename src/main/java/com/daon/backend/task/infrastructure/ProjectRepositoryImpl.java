@@ -24,7 +24,7 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     }
 
     @Override
-    public Optional<Project> findProjectById(Long projectId) {
+    public Optional<Project> findProjectWithParticipantsById(Long projectId) {
         return projectJpaRepository.findById(projectId);
     }
 
