@@ -17,5 +17,4 @@ public class TaskRepositoryImpl implements TaskRepository {
         return taskJpaRepository.save(task);
     }
 
-    List<Task> findTaskByProjectParticipant(ProjectParticipant projectParticipant);
 }
