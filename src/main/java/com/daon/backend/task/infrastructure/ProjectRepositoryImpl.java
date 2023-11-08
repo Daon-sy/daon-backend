@@ -1,7 +1,9 @@
 package com.daon.backend.task.infrastructure;
 
 import com.daon.backend.task.domain.project.Project;
+import com.daon.backend.task.domain.project.ProjectParticipant;
 import com.daon.backend.task.domain.project.ProjectRepository;
+import com.daon.backend.task.domain.workspace.Workspace;
 import com.daon.backend.task.domain.workspace.WorkspaceParticipant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -22,6 +24,11 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     }
 
     @Override
+    public Optional<Project> findProjectById(Long projectId) {
+        return projectJpaRepository.findById(projectId);
+    }
+
+    @Override
     public List<Project> findProjectsByWorkspaceParticipant(WorkspaceParticipant workspaceParticipant) {
         return projectParticipantJpaRepository.findProjectsByWorkspaceParticipant(workspaceParticipant);
     }
@@ -30,4 +37,10 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     public Optional<Project> findProjectByIdAndWorkspaceId(Long projectId, Long workspaceId) {
         return projectJpaRepository.findProjectByIdAndWorkspaceId(projectId, workspaceId);
     }
+
+    @Override
+    public Optional<ProjectParticipant> findProjectParticipantByProjectAndMemberId(Project project, String memberId) {
+        return projectParticipantJpaRepository.findByProjectAndMemberId(project, memberId);
+    }
+
 }

@@ -14,6 +14,7 @@ public class ProjectListResponseDto {
     private int totalCount;
     private List<ProjectSummary> projects;
 
+
     public ProjectListResponseDto(Long workspaceId, List<ProjectSummary> projects) {
         this.workspaceId = workspaceId;
         this.totalCount = projects.size();

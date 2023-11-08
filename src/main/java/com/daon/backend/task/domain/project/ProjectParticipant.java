@@ -25,7 +25,7 @@ public class ProjectParticipant extends BaseTimeEntity {
     @JoinColumn(name = "workspace_partipant_id")
     private WorkspaceParticipant workspaceParticipant;
 
-    // 회원 기본키
+    //회원 기본키
     private String memberId;
 
     @Builder
