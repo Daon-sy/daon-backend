@@ -26,13 +26,6 @@ public class TaskService {
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
     }
 
-    //해당 프로젝트의 참여자가 아니라면 오류발생
-    private ProjectParticipant getProjectParticipantOrElseThrow(Project project,
-                                                                String memberId) {
-        return projectRepository.findProjectParticipantByProjectAndMemberId(project, memberId)
-                .orElseThrow(() -> new NotProjectParticipantException(memberId, project.getId()));
-    }
-
     //목록 리스트
     public TaskListResponseDto findAllTaskInProject(Long workspaceId, Long projectId) {
         Project project = getProjectOrElseThrow(projectId);

@@ -12,6 +12,7 @@ import java.util.List;
 public class TaskRepositoryImpl implements TaskRepository {
 
     private final TaskJpaRepository taskJpaRepository;
+
     @Override
     public Task save(Task task) {
         return taskJpaRepository.save(task);

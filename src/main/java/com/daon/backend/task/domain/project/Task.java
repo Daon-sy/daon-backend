@@ -20,25 +20,12 @@ public class Task extends BaseTimeEntity {
     @Column(name = "task_id")
     private Long id;
 
-    private String title;
-
-    private String content;
-
-    private LocalDateTime startDate;
-
-    private LocalDateTime endDate;
-
-    private boolean emergency;
-
-    @OneToMany(mappedBy = "task")
-    private List<TaskBookmark> taskBookmarks = new ArrayList<>();
+    @Enumerated(EnumType.STRING)
+    private TaskProgressStatus progressStatus;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator_id")
     private ProjectParticipant creator;
-
-    @Enumerated(EnumType.STRING)
-    private TaskProgressStatus progressStatus;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "workspace_partipant_id")
@@ -51,6 +38,19 @@ public class Task extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     private Board board;
+
+    private String title;
+
+    private String content;
+
+    private LocalDateTime startDate;
+
+    private LocalDateTime endDate;
+
+    private boolean emergency;
+
+    @OneToMany(mappedBy = "task")
+    private List<TaskBookmark> taskBookmarks = new ArrayList<>();
 
     @Builder
     public Task(String title, String content, LocalDateTime startDate, LocalDateTime endDate,
