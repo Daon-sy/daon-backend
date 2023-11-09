@@ -1,6 +1,7 @@
 package com.daon.backend.task.controller;
 
 import com.daon.backend.common.response.CommonResponse;
+import com.daon.backend.task.domain.authority.CheckRole;
 import com.daon.backend.task.dto.request.CreateBoardRequestDto;
 import com.daon.backend.task.dto.response.FindBoardsResponseDto;
 import com.daon.backend.task.service.BoardService;
@@ -12,6 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
+import static com.daon.backend.task.domain.authority.Authority.BD_CREATE;
+import static com.daon.backend.task.domain.authority.Authority.BD_READ;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/workspaces/{workspaceId}/projects/{projectId}/boards")
@@ -25,6 +29,7 @@ public class BoardController {
             @ApiResponse(responseCode = "201", description = "보드 생성 성공")
     })
     @ResponseStatus(HttpStatus.CREATED)
+    @CheckRole(authority = BD_CREATE)
     @PostMapping
     public CommonResponse<Void> createBoard(@PathVariable("workspaceId") Long workspaceId,
                                                               @PathVariable("projectId") Long projectId,
@@ -38,6 +43,7 @@ public class BoardController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "보드 목록 조회 성공")
     })
+    @CheckRole(authority = BD_READ)
     @GetMapping
     public CommonResponse<FindBoardsResponseDto> findBoards(@PathVariable("workspaceId") Long workspaceId,
                                                             @PathVariable("projectId") Long projectId) {

@@ -1,12 +1,12 @@
 package com.daon.backend.task.domain.workspace;
 
-import com.daon.backend.task.domain.Authority;
+import com.daon.backend.task.domain.authority.Authority;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import static com.daon.backend.task.domain.Authority.*;
+import static com.daon.backend.task.domain.authority.Authority.*;
 
 @Getter
 @RequiredArgsConstructor
@@ -25,6 +25,7 @@ public enum Role {
             List.of(
                     WS_READ,
                     PJ_CREATE, PJ_READ, PJ_UPDATE, PJ_DELETE,
+                    BD_CREATE, BD_READ, BD_UPDATE, BD_DELETE,
                     TSK_CREATE, TSK_READ, TSK_UPDATE, TSK_DELETE
             )
     ),
@@ -37,6 +38,7 @@ public enum Role {
             List.of(
                     WS_READ,
                     PJ_READ,
+                    BD_READ,
                     TSK_CREATE, TSK_READ, TSK_UPDATE, TSK_DELETE
             )
     ),

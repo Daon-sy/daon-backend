@@ -83,7 +83,7 @@ public class JwtManagerImpl implements JwtManager {
         }
 
         String memberId = refreshTokenRepository.findMemberIdByRtk(refreshTokenValue)
-                .orElseThrow(UnauthorizedException::new);
+                .orElseThrow(UnauthenticatedMemberException::new);
 
         Token accessToken = createMemberAccessToken(memberId);
         Payload rtkPayload = parse(refreshTokenValue);

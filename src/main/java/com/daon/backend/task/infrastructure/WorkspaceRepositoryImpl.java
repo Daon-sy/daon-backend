@@ -1,13 +1,17 @@
 package com.daon.backend.task.infrastructure;
 
+import com.daon.backend.task.domain.workspace.Role;
 import com.daon.backend.task.domain.workspace.Workspace;
 import com.daon.backend.task.domain.workspace.WorkspaceParticipant;
 import com.daon.backend.task.domain.workspace.WorkspaceRepository;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
+
+import static com.daon.backend.task.domain.workspace.QWorkspaceParticipant.workspaceParticipant;
 
 @Repository
 @RequiredArgsConstructor
@@ -15,6 +19,7 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
 
     private final WorkspaceJpaRepository workspaceJpaRepository;
     private final WorkspaceParticipantJpaRepository workspaceParticipantJpaRepository;
+    private final JPAQueryFactory jpaQueryFactory;
 
     @Override
     public Workspace save(Workspace workspace) {
@@ -50,5 +55,15 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
     @Override
     public boolean existsWorkspaceParticipantByMemberIdAndWorkspaceId(String memberId, Long workspaceId) {
         return workspaceParticipantJpaRepository.existsWorkspaceParticipantByMemberIdAndWorkspaceId(memberId, workspaceId);
+    }
+
+    @Override
+    public Role findParticipantRoleByMemberId(String memberId, Long workspaceId) {
+        return jpaQueryFactory
+                .select(workspaceParticipant.role)
+                .from(workspaceParticipant)
+                .where(workspaceParticipant.memberId.eq(memberId)
+                        .and(workspaceParticipant.workspace.id.eq(workspaceId)))
+                .fetchFirst();
     }
 }
