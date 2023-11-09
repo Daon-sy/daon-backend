@@ -2,6 +2,7 @@ package com.daon.backend.task.dto.response;
 
 import com.daon.backend.task.domain.workspace.Role;
 import com.daon.backend.task.domain.workspace.WorkspaceParticipant;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class FindParticipantsResponseDto {
     }
 
     @Getter
+    @AllArgsConstructor
     public static class ParticipantProfile {
 
         private Long participantId;

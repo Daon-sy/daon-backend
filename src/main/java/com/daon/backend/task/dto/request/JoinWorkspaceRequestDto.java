@@ -1,5 +1,7 @@
 package com.daon.backend.task.dto.request;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -8,6 +10,7 @@ import javax.validation.constraints.NotBlank;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class JoinWorkspaceRequestDto {
 
     private String joinCode;
@@ -16,6 +19,7 @@ public class JoinWorkspaceRequestDto {
 
     @Getter
     @NoArgsConstructor
+    @AllArgsConstructor
     public static class WorkspaceProfileInfo {
 
         @NotBlank
