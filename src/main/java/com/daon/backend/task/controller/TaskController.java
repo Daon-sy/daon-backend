@@ -30,7 +30,7 @@ public class TaskController {
     @GetMapping
     public CommonResponse<TaskListResponseDto> findTasks(@PathVariable Long workspaceId,
                                                          @PathVariable Long projectId) {
-        TaskListResponseDto result = taskService.findAllTaskInProject(workspaceId, projectId);
+        TaskListResponseDto result = taskService.findAllTaskInProject(projectId);
         return CommonResponse.createSuccess(result);
     }
 }

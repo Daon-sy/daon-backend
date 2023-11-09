@@ -20,6 +20,16 @@ public class Task extends BaseTimeEntity {
     @Column(name = "task_id")
     private Long id;
 
+    private String title;
+
+    private String content;
+
+    private LocalDateTime startDate;
+
+    private LocalDateTime endDate;
+
+    private boolean emergency;
+
     @Enumerated(EnumType.STRING)
     private TaskProgressStatus progressStatus;
 
@@ -38,16 +48,6 @@ public class Task extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id")
     private Board board;
-
-    private String title;
-
-    private String content;
-
-    private LocalDateTime startDate;
-
-    private LocalDateTime endDate;
-
-    private boolean emergency;
 
     @OneToMany(mappedBy = "task")
     private List<TaskBookmark> taskBookmarks = new ArrayList<>();

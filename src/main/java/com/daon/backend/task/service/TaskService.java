@@ -17,8 +17,6 @@ public class TaskService {
 
     private final WorkspaceRepository workspaceRepository;
     private final ProjectRepository projectRepository;
-    private final TaskRepository taskRepository;
-    private final SessionMemberProvider sessionMemberProvider;
 
     //해당 프로젝트가 없다면 오류발생
     private Project getProjectOrElseThrow(Long projectId) {
@@ -27,7 +25,7 @@ public class TaskService {
     }
 
     //목록 리스트
-    public TaskListResponseDto findAllTaskInProject(Long workspaceId, Long projectId) {
+    public TaskListResponseDto findAllTaskInProject(Long projectId) {
         Project project = getProjectOrElseThrow(projectId);
         List<Task> tasks = project.getTasks();
 
