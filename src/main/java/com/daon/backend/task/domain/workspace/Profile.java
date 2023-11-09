@@ -20,5 +20,4 @@ public class Profile {
         this.imageUrl = imageUrl;
         this.email = email;
     }
-
 }
