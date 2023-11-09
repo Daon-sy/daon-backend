@@ -2,6 +2,7 @@ package com.daon.backend.member.controller;
 
 import com.daon.backend.common.exception.DomainSpecificAdvice;
 import com.daon.backend.common.response.CommonResponse;
+import com.daon.backend.member.domain.MemberNotFoundException;
 import com.daon.backend.member.domain.PasswordMismatchException;
 import com.daon.backend.member.service.AlreadyExistsMemberException;
 import com.daon.backend.member.service.NotFoundEmailException;
@@ -22,8 +23,8 @@ public class MemberErrorHandler {
                 .body(CommonResponse.createError("이미 존재하는 회원입니다."));
     }
 
-    @ExceptionHandler(NotFoundEmailException.class)
-    public ResponseEntity<CommonResponse<Void>> notFoundEmailExceptionHandle(NotFoundEmailException e) {
+    @ExceptionHandler(MemberNotFoundException.class)
+    public ResponseEntity<CommonResponse<Void>> memberNotFoundExceptionHandle(MemberNotFoundException e) {
         log.error("{}", e.getMessage());
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)

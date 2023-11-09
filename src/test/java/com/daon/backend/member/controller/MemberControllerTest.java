@@ -29,10 +29,10 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class MemberControllerTest {
 
     @Autowired
-    protected MockMvc mockMvc;
+    private MockMvc mockMvc;
 
     @Autowired
-    protected ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
     @Autowired
     private WebApplicationContext context;
@@ -49,7 +49,7 @@ class MemberControllerTest {
         memberRepository.deleteAll();
     }
 
-    @DisplayName("회원가입")
+    @DisplayName("signUp(): 회원가입")
     @Test
     void signUp() throws Exception {
         // given
@@ -66,7 +66,7 @@ class MemberControllerTest {
         result.andExpect(status().isCreated());
     }
 
-    @DisplayName("로그인")
+    @DisplayName("signIn(): 로그인")
     @Test
     void signIn() throws Exception {
         // given
