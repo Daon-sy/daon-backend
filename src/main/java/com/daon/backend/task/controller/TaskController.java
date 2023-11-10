@@ -1,6 +1,8 @@
 package com.daon.backend.task.controller;
 
 import com.daon.backend.common.response.CommonResponse;
+import com.daon.backend.task.dto.request.CreateTaskRequestDto;
+import com.daon.backend.task.dto.response.CreateTaskResponseDto;
 import com.daon.backend.task.dto.response.TaskListResponseDto;
 import com.daon.backend.task.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -9,10 +11,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @RestController
@@ -22,6 +21,15 @@ import org.springframework.web.bind.annotation.RestController;
 public class TaskController {
 
     private final TaskService taskService;
+
+    @PostMapping
+    public CommonResponse<CreateTaskResponseDto> createTask (@PathVariable Long workspaceId,
+                                                             @PathVariable Long projectId,
+                                                             @RequestBody CreateTaskRequestDto requestDto) {
+        CreateTaskResponseDto result = taskService.createTask(workspaceId, projectId, requestDto);
+
+        return CommonResponse.createSuccess(result);
+    }
 
     @Operation(summary = "할일 목록 조회", description = "할일 목록 조회 요청입니다.")
     @ApiResponses(value = {
