@@ -1,9 +1,7 @@
-package com.daon.backend.task.domain;
+package com.daon.backend.task.domain.authority;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
-import java.util.List;
 
 @Getter
 @RequiredArgsConstructor
@@ -22,6 +20,11 @@ public enum Authority {
     PJ_READ("프로젝트 조회"),
     PJ_UPDATE("프로젝트 수정"),
     PJ_DELETE("프로젝트 삭제"),
+    //board
+    BD_CREATE("보드 생성"),
+    BD_READ("보드 조회"),
+    BD_UPDATE("보드 수정"),
+    BD_DELETE("보드 삭제"),
     // task
     TSK_CREATE("할 일 생성"),
     TSK_READ("할 일 읽기"),

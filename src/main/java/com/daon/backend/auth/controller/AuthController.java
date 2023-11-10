@@ -1,10 +1,10 @@
 package com.daon.backend.auth.controller;
 
-import com.daon.backend.auth.domain.UnauthorizedException;
-import com.daon.backend.auth.service.AuthService;
 import com.daon.backend.auth.domain.Tokens;
-import com.daon.backend.common.response.CommonResponse;
+import com.daon.backend.auth.domain.UnauthenticatedMemberException;
 import com.daon.backend.auth.dto.SignInRequestDto;
+import com.daon.backend.auth.service.AuthService;
+import com.daon.backend.common.response.CommonResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -14,7 +14,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -67,12 +70,12 @@ public class AuthController {
     @PostMapping("/reissue")
     public ResponseEntity<CommonResponse<Void>> reissueToken(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
-        if (cookies == null) throw new UnauthorizedException();
+        if (cookies == null) throw new UnauthenticatedMemberException();
         String refreshTokenValue = Arrays.stream(cookies)
                 .filter(cookie -> cookie.getName().equals("rtk"))
                 .findFirst()
                 .map(Cookie::getValue)
-                .orElseThrow(UnauthorizedException::new);
+                .orElseThrow(UnauthenticatedMemberException::new);
 
         Tokens tokens = authService.reissue(refreshTokenValue);
         String rtkCookie = tokens.getRefreshToken() != null ? ResponseCookie.from("rtk", tokens.getRefreshToken().getValue())

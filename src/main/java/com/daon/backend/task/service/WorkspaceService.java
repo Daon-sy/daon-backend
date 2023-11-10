@@ -4,20 +4,19 @@ import com.daon.backend.task.domain.workspace.*;
 import com.daon.backend.task.dto.request.CheckJoinCodeRequestDto;
 import com.daon.backend.task.dto.request.CreateWorkspaceRequestDto;
 import com.daon.backend.task.dto.request.JoinWorkspaceRequestDto;
-import com.daon.backend.task.dto.response.FindParticipantsResponseDto;
-import com.daon.backend.task.dto.response.FindProfileResponseDto;
-import com.daon.backend.task.dto.response.JoinWorkspaceResponseDto;
-import com.daon.backend.task.dto.response.WorkspaceListResponseDto;
+import com.daon.backend.task.dto.response.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Service
+@Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
+@Service
 public class WorkspaceService {
 
     private final WorkspaceRepository workspaceRepository;
@@ -106,5 +105,12 @@ public class WorkspaceService {
                         .map(FindParticipantsResponseDto.ParticipantProfile::new)
                         .collect(Collectors.toList())
         );
+    }
+
+    public CheckRoleResponseDto findParticipantRole(Long workspaceId) {
+        String memberId = sessionMemberProvider.getMemberId();
+        Role findRole = workspaceRepository.findParticipantRoleByMemberId(memberId, workspaceId);
+
+        return new CheckRoleResponseDto(findRole);
     }
 }

@@ -18,4 +18,6 @@ public interface WorkspaceRepository {
     List<WorkspaceParticipant> findWorkspaceParticipantsByWorkspaceId(Long workspaceId);
 
     boolean existsWorkspaceParticipantByMemberIdAndWorkspaceId(String memberId, Long workspaceId);
+
+    Role findParticipantRoleByMemberId(String memberId, Long workspaceId);
 }

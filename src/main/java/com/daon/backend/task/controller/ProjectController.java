@@ -1,6 +1,8 @@
 package com.daon.backend.task.controller;
 
 import com.daon.backend.common.response.CommonResponse;
+import com.daon.backend.task.domain.authority.Authority;
+import com.daon.backend.task.domain.authority.CheckRole;
 import com.daon.backend.task.dto.request.CreateProjectRequestDto;
 import com.daon.backend.task.dto.response.CreateProjectResponseDto;
 import com.daon.backend.task.dto.response.ProjectListResponseDto;
@@ -30,6 +32,7 @@ public class ProjectController {
             @ApiResponse(responseCode = "201", description = "프로젝트 생성 성공")
     })
     @ResponseStatus(HttpStatus.CREATED)
+    @CheckRole(authority = Authority.PJ_CREATE)
     @PostMapping
     public CommonResponse<CreateProjectResponseDto> createProject(
             @PathVariable Long workspaceId,
@@ -43,6 +46,7 @@ public class ProjectController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "프로젝트 목록 조회 성공")
     })
+    @CheckRole(authority = Authority.PJ_READ)
     @GetMapping
     public CommonResponse<ProjectListResponseDto> projectList(@PathVariable Long workspaceId) {
         ProjectListResponseDto projectListResponseDto = projectService.findAllProjectInWorkspace(workspaceId);
