@@ -59,6 +59,9 @@ dependencies {
 	// swagger
 	implementation 'org.springdoc:springdoc-openapi-ui:1.6.11'
 
+	// spring data envers
+	implementation 'org.springframework.data:spring-data-envers'
+
 	compileOnly 'org.projectlombok:lombok'
 	testCompileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
