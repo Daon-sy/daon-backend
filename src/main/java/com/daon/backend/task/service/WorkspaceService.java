@@ -3,6 +3,7 @@ package com.daon.backend.task.service;
 import com.daon.backend.task.domain.workspace.*;
 import com.daon.backend.task.dto.request.CheckJoinCodeRequestDto;
 import com.daon.backend.task.dto.request.CreateWorkspaceRequestDto;
+import com.daon.backend.task.dto.request.InviteMemberRequestDto;
 import com.daon.backend.task.dto.request.JoinWorkspaceRequestDto;
 import com.daon.backend.task.dto.response.*;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class WorkspaceService {
 
     private final WorkspaceRepository workspaceRepository;
     private final SessionMemberProvider sessionMemberProvider;
+    private final DbMemberProvider dbMemberProvider;
 
     @Transactional
     public Long createWorkspace(CreateWorkspaceRequestDto requestDto) {
@@ -112,5 +114,20 @@ public class WorkspaceService {
         Role findRole = workspaceRepository.findParticipantRoleByMemberId(memberId, workspaceId);
 
         return new CheckRoleResponseDto(findRole);
+    }
+
+    @Transactional
+    public void inviteMember(Long workspaceId, InviteMemberRequestDto requestDto) {
+        String memberId = dbMemberProvider.getMemberIdByEmail(requestDto.getEmail());
+        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+        workspace.addParticipant(
+                memberId,
+                new Profile(
+                        String.valueOf(workspaceId),
+                        null,
+                        null
+                )
+        );
     }
 }
