@@ -41,7 +41,7 @@ public class ProjectService {
 
     // 해당 워크스페이스가 없다면 오류발생
     private Workspace getWorkspaceOrElseThrow(Long workspaceId) {
-        return workspaceRepository.findWorkspaceById(workspaceId)
+        return workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
     }
 
@@ -72,7 +72,7 @@ public class ProjectService {
         WorkspaceParticipant workspaceParticipant = workspaceRepository.findWorkspaceParticipantByWorkspaceParticipantId(workspaceParticipantId)
                 .orElseThrow(() -> new NotWorkspaceParticipantException(workspaceParticipantId));
 
-        Project findProject = projectRepository.findProjectById(projectId)
+        Project findProject = projectRepository.findProjectByProjectId(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
         findProject.addParticipant(workspaceParticipant.getMemberId(), workspaceParticipant);
     }

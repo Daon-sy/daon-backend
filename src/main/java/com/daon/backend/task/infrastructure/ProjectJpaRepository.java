@@ -9,7 +9,6 @@ import java.util.Optional;
 public interface ProjectJpaRepository extends JpaRepository<Project, Long> {
 
     @EntityGraph(attributePaths = "boards")
-    Optional<Project> findProjectByIdAndWorkspaceId(Long projectId, Long workspaceId);
-
+    Optional<Project> findProjectWithBoardsById(Long projectId);
 
 }

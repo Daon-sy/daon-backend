@@ -23,7 +23,7 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     }
 
     @Override
-    public Optional<Project> findProjectById(Long projectId) {
+    public Optional<Project> findProjectByProjectId(Long projectId) {
         return projectJpaRepository.findById(projectId);
     }
 
@@ -38,8 +38,8 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     }
 
     @Override
-    public Optional<Project> findProjectByIdAndWorkspaceId(Long projectId, Long workspaceId) {
-        return projectJpaRepository.findProjectByIdAndWorkspaceId(projectId, workspaceId);
+    public Optional<Project> findProjectWithBoardsByProjectId(Long projectId) {
+        return projectJpaRepository.findProjectWithBoardsById(projectId);
     }
 
     @Override

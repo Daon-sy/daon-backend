@@ -27,7 +27,7 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
     }
 
     @Override
-    public Optional<Workspace> findWorkspaceById(Long workspaceId) {
+    public Optional<Workspace> findWorkspaceByWorkspaceId(Long workspaceId) {
         return workspaceJpaRepository.findById(workspaceId);
     }
 
@@ -63,7 +63,7 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
     }
 
     @Override
-    public Role findParticipantRoleByMemberId(String memberId, Long workspaceId) {
+    public Role findParticipantRoleByMemberIdAndWorkspaceId(String memberId, Long workspaceId) {
         return jpaQueryFactory
                 .select(workspaceParticipant.role)
                 .from(workspaceParticipant)

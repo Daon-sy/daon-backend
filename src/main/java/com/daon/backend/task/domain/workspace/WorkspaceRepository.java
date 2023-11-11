@@ -7,7 +7,7 @@ public interface WorkspaceRepository {
 
     Workspace save(Workspace workspace);
 
-    Optional<Workspace> findWorkspaceById(Long workspaceId);
+    Optional<Workspace> findWorkspaceByWorkspaceId(Long workspaceId);
 
     List<Workspace> findWorkspacesByMemberId(String memberId);
 
@@ -21,5 +21,5 @@ public interface WorkspaceRepository {
 
     boolean existsWorkspaceParticipantByMemberIdAndWorkspaceId(String memberId, Long workspaceId);
 
-    Role findParticipantRoleByMemberId(String memberId, Long workspaceId);
+    Role findParticipantRoleByMemberIdAndWorkspaceId(String memberId, Long workspaceId);
 }
