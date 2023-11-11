@@ -15,7 +15,7 @@ public interface ProjectRepository {
 
     List<Project> findProjectsByWorkspaceParticipant(WorkspaceParticipant workspaceParticipant);
 
-    Optional<ProjectParticipant> findProjectParticipantByProjectAndMemberId(Project project, String memberId);
-
     Optional<Project> findProjectByIdAndWorkspaceId(Long projectId, Long workspaceId);
+
+    Optional<ProjectParticipant> findProjectParticipantByProjectAndMemberId(Project project, String memberId);
 }

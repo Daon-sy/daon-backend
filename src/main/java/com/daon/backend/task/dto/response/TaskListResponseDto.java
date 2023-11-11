@@ -1,17 +1,14 @@
 package com.daon.backend.task.dto.response;
 
 import com.daon.backend.task.domain.project.Task;
-import com.daon.backend.task.domain.project.TaskBookmark;
 import com.daon.backend.task.domain.project.TaskProgressStatus;
 import com.daon.backend.task.domain.workspace.WorkspaceParticipant;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Getter
 @NoArgsConstructor
@@ -69,8 +66,8 @@ public class TaskListResponseDto {
             this.emergency = task.isEmergency();
             this.board = new BoardSummary(task.getBoard().getId(), task.getBoard().getTitle());
             this.bookmark = task.getTaskBookmarks().stream()
-                    .anyMatch(p -> p.getId().equals(task.getWorkspaceParticipant().getId()));
-            this.taskManager = new TaskManager(task.getWorkspaceParticipant());
+                    .anyMatch(p -> p.getId().equals(task.getTaskManager().getId()));
+            this.taskManager = new TaskManager(task.getTaskManager());
         }
     }
 }

@@ -35,11 +35,11 @@ public class Task extends BaseTimeEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator_id")
-    private ProjectParticipant creator;
+    private ProjectParticipant creator; //생성자
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "workspace_partipant_id")
-    private WorkspaceParticipant workspaceParticipant;
+    private WorkspaceParticipant taskManager; //담당자?
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
@@ -53,14 +53,25 @@ public class Task extends BaseTimeEntity {
     private List<TaskBookmark> taskBookmarks = new ArrayList<>();
 
     @Builder
-    public Task(String title, String content, LocalDateTime startDate, LocalDateTime endDate,
-                TaskProgressStatus progressStatus, boolean emergency, ProjectParticipant creator) {
+    public Task(String title,
+                String content,
+                LocalDateTime startDate,
+                LocalDateTime endDate,
+                boolean emergency,
+                TaskProgressStatus progressStatus,
+                ProjectParticipant creator,
+                WorkspaceParticipant taskManager,
+                Project project,
+                Board board) {
         this.title = title;
         this.content = content;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.progressStatus = progressStatus;
         this.emergency = emergency;
+        this.progressStatus = progressStatus;
         this.creator = creator;
+        this.taskManager = taskManager;
+        this.project = project;
+        this.board = board;
     }
 }
