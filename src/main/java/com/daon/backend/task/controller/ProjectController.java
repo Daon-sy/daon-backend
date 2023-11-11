@@ -56,6 +56,10 @@ public class ProjectController {
         return CommonResponse.createSuccess(projectListResponseDto);
     }
 
+    @Operation(summary = "프로젝트 초대", description = "프로젝트 초대 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "프로젝트 초대 성공")
+    })
     @CheckRole(authority = PJ_CREATE)
     @PostMapping("/{projectId}/invite")
     public CommonResponse<Void> inviteWorkspaceParticipant(@PathVariable("workspaceId") Long workspaceId,
