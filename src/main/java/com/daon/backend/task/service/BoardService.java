@@ -7,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -31,13 +30,8 @@ public class BoardService {
         Project findProject = projectRepository.findProjectByIdAndWorkspaceId(projectId, workspaceId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
-        List<Board> findBoards = findProject.getBoards();
-        if (findBoards.size() == 0) {
-            throw new BoardNotFoundException(workspaceId, projectId);
-        }
-
         return new FindBoardsResponseDto(
-                findBoards.stream()
+                findProject.getBoards().stream()
                         .map(FindBoardsResponseDto.BoardInfo::new)
                         .collect(Collectors.toList())
         );
