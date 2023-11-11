@@ -23,10 +23,9 @@ public class TaskController {
     private final TaskService taskService;
 
     @PostMapping
-    public CommonResponse<CreateTaskResponseDto> createTask (@PathVariable Long workspaceId,
-                                                             @PathVariable Long projectId,
-                                                             @RequestBody CreateTaskRequestDto requestDto) {
-        CreateTaskResponseDto result = taskService.createTask(workspaceId, projectId, requestDto);
+    public CommonResponse<CreateTaskResponseDto> createTask(@PathVariable Long projectId,
+                                                            @RequestBody CreateTaskRequestDto requestDto) {
+        CreateTaskResponseDto result = taskService.createTask(projectId, requestDto);
 
         return CommonResponse.createSuccess(result);
     }
@@ -36,8 +35,7 @@ public class TaskController {
             @ApiResponse(responseCode = "200", description = "할일 목록 조회 성공")
     })
     @GetMapping
-    public CommonResponse<TaskListResponseDto> findTasks(@PathVariable Long workspaceId,
-                                                         @PathVariable Long projectId) {
+    public CommonResponse<TaskListResponseDto> findTasks(@PathVariable Long projectId) {
         TaskListResponseDto result = taskService.findAllTaskInProject(projectId);
         return CommonResponse.createSuccess(result);
     }
