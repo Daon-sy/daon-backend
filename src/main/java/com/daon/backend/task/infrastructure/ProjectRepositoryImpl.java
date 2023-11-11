@@ -3,7 +3,6 @@ package com.daon.backend.task.infrastructure;
 import com.daon.backend.task.domain.project.Project;
 import com.daon.backend.task.domain.project.ProjectParticipant;
 import com.daon.backend.task.domain.project.ProjectRepository;
-import com.daon.backend.task.domain.workspace.Workspace;
 import com.daon.backend.task.domain.workspace.WorkspaceParticipant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -21,6 +20,11 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     @Override
     public Project save(Project project) {
         return projectJpaRepository.save(project);
+    }
+
+    @Override
+    public Optional<Project> findProjectById(Long projectId) {
+        return projectJpaRepository.findById(projectId);
     }
 
     @Override

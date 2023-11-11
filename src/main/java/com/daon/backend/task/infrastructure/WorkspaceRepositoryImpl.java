@@ -43,6 +43,11 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
     }
 
     @Override
+    public Optional<WorkspaceParticipant> findWorkspaceParticipantByWorkspaceParticipantId(Long workspaceParticipantId) {
+        return workspaceParticipantJpaRepository.findById(workspaceParticipantId);
+    }
+
+    @Override
     public Optional<Workspace> findWorkspaceByJoinCode(String joinCode) {
         return workspaceJpaRepository.findWorkspaceByJoinCode(joinCode);
     }

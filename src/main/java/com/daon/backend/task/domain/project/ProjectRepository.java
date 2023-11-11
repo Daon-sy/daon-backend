@@ -10,6 +10,8 @@ public interface ProjectRepository {
 
     Project save(Project project);
 
+    Optional<Project> findProjectById(Long projectId);
+
     @EntityGraph("participants")
     Optional<Project> findProjectWithParticipantsById(Long projectId);
 
