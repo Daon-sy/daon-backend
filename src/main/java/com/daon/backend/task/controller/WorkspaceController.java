@@ -47,7 +47,6 @@ public class WorkspaceController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "워크스페이스 목록 조회 성공")
     })
-    @CheckRole(authority = WS_READ)
     @GetMapping
     public CommonResponse<WorkspaceListResponseDto> workspaceList() {
         WorkspaceListResponseDto workspaceListResponseDto = workspaceService.findAllWorkspace();
