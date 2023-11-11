@@ -48,6 +48,7 @@ public class TaskListResponseDto {
     public static class TaskSummary {
 
         private Long taskId;
+        private Long projectId;
         private String title;
         private LocalDateTime startDate;
         private LocalDateTime endDate;
@@ -58,8 +59,8 @@ public class TaskListResponseDto {
         private TaskManager taskManager;
 
         public TaskSummary(Task task) {
-
             this.taskId = task.getId();
+            this.projectId = task.getProject().getId();
             this.title = task.getTitle();
             this.startDate = task.getStartDate();
             this.endDate = task.getEndDate();
