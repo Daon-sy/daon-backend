@@ -5,11 +5,13 @@ import com.daon.backend.task.domain.workspace.Workspace;
 import com.daon.backend.task.domain.workspace.WorkspaceCreator;
 import com.daon.backend.task.dto.request.CheckJoinCodeRequestDto;
 import com.daon.backend.task.dto.request.CreateWorkspaceRequestDto;
+import com.daon.backend.task.dto.request.InviteMemberRequestDto;
 import com.daon.backend.task.dto.request.JoinWorkspaceRequestDto;
 import com.daon.backend.task.dto.response.FindParticipantsResponseDto;
 import com.daon.backend.task.dto.response.FindProfileResponseDto;
 import com.daon.backend.task.dto.response.JoinWorkspaceResponseDto;
 import com.daon.backend.task.dto.response.WorkspaceListResponseDto;
+import com.daon.backend.task.infrastructure.CheckRoleInterceptor;
 import com.daon.backend.task.service.WorkspaceService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -30,7 +32,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -54,9 +56,14 @@ class WorkspaceControllerTest {
     @MockBean
     private WorkspaceService workspaceService;
 
+    @MockBean
+    private CheckRoleInterceptor interceptor;
+
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+
+        when(interceptor.preHandle(any(), any(), any())).thenReturn(true);
     }
 
     @DisplayName("createWorkspace(): 워크스페이스 생성")
@@ -268,5 +275,25 @@ class WorkspaceControllerTest {
                 .andExpect(jsonPath("$.data.participants[0].imageUrl").value(responseDto.getParticipants().get(0).getImageUrl()))
                 .andExpect(jsonPath("$.data.participants[0].email").value(responseDto.getParticipants().get(0).getEmail()))
                 .andExpect(jsonPath("$.data.participants[0].role").value(responseDto.getParticipants().get(0).getRole().name()));
+    }
+
+    @DisplayName("inviteMember(): 회원 초대")
+    @Test
+    void inviteMember() throws Exception {
+        // given
+        final String url = "/api/workspaces/{workspaceId}/invite";
+        final Long workspaceId = 1L;
+        final String email = "test@gmail.com";
+
+        InviteMemberRequestDto requestDto = new InviteMemberRequestDto(email);
+        String requestBody = objectMapper.writeValueAsString(requestDto);
+
+        // when
+        ResultActions result = mockMvc.perform(post(url, workspaceId)
+                .contentType(APPLICATION_JSON_VALUE)
+                .content(requestBody));
+
+        // then
+        result.andExpect(status().isOk());
     }
 }
