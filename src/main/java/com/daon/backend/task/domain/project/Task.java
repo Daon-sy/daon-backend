@@ -1,7 +1,6 @@
 package com.daon.backend.task.domain.project;
 
 import com.daon.backend.config.BaseTimeEntity;
-import com.daon.backend.task.domain.workspace.WorkspaceParticipant;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,11 +34,11 @@ public class Task extends BaseTimeEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator_id")
-    private ProjectParticipant creator; //생성자
+    private ProjectParticipant creator;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "workspace_partipant_id")
-    private WorkspaceParticipant taskManager; //담당자?
+    @JoinColumn(name = "task_manager_id")
+    private ProjectParticipant taskManager;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
@@ -53,25 +52,18 @@ public class Task extends BaseTimeEntity {
     private List<TaskBookmark> taskBookmarks = new ArrayList<>();
 
     @Builder
-    public Task(String title,
-                String content,
-                LocalDateTime startDate,
-                LocalDateTime endDate,
-                boolean emergency,
-                TaskProgressStatus progressStatus,
-                ProjectParticipant creator,
-                WorkspaceParticipant taskManager,
-                Project project,
-                Board board) {
+    public Task(String title, String content, LocalDateTime startDate, LocalDateTime endDate, boolean emergency,
+                ProjectParticipant creator, ProjectParticipant taskManager, Project project, Board board) {
         this.title = title;
         this.content = content;
         this.startDate = startDate;
         this.endDate = endDate;
         this.emergency = emergency;
-        this.progressStatus = progressStatus;
         this.creator = creator;
         this.taskManager = taskManager;
         this.project = project;
         this.board = board;
+
+        this.progressStatus = TaskProgressStatus.TODO;
     }
 }
