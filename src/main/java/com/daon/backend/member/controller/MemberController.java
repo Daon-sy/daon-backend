@@ -27,8 +27,8 @@ public class MemberController {
     })
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/sign-up")
-    public CommonResponse<Void> signUp(@RequestBody @Valid SignUpRequestDto signUpRequestDto) {
-        memberService.signUp(signUpRequestDto);
+    public CommonResponse<Void> signUp(@RequestBody @Valid SignUpRequestDto requestDto) {
+        memberService.signUp(requestDto);
 
         return CommonResponse.createSuccess(null);
     }

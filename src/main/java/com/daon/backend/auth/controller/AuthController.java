@@ -41,8 +41,8 @@ public class AuthController {
             @ApiResponse(responseCode = "200", description = "로그인 성공")
     })
     @PostMapping("/sign-in")
-    public ResponseEntity<CommonResponse<Void>> signIn(@RequestBody @Valid SignInRequestDto signInRequestDto) {
-        Tokens tokens = authService.signIn(signInRequestDto);
+    public ResponseEntity<CommonResponse<Void>> signIn(@RequestBody @Valid SignInRequestDto requestDto) {
+        Tokens tokens = authService.signIn(requestDto);
         ResponseCookie rtkCookie = ResponseCookie.from("rtk", tokens.getRefreshToken().getValue())
                 .path("/")
                 .httpOnly(true)
