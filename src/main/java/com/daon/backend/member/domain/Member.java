@@ -1,10 +1,7 @@
 package com.daon.backend.member.domain;
 
 import com.daon.backend.config.BaseTimeEntity;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.AuditOverride;
 import org.hibernate.envers.Audited;
@@ -16,6 +13,7 @@ import javax.persistence.Id;
 import java.util.UUID;
 
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Audited
 @AuditOverride(forClass = BaseTimeEntity.class)
@@ -48,4 +46,9 @@ public class Member extends BaseTimeEntity {
         }
     }
 
+    public void modifyMember(String email, String password, String name, PasswordEncoder passwordEncoder) {
+        this.email = email;
+        this.password = passwordEncoder.encode(password);
+        this.name = name;
+    }
 }
