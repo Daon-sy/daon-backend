@@ -9,5 +9,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class InviteWorkspaceParticipantRequestDto {
 
-    Long workspaceParticipantId;
+    private Long workspaceParticipantId;
 }
