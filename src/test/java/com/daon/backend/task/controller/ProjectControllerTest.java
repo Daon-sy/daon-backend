@@ -1,8 +1,10 @@
 package com.daon.backend.task.controller;
 
 import com.daon.backend.task.dto.request.CreateProjectRequestDto;
+import com.daon.backend.task.dto.request.InviteWorkspaceParticipantRequestDto;
 import com.daon.backend.task.dto.response.CreateProjectResponseDto;
 import com.daon.backend.task.dto.response.ProjectListResponseDto;
+import com.daon.backend.task.infrastructure.CheckRoleInterceptor;
 import com.daon.backend.task.service.ProjectService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,7 +23,9 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -45,9 +49,14 @@ class ProjectControllerTest {
     @MockBean
     private ProjectService projectService;
 
+    @MockBean
+    private CheckRoleInterceptor interceptor;
+
     @BeforeEach
-    void setUp() {
+    void setUp() throws Exception {
         this.mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
+
+        when(interceptor.preHandle(any(), any(), any())).thenReturn(true);
     }
 
     @DisplayName("createProject(): 프로젝트 생성")
@@ -114,5 +123,26 @@ class ProjectControllerTest {
                 .andExpect(jsonPath("$.data.projects[0].projectId").value(responseDto.getProjects().get(0).getProjectId()))
                 .andExpect(jsonPath("$.data.projects[0].projectName").value(responseDto.getProjects().get(0).getProjectName()))
                 .andExpect(jsonPath("$.data.projects[0].description").value(responseDto.getProjects().get(0).getDescription()));
+    }
+
+    @DisplayName("inviteWorkspaceParticipant(): 프로젝트 초대")
+    @Test
+    void inviteWorkspaceParticipant() throws Exception {
+        // given
+        final String url = "/api/workspaces/{workspaceId}/projects/{projectId}/invite";
+        final Long workspaceId = 1L;
+        final Long projectId = 1L;
+        final Long workspaceParticipantId = 1L;
+
+        InviteWorkspaceParticipantRequestDto requestDto = new InviteWorkspaceParticipantRequestDto(workspaceParticipantId);
+        String requestBody = objectMapper.writeValueAsString(requestDto);
+
+        // when
+        ResultActions result = mockMvc.perform(post(url, workspaceId, projectId)
+                .contentType(APPLICATION_JSON_VALUE)
+                .content(requestBody));
+
+        // then
+        result.andExpect(status().isOk());
     }
 }

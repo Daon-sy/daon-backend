@@ -48,7 +48,8 @@ public class TaskService {
         Long taskId = taskRepository.save(task).getId();
         return new CreateTaskResponseDto(taskId);
     }
-
+  
+    //해당 프로젝트가 없다면 오류발생
     private Project getProjectOrElseThrow(Long projectId) {
         return projectRepository.findProjectWithParticipantsById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));

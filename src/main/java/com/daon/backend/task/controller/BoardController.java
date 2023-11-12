@@ -34,7 +34,7 @@ public class BoardController {
     public CommonResponse<Void> createBoard(@PathVariable("workspaceId") Long workspaceId,
                                                               @PathVariable("projectId") Long projectId,
                                                               @RequestBody @Valid CreateBoardRequestDto requestDto) {
-        boardService.createBoard(workspaceId, projectId, requestDto);
+        boardService.createBoard(projectId, requestDto);
 
         return CommonResponse.createSuccess(null);
     }

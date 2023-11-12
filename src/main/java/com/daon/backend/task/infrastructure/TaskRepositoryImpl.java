@@ -1,11 +1,9 @@
 package com.daon.backend.task.infrastructure;
 
-import com.daon.backend.task.domain.project.*;
-import com.daon.backend.task.domain.workspace.WorkspaceParticipant;
+import com.daon.backend.task.domain.project.Task;
+import com.daon.backend.task.domain.project.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
-
-import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
