@@ -1,6 +1,7 @@
 package com.daon.backend.member.service;
 
 import com.daon.backend.member.domain.Member;
+import com.daon.backend.member.domain.MemberNotFoundException;
 import com.daon.backend.member.domain.MemberRepository;
 import com.daon.backend.member.domain.PasswordEncoder;
 import com.daon.backend.member.dto.ModifyMemberDto;
@@ -33,11 +34,8 @@ public class MemberService {
 
     @Transactional
     public void modifyMember(ModifyMemberDto dto, UUID memberId) {
-        Member member = memberRepository.findByMemberId(memberId)
-                .orElseThrow();
-        member.setEmail(dto.getEmail());
-        member.setPassword(dto.getPassword());
-        member.setName(dto.getName());
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> MemberNotFoundException.byMemberId(memberId));
     }
 
 }

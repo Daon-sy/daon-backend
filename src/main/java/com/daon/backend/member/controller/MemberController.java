@@ -39,8 +39,10 @@ public class MemberController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "회원 정보 수정 성공")
     })
-    @PatchMapping("/member/{memberId}")
-    public void a(@RequestBody ModifyMemberDto modifyMemberDto, @PathVariable UUID memberId){
-        memberService.modifyMember(modifyMemberDto,memberId);
+    @PatchMapping("/members/{memberId}")
+    public  CommonResponse<Void> modifyMember(@RequestBody ModifyMemberDto dto,
+                                              @PathVariable UUID memberId){
+        memberService.modifyMember(dto, memberId);
+        return CommonResponse.createSuccess(null);
     }
 }

@@ -16,7 +16,6 @@ public class MemberRepositoryImpl implements MemberRepository {
     private final JPAQueryFactory queryFactory;
     private final MemberJpaRepository memberJpaRepository;
 
-
     @Override
     public void save(Member member) {
         memberJpaRepository.save(member);
@@ -28,7 +27,7 @@ public class MemberRepositoryImpl implements MemberRepository {
     }
 
     @Override
-    public Optional<Member> findByMemberId(UUID memberId) {
-        return memberJpaRepository.findByMemberId(memberId);
+    public Optional<Member> findById(UUID memberId) {
+        return memberJpaRepository.findById(memberId);
     }
 }

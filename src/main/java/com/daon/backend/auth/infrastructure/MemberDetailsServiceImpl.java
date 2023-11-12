@@ -6,8 +6,11 @@ import com.daon.backend.member.domain.Member;
 import com.daon.backend.member.domain.MemberNotFoundException;
 import com.daon.backend.member.domain.MemberRepository;
 import com.daon.backend.member.domain.PasswordEncoder;
+import com.daon.backend.member.dto.ModifyMemberDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -23,5 +26,14 @@ public class MemberDetailsServiceImpl implements MemberDetailsService {
         member.checkPassword(password, passwordEncoder);
 
         return new MemberDetails(member.getId().toString(), member.getEmail(), member.getName());
+    }
+
+    @Override
+    public ModifyMemberDto modify(UUID memberId, String email, String password, String name) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> MemberNotFoundException.byMemberId(memberId));
+        member.modifyMember(email, password, name, passwordEncoder);
+
+        return new ModifyMemberDto(member.getEmail(), member.getPassword(), member.getName());
     }
 }

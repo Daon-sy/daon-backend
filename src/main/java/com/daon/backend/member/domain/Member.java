@@ -13,7 +13,6 @@ import javax.persistence.Id;
 import java.util.UUID;
 
 @Getter
-@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Audited
 @AuditOverride(forClass = BaseTimeEntity.class)

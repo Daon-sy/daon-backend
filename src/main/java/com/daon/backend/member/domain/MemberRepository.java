@@ -11,5 +11,6 @@ public interface MemberRepository {
 
     Optional<Member> findByEmail(String email);
 
-    Optional<Member> findByMemberId(UUID memberId);
+    Optional<Member> findById(UUID memberId);
+
 }
