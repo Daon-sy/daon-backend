@@ -60,7 +60,7 @@ public class TaskService {
 
     // 해당 워크스페이스가 없다면 오류발생
     private Workspace getWorkspaceOrElseThrow(Long workspaceId) {
-        return workspaceRepository.findWorkspaceById(workspaceId)
+        return workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
     }
 

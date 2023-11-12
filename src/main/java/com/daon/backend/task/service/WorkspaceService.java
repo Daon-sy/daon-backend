@@ -3,6 +3,7 @@ package com.daon.backend.task.service;
 import com.daon.backend.task.domain.workspace.*;
 import com.daon.backend.task.dto.request.CheckJoinCodeRequestDto;
 import com.daon.backend.task.dto.request.CreateWorkspaceRequestDto;
+import com.daon.backend.task.dto.request.InviteMemberRequestDto;
 import com.daon.backend.task.dto.request.JoinWorkspaceRequestDto;
 import com.daon.backend.task.dto.response.*;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class WorkspaceService {
 
     private final WorkspaceRepository workspaceRepository;
     private final SessionMemberProvider sessionMemberProvider;
+    private final DbMemberProvider dbMemberProvider;
 
     @Transactional
     public Long createWorkspace(CreateWorkspaceRequestDto requestDto) {
@@ -88,7 +90,7 @@ public class WorkspaceService {
 
     public FindProfileResponseDto findProfile(Long workspaceId) {
         String memberId = sessionMemberProvider.getMemberId();
-        Workspace findWorkspace = workspaceRepository.findWorkspaceById(workspaceId)
+        Workspace findWorkspace = workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
         WorkspaceParticipant findWorkspaceParticipant = workspaceRepository.findWorkspaceParticipantByWorkspaceAndMemberId(findWorkspace, memberId)
                 .orElseThrow(() -> new NotWorkspaceParticipantException(memberId, findWorkspace.getId()));
@@ -109,8 +111,23 @@ public class WorkspaceService {
 
     public CheckRoleResponseDto findParticipantRole(Long workspaceId) {
         String memberId = sessionMemberProvider.getMemberId();
-        Role findRole = workspaceRepository.findParticipantRoleByMemberId(memberId, workspaceId);
+        Role findRole = workspaceRepository.findParticipantRoleByMemberIdAndWorkspaceId(memberId, workspaceId);
 
         return new CheckRoleResponseDto(findRole);
+    }
+
+    @Transactional
+    public void inviteMember(Long workspaceId, InviteMemberRequestDto requestDto) {
+        String memberId = dbMemberProvider.getMemberIdByEmail(requestDto.getEmail());
+        Workspace workspace = workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+        workspace.addParticipant(
+                memberId,
+                new Profile(
+                        String.valueOf(workspaceId),
+                        null,
+                        null
+                )
+        );
     }
 }

@@ -4,6 +4,7 @@ import com.daon.backend.common.response.CommonResponse;
 import com.daon.backend.task.domain.authority.CheckRole;
 import com.daon.backend.task.dto.request.CheckJoinCodeRequestDto;
 import com.daon.backend.task.dto.request.CreateWorkspaceRequestDto;
+import com.daon.backend.task.dto.request.InviteMemberRequestDto;
 import com.daon.backend.task.dto.request.JoinWorkspaceRequestDto;
 import com.daon.backend.task.dto.response.*;
 import com.daon.backend.task.service.WorkspaceService;
@@ -99,5 +100,18 @@ public class WorkspaceController {
         FindParticipantsResponseDto result = workspaceService.findParticipants(workspaceId);
 
         return CommonResponse.createSuccess(result);
+    }
+
+    @Operation(summary = "회원 초대", description = "회원 초대 요청입니다. (워크스페이스 참여자로 등록)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "회원 초대 성공")
+    })
+    @CheckRole(authority = WSP_INVITE)
+    @PostMapping("/{workspaceId}/invite")
+    public CommonResponse<Void> inviteMember(@PathVariable("workspaceId") Long workspaceId,
+                                             @RequestBody InviteMemberRequestDto requestDto) {
+        workspaceService.inviteMember(workspaceId, requestDto);
+
+        return CommonResponse.createSuccess(null);
     }
 }
