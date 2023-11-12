@@ -26,9 +26,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static com.daon.backend.task.domain.authority.CheckRole.MembershipType.PROJECT;
-import static com.daon.backend.task.domain.authority.CheckRole.MembershipType.WORKSPACE;
-
 @Slf4j
 @RequiredArgsConstructor
 @Component
@@ -46,6 +43,7 @@ public class CheckRoleInterceptor implements HandlerInterceptor {
         }
 
         HandlerMethod handlerMethod = (HandlerMethod) handler;
+
         CheckRole checkRole = handlerMethod.getMethodAnnotation(CheckRole.class);
         if (checkRole == null) {
             return true;
@@ -60,33 +58,24 @@ public class CheckRoleInterceptor implements HandlerInterceptor {
         Long workspaceId = Long.valueOf(pathVariables.get("workspaceId"));
         String memberId = sessionMemberProvider.getMemberId();
 
-        checkMembershipType(checkRole, workspaceId, memberId, pathVariables);
+        if (pathVariables.containsKey("projectId")) {
+            Long projectId = Long.valueOf(pathVariables.get("projectId"));
+            if (!projectService.isProjectParticipants(projectId, memberId)) {
+                throw new NotProjectParticipantException(memberId, workspaceId);
+            }
+        } else {
+            if (!workspaceService.isWorkspaceParticipants(workspaceId, memberId)) {
+                throw new NotWorkspaceParticipantException(memberId, workspaceId);
+            }
+        }
 
-        checkHasRole(workspaceId, memberId, checkRole);
-
-        return true;
-    }
-
-    private void checkHasRole(Long workspaceId, String memberId, CheckRole checkRole) {
         CheckRoleResponseDto checkRoleResponseDto = workspaceService.findParticipantRole(workspaceId, memberId);
         Set<Authority> memberAuthorities = new HashSet<>(checkRoleResponseDto.getRole().getAuthorities());
         Set<Authority> requiredAuthorities = new HashSet<>(List.of(checkRole.authority()));
         if (!memberAuthorities.containsAll(requiredAuthorities)) {
             throw new UnAuthorizedMemberException(requiredAuthorities);
         }
-    }
 
-    private void checkMembershipType(CheckRole checkRole, Long workspaceId, String memberId, Map<String, String> pathVariables) {
-        CheckRole.MembershipType membershipType = checkRole.membership();
-        if (membershipType.equals(WORKSPACE)) {
-            if (!workspaceService.isWorkspaceParticipants(workspaceId, memberId)) {
-                throw new NotWorkspaceParticipantException(memberId, workspaceId);
-            }
-        } else if (membershipType.equals(PROJECT)) {
-            Long projectId = Long.valueOf(pathVariables.get("projectId"));
-            if (!projectService.isProjectParticipants(projectId, memberId)) {
-                throw new NotProjectParticipantException(memberId, workspaceId);
-            }
-        }
+        return true;
     }
 }
