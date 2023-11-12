@@ -29,8 +29,11 @@ public class TaskService {
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
         ProjectParticipant taskCreator = project.findProjectParticipantByMemberId(memberId)
                 .orElseThrow(() -> new NotProjectParticipantException(memberId, project.getId()));
-        ProjectParticipant taskManager = project.findProjectParticipantByProjectParticipantId(requestDto.getTaskManagerId())
-                .orElseThrow(() -> new NotProjectParticipantException(requestDto.getTaskManagerId(), project.getId()));
+        ProjectParticipant taskManager = null;
+        if (requestDto.getTaskManagerId() != null) {
+            taskManager = project.findProjectParticipantByProjectParticipantId(requestDto.getTaskManagerId())
+                    .orElseThrow(() -> new NotProjectParticipantException(requestDto.getTaskManagerId(), project.getId()));
+        }
         Board board = project.getBoardByBoardId(requestDto.getBoardId());
 
         Task task = Task.builder()
