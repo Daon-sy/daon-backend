@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Getter
 @NoArgsConstructor
@@ -21,11 +23,25 @@ public class ModifyTaskRequestDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
 
-    private boolean emergency;
+    private Boolean emergency;
 
     private TaskProgressStatus progressStatus;
 
     private Long boardId;
 
-    private Long workspaceParticipantId;
+    private Long taskManagerId;
+
+    public LocalDateTime getStartDate() {
+        if (startDate == null) {
+            return null;
+        }
+        return LocalDateTime.of(startDate, LocalTime.of(0, 0, 0));
+    }
+
+    public LocalDateTime getEndDate() {
+        if (endDate == null) {
+            return null;
+        }
+        return LocalDateTime.of(endDate, LocalTime.of(0, 0, 0));
+    }
 }

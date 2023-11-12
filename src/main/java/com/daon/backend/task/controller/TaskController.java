@@ -3,6 +3,7 @@ package com.daon.backend.task.controller;
 import com.daon.backend.common.response.CommonResponse;
 import com.daon.backend.task.domain.authority.CheckRole;
 import com.daon.backend.task.dto.request.CreateTaskRequestDto;
+import com.daon.backend.task.dto.request.ModifyTaskRequestDto;
 import com.daon.backend.task.dto.response.CreateTaskResponseDto;
 import com.daon.backend.task.dto.response.TaskListResponseDto;
 import com.daon.backend.task.service.TaskService;
@@ -15,8 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import static com.daon.backend.task.domain.authority.Authority.TSK_CREATE;
-import static com.daon.backend.task.domain.authority.Authority.TSK_READ;
+import static com.daon.backend.task.domain.authority.Authority.*;
 
 @Slf4j
 @RestController
@@ -47,8 +47,20 @@ public class TaskController {
     })
     @CheckRole(authority = TSK_READ)
     @GetMapping
-    public CommonResponse<TaskListResponseDto> findTasks(@PathVariable Long projectId) {
+    public CommonResponse<TaskListResponseDto> findTasks(@PathVariable("workspaceId") Long workspaceId,
+                                                         @PathVariable("projectId") Long projectId) {
         TaskListResponseDto result = taskService.findAllTaskInProject(projectId);
         return CommonResponse.createSuccess(result);
+    }
+
+    @CheckRole(authority = TSK_UPDATE)
+    @PatchMapping("/{taskId}")
+    public CommonResponse<Void> modifyTask(@PathVariable("workspaceId") Long workspaceId,
+                                           @PathVariable("projectId") Long projectId,
+                                           @PathVariable("taskId") Long taskId,
+                                           @RequestBody ModifyTaskRequestDto requestDto) {
+        taskService.modifyTask(projectId, taskId, requestDto);
+
+        return CommonResponse.createSuccess(null);
     }
 }
