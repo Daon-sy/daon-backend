@@ -20,8 +20,6 @@ import javax.validation.Valid;
 
 import static com.daon.backend.task.domain.authority.Authority.PJ_CREATE;
 import static com.daon.backend.task.domain.authority.Authority.PJ_READ;
-import static com.daon.backend.task.domain.authority.CheckRole.MembershipType.PROJECT;
-import static com.daon.backend.task.domain.authority.CheckRole.MembershipType.WORKSPACE;
 
 @Slf4j
 @RestController
@@ -37,7 +35,7 @@ public class ProjectController {
             @ApiResponse(responseCode = "201", description = "프로젝트 생성 성공")
     })
     @ResponseStatus(HttpStatus.CREATED)
-    @CheckRole(authority = PJ_CREATE, membership = WORKSPACE)
+    @CheckRole(authority = PJ_CREATE)
     @PostMapping
     public CommonResponse<CreateProjectResponseDto> createProject(
             @PathVariable Long workspaceId,
@@ -51,7 +49,7 @@ public class ProjectController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "프로젝트 목록 조회 성공")
     })
-    @CheckRole(authority = PJ_READ, membership = WORKSPACE)
+    @CheckRole(authority = PJ_READ)
     @GetMapping
     public CommonResponse<ProjectListResponseDto> findProjects(@PathVariable Long workspaceId) {
         ProjectListResponseDto projectListResponseDto = projectService.findAllProjectInWorkspace(workspaceId);
@@ -62,7 +60,7 @@ public class ProjectController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "프로젝트 초대 성공")
     })
-    @CheckRole(authority = PJ_CREATE, membership = PROJECT)
+    @CheckRole(authority = PJ_CREATE)
     @PostMapping("/{projectId}/invite")
     public CommonResponse<Void> inviteWorkspaceParticipant(@PathVariable("workspaceId") Long workspaceId,
                                                            @PathVariable("projectId") Long projectId,

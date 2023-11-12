@@ -16,7 +16,6 @@ import javax.validation.Valid;
 
 import static com.daon.backend.task.domain.authority.Authority.BD_CREATE;
 import static com.daon.backend.task.domain.authority.Authority.BD_READ;
-import static com.daon.backend.task.domain.authority.CheckRole.MembershipType.*;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/workspaces/{workspaceId}/projects/{projectId}/boards")
@@ -30,7 +29,7 @@ public class BoardController {
             @ApiResponse(responseCode = "201", description = "보드 생성 성공")
     })
     @ResponseStatus(HttpStatus.CREATED)
-    @CheckRole(authority = BD_CREATE, membership = PROJECT)
+    @CheckRole(authority = BD_CREATE)
     @PostMapping
     public CommonResponse<Void> createBoard(@PathVariable("workspaceId") Long workspaceId,
                                                               @PathVariable("projectId") Long projectId,
@@ -44,7 +43,7 @@ public class BoardController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "보드 목록 조회 성공")
     })
-    @CheckRole(authority = BD_READ, membership = PROJECT)
+    @CheckRole(authority = BD_READ)
     @GetMapping
     public CommonResponse<FindBoardsResponseDto> findBoards(@PathVariable("workspaceId") Long workspaceId,
                                                             @PathVariable("projectId") Long projectId) {
