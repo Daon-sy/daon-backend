@@ -1,7 +1,6 @@
 package com.daon.backend.task.infrastructure;
 
 import com.daon.backend.task.domain.project.Project;
-import com.daon.backend.task.domain.project.ProjectParticipant;
 import com.daon.backend.task.domain.project.ProjectRepository;
 import com.daon.backend.task.domain.workspace.WorkspaceParticipant;
 import lombok.RequiredArgsConstructor;
@@ -41,15 +40,4 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     public Optional<Project> findProjectWithBoardsByProjectId(Long projectId) {
         return projectJpaRepository.findProjectWithBoardsById(projectId);
     }
-
-    @Override
-    public Optional<ProjectParticipant> findProjectParticipantByProjectAndMemberId(Project project, String memberId) {
-        return projectParticipantJpaRepository.findByProjectAndMemberId(project, memberId);
-    }
-
-    @Override
-    public Optional<Project> findProjectByProjectId(Long projectId) {
-        return projectJpaRepository.findById(projectId);
-    }
-
 }
