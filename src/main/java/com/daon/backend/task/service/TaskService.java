@@ -87,11 +87,10 @@ public class TaskService {
 
         Project findProject = getProjectByProjectId(projectId);
         Board board = findProject.getBoardByBoardId(requestDto.getBoardId());
-        Task findTask = taskRepository.findTaskByTaskId(taskId)
-                .orElseThrow(() -> new TaskNotFoundException(projectId, taskId));
+        Task task = findProject.getTaskByTaskId(taskId);
         ProjectParticipant taskManager = getProjectParticipantByProjectParticipantId(taskManagerId, findProject);
 
-        findTask.modifyTask(
+        task.modifyTask(
                 requestDto.getTitle(),
                 requestDto.getContent(),
                 requestDto.getStartDate(),
