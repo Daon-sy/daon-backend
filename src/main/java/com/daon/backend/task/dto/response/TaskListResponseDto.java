@@ -1,8 +1,8 @@
 package com.daon.backend.task.dto.response;
 
+import com.daon.backend.task.domain.project.ProjectParticipant;
 import com.daon.backend.task.domain.project.Task;
 import com.daon.backend.task.domain.project.TaskProgressStatus;
-import com.daon.backend.task.domain.workspace.WorkspaceParticipant;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,10 +14,11 @@ import java.util.List;
 @NoArgsConstructor
 public class TaskListResponseDto {
 
-
+    private int totalCount;
     private List<TaskSummary> tasks;
 
     public TaskListResponseDto(List<TaskSummary> tasks) {
+        this.totalCount = tasks.size();
         this.tasks = tasks;
     }
 
@@ -35,10 +36,10 @@ public class TaskListResponseDto {
         private String name;
         private String profileImageUrl;
 
-        public TaskManager(WorkspaceParticipant workspaceParticipant) {
-            this.participantId = workspaceParticipant.getId();
-            this.name = workspaceParticipant.getProfile().getName();
-            this.profileImageUrl = workspaceParticipant.getProfile().getImageUrl();
+        public TaskManager(ProjectParticipant participant) {
+            this.participantId = participant.getId();
+            this.name = participant.getWorkspaceParticipant().getProfile().getName();
+            this.profileImageUrl = participant.getWorkspaceParticipant().getProfile().getImageUrl();
         }
     }
 
@@ -47,6 +48,7 @@ public class TaskListResponseDto {
     public static class TaskSummary {
 
         private Long taskId;
+        private Long projectId;
         private String title;
         private LocalDateTime startDate;
         private LocalDateTime endDate;
@@ -57,17 +59,17 @@ public class TaskListResponseDto {
         private TaskManager taskManager;
 
         public TaskSummary(Task task) {
-
             this.taskId = task.getId();
+            this.projectId = task.getProject().getId();
             this.title = task.getTitle();
             this.startDate = task.getStartDate();
             this.endDate = task.getEndDate();
             this.progressStatus = task.getProgressStatus();
             this.emergency = task.isEmergency();
-            this.board = new BoardSummary(task.getBoard().getId(), task.getBoard().getTitle());
+            this.board = task.getBoard() != null ? new BoardSummary(task.getBoard().getId(), task.getBoard().getTitle()) : null;
             this.bookmark = task.getTaskBookmarks().stream()
                     .anyMatch(p -> p.getId().equals(task.getTaskManager().getId()));
-            this.taskManager = new TaskManager(task.getTaskManager());
+            this.taskManager = task.getTaskManager() != null ? new TaskManager(task.getTaskManager()) : null;
         }
     }
 }

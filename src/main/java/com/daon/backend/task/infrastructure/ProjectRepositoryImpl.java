@@ -47,4 +47,9 @@ public class ProjectRepositoryImpl implements ProjectRepository {
         return projectParticipantJpaRepository.findByProjectAndMemberId(project, memberId);
     }
 
+    @Override
+    public Optional<Project> findProjectByProjectId(Long projectId) {
+        return projectJpaRepository.findById(projectId);
+    }
+
 }

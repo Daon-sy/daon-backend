@@ -34,10 +34,9 @@ public class TaskController {
     @ResponseStatus(HttpStatus.CREATED)
     @CheckRole(authority = TSK_CREATE)
     @PostMapping
-    public CommonResponse<CreateTaskResponseDto> createTask (@PathVariable Long workspaceId,
-                                                             @PathVariable Long projectId,
-                                                             @RequestBody CreateTaskRequestDto requestDto) {
-        CreateTaskResponseDto result = taskService.createTask(workspaceId, projectId, requestDto);
+    public CommonResponse<CreateTaskResponseDto> createTask(@PathVariable Long projectId,
+                                                            @RequestBody CreateTaskRequestDto requestDto) {
+        CreateTaskResponseDto result = taskService.createTask(projectId, requestDto);
 
         return CommonResponse.createSuccess(result);
     }
@@ -48,8 +47,7 @@ public class TaskController {
     })
     @CheckRole(authority = TSK_READ)
     @GetMapping
-    public CommonResponse<TaskListResponseDto> findTasks(@PathVariable Long workspaceId,
-                                                         @PathVariable Long projectId) {
+    public CommonResponse<TaskListResponseDto> findTasks(@PathVariable Long projectId) {
         TaskListResponseDto result = taskService.findAllTaskInProject(projectId);
         return CommonResponse.createSuccess(result);
     }

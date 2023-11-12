@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Getter
@@ -47,6 +48,14 @@ public class Project extends BaseTimeEntity {
         addParticipant(projectCreator.getMemberId(), projectCreator.getWorkspaceParticipant());
     }
 
+    public Optional<ProjectParticipant> findProjectParticipantByMemberId(String memberId) {
+        return participants.stream().filter(participant -> participant.getMemberId().equals(memberId)).findFirst();
+    }
+
+    public Optional<ProjectParticipant> findProjectParticipantByProjectParticipantId(Long projectParticipantId) {
+        return participants.stream().filter(participant -> participant.getId().equals(projectParticipantId)).findFirst();
+    }
+
     public void addParticipant(String memberId, WorkspaceParticipant workspaceParticipant) {
         this.participants.add(new ProjectParticipant(this, workspaceParticipant, memberId));
     }
@@ -57,6 +66,14 @@ public class Project extends BaseTimeEntity {
 
     public void removeBoard(Long boardId) {
         this.boards.removeIf(board -> board.getId().equals(boardId));
+    }
+
+    public Board getBoardByBoardId(Long boardId) {
+        if (boardId == null) return null;
+        return boards.stream()
+                .filter(board -> board.getId().equals(boardId))
+                .findFirst()
+                .orElseThrow(() -> new BoardNotFoundException(this.getId(), boardId));
     }
 
     public void throwIfTitleExist(String title) {
