@@ -26,7 +26,7 @@ public class TaskListResponseDto {
     @AllArgsConstructor
     public static class BoardSummary {
         private Long boardId;
-        private String name;
+        private String title;
     }
 
     @Getter
@@ -34,12 +34,12 @@ public class TaskListResponseDto {
     public static class TaskManager {
         private Long participantId;
         private String name;
-        private String profileImageUrl;
+        private String imageUrl;
 
         public TaskManager(ProjectParticipant participant) {
             this.participantId = participant.getId();
             this.name = participant.getWorkspaceParticipant().getProfile().getName();
-            this.profileImageUrl = participant.getWorkspaceParticipant().getProfile().getImageUrl();
+            this.imageUrl = participant.getWorkspaceParticipant().getProfile().getImageUrl();
         }
     }
 

@@ -121,7 +121,7 @@ class ProjectControllerTest {
                 .andExpect(jsonPath("$.data.workspaceId").value(workspaceId))
                 .andExpect(jsonPath("$.data.totalCount").value(responseDto.getTotalCount()))
                 .andExpect(jsonPath("$.data.projects[0].projectId").value(responseDto.getProjects().get(0).getProjectId()))
-                .andExpect(jsonPath("$.data.projects[0].projectName").value(responseDto.getProjects().get(0).getProjectName()))
+                .andExpect(jsonPath("$.data.projects[0].projectName").value(responseDto.getProjects().get(0).getTitle()))
                 .andExpect(jsonPath("$.data.projects[0].description").value(responseDto.getProjects().get(0).getDescription()));
     }
 
