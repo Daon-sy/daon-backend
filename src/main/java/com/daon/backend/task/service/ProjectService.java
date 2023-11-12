@@ -76,4 +76,11 @@ public class ProjectService {
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
         findProject.addParticipant(workspaceParticipant.getMemberId(), workspaceParticipant);
     }
+
+    public boolean isProjectParticipants(Long projectId, String memberId) {
+        Project findProject = projectRepository.findProjectWithParticipantsById(projectId)
+                .orElseThrow(() -> new ProjectNotFoundException(projectId));
+
+        return findProject.isProjectParticipants(memberId);
+    }
 }

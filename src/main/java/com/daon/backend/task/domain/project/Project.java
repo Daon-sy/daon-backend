@@ -83,4 +83,9 @@ public class Project extends BaseTimeEntity {
                     throw new SameBoardExistsException(title);
                 });
     }
+
+    public boolean isProjectParticipants(String memberId) {
+        return this.participants.stream()
+                .anyMatch(projectParticipant -> projectParticipant.getMemberId().equals(memberId));
+    }
 }

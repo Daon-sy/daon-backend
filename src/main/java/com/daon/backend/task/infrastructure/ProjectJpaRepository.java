@@ -14,4 +14,6 @@ public interface ProjectJpaRepository extends JpaRepository<Project, Long> {
     @EntityGraph(attributePaths = {"workspace", "participants"})
     Optional<Project> findById(Long projectId);
 
+    @EntityGraph(attributePaths = "participants")
+    Optional<Project> findProjectWithParticipantsById(Long projectId);
 }
