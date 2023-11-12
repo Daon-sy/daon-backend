@@ -20,4 +20,6 @@ public interface ProjectRepository {
     Optional<Project> findProjectWithBoardsByProjectId(Long projectId);
 
     Optional<ProjectParticipant> findProjectParticipantByProjectAndMemberId(Project project, String memberId);
+
+    Optional<Project> findProjectByProjectId(Long projectId);
 }
