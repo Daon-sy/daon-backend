@@ -21,6 +21,7 @@ import javax.validation.Valid;
 
 import static com.daon.backend.task.domain.authority.Authority.WSP_INVITE;
 import static com.daon.backend.task.domain.authority.Authority.WS_READ;
+import static com.daon.backend.task.domain.authority.CheckRole.MembershipType.WORKSPACE;
 
 @Slf4j
 @RestController
@@ -48,9 +49,8 @@ public class WorkspaceController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "워크스페이스 목록 조회 성공")
     })
-    @CheckRole(authority = WS_READ)
     @GetMapping
-    public CommonResponse<WorkspaceListResponseDto> workspaceList() {
+    public CommonResponse<WorkspaceListResponseDto> findWorkspaces() {
         WorkspaceListResponseDto workspaceListResponseDto = workspaceService.findAllWorkspace();
         return CommonResponse.createSuccess(workspaceListResponseDto);
     }
@@ -59,7 +59,7 @@ public class WorkspaceController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "참여코드 확인 성공")
     })
-    @CheckRole(authority = WSP_INVITE)
+    @CheckRole(authority = WSP_INVITE, membership = WORKSPACE)
     @PostMapping("/code")
     public CommonResponse<Void> checkJoinCode(@RequestBody @Valid CheckJoinCodeRequestDto requestDto) {
         workspaceService.checkJoinCode(requestDto);
@@ -82,7 +82,7 @@ public class WorkspaceController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "프로필 조회 성공")
     })
-    @CheckRole(authority = WS_READ)
+    @CheckRole(authority = WS_READ, membership = WORKSPACE)
     @GetMapping("/{workspaceId}/profile/me")
     public CommonResponse<FindProfileResponseDto> findProfile(@PathVariable("workspaceId") Long workspaceId) {
         FindProfileResponseDto result = workspaceService.findProfile(workspaceId);
@@ -94,7 +94,7 @@ public class WorkspaceController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "워크스페이스 구성원 목록 조회 성공")
     })
-    @CheckRole(authority = WS_READ)
+    @CheckRole(authority = WS_READ, membership = WORKSPACE)
     @GetMapping("/{workspaceId}/participants")
     public CommonResponse<FindParticipantsResponseDto> findParticipants(@PathVariable("workspaceId") Long workspaceId) {
         FindParticipantsResponseDto result = workspaceService.findParticipants(workspaceId);
@@ -106,7 +106,7 @@ public class WorkspaceController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "회원 초대 성공")
     })
-    @CheckRole(authority = WSP_INVITE)
+    @CheckRole(authority = WSP_INVITE, membership = WORKSPACE)
     @PostMapping("/{workspaceId}/invite")
     public CommonResponse<Void> inviteMember(@PathVariable("workspaceId") Long workspaceId,
                                              @RequestBody InviteMemberRequestDto requestDto) {

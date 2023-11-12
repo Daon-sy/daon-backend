@@ -32,6 +32,11 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
     }
 
     @Override
+    public Optional<Workspace> findWorkspaceWithParticipantsByWorkspaceId(Long workspaceId) {
+        return workspaceJpaRepository.findWorkspaceWithParticipantsById(workspaceId);
+    }
+
+    @Override
     public List<Workspace> findWorkspacesByMemberId(String memberId) {
         // 회원 아이디로
         return workspaceParticipantJpaRepository.findWorkspacesByMemberId(memberId);

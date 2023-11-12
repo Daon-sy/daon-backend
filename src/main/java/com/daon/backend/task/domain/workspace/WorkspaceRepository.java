@@ -9,6 +9,8 @@ public interface WorkspaceRepository {
 
     Optional<Workspace> findWorkspaceByWorkspaceId(Long workspaceId);
 
+    Optional<Workspace> findWorkspaceWithParticipantsByWorkspaceId(Long workspaceId);
+
     List<Workspace> findWorkspacesByMemberId(String memberId);
 
     Optional<WorkspaceParticipant> findWorkspaceParticipantByWorkspaceAndMemberId(Workspace workspace, String memberId);

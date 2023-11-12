@@ -10,4 +10,11 @@ import java.lang.annotation.Target;
 public @interface CheckRole {
 
     Authority[] authority();
+
+    MembershipType membership();
+
+    enum MembershipType {
+        WORKSPACE,
+        PROJECT,
+    }
 }

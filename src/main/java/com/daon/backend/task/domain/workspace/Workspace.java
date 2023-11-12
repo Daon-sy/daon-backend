@@ -97,4 +97,8 @@ public class Workspace extends BaseTimeEntity {
         return UUID.randomUUID().toString().replace("-", "").substring(0, 10);
     }
 
+    public boolean isWorkspaceParticipants(String memberId) {
+        return this.participants.stream()
+                .anyMatch(workspaceParticipant -> workspaceParticipant.getMemberId().equals(memberId));
+    }
 }

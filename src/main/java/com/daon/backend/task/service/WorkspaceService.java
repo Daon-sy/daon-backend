@@ -109,11 +109,17 @@ public class WorkspaceService {
         );
     }
 
-    public CheckRoleResponseDto findParticipantRole(Long workspaceId) {
-        String memberId = sessionMemberProvider.getMemberId();
+    public CheckRoleResponseDto findParticipantRole(Long workspaceId, String memberId) {
         Role findRole = workspaceRepository.findParticipantRoleByMemberIdAndWorkspaceId(memberId, workspaceId);
 
         return new CheckRoleResponseDto(findRole);
+    }
+
+    public boolean isWorkspaceParticipants(Long workspaceId, String memberId) {
+        Workspace findWorkspace = workspaceRepository.findWorkspaceWithParticipantsByWorkspaceId(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+
+        return findWorkspace.isWorkspaceParticipants(memberId);
     }
 
     @Transactional
