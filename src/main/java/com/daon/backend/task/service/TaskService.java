@@ -4,6 +4,7 @@ import com.daon.backend.task.domain.project.*;
 import com.daon.backend.task.dto.request.CreateTaskRequestDto;
 import com.daon.backend.task.dto.request.ModifyTaskRequestDto;
 import com.daon.backend.task.dto.response.CreateTaskResponseDto;
+import com.daon.backend.task.dto.response.TaskDetailResponseDto;
 import com.daon.backend.task.dto.response.TaskListResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -100,5 +101,12 @@ public class TaskService {
                 board,
                 taskManager
         );
+    }
+
+    public TaskDetailResponseDto detailTask(Long projectId, Long taskId) {
+        Project findProject = getProjectByProjectId(projectId);
+        Task task = findProject.getTaskByTaskId(taskId);
+
+        return new TaskDetailResponseDto(task);
     }
 }
