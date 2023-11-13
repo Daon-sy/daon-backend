@@ -6,6 +6,7 @@ import com.daon.backend.task.dto.request.CreateTaskRequestDto;
 import com.daon.backend.task.dto.request.ModifyTaskRequestDto;
 import com.daon.backend.task.dto.request.SetBookmarkRequestDto;
 import com.daon.backend.task.dto.response.CreateTaskResponseDto;
+import com.daon.backend.task.dto.response.SetBookmarkResponseDto;
 import com.daon.backend.task.dto.response.TaskListResponseDto;
 import com.daon.backend.task.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -75,11 +76,12 @@ public class TaskController {
     })
     @CheckRole(authority = TSK_READ)
     @PostMapping("/{taskId}")
-    public CommonResponse<Void> setBookmark(@PathVariable("workspaceId") Long workspaceId,
-                                            @PathVariable("projectId") Long projectId,
-                                            @PathVariable("taskId") Long taskId,
-                                            @RequestBody SetBookmarkRequestDto requestDto) {
+    public CommonResponse<SetBookmarkResponseDto> setBookmark(@PathVariable("workspaceId") Long workspaceId,
+                                                              @PathVariable("projectId") Long projectId,
+                                                              @PathVariable("taskId") Long taskId,
+                                                              @RequestBody SetBookmarkRequestDto requestDto) {
+        SetBookmarkResponseDto result = taskService.setBookmark(projectId, taskId, requestDto);
 
-        return CommonResponse.createSuccess(null);
+        return CommonResponse.createSuccess(result);
     }
 }
