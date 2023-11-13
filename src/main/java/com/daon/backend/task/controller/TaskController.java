@@ -59,7 +59,7 @@ public class TaskController {
             @ApiResponse(responseCode = "200", description = "할 일 수정 성공")
     })
     @CheckRole(authority = TSK_UPDATE)
-    @PatchMapping("/{taskId}")
+    @PutMapping("/{taskId}")
     public CommonResponse<Void> modifyTask(@PathVariable("workspaceId") Long workspaceId,
                                            @PathVariable("projectId") Long projectId,
                                            @PathVariable("taskId") Long taskId,

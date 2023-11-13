@@ -95,7 +95,7 @@ public class TaskService {
                 requestDto.getContent(),
                 requestDto.getStartDate(),
                 requestDto.getEndDate(),
-                requestDto.getEmergency(),
+                requestDto.isEmergency(),
                 requestDto.getProgressStatus(),
                 board,
                 taskManager
