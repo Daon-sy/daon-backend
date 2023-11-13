@@ -2,6 +2,7 @@ package com.daon.backend.task.service;
 
 import com.daon.backend.task.domain.project.*;
 import com.daon.backend.task.dto.request.CreateTaskRequestDto;
+import com.daon.backend.task.dto.request.ModifyTaskRequestDto;
 import com.daon.backend.task.dto.response.CreateTaskResponseDto;
 import com.daon.backend.task.dto.response.TaskListResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -24,16 +25,12 @@ public class TaskService {
     @Transactional
     public CreateTaskResponseDto createTask(Long projectId, CreateTaskRequestDto requestDto) {
         String memberId = sessionMemberProvider.getMemberId();
+        Long taskManagerId = requestDto.getTaskManagerId();
 
-        Project project = projectRepository.findProjectByProjectId(projectId)
-                .orElseThrow(() -> new ProjectNotFoundException(projectId));
+        Project project = getProjectByProjectId(projectId);
         ProjectParticipant taskCreator = project.findProjectParticipantByMemberId(memberId)
                 .orElseThrow(() -> new NotProjectParticipantException(memberId, project.getId()));
-        ProjectParticipant taskManager = null;
-        if (requestDto.getTaskManagerId() != null) {
-            taskManager = project.findProjectParticipantByProjectParticipantId(requestDto.getTaskManagerId())
-                    .orElseThrow(() -> new NotProjectParticipantException(requestDto.getTaskManagerId(), project.getId()));
-        }
+        ProjectParticipant taskManager = getProjectParticipantByProjectParticipantId(taskManagerId, project);
         Board board = project.getBoardByBoardId(requestDto.getBoardId());
 
         Task task = Task.builder()
@@ -51,7 +48,21 @@ public class TaskService {
         Long taskId = taskRepository.save(task).getId();
         return new CreateTaskResponseDto(taskId);
     }
-  
+
+    private static ProjectParticipant getProjectParticipantByProjectParticipantId(Long taskManagerId, Project project) {
+        ProjectParticipant taskManager = null;
+        if (taskManagerId != null) {
+            taskManager = project.findProjectParticipantByProjectParticipantId(taskManagerId)
+                    .orElseThrow(() -> new NotProjectParticipantException(taskManagerId, project.getId()));
+        }
+        return taskManager;
+    }
+
+    private Project getProjectByProjectId(Long projectId) {
+        return projectRepository.findProjectByProjectId(projectId)
+                .orElseThrow(() -> new ProjectNotFoundException(projectId));
+    }
+
     //해당 프로젝트가 없다면 오류발생
     private Project getProjectOrElseThrow(Long projectId) {
         return projectRepository.findProjectWithParticipantsById(projectId)
@@ -67,6 +78,27 @@ public class TaskService {
                 tasks.stream()
                         .map(TaskListResponseDto.TaskSummary::new)
                         .collect(Collectors.toList())
+        );
+    }
+
+    @Transactional
+    public void modifyTask(Long projectId, Long taskId, ModifyTaskRequestDto requestDto) {
+        Long taskManagerId = requestDto.getTaskManagerId();
+
+        Project findProject = getProjectByProjectId(projectId);
+        Board board = findProject.getBoardByBoardId(requestDto.getBoardId());
+        Task task = findProject.getTaskByTaskId(taskId);
+        ProjectParticipant taskManager = getProjectParticipantByProjectParticipantId(taskManagerId, findProject);
+
+        task.modifyTask(
+                requestDto.getTitle(),
+                requestDto.getContent(),
+                requestDto.getStartDate(),
+                requestDto.getEndDate(),
+                requestDto.getEmergency(),
+                requestDto.getProgressStatus(),
+                board,
+                taskManager
         );
     }
 }

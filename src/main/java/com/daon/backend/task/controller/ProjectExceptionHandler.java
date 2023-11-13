@@ -14,14 +14,14 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class ProjectExceptionHandler {
 
     @ExceptionHandler(NotProjectParticipantException.class)
-    public ResponseEntity<CommonResponse<Void>> notProjectParticipantException(NotProjectParticipantException e) {
+    public ResponseEntity<CommonResponse<Void>> notProjectParticipantExceptionHandle(NotProjectParticipantException e) {
         log.info("{}", e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(CommonResponse.createError("해당 프로젝트의 회원이 아닙니다."));
     }
 
     @ExceptionHandler(ProjectNotFoundException.class)
-    public ResponseEntity<CommonResponse<Void>> projectNotFoundException(ProjectNotFoundException e) {
+    public ResponseEntity<CommonResponse<Void>> projectNotFoundExceptionHandle(ProjectNotFoundException e) {
         log.info("{}", e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(CommonResponse.createError("존재하지 않는 프로젝트입니다."));

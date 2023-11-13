@@ -69,11 +69,23 @@ public class Project extends BaseTimeEntity {
     }
 
     public Board getBoardByBoardId(Long boardId) {
-        if (boardId == null) return null;
+        if (boardId == null) {
+            return null;
+        }
         return boards.stream()
                 .filter(board -> board.getId().equals(boardId))
                 .findFirst()
                 .orElseThrow(() -> new BoardNotFoundException(this.getId(), boardId));
+    }
+
+    public Task getTaskByTaskId(Long taskId) {
+        if (taskId == null) {
+            return null;
+        }
+        return tasks.stream()
+                .filter(task -> task.getId().equals(taskId))
+                .findFirst()
+                .orElseThrow(() -> new TaskNotFoundException(this.getId(), taskId));
     }
 
     public void throwIfTitleExist(String title) {

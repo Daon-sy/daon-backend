@@ -15,6 +15,8 @@ public interface ProjectRepository {
     @EntityGraph("participants")
     Optional<Project> findProjectWithParticipantsById(Long projectId);
 
+    List<ProjectParticipant> findProjectParticipantsWithWorkspaceParticipantsByProjectId(Long projectId);
+
     List<Project> findProjectsByWorkspaceParticipant(WorkspaceParticipant workspaceParticipant);
 
     Optional<Project> findProjectWithBoardsByProjectId(Long projectId);

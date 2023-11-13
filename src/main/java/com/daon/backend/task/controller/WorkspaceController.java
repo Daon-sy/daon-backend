@@ -95,8 +95,8 @@ public class WorkspaceController {
     })
     @CheckRole(authority = WS_READ)
     @GetMapping("/{workspaceId}/participants")
-    public CommonResponse<FindParticipantsResponseDto> findParticipants(@PathVariable("workspaceId") Long workspaceId) {
-        FindParticipantsResponseDto result = workspaceService.findParticipants(workspaceId);
+    public CommonResponse<FindWorkspaceParticipantsResponseDto> findWorkspaceParticipants(@PathVariable("workspaceId") Long workspaceId) {
+        FindWorkspaceParticipantsResponseDto result = workspaceService.findWorkspaceParticipants(workspaceId);
 
         return CommonResponse.createSuccess(result);
     }
