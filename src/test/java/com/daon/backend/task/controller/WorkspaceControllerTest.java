@@ -7,7 +7,7 @@ import com.daon.backend.task.dto.request.CheckJoinCodeRequestDto;
 import com.daon.backend.task.dto.request.CreateWorkspaceRequestDto;
 import com.daon.backend.task.dto.request.InviteMemberRequestDto;
 import com.daon.backend.task.dto.request.JoinWorkspaceRequestDto;
-import com.daon.backend.task.dto.response.FindParticipantsResponseDto;
+import com.daon.backend.task.dto.response.FindWorkspaceParticipantsResponseDto;
 import com.daon.backend.task.dto.response.FindProfileResponseDto;
 import com.daon.backend.task.dto.response.JoinWorkspaceResponseDto;
 import com.daon.backend.task.dto.response.WorkspaceListResponseDto;
@@ -247,9 +247,9 @@ class WorkspaceControllerTest {
         final String url = "/api/workspaces/{workspaceId}/participants";
         final Long workspaceId = 1L;
 
-        FindParticipantsResponseDto responseDto = new FindParticipantsResponseDto(
+        FindWorkspaceParticipantsResponseDto responseDto = new FindWorkspaceParticipantsResponseDto(
                 List.of(
-                        new FindParticipantsResponseDto.ParticipantProfile(
+                        new FindWorkspaceParticipantsResponseDto.WorkspaceParticipantProfile(
                                 workspaceId,
                                 "홍길동",
                                 "test@gmail.com",
@@ -259,7 +259,7 @@ class WorkspaceControllerTest {
                 )
         );
 
-        given(workspaceService.findParticipants(workspaceId))
+        given(workspaceService.findWorkspaceParticipants(workspaceId))
                 .willReturn(responseDto);
 
         // when

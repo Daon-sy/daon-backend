@@ -5,6 +5,7 @@ import com.daon.backend.task.domain.authority.CheckRole;
 import com.daon.backend.task.dto.request.CreateProjectRequestDto;
 import com.daon.backend.task.dto.request.InviteWorkspaceParticipantRequestDto;
 import com.daon.backend.task.dto.response.CreateProjectResponseDto;
+import com.daon.backend.task.dto.response.FindProjectParticipantsResponseDto;
 import com.daon.backend.task.dto.response.ProjectListResponseDto;
 import com.daon.backend.task.service.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -68,5 +69,18 @@ public class ProjectController {
         projectService.inviteWorkspaceParticipant(projectId, requestDto);
 
         return CommonResponse.createSuccess(null);
+    }
+
+    @Operation(summary = "프로젝트 구성원 목록 조회", description = "프로젝트 구성원 목록 조회입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "프로젝트 구성원 목록 조회 성공")
+    })
+    @CheckRole(authority = PJ_READ)
+    @GetMapping("/{projectId}/participants")
+    public CommonResponse<FindProjectParticipantsResponseDto> findProjectParticipants(@PathVariable("workspaceId") Long workspaceId,
+                                                                                      @PathVariable("projectId") Long projectId) {
+        FindProjectParticipantsResponseDto result = projectService.findProjectParticipants(projectId);
+
+        return CommonResponse.createSuccess(result);
     }
 }

@@ -8,20 +8,20 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class FindParticipantsResponseDto {
+public class FindWorkspaceParticipantsResponseDto {
 
     private int totalCount;
 
-    private List<ParticipantProfile> participants;
+    private List<WorkspaceParticipantProfile> participants;
 
-    public FindParticipantsResponseDto(List<ParticipantProfile> participants) {
+    public FindWorkspaceParticipantsResponseDto(List<WorkspaceParticipantProfile> participants) {
         this.totalCount = participants.size();
         this.participants = participants;
     }
 
     @Getter
     @AllArgsConstructor
-    public static class ParticipantProfile {
+    public static class WorkspaceParticipantProfile {
 
         private Long participantId;
 
@@ -34,7 +34,7 @@ public class FindParticipantsResponseDto {
         private Role role;
 
 
-        public ParticipantProfile(WorkspaceParticipant workspaceParticipant) {
+        public WorkspaceParticipantProfile(WorkspaceParticipant workspaceParticipant) {
             this.participantId = workspaceParticipant.getId();
             this.name = workspaceParticipant.getProfile().getName();
             this.imageUrl = workspaceParticipant.getProfile().getImageUrl();

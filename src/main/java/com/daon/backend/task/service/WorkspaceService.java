@@ -98,13 +98,13 @@ public class WorkspaceService {
         return new FindProfileResponseDto(findWorkspaceParticipant);
     }
 
-    public FindParticipantsResponseDto findParticipants(Long workspaceId) {
+    public FindWorkspaceParticipantsResponseDto findWorkspaceParticipants(Long workspaceId) {
         List<WorkspaceParticipant> findWorkspaceParticipants =
                 workspaceRepository.findWorkspaceParticipantsByWorkspaceId(workspaceId);
 
-        return new FindParticipantsResponseDto(
+        return new FindWorkspaceParticipantsResponseDto(
                 findWorkspaceParticipants.stream()
-                        .map(FindParticipantsResponseDto.ParticipantProfile::new)
+                        .map(FindWorkspaceParticipantsResponseDto.WorkspaceParticipantProfile::new)
                         .collect(Collectors.toList())
         );
     }
