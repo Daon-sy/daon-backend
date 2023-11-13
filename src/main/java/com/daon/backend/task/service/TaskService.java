@@ -49,7 +49,7 @@ public class TaskService {
         return new CreateTaskResponseDto(taskId);
     }
 
-    private static ProjectParticipant getProjectParticipantByProjectParticipantId(Long taskManagerId, Project project) {
+    private ProjectParticipant getProjectParticipantByProjectParticipantId(Long taskManagerId, Project project) {
         ProjectParticipant taskManager = null;
         if (taskManagerId != null) {
             taskManager = project.findProjectParticipantByProjectParticipantId(taskManagerId)
