@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -13,6 +14,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class ModifyTaskRequestDto {
 
+    @NotBlank
     private String title;
 
     private String content;
@@ -23,7 +25,7 @@ public class ModifyTaskRequestDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
 
-    private Boolean emergency;
+    private boolean emergency;
 
     private TaskProgressStatus progressStatus;
 

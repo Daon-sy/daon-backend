@@ -10,7 +10,6 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Entity @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -68,15 +67,15 @@ public class Task extends BaseTimeEntity {
         this.progressStatus = TaskProgressStatus.TODO;
     }
 
-    public void modifyTask(String title, String content, LocalDateTime startDate, LocalDateTime endDate, Boolean emergency,
+    public void modifyTask(String title, String content, LocalDateTime startDate, LocalDateTime endDate, boolean emergency,
                            TaskProgressStatus progressStatus, Board board, ProjectParticipant taskManager) {
-        this.title = Optional.ofNullable(title).orElse(this.title);
-        this.content = Optional.ofNullable(content).orElse(this.content);
-        this.startDate = Optional.ofNullable(startDate).orElse(this.startDate);
-        this.endDate = Optional.ofNullable(endDate).orElse(this.endDate);
-        this.emergency = Optional.ofNullable(emergency).orElse(this.emergency);
-        this.progressStatus = Optional.ofNullable(progressStatus).orElse(this.progressStatus);
-        this.board = Optional.ofNullable(board).orElse(this.board);
-        this.taskManager = Optional.ofNullable(taskManager).orElse(this.taskManager);
+        this.title = title;
+        this.content = content;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.emergency = emergency;
+        this.progressStatus = progressStatus;
+        this.board = board;
+        this.taskManager = taskManager;
     }
 }
