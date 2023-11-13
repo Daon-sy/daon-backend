@@ -16,4 +16,7 @@ public interface ProjectJpaRepository extends JpaRepository<Project, Long> {
 
     @EntityGraph(attributePaths = "participants")
     Optional<Project> findProjectWithParticipantsById(Long projectId);
+
+    @EntityGraph(attributePaths = "boards")
+    Optional<Project> findProjectWithBoardsById(Long projectId);
 }
