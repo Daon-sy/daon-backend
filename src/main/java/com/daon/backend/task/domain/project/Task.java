@@ -73,7 +73,7 @@ public class Task extends BaseTimeEntity {
         this.title = Optional.ofNullable(title).orElse(this.title);
         this.content = Optional.ofNullable(content).orElse(this.content);
         this.startDate = Optional.ofNullable(startDate).orElse(this.startDate);
-        this.endDate = Optional.ofNullable(startDate).orElse(this.endDate);
+        this.endDate = Optional.ofNullable(endDate).orElse(this.endDate);
         this.emergency = Optional.ofNullable(emergency).orElse(this.emergency);
         this.progressStatus = Optional.ofNullable(progressStatus).orElse(this.progressStatus);
         this.board = Optional.ofNullable(board).orElse(this.board);
