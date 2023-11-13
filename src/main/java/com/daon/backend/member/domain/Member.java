@@ -1,7 +1,10 @@
 package com.daon.backend.member.domain;
 
 import com.daon.backend.config.BaseTimeEntity;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.envers.AuditOverride;
 import org.hibernate.envers.Audited;
