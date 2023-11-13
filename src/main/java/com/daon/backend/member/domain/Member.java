@@ -13,6 +13,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import java.util.Optional;
 import java.util.UUID;
 
 @Getter
@@ -48,4 +49,9 @@ public class Member extends BaseTimeEntity {
         }
     }
 
+    public void modifyMember(String email, String password, String name, PasswordEncoder passwordEncoder) {
+        this.email = Optional.ofNullable(email).orElse(this.email);
+        this.password = Optional.ofNullable(passwordEncoder.encode(password)).orElse(this.password);
+        this.name = Optional.ofNullable(name).orElse(this.name);
+    }
 }

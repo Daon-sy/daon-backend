@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Entity
@@ -100,5 +101,12 @@ public class Workspace extends BaseTimeEntity {
     public boolean isWorkspaceParticipants(String memberId) {
         return this.participants.stream()
                 .anyMatch(workspaceParticipant -> workspaceParticipant.getMemberId().equals(memberId));
+    }
+
+    public void modifyWorkspace (String title, String description, String imageUrl, String subject) {
+        this.title = Optional.ofNullable(title).orElse(this.title);
+        this.description = Optional.ofNullable(description).orElse(this.description);
+        this.imageUrl = Optional.ofNullable(imageUrl).orElse(this.imageUrl);
+        this.subject = Optional.ofNullable(subject).orElse(this.subject);
     }
 }
