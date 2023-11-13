@@ -3,6 +3,7 @@ package com.daon.backend.task.service;
 import com.daon.backend.task.domain.workspace.*;
 import com.daon.backend.task.dto.request.CheckJoinCodeRequestDto;
 import com.daon.backend.task.dto.request.CreateWorkspaceRequestDto;
+import com.daon.backend.task.dto.request.InviteMemberRequestDto;
 import com.daon.backend.task.dto.request.JoinWorkspaceRequestDto;
 import com.daon.backend.task.dto.response.*;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +22,7 @@ public class WorkspaceService {
 
     private final WorkspaceRepository workspaceRepository;
     private final SessionMemberProvider sessionMemberProvider;
+    private final DbMemberProvider dbMemberProvider;
 
     @Transactional
     public Long createWorkspace(CreateWorkspaceRequestDto requestDto) {
@@ -88,7 +90,7 @@ public class WorkspaceService {
 
     public FindProfileResponseDto findProfile(Long workspaceId) {
         String memberId = sessionMemberProvider.getMemberId();
-        Workspace findWorkspace = workspaceRepository.findWorkspaceById(workspaceId)
+        Workspace findWorkspace = workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
         WorkspaceParticipant findWorkspaceParticipant = workspaceRepository.findWorkspaceParticipantByWorkspaceAndMemberId(findWorkspace, memberId)
                 .orElseThrow(() -> new NotWorkspaceParticipantException(memberId, findWorkspace.getId()));
@@ -96,21 +98,42 @@ public class WorkspaceService {
         return new FindProfileResponseDto(findWorkspaceParticipant);
     }
 
-    public FindParticipantsResponseDto findParticipants(Long workspaceId) {
+    public FindWorkspaceParticipantsResponseDto findWorkspaceParticipants(Long workspaceId) {
         List<WorkspaceParticipant> findWorkspaceParticipants =
                 workspaceRepository.findWorkspaceParticipantsByWorkspaceId(workspaceId);
 
-        return new FindParticipantsResponseDto(
+        return new FindWorkspaceParticipantsResponseDto(
                 findWorkspaceParticipants.stream()
-                        .map(FindParticipantsResponseDto.ParticipantProfile::new)
+                        .map(FindWorkspaceParticipantsResponseDto.WorkspaceParticipantProfile::new)
                         .collect(Collectors.toList())
         );
     }
 
-    public CheckRoleResponseDto findParticipantRole(Long workspaceId) {
-        String memberId = sessionMemberProvider.getMemberId();
-        Role findRole = workspaceRepository.findParticipantRoleByMemberId(memberId, workspaceId);
+    public CheckRoleResponseDto findParticipantRole(Long workspaceId, String memberId) {
+        Role findRole = workspaceRepository.findParticipantRoleByMemberIdAndWorkspaceId(memberId, workspaceId);
 
         return new CheckRoleResponseDto(findRole);
+    }
+
+    public boolean isWorkspaceParticipants(Long workspaceId, String memberId) {
+        Workspace findWorkspace = workspaceRepository.findWorkspaceWithParticipantsByWorkspaceId(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+
+        return findWorkspace.isWorkspaceParticipants(memberId);
+    }
+
+    @Transactional
+    public void inviteMember(Long workspaceId, InviteMemberRequestDto requestDto) {
+        String memberId = dbMemberProvider.getMemberIdByEmail(requestDto.getEmail());
+        Workspace workspace = workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+        workspace.addParticipant(
+                memberId,
+                new Profile(
+                        String.valueOf(workspaceId),
+                        null,
+                        null
+                )
+        );
     }
 }

@@ -1,15 +1,16 @@
 package com.daon.backend.task.service;
 
-import com.daon.backend.task.domain.project.Project;
-import com.daon.backend.task.domain.project.ProjectCreator;
-import com.daon.backend.task.domain.project.ProjectRepository;
+import com.daon.backend.task.domain.project.*;
 import com.daon.backend.task.domain.workspace.*;
 import com.daon.backend.task.dto.request.CreateProjectRequestDto;
+import com.daon.backend.task.dto.request.InviteWorkspaceParticipantRequestDto;
+import com.daon.backend.task.dto.response.FindProjectParticipantsResponseDto;
 import com.daon.backend.task.dto.response.ProjectListResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -37,13 +38,11 @@ public class ProjectService {
         return projectRepository.save(project).getId();
     }
 
-    // 해당 워크스페이스가 없다면 오류발생
     private Workspace getWorkspaceOrElseThrow(Long workspaceId) {
-        return workspaceRepository.findWorkspaceById(workspaceId)
+        return workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
     }
 
-    // 워크스페이스 참여자가 아니라면 오류 발생
     private WorkspaceParticipant getWorkspaceParticipantOrElseThrow(Workspace workspace,
                                                                     String memberId) {
         return workspaceRepository.findWorkspaceParticipantByWorkspaceAndMemberId(workspace, memberId)
@@ -60,6 +59,34 @@ public class ProjectService {
                 workspace.getId(),
                 projectRepository.findProjectsByWorkspaceParticipant(wsParticipant).stream()
                         .map(ProjectListResponseDto.ProjectSummary::new)
+                        .collect(Collectors.toList())
+        );
+    }
+
+    @Transactional
+    public void inviteWorkspaceParticipant(Long projectId, InviteWorkspaceParticipantRequestDto requestDto) {
+        Long workspaceParticipantId = requestDto.getWorkspaceParticipantId();
+        WorkspaceParticipant workspaceParticipant = workspaceRepository.findWorkspaceParticipantByWorkspaceParticipantId(workspaceParticipantId)
+                .orElseThrow(() -> new NotWorkspaceParticipantException(workspaceParticipantId));
+
+        Project findProject = projectRepository.findProjectByProjectId(projectId)
+                .orElseThrow(() -> new ProjectNotFoundException(projectId));
+        findProject.addParticipant(workspaceParticipant.getMemberId(), workspaceParticipant);
+    }
+
+    public boolean isProjectParticipants(Long projectId, String memberId) {
+        Project findProject = projectRepository.findProjectWithParticipantsById(projectId)
+                .orElseThrow(() -> new ProjectNotFoundException(projectId));
+
+        return findProject.isProjectParticipants(memberId);
+    }
+
+    public FindProjectParticipantsResponseDto findProjectParticipants(Long projectId) {
+        List<ProjectParticipant> participants = projectRepository.findProjectParticipantsWithWorkspaceParticipantsByProjectId(projectId);
+
+        return new FindProjectParticipantsResponseDto(
+                participants.stream()
+                        .map(FindProjectParticipantsResponseDto.ProjectParticipantProfile::new)
                         .collect(Collectors.toList())
         );
     }

@@ -11,6 +11,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Getter
@@ -47,6 +48,14 @@ public class Project extends BaseTimeEntity {
         addParticipant(projectCreator.getMemberId(), projectCreator.getWorkspaceParticipant());
     }
 
+    public Optional<ProjectParticipant> findProjectParticipantByMemberId(String memberId) {
+        return participants.stream().filter(participant -> participant.getMemberId().equals(memberId)).findFirst();
+    }
+
+    public Optional<ProjectParticipant> findProjectParticipantByProjectParticipantId(Long projectParticipantId) {
+        return participants.stream().filter(participant -> participant.getId().equals(projectParticipantId)).findFirst();
+    }
+
     public void addParticipant(String memberId, WorkspaceParticipant workspaceParticipant) {
         this.participants.add(new ProjectParticipant(this, workspaceParticipant, memberId));
     }
@@ -59,11 +68,36 @@ public class Project extends BaseTimeEntity {
         this.boards.removeIf(board -> board.getId().equals(boardId));
     }
 
+    public Board getBoardByBoardId(Long boardId) {
+        if (boardId == null) {
+            return null;
+        }
+        return boards.stream()
+                .filter(board -> board.getId().equals(boardId))
+                .findFirst()
+                .orElseThrow(() -> new BoardNotFoundException(this.getId(), boardId));
+    }
+
+    public Task getTaskByTaskId(Long taskId) {
+        if (taskId == null) {
+            return null;
+        }
+        return tasks.stream()
+                .filter(task -> task.getId().equals(taskId))
+                .findFirst()
+                .orElseThrow(() -> new TaskNotFoundException(this.getId(), taskId));
+    }
+
     public void throwIfTitleExist(String title) {
         boards.stream()
                 .filter(board -> board.getTitle().equals(title))
                 .findFirst().ifPresent(board -> {
                     throw new SameBoardExistsException(title);
                 });
+    }
+
+    public boolean isProjectParticipants(String memberId) {
+        return this.participants.stream()
+                .anyMatch(projectParticipant -> projectParticipant.getMemberId().equals(memberId));
     }
 }

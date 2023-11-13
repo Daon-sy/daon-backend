@@ -27,8 +27,13 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
     }
 
     @Override
-    public Optional<Workspace> findWorkspaceById(Long workspaceId) {
+    public Optional<Workspace> findWorkspaceByWorkspaceId(Long workspaceId) {
         return workspaceJpaRepository.findById(workspaceId);
+    }
+
+    @Override
+    public Optional<Workspace> findWorkspaceWithParticipantsByWorkspaceId(Long workspaceId) {
+        return workspaceJpaRepository.findWorkspaceWithParticipantsById(workspaceId);
     }
 
     @Override
@@ -40,6 +45,11 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
     @Override
     public Optional<WorkspaceParticipant> findWorkspaceParticipantByWorkspaceAndMemberId(Workspace workspace, String memberId) {
         return workspaceParticipantJpaRepository.findByWorkspaceAndMemberId(workspace, memberId);
+    }
+
+    @Override
+    public Optional<WorkspaceParticipant> findWorkspaceParticipantByWorkspaceParticipantId(Long workspaceParticipantId) {
+        return workspaceParticipantJpaRepository.findById(workspaceParticipantId);
     }
 
     @Override
@@ -58,7 +68,7 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
     }
 
     @Override
-    public Role findParticipantRoleByMemberId(String memberId, Long workspaceId) {
+    public Role findParticipantRoleByMemberIdAndWorkspaceId(String memberId, Long workspaceId) {
         return jpaQueryFactory
                 .select(workspaceParticipant.role)
                 .from(workspaceParticipant)

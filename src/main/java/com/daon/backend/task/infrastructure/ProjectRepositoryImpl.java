@@ -3,7 +3,6 @@ package com.daon.backend.task.infrastructure;
 import com.daon.backend.task.domain.project.Project;
 import com.daon.backend.task.domain.project.ProjectParticipant;
 import com.daon.backend.task.domain.project.ProjectRepository;
-import com.daon.backend.task.domain.workspace.Workspace;
 import com.daon.backend.task.domain.workspace.WorkspaceParticipant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -24,8 +23,18 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     }
 
     @Override
-    public Optional<Project> findProjectWithParticipantsById(Long projectId) {
+    public Optional<Project> findProjectByProjectId(Long projectId) {
         return projectJpaRepository.findById(projectId);
+    }
+
+    @Override
+    public Optional<Project> findProjectWithParticipantsById(Long projectId) {
+        return projectJpaRepository.findProjectWithParticipantsById(projectId);
+    }
+
+    @Override
+    public List<ProjectParticipant> findProjectParticipantsWithWorkspaceParticipantsByProjectId(Long projectId) {
+        return projectParticipantJpaRepository.findProjectParticipantsWithWorkspaceParticipantsByProjectId(projectId);
     }
 
     @Override
@@ -34,13 +43,7 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     }
 
     @Override
-    public Optional<Project> findProjectByIdAndWorkspaceId(Long projectId, Long workspaceId) {
-        return projectJpaRepository.findProjectByIdAndWorkspaceId(projectId, workspaceId);
+    public Optional<Project> findProjectWithBoardsByProjectId(Long projectId) {
+        return projectJpaRepository.findProjectWithBoardsById(projectId);
     }
-
-    @Override
-    public Optional<ProjectParticipant> findProjectParticipantByProjectAndMemberId(Project project, String memberId) {
-        return projectParticipantJpaRepository.findByProjectAndMemberId(project, memberId);
-    }
-
 }

@@ -1,7 +1,6 @@
 package com.daon.backend.task.domain.project;
 
 import com.daon.backend.config.BaseTimeEntity;
-import com.daon.backend.task.domain.workspace.WorkspaceParticipant;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,6 +10,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -35,11 +35,11 @@ public class Task extends BaseTimeEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator_id")
-    private ProjectParticipant creator; //생성자
+    private ProjectParticipant creator;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "workspace_partipant_id")
-    private WorkspaceParticipant taskManager; //담당자?
+    @JoinColumn(name = "task_manager_id")
+    private ProjectParticipant taskManager;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
@@ -53,25 +53,30 @@ public class Task extends BaseTimeEntity {
     private List<TaskBookmark> taskBookmarks = new ArrayList<>();
 
     @Builder
-    public Task(String title,
-                String content,
-                LocalDateTime startDate,
-                LocalDateTime endDate,
-                boolean emergency,
-                TaskProgressStatus progressStatus,
-                ProjectParticipant creator,
-                WorkspaceParticipant taskManager,
-                Project project,
-                Board board) {
+    public Task(String title, String content, LocalDateTime startDate, LocalDateTime endDate, boolean emergency,
+                ProjectParticipant creator, ProjectParticipant taskManager, Project project, Board board) {
         this.title = title;
         this.content = content;
         this.startDate = startDate;
         this.endDate = endDate;
         this.emergency = emergency;
-        this.progressStatus = progressStatus;
         this.creator = creator;
         this.taskManager = taskManager;
         this.project = project;
         this.board = board;
+
+        this.progressStatus = TaskProgressStatus.TODO;
+    }
+
+    public void modifyTask(String title, String content, LocalDateTime startDate, LocalDateTime endDate, Boolean emergency,
+                           TaskProgressStatus progressStatus, Board board, ProjectParticipant taskManager) {
+        this.title = Optional.ofNullable(title).orElse(this.title);
+        this.content = Optional.ofNullable(content).orElse(this.content);
+        this.startDate = Optional.ofNullable(startDate).orElse(this.startDate);
+        this.endDate = Optional.ofNullable(endDate).orElse(this.endDate);
+        this.emergency = Optional.ofNullable(emergency).orElse(this.emergency);
+        this.progressStatus = Optional.ofNullable(progressStatus).orElse(this.progressStatus);
+        this.board = Optional.ofNullable(board).orElse(this.board);
+        this.taskManager = Optional.ofNullable(taskManager).orElse(this.taskManager);
     }
 }

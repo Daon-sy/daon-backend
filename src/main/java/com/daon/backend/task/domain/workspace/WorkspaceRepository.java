@@ -7,11 +7,15 @@ public interface WorkspaceRepository {
 
     Workspace save(Workspace workspace);
 
-    Optional<Workspace> findWorkspaceById(Long workspaceId);
+    Optional<Workspace> findWorkspaceByWorkspaceId(Long workspaceId);
+
+    Optional<Workspace> findWorkspaceWithParticipantsByWorkspaceId(Long workspaceId);
 
     List<Workspace> findWorkspacesByMemberId(String memberId);
 
     Optional<WorkspaceParticipant> findWorkspaceParticipantByWorkspaceAndMemberId(Workspace workspace, String memberId);
+
+    Optional<WorkspaceParticipant> findWorkspaceParticipantByWorkspaceParticipantId(Long workspaceParticipantId);
 
     Optional<Workspace> findWorkspaceByJoinCode(String joinCode);
 
@@ -19,5 +23,5 @@ public interface WorkspaceRepository {
 
     boolean existsWorkspaceParticipantByMemberIdAndWorkspaceId(String memberId, Long workspaceId);
 
-    Role findParticipantRoleByMemberId(String memberId, Long workspaceId);
+    Role findParticipantRoleByMemberIdAndWorkspaceId(String memberId, Long workspaceId);
 }

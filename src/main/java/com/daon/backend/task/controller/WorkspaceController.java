@@ -4,6 +4,7 @@ import com.daon.backend.common.response.CommonResponse;
 import com.daon.backend.task.domain.authority.CheckRole;
 import com.daon.backend.task.dto.request.CheckJoinCodeRequestDto;
 import com.daon.backend.task.dto.request.CreateWorkspaceRequestDto;
+import com.daon.backend.task.dto.request.InviteMemberRequestDto;
 import com.daon.backend.task.dto.request.JoinWorkspaceRequestDto;
 import com.daon.backend.task.dto.response.*;
 import com.daon.backend.task.service.WorkspaceService;
@@ -47,9 +48,8 @@ public class WorkspaceController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "워크스페이스 목록 조회 성공")
     })
-    @CheckRole(authority = WS_READ)
     @GetMapping
-    public CommonResponse<WorkspaceListResponseDto> workspaceList() {
+    public CommonResponse<WorkspaceListResponseDto> findWorkspaces() {
         WorkspaceListResponseDto workspaceListResponseDto = workspaceService.findAllWorkspace();
         return CommonResponse.createSuccess(workspaceListResponseDto);
     }
@@ -95,9 +95,22 @@ public class WorkspaceController {
     })
     @CheckRole(authority = WS_READ)
     @GetMapping("/{workspaceId}/participants")
-    public CommonResponse<FindParticipantsResponseDto> findParticipants(@PathVariable("workspaceId") Long workspaceId) {
-        FindParticipantsResponseDto result = workspaceService.findParticipants(workspaceId);
+    public CommonResponse<FindWorkspaceParticipantsResponseDto> findWorkspaceParticipants(@PathVariable("workspaceId") Long workspaceId) {
+        FindWorkspaceParticipantsResponseDto result = workspaceService.findWorkspaceParticipants(workspaceId);
 
         return CommonResponse.createSuccess(result);
+    }
+
+    @Operation(summary = "회원 초대", description = "회원 초대 요청입니다. (워크스페이스 참여자로 등록)")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "회원 초대 성공")
+    })
+    @CheckRole(authority = WSP_INVITE)
+    @PostMapping("/{workspaceId}/invite")
+    public CommonResponse<Void> inviteMember(@PathVariable("workspaceId") Long workspaceId,
+                                             @RequestBody InviteMemberRequestDto requestDto) {
+        workspaceService.inviteMember(workspaceId, requestDto);
+
+        return CommonResponse.createSuccess(null);
     }
 }

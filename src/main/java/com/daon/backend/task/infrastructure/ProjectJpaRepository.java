@@ -8,8 +8,15 @@ import java.util.Optional;
 
 public interface ProjectJpaRepository extends JpaRepository<Project, Long> {
 
+    // participants 함께 조회
+    // boards는 batch_size로 해결
+    @Override
+    @EntityGraph(attributePaths = {"workspace", "participants"})
+    Optional<Project> findById(Long projectId);
+
+    @EntityGraph(attributePaths = "participants")
+    Optional<Project> findProjectWithParticipantsById(Long projectId);
+
     @EntityGraph(attributePaths = "boards")
-    Optional<Project> findProjectByIdAndWorkspaceId(Long projectId, Long workspaceId);
-
-
+    Optional<Project> findProjectWithBoardsById(Long projectId);
 }

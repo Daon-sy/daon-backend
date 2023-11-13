@@ -10,12 +10,14 @@ public interface ProjectRepository {
 
     Project save(Project project);
 
+    Optional<Project> findProjectByProjectId(Long projectId);
+
     @EntityGraph("participants")
     Optional<Project> findProjectWithParticipantsById(Long projectId);
 
+    List<ProjectParticipant> findProjectParticipantsWithWorkspaceParticipantsByProjectId(Long projectId);
+
     List<Project> findProjectsByWorkspaceParticipant(WorkspaceParticipant workspaceParticipant);
 
-    Optional<Project> findProjectByIdAndWorkspaceId(Long projectId, Long workspaceId);
-
-    Optional<ProjectParticipant> findProjectParticipantByProjectAndMemberId(Project project, String memberId);
+    Optional<Project> findProjectWithBoardsByProjectId(Long projectId);
 }
