@@ -48,7 +48,7 @@ public class Task extends BaseTimeEntity {
     @JoinColumn(name = "board_id")
     private Board board;
 
-    @OneToMany(mappedBy = "task")
+    @OneToMany(mappedBy = "task", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<TaskBookmark> taskBookmarks = new ArrayList<>();
 
     @Builder
@@ -77,5 +77,13 @@ public class Task extends BaseTimeEntity {
         this.progressStatus = progressStatus;
         this.board = board;
         this.taskManager = taskManager;
+    }
+
+    public void addTaskBookmark(TaskBookmark taskBookmark) {
+        this.taskBookmarks.add(taskBookmark);
+    }
+
+    public void removeTaskBookmark(ProjectParticipant projectParticipant) {
+        this.taskBookmarks.removeIf(taskBookmark -> taskBookmark.getParticipant().equals(projectParticipant));
     }
 }
