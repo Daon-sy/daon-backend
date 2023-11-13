@@ -8,5 +8,4 @@ public interface MemberDetailsService {
 
     MemberDetails signIn(String email, String password);
 
-    ModifyMemberDto modify(UUID memberId, String email, String password, String name);
 }

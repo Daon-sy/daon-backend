@@ -40,9 +40,9 @@ public class MemberController {
             @ApiResponse(responseCode = "200", description = "회원 정보 수정 성공")
     })
     @PatchMapping("/members/{memberId}")
-    public  CommonResponse<Void> modifyMember(@RequestBody ModifyMemberDto dto,
+    public CommonResponse<Void> modifyMember(@RequestBody ModifyMemberDto requestDto ,
                                               @PathVariable UUID memberId){
-        memberService.modifyMember(dto, memberId);
+        memberService.modifyMember(requestDto , memberId);
         return CommonResponse.createSuccess(null);
     }
 }

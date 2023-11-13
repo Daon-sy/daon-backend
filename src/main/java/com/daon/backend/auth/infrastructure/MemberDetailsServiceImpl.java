@@ -27,13 +27,4 @@ public class MemberDetailsServiceImpl implements MemberDetailsService {
 
         return new MemberDetails(member.getId().toString(), member.getEmail(), member.getName());
     }
-
-    @Override
-    public ModifyMemberDto modify(UUID memberId, String email, String password, String name) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> MemberNotFoundException.byMemberId(memberId));
-        member.modifyMember(email, password, name, passwordEncoder);
-
-        return new ModifyMemberDto(member.getEmail(), member.getPassword(), member.getName());
-    }
 }

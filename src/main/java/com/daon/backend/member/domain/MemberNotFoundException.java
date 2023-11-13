@@ -17,5 +17,4 @@ public class MemberNotFoundException extends AbstractException {
     public static MemberNotFoundException byMemberId(UUID memberId) {
         return new MemberNotFoundException("존재하지 않는 회원입니다. 요청한 아이디: " + memberId);
     }
-
 }

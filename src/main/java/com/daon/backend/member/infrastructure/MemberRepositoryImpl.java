@@ -30,4 +30,5 @@ public class MemberRepositoryImpl implements MemberRepository {
     public Optional<Member> findById(UUID memberId) {
         return memberJpaRepository.findById(memberId);
     }
+
 }

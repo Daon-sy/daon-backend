@@ -36,6 +36,6 @@ public class MemberService {
     public void modifyMember(ModifyMemberDto dto, UUID memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> MemberNotFoundException.byMemberId(memberId));
+        member.modifyMember(dto.getEmail(), dto.getPassword(), dto.getName(), passwordEncoder);
     }
-
 }
