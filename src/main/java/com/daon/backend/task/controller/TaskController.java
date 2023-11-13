@@ -3,6 +3,7 @@ package com.daon.backend.task.controller;
 import com.daon.backend.common.response.CommonResponse;
 import com.daon.backend.task.domain.authority.CheckRole;
 import com.daon.backend.task.dto.request.CreateTaskRequestDto;
+import com.daon.backend.task.dto.request.ModifyProgressStatusRequestDto;
 import com.daon.backend.task.dto.request.ModifyTaskRequestDto;
 import com.daon.backend.task.dto.response.CreateTaskResponseDto;
 import com.daon.backend.task.dto.response.TaskListResponseDto;
@@ -64,6 +65,21 @@ public class TaskController {
                                            @PathVariable("taskId") Long taskId,
                                            @RequestBody ModifyTaskRequestDto requestDto) {
         taskService.modifyTask(projectId, taskId, requestDto);
+
+        return CommonResponse.createSuccess(null);
+    }
+
+    @Operation(summary = "할 일 진행 상태 변경", description = "할 일 진행 상태 변경 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "할 일 진행 상태 변경 성공")
+    })
+    @CheckRole(authority = TSK_UPDATE)
+    @PatchMapping("/{taskId}")
+    public CommonResponse<Void> modifyProgressStatus(@PathVariable("workspaceId") Long workspaceId,
+                                                     @PathVariable("projectId") Long projectId,
+                                                     @PathVariable("taskId") Long taskId,
+                                                     @RequestBody ModifyProgressStatusRequestDto requestDto) {
+        taskService.modifyTaskProgressStatus(projectId, taskId, requestDto);
 
         return CommonResponse.createSuccess(null);
     }

@@ -10,6 +10,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -77,5 +78,9 @@ public class Task extends BaseTimeEntity {
         this.progressStatus = progressStatus;
         this.board = board;
         this.taskManager = taskManager;
+    }
+
+    public void modifyProgressStatus(TaskProgressStatus progressStatus) {
+        this.progressStatus = Optional.ofNullable(progressStatus).orElse(this.progressStatus);
     }
 }
