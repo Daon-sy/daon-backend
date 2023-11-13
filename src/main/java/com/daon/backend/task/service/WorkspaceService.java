@@ -1,10 +1,7 @@
 package com.daon.backend.task.service;
 
 import com.daon.backend.task.domain.workspace.*;
-import com.daon.backend.task.dto.request.CheckJoinCodeRequestDto;
-import com.daon.backend.task.dto.request.CreateWorkspaceRequestDto;
-import com.daon.backend.task.dto.request.InviteMemberRequestDto;
-import com.daon.backend.task.dto.request.JoinWorkspaceRequestDto;
+import com.daon.backend.task.dto.request.*;
 import com.daon.backend.task.dto.response.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -136,4 +133,12 @@ public class WorkspaceService {
                 )
         );
     }
+
+    @Transactional
+    public void modifyWorkspace (ModifyWorkspaceRequestDto requestDto, Long workspaceId) {
+        Workspace workspace = workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+        workspace.modifyWorkspace(requestDto.getTitle(), requestDto.getDescription(), requestDto.getImageUrl(), requestDto.getSubject());
+    }
+
 }

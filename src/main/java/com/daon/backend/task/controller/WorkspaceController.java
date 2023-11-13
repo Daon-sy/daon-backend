@@ -1,11 +1,9 @@
 package com.daon.backend.task.controller;
 
 import com.daon.backend.common.response.CommonResponse;
+import com.daon.backend.member.dto.ModifyMemberDto;
 import com.daon.backend.task.domain.authority.CheckRole;
-import com.daon.backend.task.dto.request.CheckJoinCodeRequestDto;
-import com.daon.backend.task.dto.request.CreateWorkspaceRequestDto;
-import com.daon.backend.task.dto.request.InviteMemberRequestDto;
-import com.daon.backend.task.dto.request.JoinWorkspaceRequestDto;
+import com.daon.backend.task.dto.request.*;
 import com.daon.backend.task.dto.response.*;
 import com.daon.backend.task.service.WorkspaceService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,8 +17,9 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import static com.daon.backend.task.domain.authority.Authority.WSP_INVITE;
-import static com.daon.backend.task.domain.authority.Authority.WS_READ;
+import java.util.UUID;
+
+import static com.daon.backend.task.domain.authority.Authority.*;
 
 @Slf4j
 @RestController
@@ -111,6 +110,18 @@ public class WorkspaceController {
                                              @RequestBody InviteMemberRequestDto requestDto) {
         workspaceService.inviteMember(workspaceId, requestDto);
 
+        return CommonResponse.createSuccess(null);
+    }
+
+    @Operation(summary = "워크스페이스 수정", description = "워크스페이스 수정입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "워크스페이스 수정 성공")
+    })
+    @CheckRole(authority = WS_UPDATE)
+    @PatchMapping("/{workspaceId}")
+    public CommonResponse<Void> modifyWorkspace(@RequestBody ModifyWorkspaceRequestDto requestDto ,
+                                                @PathVariable("workspaceId") Long workspaceId){
+        workspaceService.modifyWorkspace(requestDto, workspaceId);
         return CommonResponse.createSuccess(null);
     }
 }
