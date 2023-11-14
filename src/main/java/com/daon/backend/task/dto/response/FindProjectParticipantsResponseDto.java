@@ -11,11 +11,11 @@ public class FindProjectParticipantsResponseDto {
 
     private int totalCount;
 
-    private List<ProjectParticipantProfile> participants;
+    private List<ProjectParticipantProfile> projectParticipants;
 
-    public FindProjectParticipantsResponseDto(List<ProjectParticipantProfile> participants) {
-        this.totalCount = participants.size();
-        this.participants = participants;
+    public FindProjectParticipantsResponseDto(List<ProjectParticipantProfile> projectParticipants) {
+        this.totalCount = projectParticipants.size();
+        this.projectParticipants = projectParticipants;
     }
 
     @Getter

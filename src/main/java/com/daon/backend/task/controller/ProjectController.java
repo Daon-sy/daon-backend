@@ -38,12 +38,10 @@ public class ProjectController {
     @ResponseStatus(HttpStatus.CREATED)
     @CheckRole(authority = PJ_CREATE)
     @PostMapping
-    public CommonResponse<CreateProjectResponseDto> createProject(
-            @PathVariable Long workspaceId,
-            @RequestBody @Valid CreateProjectRequestDto requestDto
-    ) {
-        Long projectId = projectService.createProject(workspaceId, requestDto);
-        return CommonResponse.createSuccess(new CreateProjectResponseDto(projectId));
+    public CommonResponse<CreateProjectResponseDto> createProject(@PathVariable Long workspaceId,
+                                                                  @RequestBody @Valid CreateProjectRequestDto requestDto) {
+        CreateProjectResponseDto result = projectService.createProject(workspaceId, requestDto);
+        return CommonResponse.createSuccess(result);
     }
 
     @Operation(summary = "프로젝트 목록 조회", description = "프로젝트 목록 조회 요청입니다.")
@@ -53,8 +51,8 @@ public class ProjectController {
     @CheckRole(authority = PJ_READ)
     @GetMapping
     public CommonResponse<ProjectListResponseDto> findProjects(@PathVariable Long workspaceId) {
-        ProjectListResponseDto projectListResponseDto = projectService.findAllProjectInWorkspace(workspaceId);
-        return CommonResponse.createSuccess(projectListResponseDto);
+        ProjectListResponseDto result = projectService.findAllProjectInWorkspace(workspaceId);
+        return CommonResponse.createSuccess(result);
     }
 
     @Operation(summary = "프로젝트 초대", description = "프로젝트 초대 요청입니다.")
@@ -65,15 +63,15 @@ public class ProjectController {
     @PostMapping("/{projectId}/invite")
     public CommonResponse<Void> inviteWorkspaceParticipant(@PathVariable("workspaceId") Long workspaceId,
                                                            @PathVariable("projectId") Long projectId,
-                                                           @RequestBody InviteWorkspaceParticipantRequestDto requestDto) {
+                                                           @RequestBody @Valid InviteWorkspaceParticipantRequestDto requestDto) {
         projectService.inviteWorkspaceParticipant(projectId, requestDto);
 
         return CommonResponse.createSuccess(null);
     }
 
-    @Operation(summary = "프로젝트 구성원 목록 조회", description = "프로젝트 구성원 목록 조회입니다.")
+    @Operation(summary = "프로젝트 참여자 목록 조회", description = "프로젝트 참여자 목록 조회입니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "프로젝트 구성원 목록 조회 성공")
+            @ApiResponse(responseCode = "200", description = "프로젝트 참여자 목록 조회 성공")
     })
     @CheckRole(authority = PJ_READ)
     @GetMapping("/{projectId}/participants")

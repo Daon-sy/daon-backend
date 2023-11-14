@@ -11,7 +11,9 @@ import java.util.List;
 public class ProjectListResponseDto {
 
     private Long workspaceId;
+
     private int totalCount;
+
     private List<ProjectSummary> projects;
 
 
@@ -26,7 +28,9 @@ public class ProjectListResponseDto {
     public static class ProjectSummary {
 
         private Long projectId;
+
         private String title;
+
         private String description;
 
         public ProjectSummary(Project project) {
