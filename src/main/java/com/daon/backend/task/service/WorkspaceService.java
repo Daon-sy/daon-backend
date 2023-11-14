@@ -54,6 +54,19 @@ public class WorkspaceService {
     }
 
     @Transactional
+    public Long createPersonalWorkspace(String memberId, String name, String email) {
+        Workspace workspace = Workspace.createOfPersonal(
+                new WorkspaceCreator(
+                        memberId,
+                        name,
+                        null,
+                        email
+                )
+        );
+        return workspaceRepository.save(workspace).getId();
+    }
+
+    @Transactional
     public void createPersonalWorkspace(WorkspaceCreator workspaceCreator) {
         Workspace personalWorkspace = Workspace.createOfPersonal(workspaceCreator);
         workspaceRepository.save(personalWorkspace);

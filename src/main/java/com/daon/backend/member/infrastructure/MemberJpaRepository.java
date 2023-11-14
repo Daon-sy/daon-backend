@@ -1,15 +1,17 @@
 package com.daon.backend.member.infrastructure;
 
 import com.daon.backend.member.domain.Member;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
-import java.util.UUID;
 
-public interface MemberJpaRepository extends JpaRepository<Member, UUID> {
+public interface MemberJpaRepository extends JpaRepository<Member, String> {
 
-    Optional<Member> findByEmail(String email);
+    @Override
+    @EntityGraph(attributePaths = "emails")
+    Optional<Member> findById(String memberId);
 
-    Optional<Member> findById(UUID memberId);
-
+    @EntityGraph(attributePaths = "emails")
+    Optional<Member> findByUsername(String username);
 }
