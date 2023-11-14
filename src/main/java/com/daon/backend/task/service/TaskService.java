@@ -2,6 +2,7 @@ package com.daon.backend.task.service;
 
 import com.daon.backend.task.domain.project.*;
 import com.daon.backend.task.dto.request.CreateTaskRequestDto;
+import com.daon.backend.task.dto.request.ModifyProgressStatusRequestDto;
 import com.daon.backend.task.dto.request.ModifyTaskRequestDto;
 import com.daon.backend.task.dto.request.SetBookmarkRequestDto;
 import com.daon.backend.task.dto.response.CreateTaskResponseDto;
@@ -64,13 +65,11 @@ public class TaskService {
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
     }
 
-    //해당 프로젝트가 없다면 오류발생
     private Project getProjectOrElseThrow(Long projectId) {
         return projectRepository.findProjectWithParticipantsById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
     }
 
-    //목록 리스트
     public TaskListResponseDto findAllTaskInProject(Long projectId) {
         Project project = getProjectOrElseThrow(projectId);
         List<Task> tasks = project.getTasks();
@@ -86,10 +85,10 @@ public class TaskService {
     public void modifyTask(Long projectId, Long taskId, ModifyTaskRequestDto requestDto) {
         Long taskManagerId = requestDto.getTaskManagerId();
 
-        Project findProject = getProjectByProjectId(projectId);
-        Board board = findProject.getBoardByBoardId(requestDto.getBoardId());
-        Task task = findProject.getTaskByTaskId(taskId);
-        ProjectParticipant taskManager = getProjectParticipantByProjectParticipantId(taskManagerId, findProject);
+        Project project = getProjectByProjectId(projectId);
+        Board board = project.getBoardByBoardId(requestDto.getBoardId());
+        Task task = project.getTaskByTaskId(taskId);
+        ProjectParticipant taskManager = getProjectParticipantByProjectParticipantId(taskManagerId, project);
 
         task.modifyTask(
                 requestDto.getTitle(),
@@ -125,5 +124,12 @@ public class TaskService {
         }
 
         return new SetBookmarkResponseDto(created);
+    }
+
+    @Transactional
+    public void modifyTaskProgressStatus(Long projectId, Long taskId, ModifyProgressStatusRequestDto requestDto) {
+        Project project = getProjectByProjectId(projectId);
+        Task task = project.getTaskByTaskId(taskId);
+        task.modifyProgressStatus(requestDto.getProgressStatus());
     }
 }

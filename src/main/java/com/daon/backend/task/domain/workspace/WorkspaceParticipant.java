@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Optional;
 
 @Entity @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -29,6 +30,13 @@ public class WorkspaceParticipant extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    private WorkspaceParticipant(Workspace workspace, Profile profile, String memberId, Role role) {
+        this.workspace = workspace;
+        this.profile = profile;
+        this.memberId = memberId;
+        this.role = role;
+    }
+
     public static WorkspaceParticipant withWorkspaceAdminRole(Workspace workspace, Profile profile, String memberId) {
         return new WorkspaceParticipant(workspace, profile, memberId, Role.WORKSPACE_ADMIN);
     }
@@ -41,10 +49,7 @@ public class WorkspaceParticipant extends BaseTimeEntity {
         return new WorkspaceParticipant(workspace, profile, memberId, Role.BASIC_PARTICIPANT);
     }
 
-    private WorkspaceParticipant(Workspace workspace, Profile profile, String memberId, Role role) {
-        this.workspace = workspace;
-        this.profile = profile;
-        this.memberId = memberId;
-        this.role = role;
+    public void modifyRole(Role role) {
+        this.role = Optional.ofNullable(role).orElse(this.role);
     }
 }

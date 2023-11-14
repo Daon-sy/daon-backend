@@ -10,6 +10,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -85,5 +86,9 @@ public class Task extends BaseTimeEntity {
 
     public void removeTaskBookmark(ProjectParticipant projectParticipant) {
         this.taskBookmarks.removeIf(taskBookmark -> taskBookmark.getParticipant().equals(projectParticipant));
+    }
+
+    public void modifyProgressStatus(TaskProgressStatus progressStatus) {
+        this.progressStatus = Optional.ofNullable(progressStatus).orElse(this.progressStatus);
     }
 }
