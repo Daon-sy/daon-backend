@@ -84,6 +84,7 @@ public class TaskController {
                                                         @PathVariable("taskId") Long taskId) {
         FindTaskResponseDto result = taskService.findTask(projectId, taskId);
         return CommonResponse.createSuccess(result);
+    }
 
     @Operation(summary = "할 일 진행 상태 변경", description = "할 일 진행 상태 변경 요청입니다.")
     @ApiResponses(value = {

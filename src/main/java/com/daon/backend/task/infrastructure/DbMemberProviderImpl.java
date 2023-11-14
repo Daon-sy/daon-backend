@@ -14,8 +14,9 @@ public class DbMemberProviderImpl implements DbMemberProvider {
 
     @Override
     public String getMemberIdByEmail(String email) {
-        return memberRepository.findByEmail(email)
-                .orElseThrow(() -> MemberNotFoundException.byEmail(email))
-                .getId().toString();
+        return null;
+//        return memberRepository.findByEmail(email)
+//                .orElseThrow(() -> MemberNotFoundException.byUsername(email))
+//                .getId().toString();
     }
 }

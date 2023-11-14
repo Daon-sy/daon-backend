@@ -1,8 +1,18 @@
-INSERT INTO member (member_id, created_at, modified_at, email, name, password)
-VALUES ('78cfb9f6-ec40-4ec7-b5bd-b7654fa014f8', '2023-11-11 17:38:13', '2023-11-11 17:38:13', 'user1@email.com', 'USER1', '$2a$10$Y9j.WBTfgOrytIlLyApHiuxdWp9V3PV4fRuYcgV9Mljk6nH3fB0OW'),
-       ('2831ccac-aef9-4359-abbb-1d432b1b8078', '2023-11-11 17:38:13', '2023-11-11 17:38:13', 'user2@email.com', 'USER2', '$2a$10$Y9j.WBTfgOrytIlLyApHiuxdWp9V3PV4fRuYcgV9Mljk6nH3fB0OW'),
-       ('4c624615-7123-4a63-9ade-0fd5889452cd', '2023-11-11 17:38:13', '2023-11-11 17:38:13', 'user3@email.com', 'USER3', '$2a$10$Y9j.WBTfgOrytIlLyApHiuxdWp9V3PV4fRuYcgV9Mljk6nH3fB0OW'),
-       ('c152ed2e-1978-4100-bf26-b0014af642b4', '2023-11-11 17:38:13', '2023-11-11 17:38:13', 'user4@email.com', 'USER4', '$2a$10$Y9j.WBTfgOrytIlLyApHiuxdWp9V3PV4fRuYcgV9Mljk6nH3fB0OW');
+INSERT INTO member (member_id, created_at, modified_at, username, name, password)
+VALUES ('78cfb9f6-ec40-4ec7-b5bd-b7654fa014f8', '2023-11-11 17:38:13', '2023-11-11 17:38:13', 'user1', 'USER1', '$2a$10$Y9j.WBTfgOrytIlLyApHiuxdWp9V3PV4fRuYcgV9Mljk6nH3fB0OW'),
+       ('2831ccac-aef9-4359-abbb-1d432b1b8078', '2023-11-11 17:38:13', '2023-11-11 17:38:13', 'user2', 'USER2', '$2a$10$Y9j.WBTfgOrytIlLyApHiuxdWp9V3PV4fRuYcgV9Mljk6nH3fB0OW'),
+       ('4c624615-7123-4a63-9ade-0fd5889452cd', '2023-11-11 17:38:13', '2023-11-11 17:38:13', 'user3', 'USER3', '$2a$10$Y9j.WBTfgOrytIlLyApHiuxdWp9V3PV4fRuYcgV9Mljk6nH3fB0OW'),
+       ('c152ed2e-1978-4100-bf26-b0014af642b4', '2023-11-11 17:38:13', '2023-11-11 17:38:13', 'user4', 'USER4', '$2a$10$Y9j.WBTfgOrytIlLyApHiuxdWp9V3PV4fRuYcgV9Mljk6nH3fB0OW');
+
+insert into member_email (created_at, modified_at, email, member_id)
+values ('2023-11-11 17:38:13', '2023-11-11 17:38:13', 'test1@email.com', '78cfb9f6-ec40-4ec7-b5bd-b7654fa014f8'),
+       ('2023-11-11 17:38:13', '2023-11-11 17:38:13', 'test2@email.com', '2831ccac-aef9-4359-abbb-1d432b1b8078'),
+       ('2023-11-11 17:38:13', '2023-11-11 17:38:13', 'test3@email.com', '4c624615-7123-4a63-9ade-0fd5889452cd'),
+       ('2023-11-11 17:38:13', '2023-11-11 17:38:13', 'test4@email.com', 'c152ed2e-1978-4100-bf26-b0014af642b4'),
+       ('2023-11-11 17:38:13', '2023-11-11 17:38:13', 'test5@email.com', '78cfb9f6-ec40-4ec7-b5bd-b7654fa014f8'),
+       ('2023-11-11 17:38:13', '2023-11-11 17:38:13', 'test6@email.com', '2831ccac-aef9-4359-abbb-1d432b1b8078'),
+       ('2023-11-11 17:38:13', '2023-11-11 17:38:13', 'test7@email.com', '4c624615-7123-4a63-9ade-0fd5889452cd'),
+       ('2023-11-11 17:38:13', '2023-11-11 17:38:13', 'test8@email.com', 'c152ed2e-1978-4100-bf26-b0014af642b4');
 
 
 INSERT INTO workspace (created_at, modified_at, description, division, image_url, join_code, subject, title)
