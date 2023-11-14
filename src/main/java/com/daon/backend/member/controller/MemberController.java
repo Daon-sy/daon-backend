@@ -1,7 +1,6 @@
 package com.daon.backend.member.controller;
 
-import com.daon.backend.common.response.CommonResponse;
-import com.daon.backend.member.dto.ModifyMemberDto;
+import com.daon.backend.member.dto.ModifyMemberRequestDto;
 import com.daon.backend.member.dto.SignUpRequestDto;
 import com.daon.backend.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,12 +12,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.UUID;
 
 @Tag(name = "Member", description = "Member domain API")
-@RequiredArgsConstructor
-@RequestMapping("/api")
 @RestController
+@RequiredArgsConstructor
+@RequestMapping("/api/members")
 public class MemberController {
 
     private final MemberService memberService;
@@ -29,20 +27,16 @@ public class MemberController {
     })
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/sign-up")
-    public CommonResponse<Void> signUp(@RequestBody @Valid SignUpRequestDto requestDto) {
+    public void signUp(@RequestBody @Valid SignUpRequestDto requestDto) {
         memberService.signUp(requestDto);
-
-        return CommonResponse.createSuccess(null);
     }
 
     @Operation(summary = "회원 정보 수정", description = "회원 정보 수정 요청입니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "회원 정보 수정 성공")
     })
-    @PatchMapping("/members/{memberId}")
-    public CommonResponse<Void> modifyMember(@RequestBody ModifyMemberDto requestDto ,
-                                              @PathVariable UUID memberId){
-        memberService.modifyMember(requestDto , memberId);
-        return CommonResponse.createSuccess(null);
+    @PatchMapping("/me")
+    public void modifyMember(@RequestBody ModifyMemberRequestDto requestDto){
+        memberService.modifyMember(requestDto);
     }
 }

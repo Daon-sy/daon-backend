@@ -16,7 +16,7 @@ public class AuthService {
     private final MemberDetailsService memberDetailsService;
 
     public Tokens signIn(SignInRequestDto requestDto) {
-        MemberDetails memberDetails = memberDetailsService.signIn(requestDto.getEmail(), requestDto.getPassword());
+        MemberDetails memberDetails = memberDetailsService.signIn(requestDto.getUsername(), requestDto.getPassword());
         return jwtManager.issueTokens(memberDetails.getMemberId());
     }
 

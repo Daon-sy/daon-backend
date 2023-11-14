@@ -17,11 +17,11 @@ public class MemberDetailsServiceImpl implements MemberDetailsService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public MemberDetails signIn(String email, String password) {
-        Member member = memberRepository.findByEmail(email)
-                .orElseThrow(() -> MemberNotFoundException.byEmail(email));
+    public MemberDetails signIn(String username, String password) {
+        Member member = memberRepository.findByUsername(username)
+                .orElseThrow(() -> MemberNotFoundException.byUsername(username));
         member.checkPassword(password, passwordEncoder);
 
-        return new MemberDetails(member.getId().toString(), member.getEmail(), member.getName());
+        return new MemberDetails(member.getId(), member.getUsername(), member.getName());
     }
 }

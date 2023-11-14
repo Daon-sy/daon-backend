@@ -41,7 +41,7 @@ public class AuthController {
             @ApiResponse(responseCode = "200", description = "로그인 성공")
     })
     @PostMapping("/sign-in")
-    public ResponseEntity<CommonResponse<Void>> signIn(@RequestBody @Valid SignInRequestDto requestDto) {
+    public ResponseEntity<Void> signIn(@RequestBody @Valid SignInRequestDto requestDto) {
         Tokens tokens = authService.signIn(requestDto);
         ResponseCookie rtkCookie = ResponseCookie.from("rtk", tokens.getRefreshToken().getValue())
                 .path("/")
@@ -59,8 +59,7 @@ public class AuthController {
                             HttpHeaders.SET_COOKIE,
                             rtkCookie.toString()
                     );
-                })
-                .body(CommonResponse.createSuccess(null));
+                }).build();
     }
 
     @Operation(summary = "엑세스 토큰 재발급", description = "엑세스 토큰을 재발급하여 인증 헤더에 담아줍니다.")
