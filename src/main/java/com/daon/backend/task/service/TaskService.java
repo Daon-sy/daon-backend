@@ -7,6 +7,7 @@ import com.daon.backend.task.dto.request.ModifyTaskRequestDto;
 import com.daon.backend.task.dto.request.SetBookmarkRequestDto;
 import com.daon.backend.task.dto.response.CreateTaskResponseDto;
 import com.daon.backend.task.dto.response.SetBookmarkResponseDto;
+import com.daon.backend.task.dto.response.FindTaskResponseDto;
 import com.daon.backend.task.dto.response.TaskListResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ public class TaskService {
 
     private final ProjectRepository projectRepository;
     private final TaskRepository taskRepository;
+
     private final SessionMemberProvider sessionMemberProvider;
 
     @Transactional
@@ -51,7 +53,7 @@ public class TaskService {
         return new CreateTaskResponseDto(taskId);
     }
 
-    private ProjectParticipant getProjectParticipantByProjectParticipantId(Long taskManagerId, Project project) {
+    private static ProjectParticipant getProjectParticipantByProjectParticipantId(Long taskManagerId, Project project) {
         ProjectParticipant taskManager = null;
         if (taskManagerId != null) {
             taskManager = project.findProjectParticipantByProjectParticipantId(taskManagerId)
@@ -100,6 +102,13 @@ public class TaskService {
                 board,
                 taskManager
         );
+    }
+
+    public FindTaskResponseDto findTask(Long projectId, Long taskId) {
+        Project findProject = getProjectByProjectId(projectId);
+        Task task = findProject.getTaskByTaskId(taskId);
+
+        return new FindTaskResponseDto(task);
     }
 
     @Transactional

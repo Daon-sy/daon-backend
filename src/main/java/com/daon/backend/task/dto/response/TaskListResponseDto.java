@@ -68,7 +68,7 @@ public class TaskListResponseDto {
             this.emergency = task.isEmergency();
             this.board = task.getBoard() != null ? new BoardSummary(task.getBoard().getId(), task.getBoard().getTitle()) : null;
             this.bookmark = task.getTaskBookmarks().stream()
-                    .anyMatch(p -> p.getId().equals(task.getTaskManager().getId()));
+                    .anyMatch(p -> p.getParticipant().getId().equals(task.getTaskManager().getId()));
             this.taskManager = task.getTaskManager() != null ? new TaskManager(task.getTaskManager()) : null;
         }
     }
