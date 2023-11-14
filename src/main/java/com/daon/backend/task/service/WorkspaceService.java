@@ -50,7 +50,6 @@ public class WorkspaceService {
 
     public void checkJoinCode(CheckJoinCodeRequestDto requestDto) {
         String requestedJoinCode = requestDto.getJoinCode();
-        // TODO 초대링크 도입 후 수정
         Workspace workspace = workspaceRepository.findWorkspaceByJoinCode(requestedJoinCode)
                 .orElseThrow();
         workspace.checkJoinCode(requestedJoinCode);
@@ -59,7 +58,6 @@ public class WorkspaceService {
     @Transactional
     public JoinWorkspaceResponseDto joinWorkspace(JoinWorkspaceRequestDto requestDto) {
         String requestedJoinCode = requestDto.getJoinCode();
-        // TODO 초대링크 도입 후 수정
         Workspace workspace = workspaceRepository.findWorkspaceByJoinCode(requestedJoinCode)
                 .orElseThrow();
         Long workspaceId = workspace.getId();
@@ -116,7 +114,7 @@ public class WorkspaceService {
         Workspace findWorkspace = workspaceRepository.findWorkspaceWithParticipantsByWorkspaceId(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
 
-        return findWorkspace.isWorkspaceParticipants(memberId);
+        return findWorkspace.isWorkspaceParticipantsByMemberId(memberId);
     }
 
     @Transactional
@@ -135,10 +133,18 @@ public class WorkspaceService {
     }
 
     @Transactional
-    public void modifyWorkspace (ModifyWorkspaceRequestDto requestDto, Long workspaceId) {
+    public void modifyWorkspace(ModifyWorkspaceRequestDto requestDto, Long workspaceId) {
         Workspace workspace = workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
         workspace.modifyWorkspace(requestDto.getTitle(), requestDto.getDescription(), requestDto.getImageUrl(), requestDto.getSubject());
     }
 
+    @Transactional
+    public void modifyParticipantRole(ModifyRoleRequestDto requestDto, Long workspaceId) {
+        Long workspaceParticipantId = requestDto.getWorkspaceParticipantId();
+        Workspace findWorkspace = workspaceRepository.findWorkspaceWithParticipantsByWorkspaceId(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+        WorkspaceParticipant workspaceParticipant = findWorkspace.findWorkspaceParticipant(workspaceParticipantId, workspaceId);
+        workspaceParticipant.modifyRole(requestDto.getRole());
+    }
 }

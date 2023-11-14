@@ -1,7 +1,6 @@
 package com.daon.backend.task.controller;
 
 import com.daon.backend.common.response.CommonResponse;
-import com.daon.backend.member.dto.ModifyMemberDto;
 import com.daon.backend.task.domain.authority.CheckRole;
 import com.daon.backend.task.dto.request.*;
 import com.daon.backend.task.dto.response.*;
@@ -16,8 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-
-import java.util.UUID;
 
 import static com.daon.backend.task.domain.authority.Authority.*;
 
@@ -98,6 +95,19 @@ public class WorkspaceController {
         FindWorkspaceParticipantsResponseDto result = workspaceService.findWorkspaceParticipants(workspaceId);
 
         return CommonResponse.createSuccess(result);
+    }
+
+    @Operation(summary = "워크스페이스 구성원 권한 변경", description = "워크스페이스 구성원 권한 변경 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "워크스페이스 구성원 권한 변경 성공")
+    })
+    @CheckRole(authority = WSP_ROLE_UPDATE)
+    @PatchMapping("/{workspaceId}/participants")
+    public CommonResponse<Void> modifyRole(@PathVariable("workspaceId") Long workspaceId,
+                                           @RequestBody ModifyRoleRequestDto requestDto) {
+        workspaceService.modifyParticipantRole(requestDto, workspaceId);
+
+        return CommonResponse.createSuccess(null);
     }
 
     @Operation(summary = "회원 초대", description = "회원 초대 요청입니다. (워크스페이스 참여자로 등록)")

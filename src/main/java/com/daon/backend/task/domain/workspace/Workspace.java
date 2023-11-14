@@ -23,6 +23,7 @@ public class Workspace extends BaseTimeEntity {
     private Long id;
 
     private String title;
+
     private String description;
 
     @Enumerated(EnumType.STRING)
@@ -98,9 +99,16 @@ public class Workspace extends BaseTimeEntity {
         return UUID.randomUUID().toString().replace("-", "").substring(0, 10);
     }
 
-    public boolean isWorkspaceParticipants(String memberId) {
+    public boolean isWorkspaceParticipantsByMemberId(String memberId) {
         return this.participants.stream()
                 .anyMatch(workspaceParticipant -> workspaceParticipant.getMemberId().equals(memberId));
+    }
+
+    public WorkspaceParticipant findWorkspaceParticipant(Long workspaceParticipantId, Long workspaceId) {
+        return this.participants.stream()
+                .filter(workspaceParticipant -> workspaceParticipant.getId().equals(workspaceParticipantId))
+                .findFirst()
+                .orElseThrow(() -> new NotWorkspaceParticipantException(workspaceId));
     }
 
     public void modifyWorkspace (String title, String description, String imageUrl, String subject) {
