@@ -1,6 +1,5 @@
 package com.daon.backend.task.controller;
 
-import com.daon.backend.common.response.CommonResponse;
 import com.daon.backend.task.domain.authority.CheckRole;
 import com.daon.backend.task.dto.request.CreateBoardRequestDto;
 import com.daon.backend.task.dto.response.FindBoardsResponseDto;
@@ -31,12 +30,9 @@ public class BoardController {
     @ResponseStatus(HttpStatus.CREATED)
     @CheckRole(authority = BD_CREATE)
     @PostMapping
-    public CommonResponse<Void> createBoard(@PathVariable("workspaceId") Long workspaceId,
-                                                              @PathVariable("projectId") Long projectId,
-                                                              @RequestBody @Valid CreateBoardRequestDto requestDto) {
+    public void createBoard(@PathVariable("projectId") Long projectId,
+                            @RequestBody @Valid CreateBoardRequestDto requestDto) {
         boardService.createBoard(projectId, requestDto);
-
-        return CommonResponse.createSuccess(null);
     }
 
     @Operation(summary = "보드 목록 조회", description = "보드 목록 조회 요청입니다.")
@@ -45,10 +41,8 @@ public class BoardController {
     })
     @CheckRole(authority = BD_READ)
     @GetMapping
-    public CommonResponse<FindBoardsResponseDto> findBoards(@PathVariable("workspaceId") Long workspaceId,
-                                                            @PathVariable("projectId") Long projectId) {
-        FindBoardsResponseDto result = boardService.findBoards(workspaceId, projectId);
-
-        return CommonResponse.createSuccess(result);
+    public FindBoardsResponseDto findBoards(@PathVariable("workspaceId") Long workspaceId,
+                                            @PathVariable("projectId") Long projectId) {
+        return boardService.findBoards(workspaceId, projectId);
     }
 }

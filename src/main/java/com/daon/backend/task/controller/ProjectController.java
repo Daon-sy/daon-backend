@@ -1,6 +1,5 @@
 package com.daon.backend.task.controller;
 
-import com.daon.backend.common.response.CommonResponse;
 import com.daon.backend.task.domain.authority.CheckRole;
 import com.daon.backend.task.dto.request.CreateProjectRequestDto;
 import com.daon.backend.task.dto.request.InviteWorkspaceParticipantRequestDto;
@@ -38,10 +37,9 @@ public class ProjectController {
     @ResponseStatus(HttpStatus.CREATED)
     @CheckRole(authority = PJ_CREATE)
     @PostMapping
-    public CommonResponse<CreateProjectResponseDto> createProject(@PathVariable Long workspaceId,
-                                                                  @RequestBody @Valid CreateProjectRequestDto requestDto) {
-        CreateProjectResponseDto result = projectService.createProject(workspaceId, requestDto);
-        return CommonResponse.createSuccess(result);
+    public CreateProjectResponseDto createProject(@PathVariable Long workspaceId,
+                                                  @RequestBody @Valid CreateProjectRequestDto requestDto) {
+        return projectService.createProject(workspaceId, requestDto);
     }
 
     @Operation(summary = "프로젝트 목록 조회", description = "프로젝트 목록 조회 요청입니다.")
@@ -50,9 +48,9 @@ public class ProjectController {
     })
     @CheckRole(authority = PJ_READ)
     @GetMapping
-    public CommonResponse<FindProjectsResponseDto> findProjects(@PathVariable Long workspaceId) {
-        FindProjectsResponseDto result = projectService.findAllProjectInWorkspace(workspaceId);
-        return CommonResponse.createSuccess(result);
+    public FindProjectsResponseDto findProjects(@PathVariable Long workspaceId) {
+
+        return projectService.findAllProjectInWorkspace(workspaceId);
     }
 
     @Operation(summary = "프로젝트 초대", description = "프로젝트 초대 요청입니다.")
@@ -61,12 +59,9 @@ public class ProjectController {
     })
     @CheckRole(authority = PJ_CREATE)
     @PostMapping("/{projectId}/invite")
-    public CommonResponse<Void> inviteWorkspaceParticipant(@PathVariable("workspaceId") Long workspaceId,
-                                                           @PathVariable("projectId") Long projectId,
-                                                           @RequestBody @Valid InviteWorkspaceParticipantRequestDto requestDto) {
+    public void inviteWorkspaceParticipant(@PathVariable("projectId") Long projectId,
+                                           @RequestBody @Valid InviteWorkspaceParticipantRequestDto requestDto) {
         projectService.inviteWorkspaceParticipant(projectId, requestDto);
-
-        return CommonResponse.createSuccess(null);
     }
 
     @Operation(summary = "프로젝트 참여자 목록 조회", description = "프로젝트 참여자 목록 조회입니다.")
@@ -75,10 +70,7 @@ public class ProjectController {
     })
     @CheckRole(authority = PJ_READ)
     @GetMapping("/{projectId}/participants")
-    public CommonResponse<FindProjectParticipantsResponseDto> findProjectParticipants(@PathVariable("workspaceId") Long workspaceId,
-                                                                                      @PathVariable("projectId") Long projectId) {
-        FindProjectParticipantsResponseDto result = projectService.findProjectParticipants(projectId);
-
-        return CommonResponse.createSuccess(result);
+    public FindProjectParticipantsResponseDto findProjectParticipants(@PathVariable("projectId") Long projectId) {
+        return projectService.findProjectParticipants(projectId);
     }
 }
