@@ -3,7 +3,9 @@ package com.daon.backend.task.service;
 import com.daon.backend.task.domain.project.*;
 import com.daon.backend.task.dto.request.CreateTaskRequestDto;
 import com.daon.backend.task.dto.request.ModifyTaskRequestDto;
+import com.daon.backend.task.dto.request.SetBookmarkRequestDto;
 import com.daon.backend.task.dto.response.CreateTaskResponseDto;
+import com.daon.backend.task.dto.response.SetBookmarkResponseDto;
 import com.daon.backend.task.dto.response.TaskDetailResponseDto;
 import com.daon.backend.task.dto.response.TaskListResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -108,5 +110,29 @@ public class TaskService {
         Task task = findProject.getTaskByTaskId(taskId);
 
         return new TaskDetailResponseDto(task);
+    }
+
+    @Transactional
+    public SetBookmarkResponseDto setBookmark(Long projectId, Long taskId, SetBookmarkRequestDto requestDto) {
+        String memberId = sessionMemberProvider.getMemberId();
+        Long projectParticipantId = requestDto.getProjectParticipantId();
+        boolean created;
+
+        ProjectParticipant projectParticipant =
+                projectRepository.findProjectParticipantByProjectParticipantId(projectParticipantId)
+                        .orElseThrow(() -> new NotProjectParticipantException(projectParticipantId, projectId));
+        Task task = taskRepository.findTaskByTaskId(taskId)
+                .orElseThrow(() -> new TaskNotFoundException(taskId));
+
+        boolean isBookmarked = taskRepository.existsTaskBookmarkByTaskIdAndProjectParticipantId(taskId, projectParticipantId);
+        if (isBookmarked) {
+            task.removeTaskBookmark(projectParticipant);
+            created = false;
+        } else {
+            task.addTaskBookmark(new TaskBookmark(task, projectParticipant, memberId));
+            created = true;
+        }
+
+        return new SetBookmarkResponseDto(created);
     }
 }
