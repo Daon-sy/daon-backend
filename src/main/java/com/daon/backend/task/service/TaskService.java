@@ -6,7 +6,7 @@ import com.daon.backend.task.dto.request.ModifyTaskRequestDto;
 import com.daon.backend.task.dto.request.SetBookmarkRequestDto;
 import com.daon.backend.task.dto.response.CreateTaskResponseDto;
 import com.daon.backend.task.dto.response.SetBookmarkResponseDto;
-import com.daon.backend.task.dto.response.TaskDetailResponseDto;
+import com.daon.backend.task.dto.response.FindTaskResponseDto;
 import com.daon.backend.task.dto.response.TaskListResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -105,11 +105,11 @@ public class TaskService {
         );
     }
 
-    public TaskDetailResponseDto detailTask(Long projectId, Long taskId) {
+    public FindTaskResponseDto findTask(Long projectId, Long taskId) {
         Project findProject = getProjectByProjectId(projectId);
         Task task = findProject.getTaskByTaskId(taskId);
 
-        return new TaskDetailResponseDto(task);
+        return new FindTaskResponseDto(task);
     }
 
     @Transactional

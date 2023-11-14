@@ -7,7 +7,7 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Getter
-public class TaskDetailResponseDto {
+public class FindTaskResponseDto {
 
     private Long taskId;
 
@@ -66,7 +66,7 @@ public class TaskDetailResponseDto {
         }
     }
 
-    public TaskDetailResponseDto(Task task) {
+    public FindTaskResponseDto(Task task) {
         this.taskId = task.getId();
         this.project = new ProjectDto(task.getProject());
         this.board = new BoardDto(task.getBoard());
@@ -78,6 +78,6 @@ public class TaskDetailResponseDto {
         this.progressStatus = task.getProgressStatus();
         this.emergency = task.isEmergency();
         this.bookmark = task.getTaskBookmarks().stream()
-                .anyMatch(p -> p.getId().equals(task.getTaskManager().getId()));
+                .anyMatch(p -> p.getParticipant().getId().equals(task.getTaskManager().getId()));
     }
 }

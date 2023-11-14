@@ -6,7 +6,7 @@ import com.daon.backend.task.dto.request.CreateTaskRequestDto;
 import com.daon.backend.task.dto.request.ModifyTaskRequestDto;
 import com.daon.backend.task.dto.request.SetBookmarkRequestDto;
 import com.daon.backend.task.dto.response.CreateTaskResponseDto;
-import com.daon.backend.task.dto.response.TaskDetailResponseDto;
+import com.daon.backend.task.dto.response.FindTaskResponseDto;
 import com.daon.backend.task.dto.response.SetBookmarkResponseDto;
 import com.daon.backend.task.dto.response.TaskListResponseDto;
 import com.daon.backend.task.service.TaskService;
@@ -77,10 +77,10 @@ public class TaskController {
     })
     @CheckRole(authority = TSK_READ)
     @GetMapping("/{taskId}")
-    public CommonResponse<TaskDetailResponseDto> findTaskDetail(@PathVariable("workspaceId") Long workspaceId,
-                                                                @PathVariable("projectId") Long projectId,
-                                                                @PathVariable("taskId") Long taskId) {
-        TaskDetailResponseDto result = taskService.detailTask(projectId, taskId);
+    public CommonResponse<FindTaskResponseDto> findTask(@PathVariable("workspaceId") Long workspaceId,
+                                                        @PathVariable("projectId") Long projectId,
+                                                        @PathVariable("taskId") Long taskId) {
+        FindTaskResponseDto result = taskService.findTask(projectId, taskId);
         return CommonResponse.createSuccess(result);
     }
 
