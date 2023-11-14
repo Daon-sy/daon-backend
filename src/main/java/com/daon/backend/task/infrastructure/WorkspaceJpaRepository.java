@@ -11,5 +11,4 @@ public interface WorkspaceJpaRepository extends JpaRepository<Workspace, Long> {
     @EntityGraph(attributePaths = "participants")
     Optional<Workspace> findWorkspaceWithParticipantsById(Long workspaceId);
 
-    Optional<Workspace> findWorkspaceByJoinCode(String joinCode);
 }

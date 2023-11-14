@@ -1,7 +1,10 @@
 package com.daon.backend.task.service;
 
 import com.daon.backend.task.domain.workspace.*;
-import com.daon.backend.task.dto.request.*;
+import com.daon.backend.task.dto.request.CreateWorkspaceRequestDto;
+import com.daon.backend.task.dto.request.InviteMemberRequestDto;
+import com.daon.backend.task.dto.request.ModifyRoleRequestDto;
+import com.daon.backend.task.dto.request.ModifyWorkspaceRequestDto;
 import com.daon.backend.task.dto.response.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +25,7 @@ public class WorkspaceService {
     private final DbMemberProvider dbMemberProvider;
 
     @Transactional
-    public Long createWorkspace(CreateWorkspaceRequestDto requestDto) {
+    public CreateWorkspaceResponseDto createWorkspace(CreateWorkspaceRequestDto requestDto) {
         Workspace workspace = Workspace.createOfGroup(
                 requestDto.getWorkspace().getTitle(),
                 requestDto.getWorkspace().getDescription(),
@@ -36,7 +39,9 @@ public class WorkspaceService {
                 )
         );
 
-        return workspaceRepository.save(workspace).getId();
+        Long workspaceId = workspaceRepository.save(workspace).getId();
+
+        return new CreateWorkspaceResponseDto(workspaceId);
     }
 
     public WorkspaceListResponseDto findAllWorkspace() {
@@ -46,35 +51,6 @@ public class WorkspaceService {
                         .map(WorkspaceListResponseDto.WorkspaceSummary::new)
                         .collect(Collectors.toList())
         );
-    }
-
-    public void checkJoinCode(CheckJoinCodeRequestDto requestDto) {
-        String requestedJoinCode = requestDto.getJoinCode();
-        Workspace workspace = workspaceRepository.findWorkspaceByJoinCode(requestedJoinCode)
-                .orElseThrow();
-        workspace.checkJoinCode(requestedJoinCode);
-    }
-
-    @Transactional
-    public JoinWorkspaceResponseDto joinWorkspace(JoinWorkspaceRequestDto requestDto) {
-        String requestedJoinCode = requestDto.getJoinCode();
-        Workspace workspace = workspaceRepository.findWorkspaceByJoinCode(requestedJoinCode)
-                .orElseThrow();
-        Long workspaceId = workspace.getId();
-
-        String memberId = sessionMemberProvider.getMemberId();
-        if (workspaceRepository.existsWorkspaceParticipantByMemberIdAndWorkspaceId(memberId, workspaceId)) {
-            throw new SameMemberExistsException(memberId);
-        }
-
-        Profile profile = new Profile(
-                requestDto.getProfile().getName(),
-                requestDto.getProfile().getImageUrl(),
-                requestDto.getProfile().getEmail()
-        );
-        workspace.addParticipant(memberId, profile);
-
-        return new JoinWorkspaceResponseDto(workspaceId);
     }
 
     @Transactional

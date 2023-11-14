@@ -9,14 +9,14 @@ import lombok.Getter;
 @AllArgsConstructor
 public class FindProfileResponseDto {
 
-    private Long participantId;
+    private Long workspaceParticipantId;
     private String name;
     private String imageUrl;
     private String email;
     private Role role;
 
     public FindProfileResponseDto(WorkspaceParticipant workspaceParticipant) {
-        this.participantId = workspaceParticipant.getId();
+        this.workspaceParticipantId = workspaceParticipant.getId();
         this.name = workspaceParticipant.getProfile().getName();
         this.imageUrl = workspaceParticipant.getProfile().getImageUrl();
         this.email = workspaceParticipant.getProfile().getEmail();

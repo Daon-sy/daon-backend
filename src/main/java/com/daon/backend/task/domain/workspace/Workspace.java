@@ -19,11 +19,13 @@ public class Workspace extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "workspace_id")
+    @Column(name = "workspace_id", updatable = false)
     private Long id;
 
+    @Column(nullable = false, length = 20)
     private String title;
 
+    @Column(length = 100)
     private String description;
 
     @Enumerated(EnumType.STRING)
@@ -31,11 +33,11 @@ public class Workspace extends BaseTimeEntity {
 
     private String imageUrl;
 
+    @Column(length = 10)
     private String subject;
 
     private String joinCode;
 
-    // @Transactional 끝나는 시점에 DB에 저장됌
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "workspace", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<WorkspaceParticipant> participants = new ArrayList<>();
 
@@ -49,7 +51,6 @@ public class Workspace extends BaseTimeEntity {
         this.subject = subject;
         this.joinCode = generateJoinCode();
 
-        // 생성자를 관리자로 등록
         this.participants.add(
                 WorkspaceParticipant.withWorkspaceAdminRole(
                         this,
@@ -87,12 +88,6 @@ public class Workspace extends BaseTimeEntity {
 
     public void addParticipant(String memberId, Profile profile) {
         this.participants.add(WorkspaceParticipant.withBasicParticipantRole(this, profile, memberId));
-    }
-
-    public void checkJoinCode(String joinCode) {
-        if (!this.joinCode.equals(joinCode)) {
-            throw new JoinCodeMismatchException(joinCode);
-        }
     }
 
     private String generateJoinCode() {

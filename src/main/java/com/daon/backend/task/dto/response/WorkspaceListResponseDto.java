@@ -10,6 +10,7 @@ import java.util.List;
 public class WorkspaceListResponseDto {
 
     private int totalCount;
+
     private List<WorkspaceSummary> workspaces;
 
     public WorkspaceListResponseDto(List<WorkspaceSummary> workspaces) {
@@ -22,16 +23,21 @@ public class WorkspaceListResponseDto {
     public static class WorkspaceSummary {
 
         private Long workspaceId;
+
         private String title;
+
         private String imageUrl;
+
         private String division;
 
-        // 편의용 생성자
+        private String description;
+
         public WorkspaceSummary(Workspace workspace) {
             this.workspaceId = workspace.getId();
             this.title = workspace.getTitle();
             this.imageUrl = workspace.getImageUrl();
             this.division = workspace.getDivision().name();
+            this.description = workspace.getDescription();
         }
     }
 }

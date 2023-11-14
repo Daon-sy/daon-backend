@@ -3,13 +3,10 @@ package com.daon.backend.task.controller;
 import com.daon.backend.task.domain.workspace.Role;
 import com.daon.backend.task.domain.workspace.Workspace;
 import com.daon.backend.task.domain.workspace.WorkspaceCreator;
-import com.daon.backend.task.dto.request.CheckJoinCodeRequestDto;
 import com.daon.backend.task.dto.request.CreateWorkspaceRequestDto;
 import com.daon.backend.task.dto.request.InviteMemberRequestDto;
-import com.daon.backend.task.dto.request.JoinWorkspaceRequestDto;
 import com.daon.backend.task.dto.response.FindWorkspaceParticipantsResponseDto;
 import com.daon.backend.task.dto.response.FindProfileResponseDto;
-import com.daon.backend.task.dto.response.JoinWorkspaceResponseDto;
 import com.daon.backend.task.dto.response.WorkspaceListResponseDto;
 import com.daon.backend.task.infrastructure.CheckRoleInterceptor;
 import com.daon.backend.task.service.WorkspaceService;
@@ -233,7 +230,7 @@ class WorkspaceControllerTest {
         // then
         result
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.data.participantId").value(responseDto.getParticipantId()))
+                .andExpect(jsonPath("$.data.participantId").value(responseDto.getWorkspaceParticipantId()))
                 .andExpect(jsonPath("$.data.name").value(responseDto.getName()))
                 .andExpect(jsonPath("$.data.imageUrl").value(responseDto.getImageUrl()))
                 .andExpect(jsonPath("$.data.email").value(responseDto.getEmail()))
@@ -270,11 +267,11 @@ class WorkspaceControllerTest {
         result
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.totalCount").value(responseDto.getTotalCount()))
-                .andExpect(jsonPath("$.data.participants[0].participantId").value(responseDto.getParticipants().get(0).getParticipantId()))
-                .andExpect(jsonPath("$.data.participants[0].name").value(responseDto.getParticipants().get(0).getName()))
-                .andExpect(jsonPath("$.data.participants[0].imageUrl").value(responseDto.getParticipants().get(0).getImageUrl()))
-                .andExpect(jsonPath("$.data.participants[0].email").value(responseDto.getParticipants().get(0).getEmail()))
-                .andExpect(jsonPath("$.data.participants[0].role").value(responseDto.getParticipants().get(0).getRole().name()));
+                .andExpect(jsonPath("$.data.participants[0].participantId").value(responseDto.getWorkspaceParticipants().get(0).getWorkspaceParticipantId()))
+                .andExpect(jsonPath("$.data.participants[0].name").value(responseDto.getWorkspaceParticipants().get(0).getName()))
+                .andExpect(jsonPath("$.data.participants[0].imageUrl").value(responseDto.getWorkspaceParticipants().get(0).getImageUrl()))
+                .andExpect(jsonPath("$.data.participants[0].email").value(responseDto.getWorkspaceParticipants().get(0).getEmail()))
+                .andExpect(jsonPath("$.data.participants[0].role").value(responseDto.getWorkspaceParticipants().get(0).getRole().name()));
     }
 
     @DisplayName("inviteMember(): 회원 초대")

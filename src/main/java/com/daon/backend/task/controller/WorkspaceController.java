@@ -33,11 +33,10 @@ public class WorkspaceController {
     })
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public CommonResponse<CreateWorkspaceResponseDto> createWorkspace(
-            @RequestBody @Valid CreateWorkspaceRequestDto requestDto
-    ) {
-        Long workspaceId = workspaceService.createWorkspace(requestDto);
-        return CommonResponse.createSuccess(new CreateWorkspaceResponseDto(workspaceId));
+    public CommonResponse<CreateWorkspaceResponseDto> createWorkspace(@RequestBody @Valid CreateWorkspaceRequestDto requestDto) {
+        CreateWorkspaceResponseDto result = workspaceService.createWorkspace(requestDto);
+
+        return CommonResponse.createSuccess(result);
     }
 
     @Operation(summary = "워크스페이스 목록 조회", description = "워크스페이스 목록 조회 요청입니다.")
@@ -46,29 +45,7 @@ public class WorkspaceController {
     })
     @GetMapping
     public CommonResponse<WorkspaceListResponseDto> findWorkspaces() {
-        WorkspaceListResponseDto workspaceListResponseDto = workspaceService.findAllWorkspace();
-        return CommonResponse.createSuccess(workspaceListResponseDto);
-    }
-
-    @Operation(summary = "참여코드 확인", description = "참여코드 확인 요청입니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "참여코드 확인 성공")
-    })
-    @CheckRole(authority = WSP_INVITE)
-    @PostMapping("/code")
-    public CommonResponse<Void> checkJoinCode(@RequestBody @Valid CheckJoinCodeRequestDto requestDto) {
-        workspaceService.checkJoinCode(requestDto);
-
-        return CommonResponse.createSuccess(null);
-    }
-
-    @Operation(summary = "워크스페이스 참여", description = "워크스페이스 참여 요청입니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "워크스페이스 참여성공")
-    })
-    @PostMapping("/join")
-    public CommonResponse<JoinWorkspaceResponseDto> joinWorkspace(@RequestBody @Valid JoinWorkspaceRequestDto requestDto) {
-        JoinWorkspaceResponseDto result = workspaceService.joinWorkspace(requestDto);
+        WorkspaceListResponseDto result = workspaceService.findAllWorkspace();
 
         return CommonResponse.createSuccess(result);
     }
@@ -78,16 +55,16 @@ public class WorkspaceController {
             @ApiResponse(responseCode = "200", description = "프로필 조회 성공")
     })
     @CheckRole(authority = WS_READ)
-    @GetMapping("/{workspaceId}/profile/me")
+    @GetMapping("/{workspaceId}/participants/me")
     public CommonResponse<FindProfileResponseDto> findProfile(@PathVariable("workspaceId") Long workspaceId) {
         FindProfileResponseDto result = workspaceService.findProfile(workspaceId);
 
         return CommonResponse.createSuccess(result);
     }
 
-    @Operation(summary = "워크스페이스 구성원 목록 조회", description = "워크스페이스 구성원 목록 조회 요청입니다.")
+    @Operation(summary = "워크스페이스 참여자 목록 조회", description = "워크스페이스 참여자 목록 조회 요청입니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "워크스페이스 구성원 목록 조회 성공")
+            @ApiResponse(responseCode = "200", description = "워크스페이스 참여자 목록 조회 성공")
     })
     @CheckRole(authority = WS_READ)
     @GetMapping("/{workspaceId}/participants")
@@ -97,19 +74,20 @@ public class WorkspaceController {
         return CommonResponse.createSuccess(result);
     }
 
-    @Operation(summary = "워크스페이스 구성원 권한 변경", description = "워크스페이스 구성원 권한 변경 요청입니다.")
+    @Operation(summary = "워크스페이스 참여자 권한 변경", description = "워크스페이스 참여자 권한 변경 요청입니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "워크스페이스 구성원 권한 변경 성공")
+            @ApiResponse(responseCode = "200", description = "워크스페이스 참여자 권한 변경 성공")
     })
     @CheckRole(authority = WSP_ROLE_UPDATE)
-    @PatchMapping("/{workspaceId}/participants")
+    @PatchMapping("/{workspaceId}/participants/role")
     public CommonResponse<Void> modifyRole(@PathVariable("workspaceId") Long workspaceId,
-                                           @RequestBody ModifyRoleRequestDto requestDto) {
+                                           @RequestBody @Valid ModifyRoleRequestDto requestDto) {
         workspaceService.modifyParticipantRole(requestDto, workspaceId);
 
         return CommonResponse.createSuccess(null);
     }
 
+    // TODO 워크스페이스 참여자 초대 API 수정 필요
     @Operation(summary = "회원 초대", description = "회원 초대 요청입니다. (워크스페이스 참여자로 등록)")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "회원 초대 성공")
@@ -132,6 +110,7 @@ public class WorkspaceController {
     public CommonResponse<Void> modifyWorkspace(@RequestBody ModifyWorkspaceRequestDto requestDto ,
                                                 @PathVariable("workspaceId") Long workspaceId){
         workspaceService.modifyWorkspace(requestDto, workspaceId);
+
         return CommonResponse.createSuccess(null);
     }
 }

@@ -1,12 +1,13 @@
 package com.daon.backend.task.dto.request;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.validation.Valid;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 @Getter
 @NoArgsConstructor
@@ -24,21 +25,16 @@ public class CreateWorkspaceRequestDto {
     public static class WorkspaceInfo {
 
         @NotBlank
+        @Size(max = 20)
         private String title;
 
         private String imageUrl;
 
+        @Size(max = 100)
         private String description;
 
+        @Size(max = 10)
         private String subject;
-
-        @Builder
-        public WorkspaceInfo(String title, String imageUrl, String description, String subject) {
-            this.title = title;
-            this.imageUrl = imageUrl;
-            this.description = description;
-            this.subject = subject;
-        }
     }
 
     @Getter
@@ -46,18 +42,12 @@ public class CreateWorkspaceRequestDto {
     public static class WorkspaceProfileInfo {
 
         @NotBlank
+        @Size(max = 20)
         private String name;
 
         private String imageUrl;
 
         private String email;
-
-        @Builder
-        public WorkspaceProfileInfo(String name, String imageUrl, String email) {
-            this.name = name;
-            this.imageUrl = imageUrl;
-            this.email = email;
-        }
     }
 
 }
