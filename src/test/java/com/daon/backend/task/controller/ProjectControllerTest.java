@@ -3,7 +3,7 @@ package com.daon.backend.task.controller;
 import com.daon.backend.task.dto.request.CreateProjectRequestDto;
 import com.daon.backend.task.dto.request.InviteWorkspaceParticipantRequestDto;
 import com.daon.backend.task.dto.response.CreateProjectResponseDto;
-import com.daon.backend.task.dto.response.ProjectListResponseDto;
+import com.daon.backend.task.dto.response.FindProjectsResponseDto;
 import com.daon.backend.task.infrastructure.CheckRoleInterceptor;
 import com.daon.backend.task.service.ProjectService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -97,10 +97,10 @@ class ProjectControllerTest {
         final Long workspaceId = 1L;
         final Long projectId = 1L;
 
-        ProjectListResponseDto responseDto = new ProjectListResponseDto(
+        FindProjectsResponseDto responseDto = new FindProjectsResponseDto(
                 workspaceId,
                 List.of(
-                        new ProjectListResponseDto.ProjectSummary(
+                        new FindProjectsResponseDto.ProjectSummary(
                                 projectId,
                                 "프로젝트 이름",
                                 "프로젝트 설명"

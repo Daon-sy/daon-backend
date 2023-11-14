@@ -20,5 +20,5 @@ public interface ProjectParticipantJpaRepository extends JpaRepository<ProjectPa
     @EntityGraph(attributePaths = "workspaceParticipant")
     List<ProjectParticipant> findProjectParticipantsWithWorkspaceParticipantsByProjectId(Long projectId);
 
-    Optional<ProjectParticipant> findByProjectAndMemberId(Project project, String memberId);
+    Optional<ProjectParticipant> findProjectParticipantByProjectIdAndMemberId(Long projectId, String memberId);
 }

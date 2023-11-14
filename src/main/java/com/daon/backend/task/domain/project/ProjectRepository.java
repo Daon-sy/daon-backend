@@ -12,10 +12,10 @@ public interface ProjectRepository {
 
     Optional<Project> findProjectByProjectId(Long projectId);
 
-    @EntityGraph("participants")
+    @EntityGraph(attributePaths = {"participants", "tasks"})
     Optional<Project> findProjectWithParticipantsById(Long projectId);
 
-    Optional<ProjectParticipant> findProjectParticipantByProjectParticipantId(Long projectParticipantId);
+    Optional<ProjectParticipant> findProjectParticipantByProjectIdAndMemberId(Long projectId, String memberId);
 
     List<ProjectParticipant> findProjectParticipantsWithWorkspaceParticipantsByProjectId(Long projectId);
 

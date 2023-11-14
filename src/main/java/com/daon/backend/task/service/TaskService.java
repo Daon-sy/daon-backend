@@ -4,11 +4,10 @@ import com.daon.backend.task.domain.project.*;
 import com.daon.backend.task.dto.request.CreateTaskRequestDto;
 import com.daon.backend.task.dto.request.ModifyProgressStatusRequestDto;
 import com.daon.backend.task.dto.request.ModifyTaskRequestDto;
-import com.daon.backend.task.dto.request.SetBookmarkRequestDto;
 import com.daon.backend.task.dto.response.CreateTaskResponseDto;
-import com.daon.backend.task.dto.response.SetBookmarkResponseDto;
 import com.daon.backend.task.dto.response.FindTaskResponseDto;
-import com.daon.backend.task.dto.response.TaskListResponseDto;
+import com.daon.backend.task.dto.response.FindTasksResponseDto;
+import com.daon.backend.task.dto.response.SetBookmarkResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,8 +32,8 @@ public class TaskService {
 
         Project project = getProjectByProjectId(projectId);
         ProjectParticipant taskCreator = project.findProjectParticipantByMemberId(memberId)
-                .orElseThrow(() -> new NotProjectParticipantException(memberId, project.getId()));
-        ProjectParticipant taskManager = getProjectParticipantByProjectParticipantId(taskManagerId, project);
+                .orElseThrow(() -> new NotProjectParticipantException(memberId, projectId));
+        ProjectParticipant taskManager = getProjectParticipantByProjectParticipantId(taskManagerId, project, memberId);
         Board board = project.getBoardByBoardId(requestDto.getBoardId());
 
         Task task = Task.builder()
@@ -43,6 +42,7 @@ public class TaskService {
                 .startDate(requestDto.getStartDate())
                 .endDate(requestDto.getEndDate())
                 .emergency(requestDto.isEmergency())
+                .progressStatus(requestDto.getProgressStatus())
                 .creator(taskCreator)
                 .taskManager(taskManager)
                 .project(project)
@@ -53,11 +53,11 @@ public class TaskService {
         return new CreateTaskResponseDto(taskId);
     }
 
-    private static ProjectParticipant getProjectParticipantByProjectParticipantId(Long taskManagerId, Project project) {
+    private ProjectParticipant getProjectParticipantByProjectParticipantId(Long taskManagerId, Project project, String memberId) {
         ProjectParticipant taskManager = null;
         if (taskManagerId != null) {
             taskManager = project.findProjectParticipantByProjectParticipantId(taskManagerId)
-                    .orElseThrow(() -> new NotProjectParticipantException(taskManagerId, project.getId()));
+                    .orElseThrow(() -> new NotProjectParticipantException(memberId, project.getId()));
         }
         return taskManager;
     }
@@ -72,25 +72,26 @@ public class TaskService {
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
     }
 
-    public TaskListResponseDto findAllTaskInProject(Long projectId) {
+    public FindTasksResponseDto findAllTaskInProject(Long projectId) {
         Project project = getProjectOrElseThrow(projectId);
         List<Task> tasks = project.getTasks();
 
-        return new TaskListResponseDto(
+        return new FindTasksResponseDto(
                 tasks.stream()
-                        .map(TaskListResponseDto.TaskSummary::new)
+                        .map(FindTasksResponseDto.TaskSummary::new)
                         .collect(Collectors.toList())
         );
     }
 
     @Transactional
     public void modifyTask(Long projectId, Long taskId, ModifyTaskRequestDto requestDto) {
+        String memberId = sessionMemberProvider.getMemberId();
         Long taskManagerId = requestDto.getTaskManagerId();
 
         Project project = getProjectByProjectId(projectId);
         Board board = project.getBoardByBoardId(requestDto.getBoardId());
         Task task = project.getTaskByTaskId(taskId);
-        ProjectParticipant taskManager = getProjectParticipantByProjectParticipantId(taskManagerId, project);
+        ProjectParticipant taskManager = getProjectParticipantByProjectParticipantId(taskManagerId, project, memberId);
 
         task.modifyTask(
                 requestDto.getTitle(),
@@ -112,14 +113,15 @@ public class TaskService {
     }
 
     @Transactional
-    public SetBookmarkResponseDto setBookmark(Long projectId, Long taskId, SetBookmarkRequestDto requestDto) {
+    public SetBookmarkResponseDto setBookmark(Long projectId, Long taskId) {
         String memberId = sessionMemberProvider.getMemberId();
-        Long projectParticipantId = requestDto.getProjectParticipantId();
         boolean created;
 
         ProjectParticipant projectParticipant =
-                projectRepository.findProjectParticipantByProjectParticipantId(projectParticipantId)
-                        .orElseThrow(() -> new NotProjectParticipantException(projectParticipantId, projectId));
+                projectRepository.findProjectParticipantByProjectIdAndMemberId(projectId, memberId)
+                        .orElseThrow(() -> new NotProjectParticipantException(memberId, projectId));
+        Long projectParticipantId = projectParticipant.getId();
+
         Task task = taskRepository.findTaskByTaskId(taskId)
                 .orElseThrow(() -> new TaskNotFoundException(taskId));
 

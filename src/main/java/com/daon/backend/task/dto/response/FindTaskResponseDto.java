@@ -11,13 +11,15 @@ public class FindTaskResponseDto {
 
     private Long taskId;
 
-    private ProjectDto project;
+    private ProjectSummary project;
 
-    private BoardDto board;
+    private BoardSummary board;
 
     private String title;
+
     private String content;
-    private TaskManagerDto taskManager;
+
+    private TaskManager taskManager;
 
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDateTime startDate;
@@ -26,16 +28,21 @@ public class FindTaskResponseDto {
     private LocalDateTime endDate;
 
     private TaskProgressStatus progressStatus;
+
     private boolean emergency;
+
     private boolean bookmark;
 
     @Getter
-    public static class ProjectDto {
+    public static class ProjectSummary {
+
         private Long projectId;
+
         private String title;
+
         private String description;
 
-        public ProjectDto(Project project) {
+        public ProjectSummary(Project project) {
             this.projectId = project.getId();
             this.title = project.getTitle();
             this.description = project.getDescription();
@@ -43,24 +50,29 @@ public class FindTaskResponseDto {
     }
 
     @Getter
-    public static class BoardDto {
+    public static class BoardSummary {
+
         private Long boardId;
+
         private String title;
 
-        public BoardDto(Board board) {
+        public BoardSummary(Board board) {
             this.boardId = board.getId();
             this.title = board.getTitle();
         }
     }
 
     @Getter
-    public static class TaskManagerDto {
-        private Long participantId;
+    public static class TaskManager {
+
+        private Long projectParticipantId;
+
         private String name;
+
         private String imageUrl;
 
-        public TaskManagerDto(ProjectParticipant participant) {
-            this.participantId = participant.getId();
+        public TaskManager(ProjectParticipant participant) {
+            this.projectParticipantId = participant.getId();
             this.name = participant.getWorkspaceParticipant().getProfile().getName();
             this.imageUrl = participant.getWorkspaceParticipant().getProfile().getImageUrl();
         }
@@ -68,11 +80,11 @@ public class FindTaskResponseDto {
 
     public FindTaskResponseDto(Task task) {
         this.taskId = task.getId();
-        this.project = new ProjectDto(task.getProject());
-        this.board = new BoardDto(task.getBoard());
+        this.project = new ProjectSummary(task.getProject());
+        this.board = new BoardSummary(task.getBoard());
         this.title = task.getTitle();
         this.content = task.getContent();
-        this.taskManager = new TaskManagerDto(task.getTaskManager());
+        this.taskManager = new TaskManager(task.getTaskManager());
         this.startDate = task.getStartDate();
         this.endDate = task.getEndDate();
         this.progressStatus = task.getProgressStatus();

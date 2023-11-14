@@ -6,7 +6,7 @@ import com.daon.backend.task.dto.request.CreateProjectRequestDto;
 import com.daon.backend.task.dto.request.InviteWorkspaceParticipantRequestDto;
 import com.daon.backend.task.dto.response.CreateProjectResponseDto;
 import com.daon.backend.task.dto.response.FindProjectParticipantsResponseDto;
-import com.daon.backend.task.dto.response.ProjectListResponseDto;
+import com.daon.backend.task.dto.response.FindProjectsResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,16 +52,16 @@ public class ProjectService {
                 .orElseThrow(() -> new NotWorkspaceParticipantException(memberId, workspace.getId()));
     }
 
-    public ProjectListResponseDto findAllProjectInWorkspace(Long workspaceId) {
+    public FindProjectsResponseDto findAllProjectInWorkspace(Long workspaceId) {
         Workspace workspace = getWorkspaceOrElseThrow(workspaceId);
 
         String memberId = sessionMemberProvider.getMemberId();
         WorkspaceParticipant wsParticipant = getWorkspaceParticipantOrElseThrow(workspace, memberId);
 
-        return new ProjectListResponseDto(
+        return new FindProjectsResponseDto(
                 workspace.getId(),
                 projectRepository.findProjectsByWorkspaceParticipant(wsParticipant).stream()
-                        .map(ProjectListResponseDto.ProjectSummary::new)
+                        .map(FindProjectsResponseDto.ProjectSummary::new)
                         .collect(Collectors.toList())
         );
     }

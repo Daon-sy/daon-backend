@@ -6,7 +6,7 @@ import com.daon.backend.task.dto.request.CreateProjectRequestDto;
 import com.daon.backend.task.dto.request.InviteWorkspaceParticipantRequestDto;
 import com.daon.backend.task.dto.response.CreateProjectResponseDto;
 import com.daon.backend.task.dto.response.FindProjectParticipantsResponseDto;
-import com.daon.backend.task.dto.response.ProjectListResponseDto;
+import com.daon.backend.task.dto.response.FindProjectsResponseDto;
 import com.daon.backend.task.service.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -50,8 +50,8 @@ public class ProjectController {
     })
     @CheckRole(authority = PJ_READ)
     @GetMapping
-    public CommonResponse<ProjectListResponseDto> findProjects(@PathVariable Long workspaceId) {
-        ProjectListResponseDto result = projectService.findAllProjectInWorkspace(workspaceId);
+    public CommonResponse<FindProjectsResponseDto> findProjects(@PathVariable Long workspaceId) {
+        FindProjectsResponseDto result = projectService.findAllProjectInWorkspace(workspaceId);
         return CommonResponse.createSuccess(result);
     }
 

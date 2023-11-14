@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @AllArgsConstructor
-public class ProjectListResponseDto {
+public class FindProjectsResponseDto {
 
     private Long workspaceId;
 
@@ -17,7 +17,7 @@ public class ProjectListResponseDto {
     private List<ProjectSummary> projects;
 
 
-    public ProjectListResponseDto(Long workspaceId, List<ProjectSummary> projects) {
+    public FindProjectsResponseDto(Long workspaceId, List<ProjectSummary> projects) {
         this.workspaceId = workspaceId;
         this.totalCount = projects.size();
         this.projects = projects;
