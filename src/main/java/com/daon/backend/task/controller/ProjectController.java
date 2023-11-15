@@ -2,7 +2,7 @@ package com.daon.backend.task.controller;
 
 import com.daon.backend.task.domain.authority.CheckRole;
 import com.daon.backend.task.dto.project.CreateProjectRequestDto;
-import com.daon.backend.task.dto.workspace.InviteWorkspaceParticipantRequestDto;
+import com.daon.backend.task.dto.project.InviteWorkspaceParticipantRequestDto;
 import com.daon.backend.task.dto.project.CreateProjectResponseDto;
 import com.daon.backend.task.dto.project.FindProjectParticipantsResponseDto;
 import com.daon.backend.task.dto.project.FindProjectsResponseDto;

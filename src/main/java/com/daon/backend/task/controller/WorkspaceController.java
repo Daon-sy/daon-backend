@@ -79,18 +79,6 @@ public class WorkspaceController {
         workspaceService.modifyParticipantRole(requestDto, workspaceId);
     }
 
-    // TODO 워크스페이스 참여자 초대 API 수정 필요
-    @Operation(summary = "회원 초대", description = "회원 초대 요청입니다. (워크스페이스 참여자로 등록)")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "회원 초대 성공")
-    })
-    @CheckRole(authority = WSP_INVITE)
-    @PostMapping("/{workspaceId}/invite")
-    public void inviteMember(@PathVariable("workspaceId") Long workspaceId,
-                             @RequestBody InviteMemberRequestDto requestDto) {
-        workspaceService.inviteMember(workspaceId, requestDto);
-    }
-
     @Operation(summary = "워크스페이스 수정", description = "워크스페이스 수정입니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "워크스페이스 수정 성공")

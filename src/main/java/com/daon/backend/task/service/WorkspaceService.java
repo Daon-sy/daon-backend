@@ -19,7 +19,6 @@ public class WorkspaceService {
 
     private final WorkspaceRepository workspaceRepository;
     private final SessionMemberProvider sessionMemberProvider;
-    private final DbMemberProvider dbMemberProvider;
 
     @Transactional
     public CreateWorkspaceResponseDto createWorkspace(CreateWorkspaceRequestDto requestDto) {
@@ -95,21 +94,6 @@ public class WorkspaceService {
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
 
         return findWorkspace.isWorkspaceParticipantsByMemberId(memberId);
-    }
-
-    @Transactional
-    public void inviteMember(Long workspaceId, InviteMemberRequestDto requestDto) {
-        String memberId = dbMemberProvider.getMemberIdByEmail(requestDto.getEmail());
-        Workspace workspace = workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
-                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
-        workspace.addParticipant(
-                memberId,
-                new Profile(
-                        String.valueOf(workspaceId),
-                        null,
-                        null
-                )
-        );
     }
 
     @Transactional

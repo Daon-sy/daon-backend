@@ -3,7 +3,7 @@ package com.daon.backend.task.service;
 import com.daon.backend.task.domain.project.*;
 import com.daon.backend.task.domain.workspace.*;
 import com.daon.backend.task.dto.project.CreateProjectRequestDto;
-import com.daon.backend.task.dto.workspace.InviteWorkspaceParticipantRequestDto;
+import com.daon.backend.task.dto.project.InviteWorkspaceParticipantRequestDto;
 import com.daon.backend.task.dto.project.CreateProjectResponseDto;
 import com.daon.backend.task.dto.project.FindProjectParticipantsResponseDto;
 import com.daon.backend.task.dto.project.FindProjectsResponseDto;
