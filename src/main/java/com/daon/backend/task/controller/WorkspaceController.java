@@ -46,11 +46,11 @@ public class WorkspaceController {
         return workspaceService.findAllWorkspace();
     }
 
-    @Operation(summary = "프로필 조회", description = "그룹 워크스페이스 내 프로필 조회 요청입니다.")
+    @Operation(summary = "내 프로필 조회", description = "내 프로필 조회 요청입니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "프로필 조회 성공")
+            @ApiResponse(responseCode = "200", description = "내 프로필 조회 성공")
     })
-    @CheckRole(authority = WS_READ)
+    @CheckRole(authority = PF_READ)
     @GetMapping("/{workspaceId}/participants/me")
     public FindProfileResponseDto findProfile(@PathVariable("workspaceId") Long workspaceId) {
 
