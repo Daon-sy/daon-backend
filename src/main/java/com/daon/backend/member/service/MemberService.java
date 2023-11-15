@@ -4,6 +4,7 @@ import com.daon.backend.member.domain.Member;
 import com.daon.backend.member.domain.MemberNotFoundException;
 import com.daon.backend.member.domain.MemberRepository;
 import com.daon.backend.member.domain.PasswordEncoder;
+import com.daon.backend.member.dto.FindMemberResponseDto;
 import com.daon.backend.member.dto.ModifyMemberRequestDto;
 import com.daon.backend.member.dto.SignUpRequestDto;
 import lombok.RequiredArgsConstructor;
@@ -48,5 +49,13 @@ public class MemberService {
                         requestDto.getName(),
                         passwordEncoder
                 );
+    }
+
+    public FindMemberResponseDto findMember() {
+        String memberId = sessionMemberProvider.getMemberId();
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> MemberNotFoundException.byMemberId(memberId));
+
+        return new FindMemberResponseDto(member);
     }
 }
