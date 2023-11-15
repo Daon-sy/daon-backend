@@ -46,11 +46,11 @@ public class WorkspaceController {
         return workspaceService.findAllWorkspace();
     }
 
-    @Operation(summary = "프로필 조회", description = "그룹 워크스페이스 내 프로필 조회 요청입니다.")
+    @Operation(summary = "내 프로필 조회", description = "내 프로필 조회 요청입니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "프로필 조회 성공")
+            @ApiResponse(responseCode = "200", description = "내 프로필 조회 성공")
     })
-    @CheckRole(authority = WS_READ)
+    @CheckRole(authority = PF_READ)
     @GetMapping("/{workspaceId}/participants/me")
     public FindProfileResponseDto findProfile(@PathVariable("workspaceId") Long workspaceId) {
 
@@ -88,6 +88,17 @@ public class WorkspaceController {
     public void modifyWorkspace(@RequestBody ModifyWorkspaceRequestDto requestDto,
                                 @PathVariable("workspaceId") Long workspaceId) {
         workspaceService.modifyWorkspace(requestDto, workspaceId);
+    }
+
+    @Operation(summary = "내 프로필 수정", description = "내 프로필 수정입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "내 프로필 수정 성공")
+    })
+    @CheckRole(authority = PF_READ)
+    @PatchMapping("/{workspaceId}/participants/me")
+    public void modifyProfile(@PathVariable("workspaceId") Long workspaceId,
+                              @RequestBody @Valid ModifyProfileRequestDto requestDto) {
+        workspaceService.modifyProfile(workspaceId, requestDto);
     }
 
     @Operation(summary = "워크스페이스 단건 조회", description = "워크스페이스 단건 조회 요청입니다.")

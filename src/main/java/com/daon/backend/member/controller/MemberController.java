@@ -1,5 +1,6 @@
 package com.daon.backend.member.controller;
 
+import com.daon.backend.member.dto.FindMemberResponseDto;
 import com.daon.backend.member.dto.ModifyMemberRequestDto;
 import com.daon.backend.member.dto.SignUpRequestDto;
 import com.daon.backend.member.service.MemberService;
@@ -38,5 +39,15 @@ public class MemberController {
     @PatchMapping("/me")
     public void modifyMember(@RequestBody ModifyMemberRequestDto requestDto){
         memberService.modifyMember(requestDto);
+    }
+
+    @Operation(summary = "나의 정보 조회", description = "나의 정보 조회 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "나의 정보 조회 성공")
+    })
+    @GetMapping("/me")
+    public FindMemberResponseDto findMember() {
+
+        return memberService.findMember();
     }
 }

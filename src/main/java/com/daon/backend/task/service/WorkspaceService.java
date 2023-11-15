@@ -63,16 +63,6 @@ public class WorkspaceService {
         workspaceRepository.save(workspace);
     }
 
-    public FindProfileResponseDto findProfile(Long workspaceId) {
-        String memberId = sessionMemberProvider.getMemberId();
-        Workspace workspace = workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
-                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
-        WorkspaceParticipant findWorkspaceParticipant = workspaceRepository.findWorkspaceParticipantByWorkspaceAndMemberId(workspace, memberId)
-                .orElseThrow(() -> new NotWorkspaceParticipantException(memberId, workspace.getId()));
-
-        return new FindProfileResponseDto(findWorkspaceParticipant);
-    }
-
     public FindWorkspaceParticipantsResponseDto findWorkspaceParticipants(Long workspaceId) {
         List<WorkspaceParticipant> workspaceParticipants =
                 workspaceRepository.findWorkspaceParticipantsByWorkspaceId(workspaceId);
@@ -109,8 +99,31 @@ public class WorkspaceService {
         Long workspaceParticipantId = requestDto.getWorkspaceParticipantId();
         Workspace workspace = workspaceRepository.findWorkspaceWithParticipantsByWorkspaceId(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
-        WorkspaceParticipant workspaceParticipant = workspace.findWorkspaceParticipant(workspaceParticipantId, workspaceId);
+        WorkspaceParticipant workspaceParticipant = workspace.findWorkspaceParticipantByWorkspaceParticipantId(workspaceParticipantId, workspaceId);
         workspaceParticipant.modifyRole(requestDto.getRole());
+    }
+
+    @Transactional
+    public void modifyProfile(Long workspaceId, ModifyProfileRequestDto requestDto) {
+        String memberId = sessionMemberProvider.getMemberId();
+        Workspace findWorkspace = workspaceRepository.findWorkspaceWithParticipantsByWorkspaceId(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+
+        WorkspaceParticipant workspaceParticipant = findWorkspace.findWorkspaceParticipantByMemberId(memberId);
+        workspaceParticipant.getProfile().modifyProfile(
+                requestDto.getName(),
+                requestDto.getImageUrl(),
+                requestDto.getEmail()
+        );
+    }
+
+    public FindProfileResponseDto findProfile(Long workspaceId) {
+        String memberId = sessionMemberProvider.getMemberId();
+        Workspace findWorkspace = workspaceRepository.findWorkspaceWithParticipantsByWorkspaceId(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+
+        WorkspaceParticipant workspaceParticipant = findWorkspace.findWorkspaceParticipantByMemberId(memberId);
+        return new FindProfileResponseDto(workspaceParticipant);
     }
 
     public FindWorkspaceResponseDto findWorkspace(Long workspaceId) {

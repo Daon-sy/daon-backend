@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.util.Optional;
 
 @Getter
 @Embeddable
@@ -23,5 +24,11 @@ public class Profile {
         this.name = name;
         this.imageUrl = imageUrl;
         this.email = email;
+    }
+
+    public void modifyProfile(String name, String imageUrl, String email) {
+        this.name = Optional.ofNullable(name).orElse(this.name);
+        this.imageUrl = Optional.ofNullable(imageUrl).orElse(this.imageUrl);
+        this.email = Optional.ofNullable(email).orElse(this.email);
     }
 }

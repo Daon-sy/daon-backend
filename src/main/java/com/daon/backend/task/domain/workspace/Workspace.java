@@ -94,11 +94,18 @@ public class Workspace extends BaseTimeEntity {
                 .anyMatch(workspaceParticipant -> workspaceParticipant.getMemberId().equals(memberId));
     }
 
-    public WorkspaceParticipant findWorkspaceParticipant(Long workspaceParticipantId, Long workspaceId) {
+    public WorkspaceParticipant findWorkspaceParticipantByWorkspaceParticipantId(Long workspaceParticipantId, Long workspaceId) {
         return this.participants.stream()
                 .filter(workspaceParticipant -> workspaceParticipant.getId().equals(workspaceParticipantId))
                 .findFirst()
                 .orElseThrow(() -> new NotWorkspaceParticipantException(workspaceId));
+    }
+
+    public WorkspaceParticipant findWorkspaceParticipantByMemberId(String memberId) {
+        return this.participants.stream()
+                .filter(workspaceParticipant -> workspaceParticipant.getMemberId().equals(memberId))
+                .findFirst()
+                .orElseThrow(() -> new NotWorkspaceParticipantException(memberId, id));
     }
 
     public void modifyWorkspace (String title, String description, String imageUrl, String subject) {
