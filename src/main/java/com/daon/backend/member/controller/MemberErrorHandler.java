@@ -1,7 +1,7 @@
 package com.daon.backend.member.controller;
 
 import com.daon.backend.common.exception.DomainSpecificAdvice;
-import com.daon.backend.common.response.CommonResponse;
+import com.daon.backend.common.response.ErrorResponse;
 import com.daon.backend.member.domain.EmailNotFoundException;
 import com.daon.backend.member.domain.MemberNotFoundException;
 import com.daon.backend.member.domain.PasswordMismatchException;
@@ -16,34 +16,34 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class MemberErrorHandler {
 
     @ExceptionHandler(AlreadyExistsMemberException.class)
-    public ResponseEntity<CommonResponse<Void>> alreadyExistsMemberExceptionHandle(AlreadyExistsMemberException e) {
+    public ResponseEntity<ErrorResponse> alreadyExistsMemberExceptionHandle(AlreadyExistsMemberException e) {
         log.error("{}", e.getMessage());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(CommonResponse.createError("이미 존재하는 회원입니다."));
+                .body(ErrorResponse.createError("이미 존재하는 회원입니다."));
     }
 
     @ExceptionHandler(MemberNotFoundException.class)
-    public ResponseEntity<CommonResponse<Void>> memberNotFoundExceptionHandle(MemberNotFoundException e) {
+    public ResponseEntity<ErrorResponse> memberNotFoundExceptionHandle(MemberNotFoundException e) {
         log.error("{}", e.getMessage());
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(CommonResponse.createError("존재하지 않는 이메일입니다."));
+                .body(ErrorResponse.createError("존재하지 않는 회원 아이디입니다."));
     }
 
     @ExceptionHandler(PasswordMismatchException.class)
-    public ResponseEntity<CommonResponse<Void>> passwordMismatchExceptionHandle(PasswordMismatchException e) {
+    public ResponseEntity<ErrorResponse> passwordMismatchExceptionHandle(PasswordMismatchException e) {
         log.error("{}", e.getMessage());
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(CommonResponse.createError("비밀번호가 일치하지 않습니다."));
+                .body(ErrorResponse.createError("비밀번호가 일치하지 않습니다."));
     }
 
     @ExceptionHandler(EmailNotFoundException.class)
-    public ResponseEntity<CommonResponse<Void>> emailNotFoundExceptionHandle(EmailNotFoundException e) {
+    public ResponseEntity<ErrorResponse> emailNotFoundExceptionHandle(EmailNotFoundException e) {
         log.error("{}", e.getMessage());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(CommonResponse.createError("이메일이 존재하지 않습니다."));
+                .body(ErrorResponse.createError("이메일이 존재하지 않습니다."));
     }
 }

@@ -1,7 +1,7 @@
 package com.daon.backend.task.controller;
 
 import com.daon.backend.common.exception.DomainSpecificAdvice;
-import com.daon.backend.common.response.CommonResponse;
+import com.daon.backend.common.response.ErrorResponse;
 import com.daon.backend.task.domain.project.BoardNotFoundException;
 import com.daon.backend.task.domain.project.SameBoardExistsException;
 import lombok.extern.slf4j.Slf4j;
@@ -14,16 +14,16 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 public class BoardExceptionHandler {
 
     @ExceptionHandler(SameBoardExistsException.class)
-    public ResponseEntity<CommonResponse<Void>> sameBoardExistsExceptionHandle(SameBoardExistsException e) {
+    public ResponseEntity<ErrorResponse> sameBoardExistsExceptionHandle(SameBoardExistsException e) {
         log.info("{}", e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(CommonResponse.createError("동일한 이름의 보드가 존재합니다."));
+                .body(ErrorResponse.createError("동일한 이름의 보드가 존재합니다."));
     }
 
     @ExceptionHandler(BoardNotFoundException.class)
-    public ResponseEntity<CommonResponse<Void>> boardNotFoundExceptionHandle(BoardNotFoundException e) {
+    public ResponseEntity<ErrorResponse> boardNotFoundExceptionHandle(BoardNotFoundException e) {
         log.info("{}", e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(CommonResponse.createError("사용 중인 보드가 없습니다."));
+                .body(ErrorResponse.createError("사용 중인 보드가 없습니다."));
     }
 }

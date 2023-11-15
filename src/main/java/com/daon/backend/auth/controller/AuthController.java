@@ -4,7 +4,7 @@ import com.daon.backend.auth.domain.Tokens;
 import com.daon.backend.auth.domain.UnauthenticatedMemberException;
 import com.daon.backend.auth.dto.SignInRequestDto;
 import com.daon.backend.auth.service.AuthService;
-import com.daon.backend.common.response.CommonResponse;
+import com.daon.backend.common.response.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -67,7 +67,7 @@ public class AuthController {
             @ApiResponse(responseCode = "200", description = "재발급 성공")
     })
     @PostMapping("/reissue")
-    public ResponseEntity<CommonResponse<Void>> reissueToken(HttpServletRequest request) {
+    public ResponseEntity<Void> reissueToken(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies == null) throw new UnauthenticatedMemberException();
         String refreshTokenValue = Arrays.stream(cookies)
@@ -99,7 +99,6 @@ public class AuthController {
                                 rtkCookie
                         );
                     }
-                })
-                .body(CommonResponse.createSuccess(null));
+                }).build();
     }
 }

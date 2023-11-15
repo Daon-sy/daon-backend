@@ -2,10 +2,12 @@ package com.daon.backend.task.service;
 
 import com.daon.backend.task.domain.project.*;
 import com.daon.backend.task.domain.workspace.*;
-import com.daon.backend.task.dto.request.CreateProjectRequestDto;
-import com.daon.backend.task.dto.request.InviteWorkspaceParticipantRequestDto;
-import com.daon.backend.task.dto.response.FindProjectParticipantsResponseDto;
-import com.daon.backend.task.dto.response.ProjectListResponseDto;
+import com.daon.backend.task.dto.project.CreateProjectRequestDto;
+import com.daon.backend.task.dto.project.InviteWorkspaceParticipantRequestDto;
+import com.daon.backend.task.dto.project.CreateProjectResponseDto;
+import com.daon.backend.task.dto.project.FindProjectParticipantsResponseDto;
+import com.daon.backend.task.dto.project.FindProjectsResponseDto;
+import com.daon.backend.task.dto.ProjectSummary;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,7 +25,7 @@ public class ProjectService {
     private final SessionMemberProvider sessionMemberProvider;
 
     @Transactional
-    public Long createProject(Long workspaceId, CreateProjectRequestDto requestDto) {
+    public CreateProjectResponseDto createProject(Long workspaceId, CreateProjectRequestDto requestDto) {
         Workspace workspace = getWorkspaceOrElseThrow(workspaceId);
 
         String memberId = sessionMemberProvider.getMemberId();
@@ -31,11 +33,13 @@ public class ProjectService {
 
         Project project = Project.builder()
                 .workspace(workspace)
-                .title(requestDto.getProjectName())
-                .description(requestDto.getProjectDescription())
+                .title(requestDto.getTitle())
+                .description(requestDto.getDescription())
                 .projectCreator(new ProjectCreator(memberId, wsParticipant))
                 .build();
-        return projectRepository.save(project).getId();
+        Long projectId = projectRepository.save(project).getId();
+
+        return new CreateProjectResponseDto(projectId);
     }
 
     private Workspace getWorkspaceOrElseThrow(Long workspaceId) {
@@ -49,16 +53,16 @@ public class ProjectService {
                 .orElseThrow(() -> new NotWorkspaceParticipantException(memberId, workspace.getId()));
     }
 
-    public ProjectListResponseDto findAllProjectInWorkspace(Long workspaceId) {
+    public FindProjectsResponseDto findAllProjectInWorkspace(Long workspaceId) {
         Workspace workspace = getWorkspaceOrElseThrow(workspaceId);
 
         String memberId = sessionMemberProvider.getMemberId();
         WorkspaceParticipant wsParticipant = getWorkspaceParticipantOrElseThrow(workspace, memberId);
 
-        return new ProjectListResponseDto(
+        return new FindProjectsResponseDto(
                 workspace.getId(),
                 projectRepository.findProjectsByWorkspaceParticipant(wsParticipant).stream()
-                        .map(ProjectListResponseDto.ProjectSummary::new)
+                        .map(ProjectSummary::new)
                         .collect(Collectors.toList())
         );
     }

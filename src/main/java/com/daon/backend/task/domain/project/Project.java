@@ -27,10 +27,8 @@ public class Project extends BaseTimeEntity {
     @JoinColumn(name = "workspace_id")
     private Workspace workspace;
 
-    @OneToMany(mappedBy = "project")
-    private List<Task> tasks = new ArrayList<>();
-
     private String title;
+
     private String description;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
@@ -41,11 +39,14 @@ public class Project extends BaseTimeEntity {
 
     @Builder
     public Project(Workspace workspace, String title, String description, ProjectCreator projectCreator) {
+        String DEFAULT_BOARD_TITLE = "미분류";
+
         this.workspace = workspace;
         this.title = title;
         this.description = description;
 
         addParticipant(projectCreator.getMemberId(), projectCreator.getWorkspaceParticipant());
+        addBoard(DEFAULT_BOARD_TITLE);
     }
 
     public Optional<ProjectParticipant> findProjectParticipantByMemberId(String memberId) {
@@ -76,16 +77,6 @@ public class Project extends BaseTimeEntity {
                 .filter(board -> board.getId().equals(boardId))
                 .findFirst()
                 .orElseThrow(() -> new BoardNotFoundException(this.getId(), boardId));
-    }
-
-    public Task getTaskByTaskId(Long taskId) {
-        if (taskId == null) {
-            return null;
-        }
-        return tasks.stream()
-                .filter(task -> task.getId().equals(taskId))
-                .findFirst()
-                .orElseThrow(() -> new TaskNotFoundException(this.getId(), taskId));
     }
 
     public void throwIfTitleExist(String title) {

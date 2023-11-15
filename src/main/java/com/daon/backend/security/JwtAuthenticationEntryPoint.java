@@ -1,6 +1,6 @@
 package com.daon.backend.security;
 
-import com.daon.backend.common.response.CommonResponse;
+import com.daon.backend.common.response.ErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,7 +29,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
                          AuthenticationException authException) throws IOException, ServletException {
         log.debug("Not Authenticated Request. Request Uri : {} {}", request.getMethod(), request.getRequestURI());
 
-        String responseBody = objectMapper.writeValueAsString(CommonResponse.createError("토큰이 유효하지 않습니다."));
+        String responseBody = objectMapper.writeValueAsString(ErrorResponse.createError("토큰이 유효하지 않습니다."));
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setCharacterEncoding(StandardCharsets.UTF_8.name());

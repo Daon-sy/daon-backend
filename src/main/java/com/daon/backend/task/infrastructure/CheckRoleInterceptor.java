@@ -6,7 +6,7 @@ import com.daon.backend.task.domain.authority.CheckRole;
 import com.daon.backend.task.domain.authority.UnAuthorizedMemberException;
 import com.daon.backend.task.domain.project.NotProjectParticipantException;
 import com.daon.backend.task.domain.workspace.NotWorkspaceParticipantException;
-import com.daon.backend.task.dto.response.CheckRoleResponseDto;
+import com.daon.backend.task.dto.workspace.CheckRoleResponseDto;
 import com.daon.backend.task.service.ProjectService;
 import com.daon.backend.task.service.SessionMemberProvider;
 import com.daon.backend.task.service.WorkspaceService;

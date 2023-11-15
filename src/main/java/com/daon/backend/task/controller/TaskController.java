@@ -1,15 +1,13 @@
 package com.daon.backend.task.controller;
 
-import com.daon.backend.common.response.CommonResponse;
 import com.daon.backend.task.domain.authority.CheckRole;
-import com.daon.backend.task.dto.request.CreateTaskRequestDto;
-import com.daon.backend.task.dto.request.ModifyProgressStatusRequestDto;
-import com.daon.backend.task.dto.request.ModifyTaskRequestDto;
-import com.daon.backend.task.dto.request.SetBookmarkRequestDto;
-import com.daon.backend.task.dto.response.CreateTaskResponseDto;
-import com.daon.backend.task.dto.response.FindTaskResponseDto;
-import com.daon.backend.task.dto.response.SetBookmarkResponseDto;
-import com.daon.backend.task.dto.response.TaskListResponseDto;
+import com.daon.backend.task.dto.task.CreateTaskRequestDto;
+import com.daon.backend.task.dto.task.ModifyProgressStatusRequestDto;
+import com.daon.backend.task.dto.task.ModifyTaskRequestDto;
+import com.daon.backend.task.dto.task.CreateTaskResponseDto;
+import com.daon.backend.task.dto.task.FindTaskResponseDto;
+import com.daon.backend.task.dto.task.FindTasksResponseDto;
+import com.daon.backend.task.dto.task.SetBookmarkResponseDto;
 import com.daon.backend.task.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -19,6 +17,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 import static com.daon.backend.task.domain.authority.Authority.*;
 
@@ -38,11 +38,9 @@ public class TaskController {
     @ResponseStatus(HttpStatus.CREATED)
     @CheckRole(authority = TSK_CREATE)
     @PostMapping
-    public CommonResponse<CreateTaskResponseDto> createTask(@PathVariable Long projectId,
-                                                            @RequestBody CreateTaskRequestDto requestDto) {
-        CreateTaskResponseDto result = taskService.createTask(projectId, requestDto);
-
-        return CommonResponse.createSuccess(result);
+    public CreateTaskResponseDto createTask(@PathVariable Long projectId,
+                                            @RequestBody @Valid CreateTaskRequestDto requestDto) {
+        return taskService.createTask(projectId, requestDto);
     }
 
     @Operation(summary = "할 일 목록 조회", description = "할 일 목록 조회 요청입니다.")
@@ -51,10 +49,8 @@ public class TaskController {
     })
     @CheckRole(authority = TSK_READ)
     @GetMapping
-    public CommonResponse<TaskListResponseDto> findTasks(@PathVariable("workspaceId") Long workspaceId,
-                                                         @PathVariable("projectId") Long projectId) {
-        TaskListResponseDto result = taskService.findAllTaskInProject(projectId);
-        return CommonResponse.createSuccess(result);
+    public FindTasksResponseDto findTasks(@PathVariable("projectId") Long projectId) {
+        return taskService.findAllTaskInProject(projectId);
     }
 
     @Operation(summary = "할 일 수정", description = "할 일 수정 요청입니다.")
@@ -63,27 +59,22 @@ public class TaskController {
     })
     @CheckRole(authority = TSK_UPDATE)
     @PutMapping("/{taskId}")
-    public CommonResponse<Void> modifyTask(@PathVariable("workspaceId") Long workspaceId,
-                                           @PathVariable("projectId") Long projectId,
-                                           @PathVariable("taskId") Long taskId,
-                                           @RequestBody ModifyTaskRequestDto requestDto) {
+    public void modifyTask(@PathVariable("projectId") Long projectId,
+                           @PathVariable("taskId") Long taskId,
+                           @RequestBody @Valid ModifyTaskRequestDto requestDto) {
         taskService.modifyTask(projectId, taskId, requestDto);
-
-        return CommonResponse.createSuccess(null);
     }
 
 
-    @Operation(summary = "할 일 상세 조회", description = "할 일 상세 조회 요청입니다.")
+    @Operation(summary = "할 일 단건 조회", description = "할 일 단건 조회 요청입니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "할 일 상세 조회 성공")
+            @ApiResponse(responseCode = "200", description = "할 일 단건 조회 성공")
     })
     @CheckRole(authority = TSK_READ)
     @GetMapping("/{taskId}")
-    public CommonResponse<FindTaskResponseDto> findTask(@PathVariable("workspaceId") Long workspaceId,
-                                                        @PathVariable("projectId") Long projectId,
-                                                        @PathVariable("taskId") Long taskId) {
-        FindTaskResponseDto result = taskService.findTask(projectId, taskId);
-        return CommonResponse.createSuccess(result);
+    public FindTaskResponseDto findTask(@PathVariable("projectId") Long projectId,
+                                        @PathVariable("taskId") Long taskId) {
+        return taskService.findTask(projectId, taskId);
     }
 
     @Operation(summary = "할 일 진행 상태 변경", description = "할 일 진행 상태 변경 요청입니다.")
@@ -92,14 +83,10 @@ public class TaskController {
     })
     @CheckRole(authority = TSK_UPDATE)
     @PatchMapping("/{taskId}")
-    public CommonResponse<Void> modifyProgressStatus(@PathVariable("workspaceId") Long workspaceId,
-                                                     @PathVariable("projectId") Long projectId,
-                                                     @PathVariable("taskId") Long taskId,
-                                                     @RequestBody ModifyProgressStatusRequestDto requestDto) {
+    public void modifyProgressStatus(@PathVariable("projectId") Long projectId,
+                                     @PathVariable("taskId") Long taskId,
+                                     @RequestBody ModifyProgressStatusRequestDto requestDto) {
         taskService.modifyTaskProgressStatus(projectId, taskId, requestDto);
-
-        return CommonResponse.createSuccess(null);
-
     }
 
     @Operation(summary = "북마크 설정/해제", description = "북마크 설정/해제 요청입니다.")
@@ -107,13 +94,9 @@ public class TaskController {
             @ApiResponse(responseCode = "200", description = "북마크 설정/해제 요청 성공")
     })
     @CheckRole(authority = TSK_READ)
-    @PostMapping("/{taskId}")
-    public CommonResponse<SetBookmarkResponseDto> setBookmark(@PathVariable("workspaceId") Long workspaceId,
-                                                              @PathVariable("projectId") Long projectId,
-                                                              @PathVariable("taskId") Long taskId,
-                                                              @RequestBody SetBookmarkRequestDto requestDto) {
-        SetBookmarkResponseDto result = taskService.setBookmark(projectId, taskId, requestDto);
-
-        return CommonResponse.createSuccess(result);
+    @PostMapping("/{taskId}/bookmark")
+    public SetBookmarkResponseDto setBookmark(@PathVariable("projectId") Long projectId,
+                                              @PathVariable("taskId") Long taskId) {
+        return taskService.setBookmark(projectId, taskId);
     }
 }
