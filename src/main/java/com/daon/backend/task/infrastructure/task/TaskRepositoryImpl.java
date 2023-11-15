@@ -76,7 +76,7 @@ public class TaskRepositoryImpl implements TaskRepository {
                                 Projections.constructor(
                                         TaskManager.class,
                                         task.taskManager
-                                ),
+                                ).skipNulls(),
                                 task.title,
                                 task.startDate,
                                 task.endDate,
@@ -109,7 +109,7 @@ public class TaskRepositoryImpl implements TaskRepository {
                                         Projections.constructor(
                                                 TaskManager.class,
                                                 task.taskManager
-                                        ),
+                                        ).skipNulls(),
                                         task.title,
                                         task.content,
                                         task.startDate,
@@ -122,10 +122,10 @@ public class TaskRepositoryImpl implements TaskRepository {
                                 )
                         )
                         .from(task)
-                            .join(task.project, project)
-                            .join(task.board, board)
-                            .join(task.taskManager, projectParticipant)
-                            .leftJoin(taskBookmark).on(task.eq(taskBookmark.task).and(taskBookmark.memberId.eq(memberId)))
+                        .join(task.project, project)
+                        .join(task.board, board)
+                        .leftJoin(task.taskManager, projectParticipant)
+                        .leftJoin(taskBookmark).on(task.eq(taskBookmark.task).and(taskBookmark.memberId.eq(memberId)))
                         .where(task.id.eq(taskId))
                         .fetchOne()
         );
