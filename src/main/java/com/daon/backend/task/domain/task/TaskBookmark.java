@@ -17,6 +17,8 @@ public class TaskBookmark extends BaseTimeEntity {
     @Column(name = "task_bookmark_id")
     private Long id;
 
+    private String memberId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "task_id")
     private Task task;
@@ -24,8 +26,6 @@ public class TaskBookmark extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_participant_id")
     private ProjectParticipant participant;
-
-    private String memberId;
 
     @Builder
     public TaskBookmark(Task task, ProjectParticipant participant, String memberId) {
