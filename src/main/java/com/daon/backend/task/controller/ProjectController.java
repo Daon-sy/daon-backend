@@ -1,11 +1,11 @@
 package com.daon.backend.task.controller;
 
 import com.daon.backend.task.domain.authority.CheckRole;
-import com.daon.backend.task.dto.request.CreateProjectRequestDto;
-import com.daon.backend.task.dto.request.InviteWorkspaceParticipantRequestDto;
-import com.daon.backend.task.dto.response.CreateProjectResponseDto;
-import com.daon.backend.task.dto.response.FindProjectParticipantsResponseDto;
-import com.daon.backend.task.dto.response.FindProjectsResponseDto;
+import com.daon.backend.task.dto.project.CreateProjectRequestDto;
+import com.daon.backend.task.dto.workspace.InviteWorkspaceParticipantRequestDto;
+import com.daon.backend.task.dto.project.CreateProjectResponseDto;
+import com.daon.backend.task.dto.project.FindProjectParticipantsResponseDto;
+import com.daon.backend.task.dto.project.FindProjectsResponseDto;
 import com.daon.backend.task.service.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

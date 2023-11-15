@@ -1,8 +1,10 @@
 package com.daon.backend.task.service;
 
-import com.daon.backend.task.domain.project.*;
-import com.daon.backend.task.dto.request.CreateBoardRequestDto;
-import com.daon.backend.task.dto.response.FindBoardsResponseDto;
+import com.daon.backend.task.domain.project.Project;
+import com.daon.backend.task.domain.project.ProjectNotFoundException;
+import com.daon.backend.task.domain.project.ProjectRepository;
+import com.daon.backend.task.dto.project.CreateBoardRequestDto;
+import com.daon.backend.task.dto.project.FindBoardsResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +28,7 @@ public class BoardService {
         findProject.addBoard(title);
     }
 
-    public FindBoardsResponseDto findBoards(Long workspaceId, Long projectId) {
+    public FindBoardsResponseDto findBoards(Long projectId) {
         Project findProject = projectRepository.findProjectByProjectId(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
 

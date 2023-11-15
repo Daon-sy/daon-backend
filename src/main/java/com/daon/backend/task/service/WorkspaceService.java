@@ -1,11 +1,8 @@
 package com.daon.backend.task.service;
 
 import com.daon.backend.task.domain.workspace.*;
-import com.daon.backend.task.dto.request.CreateWorkspaceRequestDto;
-import com.daon.backend.task.dto.request.InviteMemberRequestDto;
-import com.daon.backend.task.dto.request.ModifyRoleRequestDto;
-import com.daon.backend.task.dto.request.ModifyWorkspaceRequestDto;
-import com.daon.backend.task.dto.response.*;
+import com.daon.backend.task.dto.WorkspaceSummary;
+import com.daon.backend.task.dto.workspace.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -48,13 +45,13 @@ public class WorkspaceService {
         String memberId = sessionMemberProvider.getMemberId();
         return new WorkspaceListResponseDto(
                 workspaceRepository.findWorkspacesByMemberId(memberId).stream()
-                        .map(WorkspaceListResponseDto.WorkspaceSummary::new)
+                        .map(WorkspaceSummary::new)
                         .collect(Collectors.toList())
         );
     }
 
     @Transactional
-    public Long createPersonalWorkspace(String memberId, String name, String email) {
+    public void createPersonalWorkspace(String memberId, String name, String email) {
         Workspace workspace = Workspace.createOfPersonal(
                 new WorkspaceCreator(
                         memberId,
@@ -63,13 +60,7 @@ public class WorkspaceService {
                         email
                 )
         );
-        return workspaceRepository.save(workspace).getId();
-    }
-
-    @Transactional
-    public void createPersonalWorkspace(WorkspaceCreator workspaceCreator) {
-        Workspace personalWorkspace = Workspace.createOfPersonal(workspaceCreator);
-        workspaceRepository.save(personalWorkspace);
+        workspaceRepository.save(workspace);
     }
 
     public FindProfileResponseDto findProfile(Long workspaceId) {

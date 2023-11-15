@@ -1,8 +1,8 @@
 package com.daon.backend.task.controller;
 
 import com.daon.backend.task.domain.authority.CheckRole;
-import com.daon.backend.task.dto.request.CreateBoardRequestDto;
-import com.daon.backend.task.dto.response.FindBoardsResponseDto;
+import com.daon.backend.task.dto.project.CreateBoardRequestDto;
+import com.daon.backend.task.dto.project.FindBoardsResponseDto;
 import com.daon.backend.task.service.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -41,8 +41,7 @@ public class BoardController {
     })
     @CheckRole(authority = BD_READ)
     @GetMapping
-    public FindBoardsResponseDto findBoards(@PathVariable("workspaceId") Long workspaceId,
-                                            @PathVariable("projectId") Long projectId) {
-        return boardService.findBoards(workspaceId, projectId);
+    public FindBoardsResponseDto findBoards(@PathVariable("projectId") Long projectId) {
+        return boardService.findBoards(projectId);
     }
 }

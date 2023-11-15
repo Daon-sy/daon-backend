@@ -1,8 +1,7 @@
 package com.daon.backend.task.controller;
 
 import com.daon.backend.task.domain.authority.CheckRole;
-import com.daon.backend.task.dto.request.*;
-import com.daon.backend.task.dto.response.*;
+import com.daon.backend.task.dto.workspace.*;
 import com.daon.backend.task.service.WorkspaceService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

@@ -1,13 +1,17 @@
 package com.daon.backend.task.service;
 
 import com.daon.backend.task.domain.project.*;
-import com.daon.backend.task.dto.request.CreateTaskRequestDto;
-import com.daon.backend.task.dto.request.ModifyProgressStatusRequestDto;
-import com.daon.backend.task.dto.request.ModifyTaskRequestDto;
-import com.daon.backend.task.dto.response.CreateTaskResponseDto;
-import com.daon.backend.task.dto.response.FindTaskResponseDto;
-import com.daon.backend.task.dto.response.FindTasksResponseDto;
-import com.daon.backend.task.dto.response.SetBookmarkResponseDto;
+import com.daon.backend.task.domain.task.Task;
+import com.daon.backend.task.domain.task.TaskBookmark;
+import com.daon.backend.task.domain.task.TaskNotFoundException;
+import com.daon.backend.task.domain.task.TaskRepository;
+import com.daon.backend.task.dto.task.CreateTaskRequestDto;
+import com.daon.backend.task.dto.task.ModifyProgressStatusRequestDto;
+import com.daon.backend.task.dto.task.ModifyTaskRequestDto;
+import com.daon.backend.task.dto.task.CreateTaskResponseDto;
+import com.daon.backend.task.dto.task.FindTaskResponseDto;
+import com.daon.backend.task.dto.task.FindTasksResponseDto;
+import com.daon.backend.task.dto.task.SetBookmarkResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +26,6 @@ public class TaskService {
 
     private final ProjectRepository projectRepository;
     private final TaskRepository taskRepository;
-
     private final SessionMemberProvider sessionMemberProvider;
 
     @Transactional

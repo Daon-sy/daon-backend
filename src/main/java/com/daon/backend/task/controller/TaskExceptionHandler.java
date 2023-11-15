@@ -2,7 +2,7 @@ package com.daon.backend.task.controller;
 
 import com.daon.backend.common.exception.DomainSpecificAdvice;
 import com.daon.backend.common.response.ErrorResponse;
-import com.daon.backend.task.domain.project.TaskNotFoundException;
+import com.daon.backend.task.domain.task.TaskNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

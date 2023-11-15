@@ -2,11 +2,12 @@ package com.daon.backend.task.service;
 
 import com.daon.backend.task.domain.project.*;
 import com.daon.backend.task.domain.workspace.*;
-import com.daon.backend.task.dto.request.CreateProjectRequestDto;
-import com.daon.backend.task.dto.request.InviteWorkspaceParticipantRequestDto;
-import com.daon.backend.task.dto.response.CreateProjectResponseDto;
-import com.daon.backend.task.dto.response.FindProjectParticipantsResponseDto;
-import com.daon.backend.task.dto.response.FindProjectsResponseDto;
+import com.daon.backend.task.dto.project.CreateProjectRequestDto;
+import com.daon.backend.task.dto.workspace.InviteWorkspaceParticipantRequestDto;
+import com.daon.backend.task.dto.project.CreateProjectResponseDto;
+import com.daon.backend.task.dto.project.FindProjectParticipantsResponseDto;
+import com.daon.backend.task.dto.project.FindProjectsResponseDto;
+import com.daon.backend.task.dto.ProjectSummary;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,7 +62,7 @@ public class ProjectService {
         return new FindProjectsResponseDto(
                 workspace.getId(),
                 projectRepository.findProjectsByWorkspaceParticipant(wsParticipant).stream()
-                        .map(FindProjectsResponseDto.ProjectSummary::new)
+                        .map(ProjectSummary::new)
                         .collect(Collectors.toList())
         );
     }
