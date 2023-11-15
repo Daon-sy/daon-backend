@@ -19,6 +19,7 @@ public class WorkspaceService {
 
     private final WorkspaceRepository workspaceRepository;
     private final SessionMemberProvider sessionMemberProvider;
+    private final DbMemberProvider dbMemberProvider;
 
     @Transactional
     public CreateWorkspaceResponseDto createWorkspace(CreateWorkspaceRequestDto requestDto) {
@@ -64,36 +65,36 @@ public class WorkspaceService {
 
     public FindProfileResponseDto findProfile(Long workspaceId) {
         String memberId = sessionMemberProvider.getMemberId();
-        Workspace findWorkspace = workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
+        Workspace workspace = workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
-        WorkspaceParticipant findWorkspaceParticipant = workspaceRepository.findWorkspaceParticipantByWorkspaceAndMemberId(findWorkspace, memberId)
-                .orElseThrow(() -> new NotWorkspaceParticipantException(memberId, findWorkspace.getId()));
+        WorkspaceParticipant findWorkspaceParticipant = workspaceRepository.findWorkspaceParticipantByWorkspaceAndMemberId(workspace, memberId)
+                .orElseThrow(() -> new NotWorkspaceParticipantException(memberId, workspace.getId()));
 
         return new FindProfileResponseDto(findWorkspaceParticipant);
     }
 
     public FindWorkspaceParticipantsResponseDto findWorkspaceParticipants(Long workspaceId) {
-        List<WorkspaceParticipant> findWorkspaceParticipants =
+        List<WorkspaceParticipant> workspaceParticipants =
                 workspaceRepository.findWorkspaceParticipantsByWorkspaceId(workspaceId);
 
         return new FindWorkspaceParticipantsResponseDto(
-                findWorkspaceParticipants.stream()
+                workspaceParticipants.stream()
                         .map(FindWorkspaceParticipantsResponseDto.WorkspaceParticipantProfile::new)
                         .collect(Collectors.toList())
         );
     }
 
     public CheckRoleResponseDto findParticipantRole(Long workspaceId, String memberId) {
-        Role findRole = workspaceRepository.findParticipantRoleByMemberIdAndWorkspaceId(memberId, workspaceId);
+        Role role = workspaceRepository.findParticipantRoleByMemberIdAndWorkspaceId(memberId, workspaceId);
 
-        return new CheckRoleResponseDto(findRole);
+        return new CheckRoleResponseDto(role);
     }
 
     public boolean isWorkspaceParticipants(Long workspaceId, String memberId) {
-        Workspace findWorkspace = workspaceRepository.findWorkspaceWithParticipantsByWorkspaceId(workspaceId)
+        Workspace workspace = workspaceRepository.findWorkspaceWithParticipantsByWorkspaceId(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
 
-        return findWorkspace.isWorkspaceParticipantsByMemberId(memberId);
+        return workspace.isWorkspaceParticipantsByMemberId(memberId);
     }
 
     @Transactional
@@ -106,9 +107,18 @@ public class WorkspaceService {
     @Transactional
     public void modifyParticipantRole(ModifyRoleRequestDto requestDto, Long workspaceId) {
         Long workspaceParticipantId = requestDto.getWorkspaceParticipantId();
-        Workspace findWorkspace = workspaceRepository.findWorkspaceWithParticipantsByWorkspaceId(workspaceId)
+        Workspace workspace = workspaceRepository.findWorkspaceWithParticipantsByWorkspaceId(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
-        WorkspaceParticipant workspaceParticipant = findWorkspace.findWorkspaceParticipant(workspaceParticipantId, workspaceId);
+        WorkspaceParticipant workspaceParticipant = workspace.findWorkspaceParticipant(workspaceParticipantId, workspaceId);
         workspaceParticipant.modifyRole(requestDto.getRole());
+    }
+
+    @Transactional
+    public void inviteMember(Long workspaceId, InviteMemberRequestDto requestDto) {
+        String memberId = dbMemberProvider.getMemberIdByUsername(requestDto.getUsername());
+        Workspace workspace = workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+
+        workspace.addWorkspaceInvitation(new WorkspaceInvitation(memberId, workspace));
     }
 }

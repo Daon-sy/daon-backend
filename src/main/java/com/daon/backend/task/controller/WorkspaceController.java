@@ -89,4 +89,15 @@ public class WorkspaceController {
                                 @PathVariable("workspaceId") Long workspaceId) {
         workspaceService.modifyWorkspace(requestDto, workspaceId);
     }
+
+    @Operation(summary = "워크스페이스 참여자 초대", description = "워크스페이스 참여자 초대 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "워크스페이스 참여자 초대 성공")
+    })
+    @CheckRole(authority = WSP_INVITE)
+    @PostMapping("/{workspaceId}/invite")
+    public void inviteMember(@PathVariable("workspaceId") Long workspaceId,
+                             @RequestBody @Valid InviteMemberRequestDto requestDto) {
+        workspaceService.inviteMember(workspaceId, requestDto);
+    }
 }
