@@ -100,4 +100,9 @@ public class Project extends BaseTimeEntity {
         return this.participants.stream()
                 .anyMatch(projectParticipant -> projectParticipant.getMemberId().equals(memberId));
     }
+
+    public void modifyProject(String title, String description) {
+        this.title = Optional.ofNullable(title).orElse(this.title);
+        this.description = Optional.ofNullable(description).orElse(this.description);
+    }
 }

@@ -1,11 +1,7 @@
 package com.daon.backend.task.controller;
 
 import com.daon.backend.task.domain.authority.CheckRole;
-import com.daon.backend.task.dto.project.CreateProjectRequestDto;
-import com.daon.backend.task.dto.project.InviteWorkspaceParticipantRequestDto;
-import com.daon.backend.task.dto.project.CreateProjectResponseDto;
-import com.daon.backend.task.dto.project.FindProjectParticipantsResponseDto;
-import com.daon.backend.task.dto.project.FindProjectsResponseDto;
+import com.daon.backend.task.dto.project.*;
 import com.daon.backend.task.service.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -18,8 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import static com.daon.backend.task.domain.authority.Authority.PJ_CREATE;
-import static com.daon.backend.task.domain.authority.Authority.PJ_READ;
+import static com.daon.backend.task.domain.authority.Authority.*;
 
 @Slf4j
 @RestController
@@ -72,5 +67,16 @@ public class ProjectController {
     @GetMapping("/{projectId}/participants")
     public FindProjectParticipantsResponseDto findProjectParticipants(@PathVariable("projectId") Long projectId) {
         return projectService.findProjectParticipants(projectId);
+    }
+
+    @Operation(summary = "프로젝트 수정", description = "프로젝트 수정 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "프로젝트 수정 성공")
+    })
+    @CheckRole(authority = PJ_UPDATE)
+    @PatchMapping("/{projectId}")
+    public void modifyProject(@PathVariable("projectId") Long projectId,
+                              @RequestBody @Valid ModifyProjectRequestDto requestDto) {
+        projectService.modifyProject(projectId, requestDto);
     }
 }
