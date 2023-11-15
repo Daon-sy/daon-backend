@@ -65,7 +65,16 @@ public class Project extends BaseTimeEntity {
         this.boards.add(new Board(this, title));
     }
 
-    public void removeBoard(Long boardId) {
+    public void modifyBoard(Long boardId, String title) {
+        Board findBoard = this.boards.stream()
+                .filter(board -> board.getId().equals(boardId))
+                .findFirst()
+                .orElseThrow(() -> new BoardNotFoundException(this.id, boardId));
+
+        findBoard.modifyTitle(title);
+    }
+
+    public void deleteBoard(Long boardId) {
         this.boards.removeIf(board -> board.getId().equals(boardId));
     }
 
@@ -90,5 +99,10 @@ public class Project extends BaseTimeEntity {
     public boolean isProjectParticipants(String memberId) {
         return this.participants.stream()
                 .anyMatch(projectParticipant -> projectParticipant.getMemberId().equals(memberId));
+    }
+
+    public void modifyProject(String title, String description) {
+        this.title = Optional.ofNullable(title).orElse(this.title);
+        this.description = Optional.ofNullable(description).orElse(this.description);
     }
 }

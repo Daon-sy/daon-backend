@@ -21,7 +21,7 @@ public class Workspace extends BaseTimeEntity {
     @Column(name = "workspace_id", updatable = false)
     private Long id;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 50)
     private String title;
 
     @Column(length = 100)
@@ -37,6 +37,9 @@ public class Workspace extends BaseTimeEntity {
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "workspace", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<WorkspaceParticipant> participants = new ArrayList<>();
+
+    @OneToMany(mappedBy = "workspace", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    private List<WorkspaceInvitation> invitations = new ArrayList<>();
 
     @Builder(access = AccessLevel.PRIVATE)
     private Workspace(String title, String description, Division division,
@@ -110,5 +113,18 @@ public class Workspace extends BaseTimeEntity {
         this.description = Optional.ofNullable(description).orElse(this.description);
         this.imageUrl = Optional.ofNullable(imageUrl).orElse(this.imageUrl);
         this.subject = Optional.ofNullable(subject).orElse(this.subject);
+    }
+
+    public void addWorkspaceInvitation(WorkspaceInvitation workspaceInvitation) {
+        this.invitations.add(workspaceInvitation);
+    }
+
+    public void removeWorkspaceInvitation(String memberId) {
+        this.invitations.removeIf(workspaceInvitation -> workspaceInvitation.getMemberId().equals(memberId));
+    }
+
+    public boolean checkInvitedMember(String memberId) {
+        return this.invitations.stream()
+                .anyMatch(workspaceInvitation -> workspaceInvitation.getMemberId().equals(memberId));
     }
 }

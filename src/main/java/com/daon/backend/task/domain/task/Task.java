@@ -37,7 +37,7 @@ public class Task extends BaseTimeEntity {
     private TaskProgressStatus progressStatus;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "creator_id")
+    @JoinColumn(name = "creator_id", nullable = false, updatable = false)
     private ProjectParticipant creator;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -45,11 +45,11 @@ public class Task extends BaseTimeEntity {
     private ProjectParticipant taskManager;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "project_id")
+    @JoinColumn(name = "project_id", nullable = false)
     private Project project;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_id")
+    @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 
     @OneToMany(mappedBy = "task", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
@@ -67,6 +67,7 @@ public class Task extends BaseTimeEntity {
         this.taskManager = taskManager;
         this.project = project;
         this.board = board;
+
         this.progressStatus = TaskProgressStatus.TODO;
     }
 
