@@ -113,6 +113,13 @@ public class WorkspaceService {
         workspaceParticipant.modifyRole(requestDto.getRole());
     }
 
+    public FindWorkspaceResponseDto findWorkspace(Long workspaceId) {
+        Workspace workspace = workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+
+        return new FindWorkspaceResponseDto(workspace);
+    }
+
     @Transactional
     public void inviteMember(Long workspaceId, InviteMemberRequestDto requestDto) {
         String memberId = dbMemberProvider.getMemberIdByUsername(requestDto.getUsername());

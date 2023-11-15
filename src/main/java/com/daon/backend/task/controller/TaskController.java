@@ -43,16 +43,6 @@ public class TaskController {
         return taskService.createTask(projectId, requestDto);
     }
 
-    @Operation(summary = "할 일 목록 조회", description = "할 일 목록 조회 요청입니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "할 일 목록 조회 성공")
-    })
-    @CheckRole(authority = TSK_READ)
-    @GetMapping
-    public FindTasksResponseDto findTasks(@PathVariable("projectId") Long projectId) {
-        return taskService.findAllTaskInProject(projectId);
-    }
-
     @Operation(summary = "할 일 수정", description = "할 일 수정 요청입니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "할 일 수정 성공")
@@ -72,9 +62,8 @@ public class TaskController {
     })
     @CheckRole(authority = TSK_READ)
     @GetMapping("/{taskId}")
-    public FindTaskResponseDto findTask(@PathVariable("projectId") Long projectId,
-                                        @PathVariable("taskId") Long taskId) {
-        return taskService.findTask(projectId, taskId);
+    public FindTaskResponseDto findTask(@PathVariable("taskId") Long taskId) {
+        return taskService.findTask(taskId);
     }
 
     @Operation(summary = "할 일 진행 상태 변경", description = "할 일 진행 상태 변경 요청입니다.")

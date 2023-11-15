@@ -3,6 +3,7 @@ package com.daon.backend.task.controller;
 import com.daon.backend.task.domain.authority.CheckRole;
 import com.daon.backend.task.dto.project.CreateBoardRequestDto;
 import com.daon.backend.task.dto.project.FindBoardsResponseDto;
+import com.daon.backend.task.dto.project.ModifyBoardRequestDto;
 import com.daon.backend.task.service.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -13,8 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import static com.daon.backend.task.domain.authority.Authority.BD_CREATE;
-import static com.daon.backend.task.domain.authority.Authority.BD_READ;
+import static com.daon.backend.task.domain.authority.Authority.*;
 
 @RequiredArgsConstructor
 @RequestMapping("/api/workspaces/{workspaceId}/projects/{projectId}/boards")
@@ -43,5 +43,28 @@ public class BoardController {
     @GetMapping
     public FindBoardsResponseDto findBoards(@PathVariable("projectId") Long projectId) {
         return boardService.findBoards(projectId);
+    }
+
+    @Operation(summary = "보드 수정", description = "보드 수정 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "보드 수정 성공")
+    })
+    @CheckRole(authority = BD_UPDATE)
+    @PutMapping("/{boardId}")
+    public void modifyBoard(@PathVariable("projectId") Long projectId,
+                            @PathVariable("boardId") Long boardId,
+                            @RequestBody @Valid ModifyBoardRequestDto requestDto) {
+        boardService.modifyBoard(projectId, boardId, requestDto);
+    }
+
+    @Operation(summary = "보드 삭제", description = "보드 삭제 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "보드 삭제 성공")
+    })
+    @CheckRole(authority = BD_DELETE)
+    @DeleteMapping("/{boardId}")
+    public void deleteBoard(@PathVariable("projectId") Long projectId,
+                            @PathVariable("boardId") Long boardId) {
+        boardService.deleteBoard(projectId, boardId);
     }
 }

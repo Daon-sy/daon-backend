@@ -2,12 +2,8 @@ package com.daon.backend.task.service;
 
 import com.daon.backend.task.domain.project.*;
 import com.daon.backend.task.domain.workspace.*;
-import com.daon.backend.task.dto.project.CreateProjectRequestDto;
-import com.daon.backend.task.dto.project.InviteWorkspaceParticipantRequestDto;
-import com.daon.backend.task.dto.project.CreateProjectResponseDto;
-import com.daon.backend.task.dto.project.FindProjectParticipantsResponseDto;
-import com.daon.backend.task.dto.project.FindProjectsResponseDto;
 import com.daon.backend.task.dto.ProjectSummary;
+import com.daon.backend.task.dto.project.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -73,16 +69,16 @@ public class ProjectService {
         WorkspaceParticipant workspaceParticipant = workspaceRepository.findWorkspaceParticipantByWorkspaceParticipantId(workspaceParticipantId)
                 .orElseThrow(() -> new NotWorkspaceParticipantException(workspaceParticipantId));
 
-        Project findProject = projectRepository.findProjectByProjectId(projectId)
+        Project project = projectRepository.findProjectByProjectId(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
-        findProject.addParticipant(workspaceParticipant.getMemberId(), workspaceParticipant);
+        project.addParticipant(workspaceParticipant.getMemberId(), workspaceParticipant);
     }
 
     public boolean isProjectParticipants(Long projectId, String memberId) {
-        Project findProject = projectRepository.findProjectWithParticipantsById(projectId)
+        Project project = projectRepository.findProjectWithParticipantsById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
-        return findProject.isProjectParticipants(memberId);
+        return project.isProjectParticipants(memberId);
     }
 
     public FindProjectParticipantsResponseDto findProjectParticipants(Long projectId) {
@@ -93,5 +89,19 @@ public class ProjectService {
                         .map(FindProjectParticipantsResponseDto.ProjectParticipantProfile::new)
                         .collect(Collectors.toList())
         );
+    }
+
+    @Transactional
+    public void modifyProject(Long projectId, ModifyProjectRequestDto requestDto) {
+        Project project = projectRepository.findProjectWithParticipantsById(projectId)
+                .orElseThrow(() -> new ProjectNotFoundException(projectId));
+        project.modifyProject(requestDto.getTitle(), requestDto.getDescription());
+    }
+
+    public FindProjectResponseDto findProject(Long projectId) {
+        Project project = projectRepository.findProjectByProjectId(projectId)
+                .orElseThrow(() -> new ProjectNotFoundException(projectId));
+
+        return new FindProjectResponseDto(project);
     }
 }
