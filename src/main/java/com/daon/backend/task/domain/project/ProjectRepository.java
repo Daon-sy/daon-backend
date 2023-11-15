@@ -1,7 +1,6 @@
 package com.daon.backend.task.domain.project;
 
 import com.daon.backend.task.domain.workspace.WorkspaceParticipant;
-import org.springframework.data.jpa.repository.EntityGraph;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,7 +11,6 @@ public interface ProjectRepository {
 
     Optional<Project> findProjectByProjectId(Long projectId);
 
-    @EntityGraph(attributePaths = {"participants", "tasks"})
     Optional<Project> findProjectWithParticipantsById(Long projectId);
 
     Optional<ProjectParticipant> findProjectParticipantByProjectIdAndMemberId(Long projectId, String memberId);

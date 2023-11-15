@@ -5,6 +5,7 @@ import com.daon.backend.task.domain.task.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -22,6 +23,11 @@ public class TaskRepositoryImpl implements TaskRepository {
     @Override
     public Optional<Task> findTaskByTaskId(Long taskId) {
         return taskJpaRepository.findById(taskId);
+    }
+
+    @Override
+    public List<Task> findTasksByProjectId(Long projectId) {
+        return taskJpaRepository.findByProjectId(projectId);
     }
 
     @Override

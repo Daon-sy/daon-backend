@@ -1,8 +1,6 @@
 package com.daon.backend.task.domain.project;
 
 import com.daon.backend.config.BaseTimeEntity;
-import com.daon.backend.task.domain.task.Task;
-import com.daon.backend.task.domain.task.TaskNotFoundException;
 import com.daon.backend.task.domain.workspace.Workspace;
 import com.daon.backend.task.domain.workspace.WorkspaceParticipant;
 import lombok.AccessLevel;
@@ -32,9 +30,6 @@ public class Project extends BaseTimeEntity {
     private String title;
 
     private String description;
-
-    @OneToMany(mappedBy = "project")
-    private List<Task> tasks = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<ProjectParticipant> participants = new ArrayList<>();
@@ -79,16 +74,6 @@ public class Project extends BaseTimeEntity {
                 .filter(board -> board.getId().equals(boardId))
                 .findFirst()
                 .orElseThrow(() -> new BoardNotFoundException(this.getId(), boardId));
-    }
-
-    public Task getTaskByTaskId(Long taskId) {
-        if (taskId == null) {
-            return null;
-        }
-        return tasks.stream()
-                .filter(task -> task.getId().equals(taskId))
-                .findFirst()
-                .orElseThrow(() -> new TaskNotFoundException(this.getId(), taskId));
     }
 
     public void throwIfTitleExist(String title) {
