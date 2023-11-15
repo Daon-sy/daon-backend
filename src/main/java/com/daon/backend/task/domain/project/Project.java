@@ -74,7 +74,7 @@ public class Project extends BaseTimeEntity {
         findBoard.modifyTitle(title);
     }
 
-    public void removeBoard(Long boardId) {
+    public void deleteBoard(Long boardId) {
         this.boards.removeIf(board -> board.getId().equals(boardId));
     }
 

@@ -47,4 +47,11 @@ public class BoardService {
 
         findProject.modifyBoard(boardId, requestDto.getTitle());
     }
+
+    @Transactional
+    public void deleteBoard(Long projectId, Long boardId) {
+        Project findProject = projectRepository.findProjectByProjectId(projectId)
+                .orElseThrow(() -> new ProjectNotFoundException(projectId));
+        findProject.deleteBoard(boardId);
+    }
 }

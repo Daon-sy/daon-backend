@@ -56,4 +56,15 @@ public class BoardController {
                             @RequestBody @Valid ModifyBoardRequestDto requestDto) {
         boardService.modifyBoard(projectId, boardId, requestDto);
     }
+
+    @Operation(summary = "보드 삭제", description = "보드 삭제 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "보드 삭제 성공")
+    })
+    @CheckRole(authority = BD_DELETE)
+    @DeleteMapping("/{boardId}")
+    public void deleteBoard(@PathVariable("projectId") Long projectId,
+                            @PathVariable("boardId") Long boardId) {
+        boardService.deleteBoard(projectId, boardId);
+    }
 }
