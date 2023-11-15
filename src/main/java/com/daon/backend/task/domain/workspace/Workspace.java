@@ -112,6 +112,10 @@ public class Workspace extends BaseTimeEntity {
         this.invitations.add(workspaceInvitation);
     }
 
+    public void removeWorkspaceInvitation(String memberId) {
+        this.invitations.removeIf(workspaceInvitation -> workspaceInvitation.getMemberId().equals(memberId));
+    }
+
     public boolean checkInvitedMember(String memberId) {
         return this.invitations.stream()
                 .anyMatch(workspaceInvitation -> workspaceInvitation.getMemberId().equals(memberId));

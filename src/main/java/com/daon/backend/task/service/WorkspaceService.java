@@ -137,6 +137,7 @@ public class WorkspaceService {
                             requestDto.getEmail()
                     )
             );
+            workspace.removeWorkspaceInvitation(memberId);
         } else {
             throw new NotInvitedMemberException(workspaceId, memberId);
         }
