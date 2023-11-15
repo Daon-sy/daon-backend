@@ -51,13 +51,13 @@ public class FindTasksResponseDto {
 
         public TaskSummary(Task task) {
             this.taskId = task.getId();
-            this.project = task.getProject() != null ? new ProjectSummary(task.getProject()) : null;
+            this.project = new ProjectSummary(task.getProject());
             this.title = task.getTitle();
             this.startDate = task.getStartDate();
             this.endDate = task.getEndDate();
             this.progressStatus = task.getProgressStatus();
             this.emergency = task.isEmergency();
-            this.board = task.getBoard() != null ? new BoardSummary(task.getBoard()) : null;
+            this.board = new BoardSummary(task.getBoard());
             this.bookmark = task.getTaskBookmarks().stream()
                     .anyMatch(p -> p.getParticipant().getId().equals(task.getTaskManager().getId()));
             this.taskManager = task.getTaskManager() != null ? new TaskManager(task.getTaskManager()) : null;

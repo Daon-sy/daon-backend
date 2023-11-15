@@ -31,7 +31,6 @@ public class ModifyTaskRequestDto {
 
     private boolean emergency;
 
-    @NotBlank
     private TaskProgressStatus progressStatus;
 
     @NotNull

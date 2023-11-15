@@ -43,7 +43,7 @@ public class FindTaskResponseDto {
         this.board = new BoardSummary(task.getBoard());
         this.title = task.getTitle();
         this.content = task.getContent();
-        this.taskManager = new TaskManager(task.getTaskManager());
+        this.taskManager = task.getTaskManager() != null ? new TaskManager(task.getTaskManager()) : null;
         this.startDate = task.getStartDate();
         this.endDate = task.getEndDate();
         this.progressStatus = task.getProgressStatus();
