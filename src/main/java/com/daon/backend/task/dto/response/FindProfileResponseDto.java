@@ -10,9 +10,13 @@ import lombok.Getter;
 public class FindProfileResponseDto {
 
     private Long workspaceParticipantId;
+
     private String name;
+
     private String imageUrl;
+
     private String email;
+
     private Role role;
 
     public FindProfileResponseDto(WorkspaceParticipant workspaceParticipant) {

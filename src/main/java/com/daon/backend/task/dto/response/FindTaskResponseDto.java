@@ -1,6 +1,7 @@
 package com.daon.backend.task.dto.response;
 
-import com.daon.backend.task.domain.project.*;
+import com.daon.backend.task.domain.project.Task;
+import com.daon.backend.task.domain.project.TaskProgressStatus;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 
@@ -32,51 +33,6 @@ public class FindTaskResponseDto {
     private boolean emergency;
 
     private boolean bookmark;
-
-    @Getter
-    public static class ProjectSummary {
-
-        private Long projectId;
-
-        private String title;
-
-        private String description;
-
-        public ProjectSummary(Project project) {
-            this.projectId = project.getId();
-            this.title = project.getTitle();
-            this.description = project.getDescription();
-        }
-    }
-
-    @Getter
-    public static class BoardSummary {
-
-        private Long boardId;
-
-        private String title;
-
-        public BoardSummary(Board board) {
-            this.boardId = board.getId();
-            this.title = board.getTitle();
-        }
-    }
-
-    @Getter
-    public static class TaskManager {
-
-        private Long projectParticipantId;
-
-        private String name;
-
-        private String imageUrl;
-
-        public TaskManager(ProjectParticipant participant) {
-            this.projectParticipantId = participant.getId();
-            this.name = participant.getWorkspaceParticipant().getProfile().getName();
-            this.imageUrl = participant.getWorkspaceParticipant().getProfile().getImageUrl();
-        }
-    }
 
     public FindTaskResponseDto(Task task) {
         this.taskId = task.getId();
