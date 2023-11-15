@@ -1,9 +1,11 @@
 package com.daon.backend.task.dto;
 
 import com.daon.backend.task.domain.project.ProjectParticipant;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
 public class TaskManager {
 
     private Long projectParticipantId;

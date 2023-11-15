@@ -21,7 +21,7 @@ public class FindProjectParticipantsResponseDto {
     @Getter
     public static class ProjectParticipantProfile {
 
-        private Long participantId;
+        private Long projectParticipantId;
 
         private String name;
 
@@ -32,7 +32,7 @@ public class FindProjectParticipantsResponseDto {
         private Role role;
 
         public ProjectParticipantProfile(ProjectParticipant projectParticipant) {
-            this.participantId = projectParticipant.getId();
+            this.projectParticipantId = projectParticipant.getId();
             this.name = projectParticipant.getWorkspaceParticipant().getProfile().getName();
             this.email = projectParticipant.getWorkspaceParticipant().getProfile().getEmail();
             this.imageUrl = projectParticipant.getWorkspaceParticipant().getProfile().getImageUrl();

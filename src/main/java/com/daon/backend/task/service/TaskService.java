@@ -5,13 +5,11 @@ import com.daon.backend.task.domain.task.Task;
 import com.daon.backend.task.domain.task.TaskBookmark;
 import com.daon.backend.task.domain.task.TaskNotFoundException;
 import com.daon.backend.task.domain.task.TaskRepository;
+import com.daon.backend.task.dto.TaskSearchParams;
 import com.daon.backend.task.dto.task.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -56,13 +54,14 @@ public class TaskService {
         return new CreateTaskResponseDto(taskId);
     }
 
-    public FindTasksResponseDto findAllTaskInProject(Long projectId) {
-        List<Task> tasks = taskRepository.findTasksByProjectId(projectId);
+    public FindTasksResponseDto searchTasks(TaskSearchParams params) {
+        return new FindTasksResponseDto(taskRepository.findTaskSummaries(sessionMemberProvider.getMemberId(), params));
+    }
 
-        return new FindTasksResponseDto(
-                tasks.stream()
-                        .map(FindTasksResponseDto.TaskSummary::new)
-                        .collect(Collectors.toList())
+    public FindTaskResponseDto findTask(Long taskId) {
+        return new FindTaskResponseDto(
+                taskRepository.findTaskDetail(sessionMemberProvider.getMemberId(), taskId)
+                        .orElseThrow(() -> new TaskNotFoundException(taskId))
         );
     }
 
@@ -93,13 +92,6 @@ public class TaskService {
                 board,
                 taskManager
         );
-    }
-
-    public FindTaskResponseDto findTask(Long projectId, Long taskId) {
-        Task task = taskRepository.findTaskByTaskId(taskId)
-                .orElseThrow(() -> new TaskNotFoundException(projectId, taskId));
-
-        return new FindTaskResponseDto(task);
     }
 
     @Transactional

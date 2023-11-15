@@ -97,4 +97,11 @@ public class ProjectService {
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
         project.modifyProject(requestDto.getTitle(), requestDto.getDescription());
     }
+
+    public FindProjectResponseDto findProject(Long projectId) {
+        Project project = projectRepository.findProjectByProjectId(projectId)
+                .orElseThrow(() -> new ProjectNotFoundException(projectId));
+
+        return new FindProjectResponseDto(project);
+    }
 }
