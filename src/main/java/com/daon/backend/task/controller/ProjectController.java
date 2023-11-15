@@ -1,11 +1,8 @@
 package com.daon.backend.task.controller;
 
 import com.daon.backend.task.domain.authority.CheckRole;
-import com.daon.backend.task.dto.project.CreateProjectRequestDto;
-import com.daon.backend.task.dto.project.InviteWorkspaceParticipantRequestDto;
-import com.daon.backend.task.dto.project.CreateProjectResponseDto;
-import com.daon.backend.task.dto.project.FindProjectParticipantsResponseDto;
-import com.daon.backend.task.dto.project.FindProjectsResponseDto;
+import com.daon.backend.task.dto.project.*;
+import com.daon.backend.task.dto.task.FindTaskResponseDto;
 import com.daon.backend.task.service.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -18,8 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
-import static com.daon.backend.task.domain.authority.Authority.PJ_CREATE;
-import static com.daon.backend.task.domain.authority.Authority.PJ_READ;
+import static com.daon.backend.task.domain.authority.Authority.*;
 
 @Slf4j
 @RestController
@@ -37,7 +33,7 @@ public class ProjectController {
     @ResponseStatus(HttpStatus.CREATED)
     @CheckRole(authority = PJ_CREATE)
     @PostMapping
-    public CreateProjectResponseDto createProject(@PathVariable Long workspaceId,
+    public CreateProjectResponseDto createProject(@PathVariable("workspaceId") Long workspaceId,
                                                   @RequestBody @Valid CreateProjectRequestDto requestDto) {
         return projectService.createProject(workspaceId, requestDto);
     }
@@ -48,7 +44,7 @@ public class ProjectController {
     })
     @CheckRole(authority = PJ_READ)
     @GetMapping
-    public FindProjectsResponseDto findProjects(@PathVariable Long workspaceId) {
+    public FindProjectsResponseDto findProjects(@PathVariable("workspaceId") Long workspaceId) {
 
         return projectService.findAllProjectInWorkspace(workspaceId);
     }
@@ -72,5 +68,15 @@ public class ProjectController {
     @GetMapping("/{projectId}/participants")
     public FindProjectParticipantsResponseDto findProjectParticipants(@PathVariable("projectId") Long projectId) {
         return projectService.findProjectParticipants(projectId);
+    }
+
+    @Operation(summary = "프로젝트 단건 조회", description = "프로젝트 단건 조회 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "프로젝트 단건 조회 성공")
+    })
+    @CheckRole(authority = PJ_READ)
+    @GetMapping("/{projectId}")
+    public FindProjectResponseDto findProject(@PathVariable("projectId") Long projectId) {
+        return projectService.findProject(projectId);
     }
 }
