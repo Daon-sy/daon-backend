@@ -37,6 +37,12 @@ public class FindTaskResponseDto {
 
     private boolean bookmark;
 
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+    private LocalDateTime createdAt;
+
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
+    private LocalDateTime modifiedAt;
+
     public FindTaskResponseDto(Task task) {
         this.taskId = task.getId();
         this.project = new ProjectSummary(task.getProject());
@@ -50,5 +56,7 @@ public class FindTaskResponseDto {
         this.emergency = task.isEmergency();
         this.bookmark = task.getTaskBookmarks().stream()
                 .anyMatch(p -> p.getParticipant().getId().equals(task.getTaskManager().getId()));
+        this.createdAt = task.getCreatedAt();
+        this.modifiedAt = task.getModifiedAt();
     }
 }

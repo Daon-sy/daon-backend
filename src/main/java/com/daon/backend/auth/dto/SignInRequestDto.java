@@ -12,7 +12,7 @@ import javax.validation.constraints.NotBlank;
 @AllArgsConstructor
 public class SignInRequestDto {
 
-    @Email
+    @NotBlank
     private String username;
 
     @NotBlank

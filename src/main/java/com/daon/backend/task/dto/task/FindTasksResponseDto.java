@@ -5,6 +5,7 @@ import com.daon.backend.task.domain.task.TaskProgressStatus;
 import com.daon.backend.task.dto.BoardSummary;
 import com.daon.backend.task.dto.ProjectSummary;
 import com.daon.backend.task.dto.TaskManager;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,8 +36,10 @@ public class FindTasksResponseDto {
 
         private ProjectSummary project;
 
+        @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
         private LocalDateTime startDate;
 
+        @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
         private LocalDateTime endDate;
 
         private TaskProgressStatus progressStatus;

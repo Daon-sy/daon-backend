@@ -60,7 +60,7 @@ public class Member extends BaseTimeEntity {
 
         this.password = Optional.ofNullable(
                 StringUtils.hasText(newPassword)
-                        ? passwordEncoder.encode(password)
+                        ? passwordEncoder.encode(newPassword)
                         : null).orElse(this.password);
         this.name = Optional.ofNullable(name).orElse(this.name);
     }

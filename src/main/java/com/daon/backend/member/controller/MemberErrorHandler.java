@@ -28,7 +28,7 @@ public class MemberErrorHandler {
         log.error("{}", e.getMessage());
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(ErrorResponse.createError("존재하지 않는 이메일입니다."));
+                .body(ErrorResponse.createError("존재하지 않는 회원 아이디입니다."));
     }
 
     @ExceptionHandler(PasswordMismatchException.class)

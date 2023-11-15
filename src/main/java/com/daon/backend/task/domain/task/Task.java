@@ -57,17 +57,17 @@ public class Task extends BaseTimeEntity {
 
     @Builder
     public Task(String title, String content, LocalDateTime startDate, LocalDateTime endDate, boolean emergency,
-                TaskProgressStatus progressStatus, ProjectParticipant creator, ProjectParticipant taskManager, Project project, Board board) {
+                ProjectParticipant creator, ProjectParticipant taskManager, Project project, Board board) {
         this.title = title;
         this.content = content;
         this.startDate = startDate;
         this.endDate = endDate;
         this.emergency = emergency;
-        this.progressStatus = progressStatus;
         this.creator = creator;
         this.taskManager = taskManager;
         this.project = project;
         this.board = board;
+        this.progressStatus = TaskProgressStatus.TODO;
     }
 
     public void modifyTask(String title, String content, LocalDateTime startDate, LocalDateTime endDate, boolean emergency,

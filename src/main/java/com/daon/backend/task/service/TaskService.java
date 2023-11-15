@@ -46,7 +46,6 @@ public class TaskService {
                 .startDate(requestDto.getStartDate())
                 .endDate(requestDto.getEndDate())
                 .emergency(requestDto.isEmergency())
-                .progressStatus(requestDto.getProgressStatus())
                 .creator(taskCreator)
                 .taskManager(taskManager)
                 .project(project)

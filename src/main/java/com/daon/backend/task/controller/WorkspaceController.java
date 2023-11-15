@@ -73,7 +73,7 @@ public class WorkspaceController {
             @ApiResponse(responseCode = "200", description = "워크스페이스 참여자 권한 변경 성공")
     })
     @CheckRole(authority = WSP_ROLE_UPDATE)
-    @PatchMapping("/{workspaceId}/participants/role")
+    @PostMapping("/{workspaceId}/participants/role")
     public void modifyRole(@PathVariable("workspaceId") Long workspaceId,
                            @RequestBody @Valid ModifyRoleRequestDto requestDto) {
         workspaceService.modifyParticipantRole(requestDto, workspaceId);
