@@ -100,4 +100,14 @@ public class WorkspaceController {
                              @RequestBody @Valid InviteMemberRequestDto requestDto) {
         workspaceService.inviteMember(workspaceId, requestDto);
     }
+
+    @Operation(summary = "워크스페이스 참여", description = "워크스페이스 참여 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "워크스페이스 참여 성공")
+    })
+    @PostMapping("/{workspaceId}/join")
+    public void joinWorkspace(@PathVariable("workspaceId") Long workspaceId,
+                              @RequestBody @Valid JoinWorkspaceRequestDto requestDto) {
+        workspaceService.joinWorkspace(workspaceId, requestDto);
+    }
 }

@@ -121,4 +121,24 @@ public class WorkspaceService {
 
         workspace.addWorkspaceInvitation(new WorkspaceInvitation(memberId, workspace));
     }
+
+    @Transactional
+    public void joinWorkspace(Long workspaceId, JoinWorkspaceRequestDto requestDto) {
+        String memberId = sessionMemberProvider.getMemberId();
+        Workspace workspace = workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+
+        if (workspace.checkInvitedMember(memberId)) {
+            workspace.addParticipant(
+                    memberId,
+                    new Profile(
+                            requestDto.getName(),
+                            requestDto.getImageUrl(),
+                            requestDto.getEmail()
+                    )
+            );
+        } else {
+            throw new NotInvitedMemberException(workspaceId, memberId);
+        }
+    }
 }
