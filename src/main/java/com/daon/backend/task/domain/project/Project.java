@@ -65,6 +65,15 @@ public class Project extends BaseTimeEntity {
         this.boards.add(new Board(this, title));
     }
 
+    public void modifyBoard(Long boardId, String title) {
+        Board findBoard = this.boards.stream()
+                .filter(board -> board.getId().equals(boardId))
+                .findFirst()
+                .orElseThrow(() -> new BoardNotFoundException(this.id, boardId));
+
+        findBoard.modifyTitle(title);
+    }
+
     public void removeBoard(Long boardId) {
         this.boards.removeIf(board -> board.getId().equals(boardId));
     }

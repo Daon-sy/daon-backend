@@ -25,4 +25,8 @@ public class Board extends BaseTimeEntity {
         this.project = project;
         this.title = title;
     }
+
+    public void modifyTitle(String title) {
+        this.title = title;
+    }
 }
