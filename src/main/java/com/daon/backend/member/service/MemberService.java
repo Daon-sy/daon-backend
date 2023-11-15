@@ -4,12 +4,12 @@ import com.daon.backend.member.domain.Member;
 import com.daon.backend.member.domain.MemberNotFoundException;
 import com.daon.backend.member.domain.MemberRepository;
 import com.daon.backend.member.domain.PasswordEncoder;
-import com.daon.backend.member.dto.FindMemberResponseDto;
-import com.daon.backend.member.dto.ModifyMemberRequestDto;
-import com.daon.backend.member.dto.SignUpRequestDto;
+import com.daon.backend.member.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -57,5 +57,11 @@ public class MemberService {
                 .orElseThrow(() -> MemberNotFoundException.byMemberId(memberId));
 
         return new FindMemberResponseDto(member);
+    }
+
+    public SearchMemberResponseDto searchMember(String username) {
+        List<MemberSummary> memberSummaries = memberRepository.searchMembersByUsername(username);
+
+        return new SearchMemberResponseDto(memberSummaries);
     }
 }

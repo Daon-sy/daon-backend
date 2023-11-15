@@ -2,6 +2,7 @@ package com.daon.backend.member.controller;
 
 import com.daon.backend.member.dto.FindMemberResponseDto;
 import com.daon.backend.member.dto.ModifyMemberRequestDto;
+import com.daon.backend.member.dto.SearchMemberResponseDto;
 import com.daon.backend.member.dto.SignUpRequestDto;
 import com.daon.backend.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -49,5 +50,15 @@ public class MemberController {
     public FindMemberResponseDto findMember() {
 
         return memberService.findMember();
+    }
+
+    @Operation(summary = "회원 검색", description = "회원 검색 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "회원 검색 성공")
+    })
+    @GetMapping
+    public SearchMemberResponseDto searchMember(@RequestParam("username") String username) {
+
+        return memberService.searchMember(username);
     }
 }
