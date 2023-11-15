@@ -108,7 +108,21 @@ public class WorkspaceService {
         Long workspaceParticipantId = requestDto.getWorkspaceParticipantId();
         Workspace findWorkspace = workspaceRepository.findWorkspaceWithParticipantsByWorkspaceId(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
-        WorkspaceParticipant workspaceParticipant = findWorkspace.findWorkspaceParticipant(workspaceParticipantId, workspaceId);
+        WorkspaceParticipant workspaceParticipant = findWorkspace.findWorkspaceParticipantByWorkspaceParticipantId(workspaceParticipantId, workspaceId);
         workspaceParticipant.modifyRole(requestDto.getRole());
+    }
+
+    @Transactional
+    public void modifyProfile(Long workspaceId, ModifyProfileRequestDto requestDto) {
+        String memberId = sessionMemberProvider.getMemberId();
+        Workspace findWorkspace = workspaceRepository.findWorkspaceWithParticipantsByWorkspaceId(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+
+        WorkspaceParticipant workspaceParticipant = findWorkspace.findWorkspaceParticipantByMemberId(memberId);
+        workspaceParticipant.getProfile().modifyProfile(
+                requestDto.getName(),
+                requestDto.getImageUrl(),
+                requestDto.getEmail()
+        );
     }
 }

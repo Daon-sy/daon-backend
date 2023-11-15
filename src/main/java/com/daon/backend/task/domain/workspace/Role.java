@@ -24,6 +24,7 @@ public enum Role {
             "프로젝트 관리자",
             List.of(
                     WS_READ,
+                    PF_READ, PF_UPDATE,
                     PJ_CREATE, PJ_READ, PJ_UPDATE, PJ_DELETE,
                     BD_CREATE, BD_READ, BD_UPDATE, BD_DELETE,
                     TSK_CREATE, TSK_READ, TSK_UPDATE, TSK_DELETE
@@ -37,6 +38,7 @@ public enum Role {
             "일반 참여자",
             List.of(
                     WS_READ,
+                    PF_READ, PF_UPDATE,
                     PJ_READ,
                     BD_READ,
                     TSK_CREATE, TSK_READ, TSK_UPDATE, TSK_DELETE

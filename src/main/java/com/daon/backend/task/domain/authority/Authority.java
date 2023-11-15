@@ -15,6 +15,9 @@ public enum Authority {
     WSP_INVITE("워크스페이스 사용자 초대"),
     WSP_DROP("워크스페이스 사용자 내보내기"),
     WSP_ROLE_UPDATE("워크스페이스 사용자 역할 변경"),
+    // profile
+    PF_READ("프로필 조회"),
+    PF_UPDATE("프로필 수정"),
     // project
     PJ_CREATE("프로젝트 생성"),
     PJ_READ("프로젝트 조회"),

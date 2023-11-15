@@ -23,10 +23,8 @@ public class WorkspaceParticipant extends BaseTimeEntity {
     @Embedded
     private Profile profile;
 
-    // 회원 기본키
     private String memberId;
 
-    // TODO 역할 필요
     @Enumerated(EnumType.STRING)
     private Role role;
 

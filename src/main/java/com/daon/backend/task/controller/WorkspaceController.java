@@ -89,4 +89,15 @@ public class WorkspaceController {
                                 @PathVariable("workspaceId") Long workspaceId) {
         workspaceService.modifyWorkspace(requestDto, workspaceId);
     }
+
+    @Operation(summary = "내 프로필 수정", description = "내 프로필 수정입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "내 프로필 수정 성공")
+    })
+    @CheckRole(authority = PF_READ)
+    @PatchMapping("/{workspaceId}/participants/me")
+    public void modifyProfile(@PathVariable("workspaceId") Long workspaceId,
+                              @RequestBody @Valid ModifyProfileRequestDto requestDto) {
+        workspaceService.modifyProfile(workspaceId, requestDto);
+    }
 }
