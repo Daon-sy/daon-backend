@@ -1,6 +1,7 @@
 package com.daon.backend.task.controller;
 
 import com.daon.backend.task.domain.authority.CheckRole;
+import com.daon.backend.task.dto.task.FindTaskResponseDto;
 import com.daon.backend.task.dto.workspace.*;
 import com.daon.backend.task.service.WorkspaceService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -73,22 +74,10 @@ public class WorkspaceController {
             @ApiResponse(responseCode = "200", description = "워크스페이스 참여자 권한 변경 성공")
     })
     @CheckRole(authority = WSP_ROLE_UPDATE)
-    @PatchMapping("/{workspaceId}/participants/role")
+    @PostMapping("/{workspaceId}/participants/role")
     public void modifyRole(@PathVariable("workspaceId") Long workspaceId,
                            @RequestBody @Valid ModifyRoleRequestDto requestDto) {
         workspaceService.modifyParticipantRole(requestDto, workspaceId);
-    }
-
-    // TODO 워크스페이스 참여자 초대 API 수정 필요
-    @Operation(summary = "회원 초대", description = "회원 초대 요청입니다. (워크스페이스 참여자로 등록)")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "회원 초대 성공")
-    })
-    @CheckRole(authority = WSP_INVITE)
-    @PostMapping("/{workspaceId}/invite")
-    public void inviteMember(@PathVariable("workspaceId") Long workspaceId,
-                             @RequestBody InviteMemberRequestDto requestDto) {
-        workspaceService.inviteMember(workspaceId, requestDto);
     }
 
     @Operation(summary = "워크스페이스 수정", description = "워크스페이스 수정입니다.")
@@ -100,5 +89,15 @@ public class WorkspaceController {
     public void modifyWorkspace(@RequestBody ModifyWorkspaceRequestDto requestDto,
                                 @PathVariable("workspaceId") Long workspaceId) {
         workspaceService.modifyWorkspace(requestDto, workspaceId);
+    }
+
+    @Operation(summary = "워크스페이스 단건 조회", description = "워크스페이스 단건 조회 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "워크스페이스 단건 조회 성공")
+    })
+    @CheckRole(authority = WS_READ)
+    @GetMapping("/{workspaceId}")
+    public FindWorkspaceResponseDto findWorkspace(@PathVariable("workspaceId") Long workspaceId) {
+        return workspaceService.findWorkspace(workspaceId);
     }
 }

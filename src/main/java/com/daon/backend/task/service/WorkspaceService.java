@@ -1,7 +1,10 @@
 package com.daon.backend.task.service;
 
+import com.daon.backend.task.domain.task.Task;
+import com.daon.backend.task.domain.task.TaskNotFoundException;
 import com.daon.backend.task.domain.workspace.*;
 import com.daon.backend.task.dto.WorkspaceSummary;
+import com.daon.backend.task.dto.task.FindTaskResponseDto;
 import com.daon.backend.task.dto.workspace.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +22,6 @@ public class WorkspaceService {
 
     private final WorkspaceRepository workspaceRepository;
     private final SessionMemberProvider sessionMemberProvider;
-    private final DbMemberProvider dbMemberProvider;
 
     @Transactional
     public CreateWorkspaceResponseDto createWorkspace(CreateWorkspaceRequestDto requestDto) {
@@ -98,21 +100,6 @@ public class WorkspaceService {
     }
 
     @Transactional
-    public void inviteMember(Long workspaceId, InviteMemberRequestDto requestDto) {
-        String memberId = dbMemberProvider.getMemberIdByEmail(requestDto.getEmail());
-        Workspace workspace = workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
-                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
-        workspace.addParticipant(
-                memberId,
-                new Profile(
-                        String.valueOf(workspaceId),
-                        null,
-                        null
-                )
-        );
-    }
-
-    @Transactional
     public void modifyWorkspace(ModifyWorkspaceRequestDto requestDto, Long workspaceId) {
         Workspace workspace = workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
@@ -126,5 +113,12 @@ public class WorkspaceService {
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
         WorkspaceParticipant workspaceParticipant = findWorkspace.findWorkspaceParticipant(workspaceParticipantId, workspaceId);
         workspaceParticipant.modifyRole(requestDto.getRole());
+    }
+
+    public FindWorkspaceResponseDto findWorkspace(Long workspaceId) {
+        Workspace workspace = workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+
+        return new FindWorkspaceResponseDto(workspace);
     }
 }

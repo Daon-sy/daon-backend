@@ -1,6 +1,7 @@
 package com.daon.backend.task.dto.task;
 
 import com.daon.backend.task.domain.task.TaskProgressStatus;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -23,10 +24,10 @@ public class ModifyTaskRequestDto {
     @Size(max = 1000)
     private String content;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDate startDate;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDate endDate;
 
     private boolean emergency;

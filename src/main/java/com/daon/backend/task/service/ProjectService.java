@@ -1,13 +1,12 @@
 package com.daon.backend.task.service;
 
 import com.daon.backend.task.domain.project.*;
+import com.daon.backend.task.domain.task.Task;
+import com.daon.backend.task.domain.task.TaskNotFoundException;
 import com.daon.backend.task.domain.workspace.*;
-import com.daon.backend.task.dto.project.CreateProjectRequestDto;
-import com.daon.backend.task.dto.workspace.InviteWorkspaceParticipantRequestDto;
-import com.daon.backend.task.dto.project.CreateProjectResponseDto;
-import com.daon.backend.task.dto.project.FindProjectParticipantsResponseDto;
-import com.daon.backend.task.dto.project.FindProjectsResponseDto;
+import com.daon.backend.task.dto.project.*;
 import com.daon.backend.task.dto.ProjectSummary;
+import com.daon.backend.task.dto.task.FindTaskResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -93,5 +92,12 @@ public class ProjectService {
                         .map(FindProjectParticipantsResponseDto.ProjectParticipantProfile::new)
                         .collect(Collectors.toList())
         );
+    }
+
+    public FindProjectResponseDto findProject(Long projectId) {
+        Project project = projectRepository.findProjectByProjectId(projectId)
+                .orElseThrow(() -> new ProjectNotFoundException(projectId));
+
+        return new FindProjectResponseDto(project);
     }
 }

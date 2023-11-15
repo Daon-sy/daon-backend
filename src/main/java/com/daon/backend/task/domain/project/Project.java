@@ -39,11 +39,14 @@ public class Project extends BaseTimeEntity {
 
     @Builder
     public Project(Workspace workspace, String title, String description, ProjectCreator projectCreator) {
+        String DEFAULT_BOARD_TITLE = "미분류";
+
         this.workspace = workspace;
         this.title = title;
         this.description = description;
 
         addParticipant(projectCreator.getMemberId(), projectCreator.getWorkspaceParticipant());
+        addBoard(DEFAULT_BOARD_TITLE);
     }
 
     public Optional<ProjectParticipant> findProjectParticipantByMemberId(String memberId) {

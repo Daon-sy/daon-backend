@@ -1,4 +1,4 @@
-package com.daon.backend.task.dto.workspace;
+package com.daon.backend.task.dto.project;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

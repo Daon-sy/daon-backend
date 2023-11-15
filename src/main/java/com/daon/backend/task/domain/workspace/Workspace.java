@@ -10,7 +10,6 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 @Entity
 @Getter
@@ -36,8 +35,6 @@ public class Workspace extends BaseTimeEntity {
     @Column(length = 10)
     private String subject;
 
-    private String joinCode;
-
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "workspace", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<WorkspaceParticipant> participants = new ArrayList<>();
 
@@ -49,7 +46,6 @@ public class Workspace extends BaseTimeEntity {
         this.division = division;
         this.imageUrl = imageUrl;
         this.subject = subject;
-        this.joinCode = generateJoinCode();
 
         this.participants.add(
                 WorkspaceParticipant.withWorkspaceAdminRole(
@@ -88,10 +84,6 @@ public class Workspace extends BaseTimeEntity {
 
     public void addParticipant(String memberId, Profile profile) {
         this.participants.add(WorkspaceParticipant.withBasicParticipantRole(this, profile, memberId));
-    }
-
-    private String generateJoinCode() {
-        return UUID.randomUUID().toString().replace("-", "").substring(0, 10);
     }
 
     public boolean isWorkspaceParticipantsByMemberId(String memberId) {
