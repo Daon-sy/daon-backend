@@ -2,7 +2,6 @@ package com.daon.backend.task.controller;
 
 import com.daon.backend.task.domain.authority.CheckRole;
 import com.daon.backend.task.dto.project.*;
-import com.daon.backend.task.dto.task.FindTaskResponseDto;
 import com.daon.backend.task.service.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -68,6 +67,17 @@ public class ProjectController {
     @GetMapping("/{projectId}/participants")
     public FindProjectParticipantsResponseDto findProjectParticipants(@PathVariable("projectId") Long projectId) {
         return projectService.findProjectParticipants(projectId);
+    }
+
+    @Operation(summary = "프로젝트 수정", description = "프로젝트 수정 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "프로젝트 수정 성공")
+    })
+    @CheckRole(authority = PJ_UPDATE)
+    @PatchMapping("/{projectId}")
+    public void modifyProject(@PathVariable("projectId") Long projectId,
+                              @RequestBody @Valid ModifyProjectRequestDto requestDto) {
+        projectService.modifyProject(projectId, requestDto);
     }
 
     @Operation(summary = "프로젝트 단건 조회", description = "프로젝트 단건 조회 요청입니다.")
