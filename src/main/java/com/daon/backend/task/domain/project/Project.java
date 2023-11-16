@@ -39,14 +39,11 @@ public class Project extends BaseTimeEntity {
 
     @Builder
     public Project(Workspace workspace, String title, String description, ProjectCreator projectCreator) {
-        String DEFAULT_BOARD_TITLE = "미분류";
-
         this.workspace = workspace;
         this.title = title;
         this.description = description;
 
         addParticipant(projectCreator.getMemberId(), projectCreator.getWorkspaceParticipant());
-        addBoard(DEFAULT_BOARD_TITLE);
     }
 
     public Optional<ProjectParticipant> findProjectParticipantByMemberId(String memberId) {
@@ -78,14 +75,17 @@ public class Project extends BaseTimeEntity {
         this.boards.removeIf(board -> board.getId().equals(boardId));
     }
 
-    public Board getBoardByBoardId(Long boardId) {
-        if (boardId == null) {
-            return null;
+    public Optional<Board> findBoardByBoardId(Long boardId) {
+        if (boardId != null) {
+            return Optional.ofNullable(
+                    boards.stream()
+                            .filter(board -> board.getId().equals(boardId))
+                            .findFirst()
+                            .orElseThrow(() -> new BoardNotFoundException(this.getId(), boardId))
+            );
         }
-        return boards.stream()
-                .filter(board -> board.getId().equals(boardId))
-                .findFirst()
-                .orElseThrow(() -> new BoardNotFoundException(this.getId(), boardId));
+
+        return Optional.empty();
     }
 
     public void throwIfTitleExist(String title) {

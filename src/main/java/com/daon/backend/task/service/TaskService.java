@@ -36,7 +36,7 @@ public class TaskService {
                     .orElseThrow(() -> new NotProjectParticipantException(memberId, project.getId()));
         }
 
-        Board board = project.getBoardByBoardId(requestDto.getBoardId());
+        Board board = project.findBoardByBoardId(requestDto.getBoardId()).orElse(null);
 
         Task task = Task.builder()
                 .title(requestDto.getTitle())
@@ -72,7 +72,7 @@ public class TaskService {
 
         Project project = projectRepository.findProjectByProjectId(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
-        Board board = project.getBoardByBoardId(requestDto.getBoardId());
+        Board board = project.findBoardByBoardId(requestDto.getBoardId()).orElse(null);
         Task task = taskRepository.findTaskByTaskId(taskId)
                 .orElseThrow(() -> new TaskNotFoundException(projectId, taskId));
 

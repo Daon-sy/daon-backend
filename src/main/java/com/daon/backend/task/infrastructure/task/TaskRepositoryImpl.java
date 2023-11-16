@@ -1,5 +1,6 @@
 package com.daon.backend.task.infrastructure.task;
 
+import com.daon.backend.task.domain.project.Board;
 import com.daon.backend.task.domain.task.Task;
 import com.daon.backend.task.domain.task.TaskRepository;
 import com.daon.backend.task.dto.*;
@@ -72,7 +73,7 @@ public class TaskRepositoryImpl implements TaskRepository {
                                 Projections.constructor(
                                         BoardSummary.class,
                                         task.board
-                                ),
+                                ).skipNulls(),
                                 Projections.constructor(
                                         TaskManager.class,
                                         task.taskManager
@@ -85,7 +86,11 @@ public class TaskRepositoryImpl implements TaskRepository {
                                 taskBookmark.isNotNull()
                         )
                 )
-                .from(task).leftJoin(taskBookmark).on(task.eq(taskBookmark.task).and(taskBookmark.memberId.eq(memberId)))
+                .from(task)
+                    .join(task.project, project)
+                    .leftJoin(task.board, board)
+                    .leftJoin(task.taskManager, projectParticipant)
+                    .leftJoin(taskBookmark).on(task.eq(taskBookmark.task).and(taskBookmark.memberId.eq(memberId)))
                 .where(builder)
                 .fetch();
     }
@@ -105,7 +110,7 @@ public class TaskRepositoryImpl implements TaskRepository {
                                         Projections.constructor(
                                                 BoardSummary.class,
                                                 task.board
-                                        ),
+                                        ).skipNulls(),
                                         Projections.constructor(
                                                 TaskManager.class,
                                                 task.taskManager
@@ -122,13 +127,18 @@ public class TaskRepositoryImpl implements TaskRepository {
                                 )
                         )
                         .from(task)
-                        .join(task.project, project)
-                        .join(task.board, board)
-                        .leftJoin(task.taskManager, projectParticipant)
-                        .leftJoin(taskBookmark).on(task.eq(taskBookmark.task).and(taskBookmark.memberId.eq(memberId)))
+                            .join(task.project, project)
+                            .leftJoin(task.board, board)
+                            .leftJoin(task.taskManager, projectParticipant)
+                            .leftJoin(taskBookmark).on(task.eq(taskBookmark.task).and(taskBookmark.memberId.eq(memberId)))
                         .where(task.id.eq(taskId))
                         .fetchOne()
         );
+    }
+
+    @Override
+    public List<Task> findTasksByBoard(Board board) {
+        return taskJpaRepository.findByBoard(board);
     }
 
 }
