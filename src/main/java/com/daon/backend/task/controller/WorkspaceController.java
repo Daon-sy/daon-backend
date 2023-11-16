@@ -43,7 +43,7 @@ public class WorkspaceController {
     @GetMapping
     public FindWorkspacesResponseDto findWorkspaces() {
 
-        return workspaceService.findAllWorkspace();
+        return workspaceService.findWorkspaces();
     }
 
     @Operation(summary = "내 프로필 조회", description = "내 프로필 조회 요청입니다.")

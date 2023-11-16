@@ -31,6 +31,8 @@ public class Project extends BaseTimeEntity {
 
     private String description;
 
+    private boolean removed;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<ProjectParticipant> participants = new ArrayList<>();
 
@@ -67,7 +69,7 @@ public class Project extends BaseTimeEntity {
 
     public void modifyBoard(Long boardId, String title) {
         Board findBoard = this.boards.stream()
-                .filter(board -> board.getId().equals(boardId))
+                .filter(board -> !board.isRemoved() && board.getId().equals(boardId))
                 .findFirst()
                 .orElseThrow(() -> new BoardNotFoundException(this.id, boardId));
 
@@ -75,7 +77,10 @@ public class Project extends BaseTimeEntity {
     }
 
     public void deleteBoard(Long boardId) {
-        this.boards.removeIf(board -> board.getId().equals(boardId));
+        this.boards.stream()
+                .filter(board -> board.getId().equals(boardId))
+                .findFirst()
+                .ifPresent(Board::deleteBoard);
     }
 
     public Board getBoardByBoardId(Long boardId) {

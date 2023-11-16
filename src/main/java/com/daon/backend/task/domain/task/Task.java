@@ -52,6 +52,8 @@ public class Task extends BaseTimeEntity {
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
 
+    private boolean removed;
+
     @OneToMany(mappedBy = "task", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<TaskBookmark> taskBookmarks = new ArrayList<>();
 

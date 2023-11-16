@@ -21,6 +21,8 @@ public class Board extends BaseTimeEntity {
 
     private String title;
 
+    private boolean removed;
+
     public Board(Project project, String title) {
         this.project = project;
         this.title = title;
@@ -28,5 +30,9 @@ public class Board extends BaseTimeEntity {
 
     public void modifyTitle(String title) {
         this.title = title;
+    }
+
+    public void deleteBoard() {
+        this.removed = true;
     }
 }

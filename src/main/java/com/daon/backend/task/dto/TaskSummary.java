@@ -7,7 +7,7 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Getter
-public class TaskSummary {
+public class  TaskSummary {
 
     private Long taskId;
     private ProjectSummary project;
