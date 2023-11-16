@@ -6,13 +6,13 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-public class WorkspaceListResponseDto {
+public class FindWorkspacesResponseDto {
 
     private int totalCount;
 
     private List<WorkspaceSummary> workspaces;
 
-    public WorkspaceListResponseDto(List<WorkspaceSummary> workspaces) {
+    public FindWorkspacesResponseDto(List<WorkspaceSummary> workspaces) {
         this.totalCount = workspaces.size();
         this.workspaces = workspaces;
     }

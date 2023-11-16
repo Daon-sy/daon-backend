@@ -12,6 +12,12 @@ public class ProjectSummary {
 
     private String description;
 
+    public ProjectSummary(Long projectId, String title, String description) {
+        this.projectId = projectId;
+        this.title = title;
+        this.description = description;
+    }
+
     public ProjectSummary(Project project) {
         this.projectId = project.getId();
         this.title = project.getTitle();

@@ -51,4 +51,17 @@ public class TaskDetail {
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
     }
+
+    public TaskDetail(Long taskId, ProjectSummary project, TaskManager taskManager,
+                      String title, LocalDateTime startDate, LocalDateTime endDate,
+                      TaskProgressStatus progressStatus, boolean emergency) {
+        this.taskId = taskId;
+        this.project = project;
+        this.taskManager = taskManager;
+        this.title = title;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.progressStatus = progressStatus;
+        this.emergency = emergency;
+    }
 }

@@ -1,5 +1,6 @@
 package com.daon.backend.task.dto;
 
+import com.daon.backend.task.domain.workspace.Division;
 import com.daon.backend.task.domain.workspace.Workspace;
 import lombok.Getter;
 
@@ -12,15 +13,23 @@ public class WorkspaceSummary {
 
     private String imageUrl;
 
-    private String division;
+    private Division division;
 
     private String description;
+
+    public WorkspaceSummary(Long workspaceId, String title, String imageUrl, Division division, String description) {
+        this.workspaceId = workspaceId;
+        this.title = title;
+        this.imageUrl = imageUrl;
+        this.division = division;
+        this.description = description;
+    }
 
     public WorkspaceSummary(Workspace workspace) {
         this.workspaceId = workspace.getId();
         this.title = workspace.getTitle();
         this.imageUrl = workspace.getImageUrl();
-        this.division = workspace.getDivision().name();
+        this.division = workspace.getDivision();
         this.description = workspace.getDescription();
     }
 }
