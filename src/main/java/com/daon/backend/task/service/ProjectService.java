@@ -108,6 +108,9 @@ public class ProjectService {
         return new FindProjectResponseDto(project);
     }
 
+    /**
+     * 프로젝트 탈퇴
+     */
     @Transactional
     public void withdrawProject(Long projectId) {
         String memberId = sessionMemberProvider.getMemberId();
@@ -120,5 +123,22 @@ public class ProjectService {
                 .forEach(Task::removeTaskManager);
 
         project.withdrawProject(memberId);
+    }
+
+    /**
+     * 프로젝트 참여자 강퇴
+     */
+    @Transactional
+    public void deportProjectParticipant(Long projectId, DeportProjectParticipantRequestDto requestDto) {
+        Long projectParticipantId = requestDto.getProjectParticipantId();
+
+        Project project = projectRepository.findProjectWithParticipantsById(projectId)
+                .orElseThrow(() -> new ProjectNotFoundException(projectId));
+        List<Task> tasks = taskRepository.findTasksByProjectId(projectId);
+        tasks.stream()
+                .filter(task -> task.getTaskManager().getId().equals(projectParticipantId))
+                .forEach(Task::removeTaskManager);
+
+        project.deportProject(projectParticipantId);
     }
 }

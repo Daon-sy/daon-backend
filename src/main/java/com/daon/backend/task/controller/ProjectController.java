@@ -99,4 +99,15 @@ public class ProjectController {
     public void withdrawProject(@PathVariable("projectId") Long projectId) {
         projectService.withdrawProject(projectId);
     }
+
+    @Operation(summary = "프로젝트 참여자 강퇴", description = "프로젝트 참여자 강퇴 요청입니다..")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "프로젝트 참여자 강퇴 성공")
+    })
+    @CheckRole(authority = PJ_DROP)
+    @PostMapping("/{projectId}/participants/deportation")
+    public void deportProjectParticipant(@PathVariable("projectId") Long projectId,
+                                         @RequestBody @Valid DeportProjectParticipantRequestDto requestDto) {
+        projectService.deportProjectParticipant(projectId, requestDto);
+    }
 }

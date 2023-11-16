@@ -124,4 +124,10 @@ public class Project extends BaseTimeEntity {
                 projectParticipant -> projectParticipant.getMemberId().equals(memberId)
         );
     }
+
+    public void deportProject(Long projectParticipantId) {
+        this.participants.removeIf(
+                projectParticipant -> projectParticipant.getId().equals(projectParticipantId)
+        );
+    }
 }
