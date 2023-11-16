@@ -21,6 +21,8 @@ public class Board extends BaseTimeEntity {
 
     private String title;
 
+    private boolean removed;
+
     public Board(Project project, String title) {
         this.project = project;
         this.title = title;

@@ -31,6 +31,8 @@ public class Project extends BaseTimeEntity {
 
     private String description;
 
+    private boolean removed;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<ProjectParticipant> participants = new ArrayList<>();
 

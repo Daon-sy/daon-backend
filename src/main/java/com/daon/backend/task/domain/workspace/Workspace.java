@@ -35,6 +35,8 @@ public class Workspace extends BaseTimeEntity {
     @Column(length = 10)
     private String subject;
 
+    private boolean removed;
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "workspace", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<WorkspaceParticipant> participants = new ArrayList<>();
 
