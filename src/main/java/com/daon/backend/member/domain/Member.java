@@ -36,6 +36,8 @@ public class Member extends BaseTimeEntity {
 
     private String name;
 
+    private boolean removed;
+
     @NotAudited
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Email> emails = new ArrayList<>();
