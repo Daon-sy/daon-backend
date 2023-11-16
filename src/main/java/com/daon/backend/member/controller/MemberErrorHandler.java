@@ -1,6 +1,7 @@
 package com.daon.backend.member.controller;
 
 import com.daon.backend.common.exception.DomainSpecificAdvice;
+import com.daon.backend.common.response.ErrorCode;
 import com.daon.backend.common.response.ErrorResponse;
 import com.daon.backend.member.domain.EmailNotFoundException;
 import com.daon.backend.member.domain.MemberNotFoundException;
@@ -20,7 +21,7 @@ public class MemberErrorHandler {
         log.error("{}", e.getMessage());
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ErrorResponse.createError("이미 존재하는 회원입니다."));
+                .body(ErrorResponse.createError(ErrorCode.ALREADY_EXISTS_MEMBER));
     }
 
     @ExceptionHandler(MemberNotFoundException.class)
@@ -28,7 +29,7 @@ public class MemberErrorHandler {
         log.error("{}", e.getMessage());
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(ErrorResponse.createError("존재하지 않는 회원 아이디입니다."));
+                .body(ErrorResponse.createError(ErrorCode.MEMBER_NOT_FOUND));
     }
 
     @ExceptionHandler(PasswordMismatchException.class)
@@ -36,7 +37,7 @@ public class MemberErrorHandler {
         log.error("{}", e.getMessage());
 
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(ErrorResponse.createError("비밀번호가 일치하지 않습니다."));
+                .body(ErrorResponse.createError(ErrorCode.PASSWORD_MISMATCH));
     }
 
     @ExceptionHandler(EmailNotFoundException.class)
@@ -44,6 +45,6 @@ public class MemberErrorHandler {
         log.error("{}", e.getMessage());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(ErrorResponse.createError("이메일이 존재하지 않습니다."));
+                .body(ErrorResponse.createError(ErrorCode.EMAIL_NOT_FOUND));
     }
 }

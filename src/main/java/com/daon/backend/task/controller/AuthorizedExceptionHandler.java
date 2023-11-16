@@ -1,6 +1,7 @@
 package com.daon.backend.task.controller;
 
 import com.daon.backend.common.exception.DomainSpecificAdvice;
+import com.daon.backend.common.response.ErrorCode;
 import com.daon.backend.common.response.ErrorResponse;
 import com.daon.backend.task.domain.authority.UnAuthorizedMemberException;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,6 @@ public class AuthorizedExceptionHandler {
     public ResponseEntity<ErrorResponse> unAuthorizedMemberExceptionHandle(UnAuthorizedMemberException e) {
         log.info("{}", e.getMessage());
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                .body(ErrorResponse.createError("해당 요청에 대한 권한이 없습니다."));
+                .body(ErrorResponse.createError(ErrorCode.UNAUTHORIZED_MEMBER));
     }
 }

@@ -1,6 +1,7 @@
 package com.daon.backend.task.controller;
 
 import com.daon.backend.common.exception.DomainSpecificAdvice;
+import com.daon.backend.common.response.ErrorCode;
 import com.daon.backend.common.response.ErrorResponse;
 import com.daon.backend.task.domain.task.TaskNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,6 @@ public class TaskExceptionHandler {
     public ResponseEntity<ErrorResponse> taskNotFoundExceptionHandle(TaskNotFoundException e) {
         log.info("{}", e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(ErrorResponse.createError("생성된 할 일이 없습니다."));
+                .body(ErrorResponse.createError(ErrorCode.TASK_NOT_FOUND));
     }
 }
