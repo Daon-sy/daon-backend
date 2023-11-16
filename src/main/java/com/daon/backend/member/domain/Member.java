@@ -41,12 +41,12 @@ public class Member extends BaseTimeEntity {
     private List<Email> emails = new ArrayList<>();
 
     @Builder
-    public Member(String id, String username, String password, String name, String email, PasswordEncoder passwordEncoder) {
+    public Member(String username, String password, String name, String email, PasswordEncoder passwordEncoder) {
         this.username = username;
         this.password = passwordEncoder.encode(password);
         this.name = name;
 
-        this.addEmail(id,email);
+        this.addEmail(email);
     }
 
     public void checkPassword(String targetPassword, PasswordEncoder passwordEncoder) {
@@ -65,10 +65,7 @@ public class Member extends BaseTimeEntity {
         this.name = Optional.ofNullable(name).orElse(this.name);
     }
 
-    public void addEmail(String memberId, String email) {
-        if(id.equals(memberId)) {
-            this.id = memberId;
-        }
+    public void addEmail(String email) {
         this.emails.add(new Email(this, email));
     }
 

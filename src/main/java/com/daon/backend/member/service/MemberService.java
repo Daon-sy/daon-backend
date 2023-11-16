@@ -82,7 +82,7 @@ public class MemberService {
                 .orElseThrow(() -> MemberNotFoundException.byMemberId(memberId));
 
         String email = requestDto.getEmail();
-        member.addEmail(memberId, email);
+        member.addEmail(email);
     }
 
     public FindEmailsResponseDto findEmails() {
