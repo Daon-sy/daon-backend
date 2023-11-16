@@ -1,7 +1,6 @@
 package com.daon.backend.task.dto.project;
 
 import com.daon.backend.task.domain.project.Project;
-import com.daon.backend.task.domain.task.Task;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 
@@ -25,6 +24,7 @@ public class FindProjectResponseDto {
     public FindProjectResponseDto(Project project) {
         this.projectId = project.getId();
         this.title = project.getTitle();
+        this.description = project.getDescription();
         this.createdAt = project.getCreatedAt();
         this.modifiedAt = project.getModifiedAt();
     }
