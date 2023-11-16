@@ -41,7 +41,7 @@ public class WorkspaceController {
             @ApiResponse(responseCode = "200", description = "워크스페이스 목록 조회 성공")
     })
     @GetMapping
-    public WorkspaceListResponseDto findWorkspaces() {
+    public FindWorkspacesResponseDto findWorkspaces() {
 
         return workspaceService.findAllWorkspace();
     }

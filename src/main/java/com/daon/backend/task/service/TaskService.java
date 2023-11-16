@@ -5,7 +5,6 @@ import com.daon.backend.task.domain.task.Task;
 import com.daon.backend.task.domain.task.TaskBookmark;
 import com.daon.backend.task.domain.task.TaskNotFoundException;
 import com.daon.backend.task.domain.task.TaskRepository;
-import com.daon.backend.task.dto.TaskSearchParams;
 import com.daon.backend.task.dto.task.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -52,10 +51,6 @@ public class TaskService {
 
         Long taskId = taskRepository.save(task).getId();
         return new CreateTaskResponseDto(taskId);
-    }
-
-    public FindTasksResponseDto searchTasks(TaskSearchParams params) {
-        return new FindTasksResponseDto(taskRepository.findTaskSummaries(sessionMemberProvider.getMemberId(), params));
     }
 
     public FindTaskResponseDto findTask(Long taskId) {

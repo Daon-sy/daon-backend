@@ -1,6 +1,7 @@
 package com.daon.backend.image.controller;
 
 import com.daon.backend.common.exception.DomainSpecificAdvice;
+import com.daon.backend.common.response.ErrorCode;
 import com.daon.backend.common.response.ErrorResponse;
 import com.daon.backend.image.service.EmptyImageException;
 import com.daon.backend.image.service.ImageIOException;
@@ -18,20 +19,20 @@ public class ImageErrorHandler {
     public ResponseEntity<ErrorResponse> emptyImageExceptionHandle(EmptyImageException e) {
         log.error("{}", e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ErrorResponse.createError("빈 이미지 파일입니다."));
+                .body(ErrorResponse.createError(ErrorCode.EMPTY_IMAGE));
     }
 
     @ExceptionHandler(NotAllowedContentTypeException.class)
     public ResponseEntity<ErrorResponse> notAllowedContentTypeExceptionHandle(NotAllowedContentTypeException e) {
         log.error("{}", e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ErrorResponse.createError("이미지는 .jpg, .jpeg, .png 형식이어야 합니다."));
+                .body(ErrorResponse.createError(ErrorCode.NOT_ALLOWED_CONTENT_TYPE));
     }
 
     @ExceptionHandler(ImageIOException.class)
     public ResponseEntity<ErrorResponse> imageIOExceptionHandle(ImageIOException e) {
         log.error("이미지 입출력 오류 발생...", e);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(ErrorResponse.createError("이미지 업로드 중 오류 발생"));
+                .body(ErrorResponse.createError(ErrorCode.IMAGE_IOEXCEPTION));
     }
 }

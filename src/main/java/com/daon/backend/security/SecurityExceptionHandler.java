@@ -1,6 +1,7 @@
 package com.daon.backend.security;
 
 import com.daon.backend.common.exception.DomainSpecificAdvice;
+import com.daon.backend.common.response.ErrorCode;
 import com.daon.backend.common.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,6 @@ public class SecurityExceptionHandler {
     public ResponseEntity<ErrorResponse> memberNotAuthenticatedExceptionHandle(MemberNotAuthenticatedException e) {
         log.info("{}", e.getMessage());
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(ErrorResponse.createError("인증되지 않은 사용자의 요청입니다."));
+                .body(ErrorResponse.createError(ErrorCode.MEMBER_NOT_AUTHENTICATED));
     }
 }

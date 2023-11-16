@@ -1,5 +1,8 @@
 package com.daon.backend.member.domain;
 
+import com.daon.backend.member.dto.MemberSummary;
+
+import java.util.List;
 import java.util.Optional;
 
 public interface MemberRepository {
@@ -10,4 +13,5 @@ public interface MemberRepository {
 
     Optional<Member> findById(String memberId);
 
+    List<MemberSummary> searchMembersByUsername(String username);
 }

@@ -10,11 +10,21 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class ErrorResponse {
 
-    private String message;
+    private int errorCode;
 
-    public static ErrorResponse createError(String message) {
+    private String errorDescription;
+
+    public static ErrorResponse createError(ErrorCode errorCode) {
         return ErrorResponse.builder()
-                .message(message)
+                .errorCode(errorCode.getCode())
+                .errorDescription(errorCode.getDescription())
+                .build();
+    }
+
+    public static ErrorResponse createMethodArgumentNotValidError(int errorCode, String errorDescription) {
+        return ErrorResponse.builder()
+                .errorCode(errorCode)
+                .errorDescription(errorDescription)
                 .build();
     }
 }

@@ -4,9 +4,11 @@ import com.daon.backend.task.domain.task.Task;
 import com.daon.backend.task.domain.task.TaskRepository;
 import com.daon.backend.task.dto.*;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -17,6 +19,7 @@ import static com.daon.backend.task.domain.project.QProject.project;
 import static com.daon.backend.task.domain.project.QProjectParticipant.projectParticipant;
 import static com.daon.backend.task.domain.task.QTask.task;
 import static com.daon.backend.task.domain.task.QTaskBookmark.taskBookmark;
+import static com.querydsl.core.types.Projections.*;
 
 @Repository
 @RequiredArgsConstructor
@@ -62,18 +65,18 @@ public class TaskRepositoryImpl implements TaskRepository {
 
         return queryFactory
                 .select(
-                        Projections.constructor(
+                        constructor(
                                 TaskSummary.class,
                                 task.id,
-                                Projections.constructor(
+                                constructor(
                                         ProjectSummary.class,
                                         task.project
                                 ),
-                                Projections.constructor(
+                                constructor(
                                         BoardSummary.class,
                                         task.board
                                 ),
-                                Projections.constructor(
+                                constructor(
                                         TaskManager.class,
                                         task.taskManager
                                 ).skipNulls(),
@@ -95,22 +98,65 @@ public class TaskRepositoryImpl implements TaskRepository {
     }
 
     @Override
+    public Slice<TaskSearchResult> searchTaskSummariesByTitle(String memberId, String title, Pageable pageable) {
+        final int pageSize = pageable.getPageSize();
+        final long offset = pageable.getOffset();
+
+        List<TaskSearchResult> taskSearchResults = queryFactory
+                .select(
+                        constructor(
+                                TaskSearchResult.class,
+                                task.id,
+                                constructor(
+                                        ProjectSummary.class,
+                                        task.project
+                                ),
+                                constructor(
+                                        TaskManager.class,
+                                        task.taskManager
+                                ),
+                                task.title,
+                                task.startDate,
+                                task.endDate,
+                                task.progressStatus,
+                                task.emergency
+                        )
+                )
+                .from(task)
+                .innerJoin(task.project.participants, projectParticipant)
+                .where(task.title.contains(title)
+                        .and(projectParticipant.memberId.eq(memberId)))
+                .orderBy(task.modifiedAt.desc())
+                .offset(offset)
+                .limit(pageSize + 1)
+                .fetch();
+
+        boolean hasNext = false;
+        if (taskSearchResults.size() > pageSize) {
+            taskSearchResults.remove(pageSize);
+            hasNext = true;
+        }
+
+        return new SliceImpl<>(taskSearchResults, pageable, hasNext);
+    }
+
+    @Override
     public Optional<TaskDetail> findTaskDetail(String memberId, Long taskId) {
         return Optional.ofNullable(
                 queryFactory
                         .select(
-                                Projections.constructor(
+                                constructor(
                                         TaskDetail.class,
                                         task.id,
-                                        Projections.constructor(
+                                        constructor(
                                                 ProjectSummary.class,
                                                 task.project
                                         ),
-                                        Projections.constructor(
+                                        constructor(
                                                 BoardSummary.class,
                                                 task.board
                                         ),
-                                        Projections.constructor(
+                                        constructor(
                                                 TaskManager.class,
                                                 task.taskManager
                                         ).skipNulls(),

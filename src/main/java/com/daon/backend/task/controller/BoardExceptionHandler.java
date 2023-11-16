@@ -1,6 +1,7 @@
 package com.daon.backend.task.controller;
 
 import com.daon.backend.common.exception.DomainSpecificAdvice;
+import com.daon.backend.common.response.ErrorCode;
 import com.daon.backend.common.response.ErrorResponse;
 import com.daon.backend.task.domain.project.BoardNotFoundException;
 import com.daon.backend.task.domain.project.SameBoardExistsException;
@@ -17,13 +18,13 @@ public class BoardExceptionHandler {
     public ResponseEntity<ErrorResponse> sameBoardExistsExceptionHandle(SameBoardExistsException e) {
         log.info("{}", e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(ErrorResponse.createError("동일한 이름의 보드가 존재합니다."));
+                .body(ErrorResponse.createError(ErrorCode.SAME_BOARD_EXISTS));
     }
 
     @ExceptionHandler(BoardNotFoundException.class)
     public ResponseEntity<ErrorResponse> boardNotFoundExceptionHandle(BoardNotFoundException e) {
         log.info("{}", e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(ErrorResponse.createError("사용 중인 보드가 없습니다."));
+                .body(ErrorResponse.createError(ErrorCode.BOARD_NOT_FOUND));
     }
 }

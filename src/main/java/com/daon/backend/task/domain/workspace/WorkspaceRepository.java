@@ -1,5 +1,9 @@
 package com.daon.backend.task.domain.workspace;
 
+import com.daon.backend.task.dto.WorkspaceSummary;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+
 import java.util.List;
 import java.util.Optional;
 
@@ -20,4 +24,6 @@ public interface WorkspaceRepository {
     List<WorkspaceParticipant> findWorkspaceParticipantsByWorkspaceId(Long workspaceId);
 
     Role findParticipantRoleByMemberIdAndWorkspaceId(String memberId, Long workspaceId);
+
+    Slice<WorkspaceSummary> searchWorkspaceSummariesByTitle(String memberId, String title, Pageable pageable);
 }
