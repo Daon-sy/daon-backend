@@ -1,6 +1,8 @@
 package com.daon.backend.task.service;
 
 import com.daon.backend.task.domain.project.*;
+import com.daon.backend.task.domain.task.Task;
+import com.daon.backend.task.domain.task.TaskRepository;
 import com.daon.backend.task.domain.workspace.*;
 import com.daon.backend.task.dto.ProjectSummary;
 import com.daon.backend.task.dto.project.*;
@@ -19,6 +21,7 @@ public class ProjectService {
     private final WorkspaceRepository workspaceRepository;
     private final ProjectRepository projectRepository;
     private final SessionMemberProvider sessionMemberProvider;
+    private final TaskRepository taskRepository;
 
     @Transactional
     public CreateProjectResponseDto createProject(Long workspaceId, CreateProjectRequestDto requestDto) {
@@ -103,5 +106,19 @@ public class ProjectService {
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
         return new FindProjectResponseDto(project);
+    }
+
+    @Transactional
+    public void withdrawProject(Long projectId) {
+        String memberId = sessionMemberProvider.getMemberId();
+        Project project = projectRepository.findProjectWithParticipantsById(projectId)
+                .orElseThrow(() -> new ProjectNotFoundException(projectId));
+
+        List<Task> tasks = taskRepository.findTasksByProjectId(projectId);
+        tasks.stream()
+                .filter(task -> task.getTaskManager().getMemberId().equals(memberId))
+                .forEach(Task::removeTaskManager);
+
+        project.withdrawProject(memberId);
     }
 }

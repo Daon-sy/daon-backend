@@ -89,4 +89,14 @@ public class ProjectController {
     public FindProjectResponseDto findProject(@PathVariable("projectId") Long projectId) {
         return projectService.findProject(projectId);
     }
+
+    @Operation(summary = "프로젝트 탈퇴", description = "프로젝트 탈퇴 요청입니다..")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "프로젝트 탈퇴 성공")
+    })
+    @CheckRole(authority = PJ_READ)
+    @DeleteMapping("/{projectId}/participants/me")
+    public void withdrawProject(@PathVariable("projectId") Long projectId) {
+        projectService.withdrawProject(projectId);
+    }
 }

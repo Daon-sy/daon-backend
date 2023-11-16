@@ -33,7 +33,7 @@ public class Project extends BaseTimeEntity {
 
     private boolean removed;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<ProjectParticipant> participants = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
@@ -117,5 +117,11 @@ public class Project extends BaseTimeEntity {
     public void modifyProject(String title, String description) {
         this.title = Optional.ofNullable(title).orElse(this.title);
         this.description = Optional.ofNullable(description).orElse(this.description);
+    }
+
+    public void withdrawProject(String memberId) {
+        this.participants.removeIf(
+                projectParticipant -> projectParticipant.getMemberId().equals(memberId)
+        );
     }
 }

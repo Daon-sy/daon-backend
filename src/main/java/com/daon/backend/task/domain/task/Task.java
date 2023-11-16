@@ -96,4 +96,8 @@ public class Task extends BaseTimeEntity {
     public void modifyProgressStatus(TaskProgressStatus progressStatus) {
         this.progressStatus = Optional.ofNullable(progressStatus).orElse(this.progressStatus);
     }
+
+    public void removeTaskManager() {
+        this.taskManager = null;
+    }
 }

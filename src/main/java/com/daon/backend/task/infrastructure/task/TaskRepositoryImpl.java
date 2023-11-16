@@ -40,6 +40,11 @@ public class TaskRepositoryImpl implements TaskRepository {
     }
 
     @Override
+    public List<Task> findTasksByProjectId(Long projectId) {
+        return taskJpaRepository.findTasksByProjectIdAndRemovedFalse(projectId);
+    }
+
+    @Override
     public boolean existsTaskBookmarkByTaskIdAndProjectParticipantId(Long taskId, Long projectParticipantId) {
         return taskBookmarkJpaRepository.existsTaskBookmarkByTaskIdAndParticipant_Id(taskId, projectParticipantId);
     }
