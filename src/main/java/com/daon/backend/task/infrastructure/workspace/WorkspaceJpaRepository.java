@@ -9,6 +9,8 @@ import java.util.Optional;
 public interface WorkspaceJpaRepository extends JpaRepository<Workspace, Long> {
 
     @EntityGraph(attributePaths = "participants")
-    Optional<Workspace> findWorkspaceWithParticipantsById(Long workspaceId);
+    Optional<Workspace> findWorkspaceWithParticipantsByIdAndRemovedFalse(Long workspaceId);
+
+    Optional<Workspace> findByIdAndRemovedFalse(Long workspaceId);
 
 }

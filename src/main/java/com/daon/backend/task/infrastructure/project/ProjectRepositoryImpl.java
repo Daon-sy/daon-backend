@@ -34,12 +34,12 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 
     @Override
     public Optional<Project> findProjectByProjectId(Long projectId) {
-        return projectJpaRepository.findById(projectId);
+        return projectJpaRepository.findByIdAndRemovedFalse(projectId);
     }
 
     @Override
     public Optional<Project> findProjectWithParticipantsById(Long projectId) {
-        return projectJpaRepository.findProjectWithParticipantsById(projectId);
+        return projectJpaRepository.findProjectWithParticipantsByIdAndRemovedFalse(projectId);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 
     @Override
     public Optional<Project> findProjectWithBoardsByProjectId(Long projectId) {
-        return projectJpaRepository.findProjectWithBoardsById(projectId);
+        return projectJpaRepository.findProjectWithBoardsByIdAndRemovedFalse(projectId);
     }
 
     @Override
@@ -79,7 +79,8 @@ public class ProjectRepositoryImpl implements ProjectRepository {
                 .from(project)
                 .innerJoin(project.participants, projectParticipant)
                 .where(project.title.contains(title)
-                        .and(projectParticipant.memberId.eq(memberId)))
+                        .and(projectParticipant.memberId.eq(memberId))
+                        .and(project.removed.isFalse()))
                 .orderBy(project.modifiedAt.desc())
                 .offset(offset)
                 .limit(pageSize + 1)

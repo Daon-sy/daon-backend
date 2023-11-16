@@ -31,4 +31,8 @@ public class Board extends BaseTimeEntity {
     public void modifyTitle(String title) {
         this.title = title;
     }
+
+    public void deleteBoard() {
+        this.removed = true;
+    }
 }
