@@ -36,7 +36,7 @@ public class TaskRepositoryImpl implements TaskRepository {
 
     @Override
     public Optional<Task> findTaskByTaskId(Long taskId) {
-        return taskJpaRepository.findById(taskId);
+        return taskJpaRepository.findByIdAndRemovedFalse(taskId);
     }
 
     @Override
@@ -93,7 +93,7 @@ public class TaskRepositoryImpl implements TaskRepository {
                     .leftJoin(task.board, board)
                     .leftJoin(task.taskManager, projectParticipant)
                     .leftJoin(taskBookmark).on(task.eq(taskBookmark.task).and(taskBookmark.memberId.eq(memberId)))
-                .where(builder)
+                .where(builder.and(task.removed.isFalse()))
                 .fetch();
     }
 
@@ -125,7 +125,8 @@ public class TaskRepositoryImpl implements TaskRepository {
                 .from(task)
                 .innerJoin(task.project.participants, projectParticipant)
                 .where(task.title.contains(title)
-                        .and(projectParticipant.memberId.eq(memberId)))
+                        .and(projectParticipant.memberId.eq(memberId))
+                        .and(task.removed.isFalse()))
                 .orderBy(task.modifiedAt.desc())
                 .offset(offset)
                 .limit(pageSize + 1)
@@ -176,7 +177,8 @@ public class TaskRepositoryImpl implements TaskRepository {
                             .leftJoin(task.board, board)
                             .leftJoin(task.taskManager, projectParticipant)
                             .leftJoin(taskBookmark).on(task.eq(taskBookmark.task).and(taskBookmark.memberId.eq(memberId)))
-                        .where(task.id.eq(taskId))
+                        .where(task.id.eq(taskId)
+                                .and(task.removed.isFalse()))
                         .fetchOne()
         );
     }

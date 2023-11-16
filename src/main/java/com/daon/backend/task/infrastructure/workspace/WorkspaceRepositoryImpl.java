@@ -25,7 +25,7 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
 
     private final WorkspaceJpaRepository workspaceJpaRepository;
     private final WorkspaceParticipantJpaRepository workspaceParticipantJpaRepository;
-    private final JPAQueryFactory jpaQueryFactory;
+    private final JPAQueryFactory queryFactory;
 
     @Override
     public Workspace save(Workspace workspace) {
@@ -34,12 +34,12 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
 
     @Override
     public Optional<Workspace> findWorkspaceByWorkspaceId(Long workspaceId) {
-        return workspaceJpaRepository.findById(workspaceId);
+        return workspaceJpaRepository.findByIdAndRemovedFalse(workspaceId);
     }
 
     @Override
     public Optional<Workspace> findWorkspaceWithParticipantsByWorkspaceId(Long workspaceId) {
-        return workspaceJpaRepository.findWorkspaceWithParticipantsById(workspaceId);
+        return workspaceJpaRepository.findWorkspaceWithParticipantsByIdAndRemovedFalse(workspaceId);
     }
 
     @Override
@@ -64,7 +64,7 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
 
     @Override
     public Role findParticipantRoleByMemberIdAndWorkspaceId(String memberId, Long workspaceId) {
-        return jpaQueryFactory
+        return queryFactory
                 .select(workspaceParticipant.role)
                 .from(workspaceParticipant)
                 .where(workspaceParticipant.memberId.eq(memberId)
@@ -77,7 +77,7 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
         final int pageSize = pageable.getPageSize();
         final long offset = pageable.getOffset();
 
-        List<WorkspaceSummary> workspaceSummaries = jpaQueryFactory
+        List<WorkspaceSummary> workspaceSummaries = queryFactory
                 .select(
                         Projections.constructor(
                                 WorkspaceSummary.class,
@@ -91,7 +91,8 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
                 .from(workspace)
                 .innerJoin(workspace.participants, workspaceParticipant)
                 .where(workspace.title.contains(title)
-                        .and(workspaceParticipant.memberId.eq(memberId)))
+                        .and(workspaceParticipant.memberId.eq(memberId))
+                        .and(workspace.removed.isFalse()))
                 .orderBy(workspace.modifiedAt.desc())
                 .offset(offset)
                 .limit(pageSize + 1)

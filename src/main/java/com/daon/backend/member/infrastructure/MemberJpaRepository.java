@@ -8,10 +8,9 @@ import java.util.Optional;
 
 public interface MemberJpaRepository extends JpaRepository<Member, String> {
 
-    @Override
     @EntityGraph(attributePaths = "emails")
-    Optional<Member> findById(String memberId);
+    Optional<Member> findByIdAndRemovedFalse(String memberId);
 
     @EntityGraph(attributePaths = "emails")
-    Optional<Member> findByUsername(String username);
+    Optional<Member> findByUsernameAndRemovedFalse(String username);
 }

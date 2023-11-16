@@ -41,7 +41,7 @@ public class WorkspaceService {
         return new CreateWorkspaceResponseDto(workspaceId);
     }
 
-    public FindWorkspacesResponseDto findAllWorkspace() {
+    public FindWorkspacesResponseDto findWorkspaces() {
         String memberId = sessionMemberProvider.getMemberId();
         return new FindWorkspacesResponseDto(
                 workspaceRepository.findWorkspacesByMemberId(memberId).stream()

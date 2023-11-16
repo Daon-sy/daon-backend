@@ -27,12 +27,12 @@ public class MemberRepositoryImpl implements MemberRepository {
 
     @Override
     public Optional<Member> findByUsername(String username) {
-        return memberJpaRepository.findByUsername(username);
+        return memberJpaRepository.findByUsernameAndRemovedFalse(username);
     }
 
     @Override
     public Optional<Member> findById(String memberId) {
-        return memberJpaRepository.findById(memberId);
+        return memberJpaRepository.findByIdAndRemovedFalse(memberId);
     }
 
     @Override
@@ -46,7 +46,8 @@ public class MemberRepositoryImpl implements MemberRepository {
                         )
                 )
                 .from(member)
-                .where(member.username.contains(username))
+                .where(member.username.contains(username)
+                        .and(member.removed.isFalse()))
                 .fetch();
     }
 

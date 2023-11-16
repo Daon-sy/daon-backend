@@ -34,6 +34,7 @@ public class BoardService {
 
         return new FindBoardsResponseDto(
                 findProject.getBoards().stream()
+                        .filter(board -> !board.isRemoved())
                         .sorted(Comparator.comparing(Board::getCreatedAt).thenComparing(Board::getId))
                         .map(FindBoardsResponseDto.BoardInfo::new)
                         .collect(Collectors.toList())

@@ -12,7 +12,7 @@ public interface WorkspaceParticipantJpaRepository extends JpaRepository<Workspa
 
     @Query("select wsp.workspace " +
            "from WorkspaceParticipant wsp " +
-           "where wsp.memberId = :memberId")
+           "where wsp.memberId = :memberId and wsp.workspace.removed = false")
     List<Workspace> findWorkspacesByMemberId(String memberId);
 
     Optional<WorkspaceParticipant> findByWorkspaceAndMemberId(Workspace workspace, String memberId);
