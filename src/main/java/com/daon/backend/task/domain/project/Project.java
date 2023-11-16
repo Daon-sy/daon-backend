@@ -77,10 +77,18 @@ public class Project extends BaseTimeEntity {
     }
 
     public void deleteBoard(Long boardId) {
-        this.boards.stream()
-                .filter(board -> board.getId().equals(boardId))
-                .findFirst()
-                .ifPresent(Board::deleteBoard);
+        if (checkCanDeleteBoard()) {
+            this.boards.stream()
+                    .filter(board -> board.getId().equals(boardId))
+                    .findFirst()
+                    .ifPresent(Board::deleteBoard);
+        } else {
+            throw new CanNotDeleteBoardException();
+        }
+    }
+
+    public boolean checkCanDeleteBoard() {
+        return this.boards.size() > 1;
     }
 
     public Board getBoardByBoardId(Long boardId) {

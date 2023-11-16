@@ -40,6 +40,7 @@ public enum ErrorCode {
 
     BOARD_NOT_FOUND(4100, "사용 중인 보드가 없습니다."),
     SAME_BOARD_EXISTS(4101, "동일한 이름의 보드가 존재합니다."),
+    CAN_NOT_DELETE_BOARD(4102, "보드가 1개 남았기 때문에 삭제할 수 없습니다."),
 
     // 할 일
     TASK_NOT_FOUND(5000, "생성된 할 일이 없습니다."),

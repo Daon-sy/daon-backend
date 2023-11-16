@@ -4,6 +4,7 @@ import com.daon.backend.common.exception.DomainSpecificAdvice;
 import com.daon.backend.common.response.ErrorCode;
 import com.daon.backend.common.response.ErrorResponse;
 import com.daon.backend.task.domain.project.BoardNotFoundException;
+import com.daon.backend.task.domain.project.CanNotDeleteBoardException;
 import com.daon.backend.task.domain.project.SameBoardExistsException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -26,5 +27,12 @@ public class BoardExceptionHandler {
         log.info("{}", e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(ErrorResponse.createError(ErrorCode.BOARD_NOT_FOUND));
+    }
+
+    @ExceptionHandler(CanNotDeleteBoardException.class)
+    public ResponseEntity<ErrorResponse> canNotDeleteBoardException(CanNotDeleteBoardException e) {
+        log.info("{}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.createError(ErrorCode.CAN_NOT_DELETE_BOARD));
     }
 }
