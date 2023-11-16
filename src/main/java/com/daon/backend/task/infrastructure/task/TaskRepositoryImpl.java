@@ -1,6 +1,5 @@
 package com.daon.backend.task.infrastructure.task;
 
-import com.daon.backend.task.domain.project.Board;
 import com.daon.backend.task.domain.task.Task;
 import com.daon.backend.task.domain.task.TaskRepository;
 import com.daon.backend.task.dto.*;
@@ -134,11 +133,6 @@ public class TaskRepositoryImpl implements TaskRepository {
                         .where(task.id.eq(taskId))
                         .fetchOne()
         );
-    }
-
-    @Override
-    public List<Task> findTasksByBoard(Board board) {
-        return taskJpaRepository.findByBoard(board);
     }
 
 }
