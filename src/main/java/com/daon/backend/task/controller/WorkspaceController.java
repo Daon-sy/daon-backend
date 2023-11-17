@@ -131,4 +131,13 @@ public class WorkspaceController {
                               @RequestBody @Valid JoinWorkspaceRequestDto requestDto) {
         workspaceService.joinWorkspace(workspaceId, requestDto);
     }
+
+    @Operation(summary = "워크스페이스 탈퇴", description = "워크스페이스 탈퇴 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "워크스페이스 탈퇴 성공")
+    })
+    @DeleteMapping("/{workspaceId}/participants/me")
+    public void withdrawWorkspace(@PathVariable("workspaceId") Long workspaceId) {
+        workspaceService.withdrawWorkspace(workspaceId);
+    }
 }

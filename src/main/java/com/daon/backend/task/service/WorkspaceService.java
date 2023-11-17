@@ -1,5 +1,8 @@
 package com.daon.backend.task.service;
 
+import com.daon.backend.task.domain.project.ProjectRepository;
+import com.daon.backend.task.domain.task.Task;
+import com.daon.backend.task.domain.task.TaskRepository;
 import com.daon.backend.task.domain.workspace.*;
 import com.daon.backend.task.dto.WorkspaceSummary;
 import com.daon.backend.task.dto.workspace.*;
@@ -20,6 +23,8 @@ public class WorkspaceService {
     private final WorkspaceRepository workspaceRepository;
     private final SessionMemberProvider sessionMemberProvider;
     private final DbMemberProvider dbMemberProvider;
+    private final ProjectRepository projectRepository;
+    private final TaskRepository taskRepository;
 
     @Transactional
     public CreateWorkspaceResponseDto createWorkspace(CreateWorkspaceRequestDto requestDto) {
@@ -161,5 +166,27 @@ public class WorkspaceService {
         } else {
             throw new NotInvitedMemberException(workspaceId, memberId);
         }
+    }
+
+    /**
+     * 워크스페이스 탈퇴
+     */
+    @Transactional
+    public void withdrawWorkspace(Long workspaceId) {
+        String memberId = sessionMemberProvider.getMemberId();
+
+        Workspace workspace = workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+
+        workspace.getParticipants().stream()
+                .filter(workspaceParticipant -> workspaceParticipant.getMemberId().equals(memberId))
+                .forEach(workspaceParticipant -> {
+                    projectRepository.findProjectsByWorkspaceParticipant(workspaceParticipant).stream()
+                            .peek(project -> taskRepository.findTasksByProjectId(project.getId()).stream()
+                                    .filter(task -> task.getTaskManager().getMemberId().equals(memberId))
+                                    .forEach(Task::removeTaskManager))
+                            .forEach(project -> project.withdrawProject(memberId));
+                });
+        workspace.withdrawWorkspace(memberId);
     }
 }
