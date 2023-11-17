@@ -1,5 +1,7 @@
 package com.daon.backend.task.service;
 
+import com.daon.backend.task.domain.project.Project;
+import com.daon.backend.task.domain.project.ProjectParticipant;
 import com.daon.backend.task.domain.project.ProjectRepository;
 import com.daon.backend.task.domain.task.Task;
 import com.daon.backend.task.domain.task.TaskRepository;
@@ -177,16 +179,54 @@ public class WorkspaceService {
 
         Workspace workspace = workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+        Long workspaceParticipantId = workspace.findWorkspaceParticipantByMemberId(memberId).getId();
 
         workspace.getParticipants().stream()
                 .filter(workspaceParticipant -> workspaceParticipant.getMemberId().equals(memberId))
-                .forEach(workspaceParticipant -> {
-                    projectRepository.findProjectsByWorkspaceParticipant(workspaceParticipant).stream()
-                            .peek(project -> taskRepository.findTasksByProjectId(project.getId()).stream()
+                .forEach(workspaceParticipant -> projectRepository.findProjectsByWorkspaceParticipant(workspaceParticipant).stream()
+                        .peek(project -> {
+                            List<Task> tasks = taskRepository.findTasksByProjectId(project.getId());
+                            tasks.stream()
                                     .filter(task -> task.getTaskManager().getMemberId().equals(memberId))
-                                    .forEach(Task::removeTaskManager))
-                            .forEach(project -> project.withdrawProject(memberId));
-                });
+                                    .forEach(Task::removeTaskManager);
+                            tasks.stream()
+                                    .filter(task -> task.getCreatorId().equals(workspaceParticipantId))
+                                    .forEach(Task::removeCreator);
+                        })
+                        .forEach(project -> project.withdrawProject(memberId))
+                );
+
         workspace.withdrawWorkspace(memberId);
+    }
+
+    /**
+     * 워크스페이스 참여자 강퇴
+     */
+    @Transactional
+    public void deportWorkspaceParticipant(Long workspaceId, DeportWorkspaceParticipantRequestDto requestDto) {
+        Long workspaceParticipantId = requestDto.getWorkspaceParticipantId();
+        WorkspaceParticipant workspaceParticipant = workspaceRepository.findWorkspaceParticipantByWorkspaceParticipantId(workspaceParticipantId)
+                .orElseThrow(() -> new NotWorkspaceParticipantException(workspaceId));
+        String workspaceParticipantMemberId = workspaceParticipant.getMemberId();
+
+        List<Project> projects = projectRepository.findProjectsByWorkspaceParticipantId(workspaceParticipantId);
+        projects.stream()
+                .peek(project -> {
+                    List<Task> tasks = taskRepository.findTasksByProjectId(project.getId());
+                    tasks.stream()
+                            .filter(task -> {
+                                ProjectParticipant taskManager = task.getTaskManager();
+                                return taskManager != null && taskManager.getMemberId().equals(workspaceParticipantMemberId);
+                            })
+                            .forEach(Task::removeTaskManager);
+                    tasks.stream()
+                            .filter(task -> task.getCreatorId().equals(workspaceParticipantId))
+                            .forEach(Task::removeCreator);
+                })
+                .forEach(project -> project.withdrawProject(workspaceParticipantMemberId));
+
+        Workspace workspace = workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+        workspace.deportWorkspace(workspaceParticipantId);
     }
 }

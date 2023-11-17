@@ -133,4 +133,10 @@ public class Workspace extends BaseTimeEntity {
     public void withdrawWorkspace(String memberId) {
         this.participants.removeIf(workspaceParticipant -> workspaceParticipant.getMemberId().equals(memberId));
     }
+
+    public void deportWorkspace(Long workspaceParticipantId) {
+        this.participants.removeIf(
+                workspaceParticipant -> workspaceParticipant.getId().equals(workspaceParticipantId)
+        );
+    }
 }

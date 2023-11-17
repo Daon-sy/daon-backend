@@ -136,8 +136,20 @@ public class WorkspaceController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "워크스페이스 탈퇴 성공")
     })
+    @CheckRole(authority = WS_READ)
     @DeleteMapping("/{workspaceId}/participants/me")
     public void withdrawWorkspace(@PathVariable("workspaceId") Long workspaceId) {
         workspaceService.withdrawWorkspace(workspaceId);
+    }
+
+    @Operation(summary = "워크스페이스 참여자 강퇴", description = "워크스페이스 참여자 강퇴 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "워크스페이스 참여자 강퇴 성공")
+    })
+    @CheckRole(authority = WSP_DROP)
+    @PostMapping("/{workspaceId}/participants/deportation")
+    public void deportWorkspaceParticipant(@PathVariable("workspaceId") Long workspaceId,
+                                           @RequestBody @Valid DeportWorkspaceParticipantRequestDto requestDto) {
+        workspaceService.deportWorkspaceParticipant(workspaceId, requestDto);
     }
 }

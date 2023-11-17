@@ -99,4 +99,8 @@ public class Task extends BaseTimeEntity {
     public void removeTaskManager() {
         this.taskManager = null;
     }
+
+    public void removeCreator() {
+        this.creatorId = null;
+    }
 }
