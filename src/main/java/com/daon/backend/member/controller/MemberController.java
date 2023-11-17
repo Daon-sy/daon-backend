@@ -81,4 +81,14 @@ public class MemberController {
     public FindEmailsResponseDto findEmails() {
         return memberService.findEmails();
     }
+
+    @Operation(summary = "이메일 삭제", description = "이메일 삭제 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "이메일 삭제 성공")
+    })
+    @DeleteMapping("/me/emails/{memberEmailId}")
+    public void deleteEmail(@PathVariable("memberEmailId") Long memberEmailId) {
+        memberService.deleteEmail(memberEmailId);
+    }
 }
+

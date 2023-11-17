@@ -96,4 +96,12 @@ public class MemberService {
                         .collect(Collectors.toList())
         );
     }
+
+    @Transactional
+    public void deleteEmail(Long memberEmailId) {
+        String memberId = sessionMemberProvider.getMemberId();
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> MemberNotFoundException.byMemberId(memberId));
+        member.removeEmail(memberEmailId);
+    }
 }

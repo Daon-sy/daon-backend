@@ -71,12 +71,12 @@ public class Member extends BaseTimeEntity {
         this.emails.add(new Email(this, email));
     }
 
-    public void removeEmail(String email) {
+    public void removeEmail(Long memberEmailId) {
         this.emails.remove(
                 this.emails.stream()
-                        .filter(memberEmail -> memberEmail.emailEquals(email))
+                        .filter(memberEmail -> memberEmail.getId().equals(memberEmailId))
                         .findFirst()
-                        .orElseThrow(() -> new EmailNotFoundException(email))
+                        .orElseThrow(() -> new EmailNotFoundException(memberEmailId))
         );
     }
 
