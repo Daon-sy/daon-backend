@@ -42,7 +42,7 @@ public class TaskService {
                 .startDate(requestDto.getStartDate())
                 .endDate(requestDto.getEndDate())
                 .emergency(requestDto.isEmergency())
-                .creatorId(projectParticipant.getId())
+                .creatorId(projectParticipant.getWorkspaceParticipant().getId())
                 .taskManager(taskManager)
                 .project(project)
                 .board(board)

@@ -36,6 +36,7 @@ public class Task extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private TaskProgressStatus progressStatus;
 
+    // workspaceParticipantId
     private Long creatorId;
 
     @ManyToOne(fetch = FetchType.LAZY)
