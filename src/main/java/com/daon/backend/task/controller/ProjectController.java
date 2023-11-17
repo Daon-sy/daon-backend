@@ -110,4 +110,14 @@ public class ProjectController {
                                          @RequestBody @Valid DeportProjectParticipantRequestDto requestDto) {
         projectService.deportProjectParticipant(projectId, requestDto);
     }
+
+    @Operation(summary = "프로젝트 삭제", description = "프로젝트 삭제 요청입니다..")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "프로젝트 삭제 성공")
+    })
+    @CheckRole(authority = PJ_DELETE)
+    @DeleteMapping("/{projectId}")
+    public void deleteProject(@PathVariable("projectId") Long projectId) {
+        projectService.deleteProject(projectId);
+    }
 }

@@ -141,4 +141,15 @@ public class ProjectService {
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
         project.deportProject(projectParticipantId);
     }
+
+    @Transactional
+    public void deleteProject(Long projectId) {
+        Project project = projectRepository.findProjectWithParticipantsById(projectId)
+                .orElseThrow(() -> new ProjectNotFoundException(projectId));
+
+        List<Task> tasks = taskRepository.findTasksByProjectId(projectId);
+        tasks.forEach(Task::removeTask);
+
+        project.removeProject();
+    }
 }

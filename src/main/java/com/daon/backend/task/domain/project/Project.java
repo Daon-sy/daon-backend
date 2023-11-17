@@ -130,4 +130,9 @@ public class Project extends BaseTimeEntity {
                 projectParticipant -> projectParticipant.getId().equals(projectParticipantId)
         );
     }
+
+    public void removeProject() {
+        this.participants.clear();
+        this.removed = true;
+    }
 }

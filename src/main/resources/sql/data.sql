@@ -39,20 +39,20 @@ VALUES
     ('2023-11-11 18:18:13.000000', '2023-11-11 18:18:13.000000', '4c624615-7123-4a63-9ade-0fd5889452cd', 'user3@email.com', null, 'WS5_USER3', 'PROJECT_ADMIN', 5),
     ('2023-11-11 18:18:13.000000', '2023-11-11 18:18:13.000000', 'c152ed2e-1978-4100-bf26-b0014af642b4', 'user4@email.com', null, 'WS5_USER4', 'BASIC_PARTICIPANT', 5),
     -- 그룹 스페이스2
-    ('2023-11-11 18:18:13.000000', '2023-11-11 18:18:13.000000', '78cfb9f6-ec40-4ec7-b5bd-b7654fa014f8', 'user1@email.com', null, 'WS6_USER1', 'BASIC_PARTICIPANT', 6),
+    ('2023-11-11 18:18:13.000000', '2023-11-11 18:18:13.000000', '78cfb9f6-ec40-4ec7-b5bd-b7654fa014f8', 'user1@email.com', null, 'WS6_USER1', 'WORKSPACE_ADMIN', 6),
     ('2023-11-11 18:18:13.000000', '2023-11-11 18:18:13.000000', '2831ccac-aef9-4359-abbb-1d432b1b8078', 'user2@email.com', null, 'WS6_USER2', 'WORKSPACE_ADMIN', 6),
     ('2023-11-11 18:18:13.000000', '2023-11-11 18:18:13.000000', '4c624615-7123-4a63-9ade-0fd5889452cd', 'user3@email.com', null, 'WS6_USER3', 'PROJECT_ADMIN', 6),
     ('2023-11-11 18:18:13.000000', '2023-11-11 18:18:13.000000', 'c152ed2e-1978-4100-bf26-b0014af642b4', 'user4@email.com', null, 'WS6_USER4', 'PROJECT_ADMIN', 6),
     -- 그룹 스페이스3
-    ('2023-11-11 18:18:13.000000', '2023-11-11 18:18:13.000000', '78cfb9f6-ec40-4ec7-b5bd-b7654fa014f8', 'user1@email.com', null, 'WS7_USER1', 'BASIC_PARTICIPANT', 7),
+    ('2023-11-11 18:18:13.000000', '2023-11-11 18:18:13.000000', '78cfb9f6-ec40-4ec7-b5bd-b7654fa014f8', 'user1@email.com', null, 'WS7_USER1', 'WORKSPACE_ADMIN', 7),
     ('2023-11-11 18:18:13.000000', '2023-11-11 18:18:13.000000', '2831ccac-aef9-4359-abbb-1d432b1b8078', 'user2@email.com', null, 'WS7_USER2', 'BASIC_PARTICIPANT', 7),
     ('2023-11-11 18:18:13.000000', '2023-11-11 18:18:13.000000', '4c624615-7123-4a63-9ade-0fd5889452cd', 'user3@email.com', null, 'WS7_USER3', 'WORKSPACE_ADMIN', 7),
     ('2023-11-11 18:18:13.000000', '2023-11-11 18:18:13.000000', 'c152ed2e-1978-4100-bf26-b0014af642b4', 'user4@email.com', null, 'WS7_USER4', 'PROJECT_ADMIN', 7),
     -- 그룹 스페이스4
-    ('2023-11-11 18:18:13.000000', '2023-11-11 18:18:13.000000', '78cfb9f6-ec40-4ec7-b5bd-b7654fa014f8', 'user1@email.com', null, 'WS8_USER1', 'PROJECT_ADMIN', 8),
+    ('2023-11-11 18:18:13.000000', '2023-11-11 18:18:13.000000', '78cfb9f6-ec40-4ec7-b5bd-b7654fa014f8', 'user1@email.com', null, 'WS8_USER1', 'WORKSPACE_ADMIN', 8),
     ('2023-11-11 18:18:13.000000', '2023-11-11 18:18:13.000000', '2831ccac-aef9-4359-abbb-1d432b1b8078', 'user2@email.com', null, 'WS8_USER2', 'BASIC_PARTICIPANT', 8),
     ('2023-11-11 18:18:13.000000', '2023-11-11 18:18:13.000000', '4c624615-7123-4a63-9ade-0fd5889452cd', 'user3@email.com', null, 'WS8_USER3', 'BASIC_PARTICIPANT', 8),
-    ('2023-11-11 18:18:13.000000', '2023-11-11 18:18:13.000000', 'c152ed2e-1978-4100-bf26-b0014af642b4', 'user4@email.com', null, 'WS8_USER4', 'WORKSPACE_ADMIN', 8);
+    ('2023-11-11 18:18:13.000000', '2023-11-11 18:18:13.000000', 'c152ed2e-1978-4100-bf26-b0014af642b4', 'user4@email.com', null, 'WS8_USER4', 'PROJECT_ADMIN', 8);
 
 
 insert into project(created_at, modified_at, description, title, workspace_id, removed)
