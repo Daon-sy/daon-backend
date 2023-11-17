@@ -1,10 +1,9 @@
 package com.daon.backend.member.controller;
 
-import com.daon.backend.member.dto.FindMemberResponseDto;
-import com.daon.backend.member.dto.ModifyMemberRequestDto;
-import com.daon.backend.member.dto.SearchMemberResponseDto;
-import com.daon.backend.member.dto.SignUpRequestDto;
+import com.daon.backend.member.dto.*;
 import com.daon.backend.member.service.MemberService;
+import com.daon.backend.task.domain.authority.CheckRole;
+import com.daon.backend.task.dto.project.FindBoardsResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -14,6 +13,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+
+import static com.daon.backend.task.domain.authority.Authority.BD_READ;
 
 @Tag(name = "Member", description = "Member domain API")
 @RestController
@@ -60,5 +61,24 @@ public class MemberController {
     public SearchMemberResponseDto searchMember(@RequestParam("username") String username) {
 
         return memberService.searchMember(username);
+    }
+
+    @Operation(summary = "이메일 추가", description = "이메일 추가 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "이메일 추가 성공")
+    })
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/me/emails")
+    public void addEmail(@RequestBody @Valid AddEmailRequestDto requestDto) {
+        memberService.addEmail(requestDto);
+    }
+
+    @Operation(summary = "이메일 목록 조회", description = "이메일 목록 조회 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "이메일 목록 조회 성공")
+    })
+    @GetMapping("/me/emails")
+    public FindEmailsResponseDto findEmails() {
+        return memberService.findEmails();
     }
 }

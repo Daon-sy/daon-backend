@@ -1,5 +1,13 @@
 package com.daon.backend.member.service;
 
+import com.daon.backend.member.domain.*;
+import com.daon.backend.member.dto.AddEmailRequestDto;
+import com.daon.backend.member.dto.FindEmailsResponseDto;
+import com.daon.backend.member.dto.ModifyMemberRequestDto;
+import com.daon.backend.member.dto.SignUpRequestDto;
+import com.daon.backend.task.domain.project.Project;
+import com.daon.backend.task.domain.project.ProjectNotFoundException;
+import com.daon.backend.task.dto.project.FindBoardsResponseDto;
 import com.daon.backend.member.domain.Member;
 import com.daon.backend.member.domain.MemberNotFoundException;
 import com.daon.backend.member.domain.MemberRepository;
@@ -8,6 +16,8 @@ import com.daon.backend.member.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.stream.Collectors;
 
 import java.util.List;
 
@@ -63,5 +73,27 @@ public class MemberService {
         List<MemberSummary> memberSummaries = memberRepository.searchMembersByUsername(username);
 
         return new SearchMemberResponseDto(memberSummaries);
+    }
+
+    @Transactional
+    public void addEmail(AddEmailRequestDto requestDto) {
+        String memberId = sessionMemberProvider.getMemberId();
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> MemberNotFoundException.byMemberId(memberId));
+
+        String email = requestDto.getEmail();
+        member.addEmail(email);
+    }
+
+    public FindEmailsResponseDto findEmails() {
+        String memberId = sessionMemberProvider.getMemberId();
+        Member findmember = memberRepository.findById(memberId)
+                .orElseThrow(() -> MemberNotFoundException.byMemberId(memberId));
+
+        return new FindEmailsResponseDto(
+                findmember.getEmails().stream()
+                        .map(FindEmailsResponseDto.EmailInfo::new)
+                        .collect(Collectors.toList())
+        );
     }
 }
