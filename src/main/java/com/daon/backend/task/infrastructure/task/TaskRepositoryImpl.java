@@ -45,6 +45,11 @@ public class TaskRepositoryImpl implements TaskRepository {
     }
 
     @Override
+    public List<Task> findAllTasksByProjectId(Long projectId) {
+        return taskJpaRepository.findAllTasksByProjectId(projectId);
+    }
+
+    @Override
     public boolean existsTaskBookmarkByTaskIdAndProjectParticipantId(Long taskId, Long projectParticipantId) {
         return taskBookmarkJpaRepository.existsTaskBookmarkByTaskIdAndParticipant_Id(taskId, projectParticipantId);
     }
@@ -186,6 +191,11 @@ public class TaskRepositoryImpl implements TaskRepository {
                                 .and(task.removed.isFalse()))
                         .fetchOne()
         );
+    }
+
+    @Override
+    public List<Task> findTasksByProjectIdAndBoardId(Long projectId, Long boardId) {
+        return taskJpaRepository.findTasksByProjectIdAndBoardIdAndRemovedFalse(projectId, boardId);
     }
 
 }

@@ -11,5 +11,9 @@ public interface TaskJpaRepository extends JpaRepository<Task, Long> {
     Optional<Task> findByIdAndRemovedFalse(Long taskId);
 
     List<Task> findTasksByProjectIdAndRemovedFalse(Long projectId);
+
+    List<Task> findAllTasksByProjectId(Long projectId);
+
+    List<Task> findTasksByProjectIdAndBoardIdAndRemovedFalse(Long projectId, Long boardId);
 }
 

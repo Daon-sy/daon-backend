@@ -109,4 +109,9 @@ public class Task extends BaseTimeEntity {
         removeTaskManager();
         removeCreator();
     }
+
+    public void removeTaskWhenBoardDeleted() {
+        this.removed = true;
+        removeTaskManager();
+    }
 }

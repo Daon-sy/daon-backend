@@ -183,9 +183,9 @@ public class WorkspaceService {
 
         workspace.getParticipants().stream()
                 .filter(workspaceParticipant -> workspaceParticipant.getMemberId().equals(memberId))
-                .forEach(workspaceParticipant -> projectRepository.findProjectsByWorkspaceParticipant(workspaceParticipant).stream()
+                .forEach(workspaceParticipant -> projectRepository.findAllProjectsByWorkspaceParticipant(workspaceParticipant).stream()
                         .peek(project -> {
-                            List<Task> tasks = taskRepository.findTasksByProjectId(project.getId());
+                            List<Task> tasks = taskRepository.findAllTasksByProjectId(project.getId());
                             tasks.stream()
                                     .filter(task -> task.getTaskManager().getMemberId().equals(memberId))
                                     .forEach(Task::removeTaskManager);
@@ -212,7 +212,7 @@ public class WorkspaceService {
         List<Project> projects = projectRepository.findProjectsByWorkspaceParticipantId(workspaceParticipantId);
         projects.stream()
                 .peek(project -> {
-                    List<Task> tasks = taskRepository.findTasksByProjectId(project.getId());
+                    List<Task> tasks = taskRepository.findAllTasksByProjectId(project.getId());
                     tasks.stream()
                             .filter(task -> {
                                 ProjectParticipant taskManager = task.getTaskManager();

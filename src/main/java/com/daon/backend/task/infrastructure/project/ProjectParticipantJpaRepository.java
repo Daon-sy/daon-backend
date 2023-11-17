@@ -15,6 +15,11 @@ public interface ProjectParticipantJpaRepository extends JpaRepository<ProjectPa
     @Query("select pjp.project " +
            "from ProjectParticipant pjp " +
            "where pjp.workspaceParticipant = :workspaceParticipant and pjp.project.removed = false")
+    List<Project> findProjectsByWorkspaceParticipantAndRemovedFalse(WorkspaceParticipant workspaceParticipant);
+
+    @Query("select pjp.project " +
+            "from ProjectParticipant pjp " +
+            "where pjp.workspaceParticipant = :workspaceParticipant")
     List<Project> findProjectsByWorkspaceParticipant(WorkspaceParticipant workspaceParticipant);
 
     @EntityGraph(attributePaths = "workspaceParticipant")

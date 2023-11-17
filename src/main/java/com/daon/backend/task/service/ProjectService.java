@@ -132,7 +132,7 @@ public class ProjectService {
     public void deportProjectParticipant(Long projectId, DeportProjectParticipantRequestDto requestDto) {
         Long projectParticipantId = requestDto.getProjectParticipantId();
 
-        List<Task> tasks = taskRepository.findTasksByProjectId(projectId);
+        List<Task> tasks = taskRepository.findAllTasksByProjectId(projectId);
         tasks.stream()
                 .filter(task -> task.getTaskManager().getId().equals(projectParticipantId))
                 .forEach(Task::removeTaskManager);
@@ -147,7 +147,7 @@ public class ProjectService {
         Project project = projectRepository.findProjectWithParticipantsById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
-        List<Task> tasks = taskRepository.findTasksByProjectId(projectId);
+        List<Task> tasks = taskRepository.findAllTasksByProjectId(projectId);
         tasks.forEach(Task::removeTask);
 
         project.removeProject();
