@@ -19,6 +19,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final SessionMemberProvider sessionMemberProvider;
+    private final MemberServiceThroughTask memberServiceThroughTask;
 
     @Transactional
     public void signUp(SignUpRequestDto requestDto) {
@@ -63,5 +64,11 @@ public class MemberService {
         List<MemberSummary> memberSummaries = memberRepository.searchMembersByUsername(username);
 
         return new SearchMemberResponseDto(memberSummaries);
+    }
+
+    @Transactional
+    public void withdrawMember() {
+        String memberId = sessionMemberProvider.getMemberId();
+        memberServiceThroughTask.deleteRelatedTaskDomains(memberId);
     }
 }

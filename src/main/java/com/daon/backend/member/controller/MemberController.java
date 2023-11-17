@@ -61,4 +61,13 @@ public class MemberController {
 
         return memberService.searchMember(username);
     }
+
+    @Operation(summary = "회원 탈퇴", description = "회원 탈퇴 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "회원 탈퇴 성공")
+    })
+    @DeleteMapping("/me")
+    public void withdrawMember() {
+        memberService.withdrawMember();
+    }
 }
