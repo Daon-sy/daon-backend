@@ -120,7 +120,7 @@ public class ProjectService {
                 .filter(task -> task.getTaskManager().getMemberId().equals(memberId))
                 .forEach(Task::removeTaskManager);
 
-        Project project = projectRepository.findProjectWithParticipantsById(projectId)
+        Project project = projectRepository.findProjectByProjectId(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
         project.withdrawProject(memberId);
     }
@@ -137,18 +137,20 @@ public class ProjectService {
                 .filter(task -> task.getTaskManager().getId().equals(projectParticipantId))
                 .forEach(Task::removeTaskManager);
 
-        Project project = projectRepository.findProjectWithParticipantsById(projectId)
+        Project project = projectRepository.findProjectByProjectId(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
         project.deportProject(projectParticipantId);
     }
 
     @Transactional
     public void deleteProject(Long projectId) {
-        Project project = projectRepository.findProjectWithParticipantsById(projectId)
+        Project project = projectRepository.findProjectWithBoardsByProjectId(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
         List<Task> tasks = taskRepository.findAllTasksByProjectId(projectId);
         tasks.forEach(Task::removeTask);
+
+        project.getBoards().forEach(Board::deleteBoard);
 
         project.removeProject();
     }

@@ -139,4 +139,9 @@ public class Workspace extends BaseTimeEntity {
                 workspaceParticipant -> workspaceParticipant.getId().equals(workspaceParticipantId)
         );
     }
+
+    public void deleteWorkspace() {
+        this.participants.clear();
+        this.removed = true;
+    }
 }

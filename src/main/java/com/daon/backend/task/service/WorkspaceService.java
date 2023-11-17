@@ -1,5 +1,6 @@
 package com.daon.backend.task.service;
 
+import com.daon.backend.task.domain.project.Board;
 import com.daon.backend.task.domain.project.Project;
 import com.daon.backend.task.domain.project.ProjectParticipant;
 import com.daon.backend.task.domain.project.ProjectRepository;
@@ -228,5 +229,21 @@ public class WorkspaceService {
         Workspace workspace = workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
         workspace.deportWorkspace(workspaceParticipantId);
+    }
+
+    @Transactional
+    public void deleteWorkspace(Long workspaceId) {
+        List<Project> projects = projectRepository.findAllProjectsByWorkspaceId(workspaceId);
+        projects.stream()
+                .peek(project -> {
+                    taskRepository.findAllTasksByProjectId(project.getId())
+                            .forEach(Task::removeTask);
+                    project.getBoards().forEach(Board::deleteBoard);
+                })
+                .forEach(Project::removeProject);
+
+        Workspace workspace = workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+        workspace.deleteWorkspace();
     }
 }

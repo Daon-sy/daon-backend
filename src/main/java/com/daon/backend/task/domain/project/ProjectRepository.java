@@ -23,6 +23,8 @@ public interface ProjectRepository {
 
     List<Project> findProjectsByWorkspaceParticipant(WorkspaceParticipant workspaceParticipant);
 
+    List<Project> findAllProjectsByWorkspaceId(Long workspaceId);
+
     List<Project> findAllProjectsByWorkspaceParticipant(WorkspaceParticipant workspaceParticipant);
 
     List<Project> findProjectsByWorkspaceParticipantId(Long workspaceParticipantId);

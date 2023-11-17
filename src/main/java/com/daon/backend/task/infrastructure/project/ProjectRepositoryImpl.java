@@ -58,6 +58,11 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     }
 
     @Override
+    public List<Project> findAllProjectsByWorkspaceId(Long workspaceId) {
+        return projectJpaRepository.findAllProjectsByWorkspaceId(workspaceId);
+    }
+
+    @Override
     public List<Project> findAllProjectsByWorkspaceParticipant(WorkspaceParticipant workspaceParticipant) {
         return projectParticipantJpaRepository.findProjectsByWorkspaceParticipant(workspaceParticipant);
     }
