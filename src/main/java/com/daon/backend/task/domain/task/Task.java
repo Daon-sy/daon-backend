@@ -36,9 +36,7 @@ public class Task extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private TaskProgressStatus progressStatus;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "creator_id", nullable = false, updatable = false)
-    private ProjectParticipant creator;
+    private String creatorName;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "task_manager_id")
@@ -59,13 +57,13 @@ public class Task extends BaseTimeEntity {
 
     @Builder
     public Task(String title, String content, LocalDateTime startDate, LocalDateTime endDate, boolean emergency,
-                ProjectParticipant creator, ProjectParticipant taskManager, Project project, Board board) {
+                String creatorName, ProjectParticipant taskManager, Project project, Board board) {
         this.title = title;
         this.content = content;
         this.startDate = startDate;
         this.endDate = endDate;
         this.emergency = emergency;
-        this.creator = creator;
+        this.creatorName = creatorName;
         this.taskManager = taskManager;
         this.project = project;
         this.board = board;

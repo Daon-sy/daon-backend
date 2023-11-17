@@ -28,7 +28,7 @@ public class ProjectService {
         Workspace workspace = getWorkspaceOrElseThrow(workspaceId);
 
         String memberId = sessionMemberProvider.getMemberId();
-        WorkspaceParticipant wsParticipant = getWorkspaceParticipantOrElseThrow(workspace, memberId);
+        WorkspaceParticipant wsParticipant = getWorkspaceParticipantOrElseThrow(workspace.getId(), memberId);
 
         Project project = Project.builder()
                 .workspace(workspace)
@@ -46,17 +46,17 @@ public class ProjectService {
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
     }
 
-    private WorkspaceParticipant getWorkspaceParticipantOrElseThrow(Workspace workspace,
+    private WorkspaceParticipant getWorkspaceParticipantOrElseThrow(Long workspaceId,
                                                                     String memberId) {
-        return workspaceRepository.findWorkspaceParticipantByWorkspaceAndMemberId(workspace, memberId)
-                .orElseThrow(() -> new NotWorkspaceParticipantException(memberId, workspace.getId()));
+        return workspaceRepository.findWorkspaceParticipantByWorkspaceIdAndMemberId(workspaceId, memberId)
+                .orElseThrow(() -> new NotWorkspaceParticipantException(memberId, workspaceId));
     }
 
     public FindProjectsResponseDto findAllProjectInWorkspace(Long workspaceId) {
         Workspace workspace = getWorkspaceOrElseThrow(workspaceId);
 
         String memberId = sessionMemberProvider.getMemberId();
-        WorkspaceParticipant wsParticipant = getWorkspaceParticipantOrElseThrow(workspace, memberId);
+        WorkspaceParticipant wsParticipant = getWorkspaceParticipantOrElseThrow(workspaceId, memberId);
 
         return new FindProjectsResponseDto(
                 workspace.getId(),

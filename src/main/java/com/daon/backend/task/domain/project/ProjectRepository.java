@@ -22,6 +22,8 @@ public interface ProjectRepository {
 
     List<Project> findProjectsByWorkspaceParticipant(WorkspaceParticipant workspaceParticipant);
 
+    List<Project> findProjectsByWorkspaceParticipantId(Long workspaceParticipantId);
+
     Optional<Project> findProjectWithBoardsByProjectId(Long projectId);
 
     Slice<ProjectSummary> searchProjectSummariesByTitle(String memberId, String title, Pageable pageable);
