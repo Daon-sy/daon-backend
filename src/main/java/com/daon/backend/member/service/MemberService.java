@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -64,6 +65,28 @@ public class MemberService {
         List<MemberSummary> memberSummaries = memberRepository.searchMembersByUsername(username);
 
         return new SearchMemberResponseDto(memberSummaries);
+    }
+
+    @Transactional
+    public void addEmail(AddEmailRequestDto requestDto) {
+        String memberId = sessionMemberProvider.getMemberId();
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> MemberNotFoundException.byMemberId(memberId));
+
+        String email = requestDto.getEmail();
+        member.addEmail(email);
+    }
+
+    public FindEmailsResponseDto findEmails() {
+        String memberId = sessionMemberProvider.getMemberId();
+        Member findmember = memberRepository.findById(memberId)
+                .orElseThrow(() -> MemberNotFoundException.byMemberId(memberId));
+
+        return new FindEmailsResponseDto(
+                findmember.getEmails().stream()
+                        .map(FindEmailsResponseDto.EmailInfo::new)
+                        .collect(Collectors.toList())
+        );
     }
 
     @Transactional

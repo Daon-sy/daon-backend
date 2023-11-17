@@ -1,9 +1,6 @@
 package com.daon.backend.member.controller;
 
-import com.daon.backend.member.dto.FindMemberResponseDto;
-import com.daon.backend.member.dto.ModifyMemberRequestDto;
-import com.daon.backend.member.dto.SearchMemberResponseDto;
-import com.daon.backend.member.dto.SignUpRequestDto;
+import com.daon.backend.member.dto.*;
 import com.daon.backend.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -60,6 +57,25 @@ public class MemberController {
     public SearchMemberResponseDto searchMember(@RequestParam("username") String username) {
 
         return memberService.searchMember(username);
+    }
+
+    @Operation(summary = "이메일 추가", description = "이메일 추가 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "이메일 추가 성공")
+    })
+    @ResponseStatus(HttpStatus.CREATED)
+    @PostMapping("/me/emails")
+    public void addEmail(@RequestBody @Valid AddEmailRequestDto requestDto) {
+        memberService.addEmail(requestDto);
+    }
+
+    @Operation(summary = "이메일 목록 조회", description = "이메일 목록 조회 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "이메일 목록 조회 성공")
+    })
+    @GetMapping("/me/emails")
+    public FindEmailsResponseDto findEmails() {
+        return memberService.findEmails();
     }
 
     @Operation(summary = "회원 탈퇴", description = "회원 탈퇴 요청입니다.")
