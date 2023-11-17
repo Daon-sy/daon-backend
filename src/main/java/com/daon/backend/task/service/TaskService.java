@@ -5,9 +5,6 @@ import com.daon.backend.task.domain.task.Task;
 import com.daon.backend.task.domain.task.TaskBookmark;
 import com.daon.backend.task.domain.task.TaskNotFoundException;
 import com.daon.backend.task.domain.task.TaskRepository;
-import com.daon.backend.task.domain.workspace.NotWorkspaceParticipantException;
-import com.daon.backend.task.domain.workspace.WorkspaceParticipant;
-import com.daon.backend.task.domain.workspace.WorkspaceRepository;
 import com.daon.backend.task.dto.task.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,24 +18,21 @@ public class TaskService {
     private final ProjectRepository projectRepository;
     private final TaskRepository taskRepository;
     private final SessionMemberProvider sessionMemberProvider;
-    private final WorkspaceRepository workspaceRepository;
 
     @Transactional
-    public CreateTaskResponseDto createTask(Long workspaceId, Long projectId, CreateTaskRequestDto requestDto) {
+    public CreateTaskResponseDto createTask(Long projectId, CreateTaskRequestDto requestDto) {
         String memberId = sessionMemberProvider.getMemberId();
         Long taskManagerId = requestDto.getTaskManagerId();
 
         Project project = projectRepository.findProjectByProjectId(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
+        ProjectParticipant projectParticipant = project.findProjectParticipantByMemberId(memberId)
+                .orElseThrow(() -> new NotProjectParticipantException(memberId, projectId));
 
         ProjectParticipant taskManager = null;
         if (taskManagerId != null) {
-            taskManager = project.findProjectParticipantByProjectParticipantId(taskManagerId)
-                    .orElseThrow(() -> new NotProjectParticipantException(memberId, project.getId()));
+            taskManager = projectParticipant;
         }
-
-        WorkspaceParticipant workspaceParticipant = workspaceRepository.findWorkspaceParticipantByWorkspaceIdAndMemberId(workspaceId, memberId)
-                .orElseThrow(() -> new NotWorkspaceParticipantException(memberId, workspaceId));
 
         Board board = project.getBoardByBoardId(requestDto.getBoardId());
 
@@ -48,7 +42,7 @@ public class TaskService {
                 .startDate(requestDto.getStartDate())
                 .endDate(requestDto.getEndDate())
                 .emergency(requestDto.isEmergency())
-                .creatorName(workspaceParticipant.getProfile().getName())
+                .creatorId(projectParticipant.getId())
                 .taskManager(taskManager)
                 .project(project)
                 .board(board)

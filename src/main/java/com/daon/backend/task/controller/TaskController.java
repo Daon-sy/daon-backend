@@ -32,10 +32,9 @@ public class TaskController {
     @ResponseStatus(HttpStatus.CREATED)
     @CheckRole(authority = TSK_CREATE)
     @PostMapping
-    public CreateTaskResponseDto createTask(@PathVariable("workspaceId") Long workspaceId,
-                                            @PathVariable("projectId") Long projectId,
+    public CreateTaskResponseDto createTask(@PathVariable("projectId") Long projectId,
                                             @RequestBody @Valid CreateTaskRequestDto requestDto) {
-        return taskService.createTask(workspaceId, projectId, requestDto);
+        return taskService.createTask(projectId, requestDto);
     }
 
     @Operation(summary = "할 일 수정", description = "할 일 수정 요청입니다.")
