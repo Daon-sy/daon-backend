@@ -43,4 +43,8 @@ public class TaskReply extends BaseTimeEntity {
     public void modifyTaskReplyContent(String content) {
         this.content = content;
     }
+
+    public void deleteTaskReply() {
+        this.removed = true;
+    }
 }

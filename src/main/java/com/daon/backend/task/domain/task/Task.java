@@ -15,11 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Entity @Getter
+@Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Task extends BaseTimeEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "task_id")
     private Long id;
 
@@ -110,12 +112,10 @@ public class Task extends BaseTimeEntity {
     }
 
     public void deleteTaskReply(Long taskReplyId) {
-        this.taskReplies.remove(
-                this.taskReplies.stream()
-
+        this.taskReplies.stream()
                 .filter(taskReply -> taskReply.getId().equals(taskReplyId))
                 .findFirst()
                 .orElseThrow(() -> new TaskReplyNotFoundException(taskReplyId))
-        );
+                .deleteTaskReply();
     }
 }

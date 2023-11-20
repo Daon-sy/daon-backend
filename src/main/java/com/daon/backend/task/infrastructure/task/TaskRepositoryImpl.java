@@ -89,10 +89,10 @@ public class TaskRepositoryImpl implements TaskRepository {
                         )
                 )
                 .from(task)
-                .join(task.project, project)
-                .leftJoin(task.board, board)
-                .leftJoin(task.taskManager, projectParticipant)
-                .leftJoin(taskBookmark).on(task.eq(taskBookmark.task).and(taskBookmark.memberId.eq(memberId)))
+                    .join(task.project, project)
+                    .leftJoin(task.board, board)
+                    .leftJoin(task.taskManager, projectParticipant)
+                    .leftJoin(taskBookmark).on(task.eq(taskBookmark.task).and(taskBookmark.memberId.eq(memberId)))
                 .where(builder.and(task.removed.isFalse()))
                 .fetch();
     }
