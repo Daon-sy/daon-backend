@@ -68,13 +68,13 @@ public class MemberService {
     }
 
     @Transactional
-    public void addEmail(AddEmailRequestDto requestDto) {
+    public void createEmail(AddEmailRequestDto requestDto) {
         String memberId = sessionMemberProvider.getMemberId();
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> MemberNotFoundException.byMemberId(memberId));
 
         String email = requestDto.getEmail();
-        member.addEmail(email);
+        member.createEmail(email);
     }
 
     public FindEmailsResponseDto findEmails() {
@@ -90,6 +90,13 @@ public class MemberService {
     }
 
     @Transactional
+    public void deleteEmail(Long memberEmailId) {
+        String memberId = sessionMemberProvider.getMemberId();
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> MemberNotFoundException.byMemberId(memberId));
+        member.removeEmail(memberEmailId);
+    }
+  
     public void withdrawMember() {
         String memberId = sessionMemberProvider.getMemberId();
         Member member = memberRepository.findById(memberId)

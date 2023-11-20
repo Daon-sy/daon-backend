@@ -65,8 +65,8 @@ public class MemberController {
     })
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/me/emails")
-    public void addEmail(@RequestBody @Valid AddEmailRequestDto requestDto) {
-        memberService.addEmail(requestDto);
+    public void createEmail(@RequestBody @Valid AddEmailRequestDto requestDto) {
+        memberService.createEmail(requestDto);
     }
 
     @Operation(summary = "이메일 목록 조회", description = "이메일 목록 조회 요청입니다.")
@@ -78,6 +78,15 @@ public class MemberController {
         return memberService.findEmails();
     }
 
+    @Operation(summary = "이메일 삭제", description = "이메일 삭제 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "이메일 삭제 성공")
+    })
+    @DeleteMapping("/me/emails/{memberEmailId}")
+    public void deleteEmail(@PathVariable("memberEmailId") Long memberEmailId) {
+        memberService.deleteEmail(memberEmailId);
+    }
+  
     @Operation(summary = "회원 탈퇴", description = "회원 탈퇴 요청입니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "회원 탈퇴 성공")
@@ -87,3 +96,4 @@ public class MemberController {
         memberService.withdrawMember();
     }
 }
+
