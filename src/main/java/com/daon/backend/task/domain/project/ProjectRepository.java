@@ -4,6 +4,7 @@ import com.daon.backend.task.domain.workspace.WorkspaceParticipant;
 import com.daon.backend.task.dto.ProjectSummary;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,6 +22,12 @@ public interface ProjectRepository {
     List<ProjectParticipant> findProjectParticipantsWithWorkspaceParticipantsByProjectId(Long projectId);
 
     List<Project> findProjectsByWorkspaceParticipant(WorkspaceParticipant workspaceParticipant);
+
+    List<Project> findAllProjectsByWorkspaceId(Long workspaceId);
+
+    List<Project> findAllProjectsByWorkspaceParticipant(WorkspaceParticipant workspaceParticipant);
+
+    List<Project> findProjectsByWorkspaceParticipantId(Long workspaceParticipantId);
 
     Optional<Project> findProjectWithBoardsByProjectId(Long projectId);
 

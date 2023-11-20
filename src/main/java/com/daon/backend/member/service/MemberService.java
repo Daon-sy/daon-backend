@@ -1,13 +1,5 @@
 package com.daon.backend.member.service;
 
-import com.daon.backend.member.domain.*;
-import com.daon.backend.member.dto.AddEmailRequestDto;
-import com.daon.backend.member.dto.FindEmailsResponseDto;
-import com.daon.backend.member.dto.ModifyMemberRequestDto;
-import com.daon.backend.member.dto.SignUpRequestDto;
-import com.daon.backend.task.domain.project.Project;
-import com.daon.backend.task.domain.project.ProjectNotFoundException;
-import com.daon.backend.task.dto.project.FindBoardsResponseDto;
 import com.daon.backend.member.domain.Member;
 import com.daon.backend.member.domain.MemberNotFoundException;
 import com.daon.backend.member.domain.MemberRepository;
@@ -17,9 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.stream.Collectors;
-
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -29,6 +20,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final SessionMemberProvider sessionMemberProvider;
+    private final MemberServiceThroughTask memberServiceThroughTask;
 
     @Transactional
     public void signUp(SignUpRequestDto requestDto) {
@@ -76,13 +68,13 @@ public class MemberService {
     }
 
     @Transactional
-    public void addEmail(AddEmailRequestDto requestDto) {
+    public void createEmail(AddEmailRequestDto requestDto) {
         String memberId = sessionMemberProvider.getMemberId();
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> MemberNotFoundException.byMemberId(memberId));
 
         String email = requestDto.getEmail();
-        member.addEmail(email);
+        member.createEmail(email);
     }
 
     public FindEmailsResponseDto findEmails() {
@@ -95,5 +87,23 @@ public class MemberService {
                         .map(FindEmailsResponseDto.EmailInfo::new)
                         .collect(Collectors.toList())
         );
+    }
+
+    @Transactional
+    public void deleteEmail(Long memberEmailId) {
+        String memberId = sessionMemberProvider.getMemberId();
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> MemberNotFoundException.byMemberId(memberId));
+        member.removeEmail(memberEmailId);
+    }
+  
+    public void withdrawMember() {
+        String memberId = sessionMemberProvider.getMemberId();
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> MemberNotFoundException.byMemberId(memberId));
+
+        memberServiceThroughTask.deleteRelatedTaskDomains(memberId);
+
+        member.withdrawMember();
     }
 }

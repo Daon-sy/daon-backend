@@ -26,13 +26,12 @@ public class TaskService {
 
         Project project = projectRepository.findProjectByProjectId(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
-        ProjectParticipant taskCreator = project.findProjectParticipantByMemberId(memberId)
+        ProjectParticipant projectParticipant = project.findProjectParticipantByMemberId(memberId)
                 .orElseThrow(() -> new NotProjectParticipantException(memberId, projectId));
 
         ProjectParticipant taskManager = null;
         if (taskManagerId != null) {
-            taskManager = project.findProjectParticipantByProjectParticipantId(taskManagerId)
-                    .orElseThrow(() -> new NotProjectParticipantException(memberId, project.getId()));
+            taskManager = projectParticipant;
         }
 
         Board board = project.getBoardByBoardId(requestDto.getBoardId());
@@ -43,7 +42,7 @@ public class TaskService {
                 .startDate(requestDto.getStartDate())
                 .endDate(requestDto.getEndDate())
                 .emergency(requestDto.isEmergency())
-                .creator(taskCreator)
+                .creatorId(projectParticipant.getWorkspaceParticipant().getId())
                 .taskManager(taskManager)
                 .project(project)
                 .board(board)

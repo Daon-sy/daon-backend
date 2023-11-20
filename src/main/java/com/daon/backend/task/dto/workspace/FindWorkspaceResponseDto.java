@@ -13,6 +13,8 @@ public class FindWorkspaceResponseDto {
 
     private String title;
 
+    private String subject;
+
     private String description;
 
     private String imageUrl;
@@ -28,6 +30,7 @@ public class FindWorkspaceResponseDto {
     public FindWorkspaceResponseDto(Workspace workspace) {
         this.workspaceId = workspace.getId();
         this.title = workspace.getTitle();
+        this.subject = workspace.getSubject();
         this.description = workspace.getDescription();
         this.imageUrl = workspace.getImageUrl();
         this.division = String.valueOf(workspace.getDivision());

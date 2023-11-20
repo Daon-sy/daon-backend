@@ -1,13 +1,7 @@
 package com.daon.backend.task.controller;
 
 import com.daon.backend.task.domain.authority.CheckRole;
-import com.daon.backend.task.dto.task.CreateTaskRequestDto;
-import com.daon.backend.task.dto.task.ModifyProgressStatusRequestDto;
-import com.daon.backend.task.dto.task.ModifyTaskRequestDto;
-import com.daon.backend.task.dto.task.CreateTaskResponseDto;
-import com.daon.backend.task.dto.task.FindTaskResponseDto;
-import com.daon.backend.task.dto.task.FindTasksResponseDto;
-import com.daon.backend.task.dto.task.SetBookmarkResponseDto;
+import com.daon.backend.task.dto.task.*;
 import com.daon.backend.task.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -38,7 +32,7 @@ public class TaskController {
     @ResponseStatus(HttpStatus.CREATED)
     @CheckRole(authority = TSK_CREATE)
     @PostMapping
-    public CreateTaskResponseDto createTask(@PathVariable Long projectId,
+    public CreateTaskResponseDto createTask(@PathVariable("projectId") Long projectId,
                                             @RequestBody @Valid CreateTaskRequestDto requestDto) {
         return taskService.createTask(projectId, requestDto);
     }

@@ -1,6 +1,11 @@
 package com.daon.backend.task.service;
 
-import com.daon.backend.task.domain.project.*;
+import com.daon.backend.task.domain.project.Board;
+import com.daon.backend.task.domain.project.Project;
+import com.daon.backend.task.domain.project.ProjectNotFoundException;
+import com.daon.backend.task.domain.project.ProjectRepository;
+import com.daon.backend.task.domain.task.Task;
+import com.daon.backend.task.domain.task.TaskRepository;
 import com.daon.backend.task.dto.project.CreateBoardRequestDto;
 import com.daon.backend.task.dto.project.FindBoardsResponseDto;
 import com.daon.backend.task.dto.project.ModifyBoardRequestDto;
@@ -9,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -17,6 +23,7 @@ import java.util.stream.Collectors;
 public class BoardService {
 
     private final ProjectRepository projectRepository;
+    private final TaskRepository taskRepository;
 
     @Transactional
     public void createBoard(Long projectId, CreateBoardRequestDto requestDto) {
@@ -53,6 +60,8 @@ public class BoardService {
     public void deleteBoard(Long projectId, Long boardId) {
         Project findProject = projectRepository.findProjectByProjectId(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
+        List<Task> tasks = taskRepository.findTasksByProjectIdAndBoardId(projectId, boardId);
+        tasks.forEach(Task::removeTaskWhenBoardDeleted);
         findProject.deleteBoard(boardId);
     }
 }
