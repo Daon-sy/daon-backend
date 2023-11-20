@@ -33,7 +33,7 @@ public class Project extends BaseTimeEntity {
 
     private boolean removed;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<ProjectParticipant> participants = new ArrayList<>();
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
@@ -77,10 +77,18 @@ public class Project extends BaseTimeEntity {
     }
 
     public void deleteBoard(Long boardId) {
-        this.boards.stream()
-                .filter(board -> board.getId().equals(boardId))
-                .findFirst()
-                .ifPresent(Board::deleteBoard);
+        if (checkCanDeleteBoard()) {
+            this.boards.stream()
+                    .filter(board -> board.getId().equals(boardId))
+                    .findFirst()
+                    .ifPresent(Board::deleteBoard);
+        } else {
+            throw new CanNotDeleteBoardException();
+        }
+    }
+
+    public boolean checkCanDeleteBoard() {
+        return this.boards.size() > 1;
     }
 
     public Board getBoardByBoardId(Long boardId) {
@@ -109,5 +117,22 @@ public class Project extends BaseTimeEntity {
     public void modifyProject(String title, String description) {
         this.title = Optional.ofNullable(title).orElse(this.title);
         this.description = Optional.ofNullable(description).orElse(this.description);
+    }
+
+    public void withdrawProject(String memberId) {
+        this.participants.removeIf(
+                projectParticipant -> projectParticipant.getMemberId().equals(memberId)
+        );
+    }
+
+    public void deportProject(Long projectParticipantId) {
+        this.participants.removeIf(
+                projectParticipant -> projectParticipant.getId().equals(projectParticipantId)
+        );
+    }
+
+    public void removeProject() {
+        this.participants.clear();
+        this.removed = true;
     }
 }

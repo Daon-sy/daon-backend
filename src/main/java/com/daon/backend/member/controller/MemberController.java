@@ -2,8 +2,6 @@ package com.daon.backend.member.controller;
 
 import com.daon.backend.member.dto.*;
 import com.daon.backend.member.service.MemberService;
-import com.daon.backend.task.domain.authority.CheckRole;
-import com.daon.backend.task.dto.project.FindBoardsResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -13,8 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-
-import static com.daon.backend.task.domain.authority.Authority.BD_READ;
 
 @Tag(name = "Member", description = "Member domain API")
 @RestController
@@ -80,5 +76,14 @@ public class MemberController {
     @GetMapping("/me/emails")
     public FindEmailsResponseDto findEmails() {
         return memberService.findEmails();
+    }
+
+    @Operation(summary = "회원 탈퇴", description = "회원 탈퇴 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "회원 탈퇴 성공")
+    })
+    @DeleteMapping("/me")
+    public void withdrawMember() {
+        memberService.withdrawMember();
     }
 }

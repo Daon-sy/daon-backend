@@ -37,7 +37,7 @@ public class Workspace extends BaseTimeEntity {
 
     private boolean removed;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "workspace", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "workspace", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<WorkspaceParticipant> participants = new ArrayList<>();
 
     @OneToMany(mappedBy = "workspace", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
@@ -128,5 +128,20 @@ public class Workspace extends BaseTimeEntity {
     public boolean checkInvitedMember(String memberId) {
         return this.invitations.stream()
                 .anyMatch(workspaceInvitation -> workspaceInvitation.getMemberId().equals(memberId));
+    }
+
+    public void withdrawWorkspace(String memberId) {
+        this.participants.removeIf(workspaceParticipant -> workspaceParticipant.getMemberId().equals(memberId));
+    }
+
+    public void deportWorkspace(Long workspaceParticipantId) {
+        this.participants.removeIf(
+                workspaceParticipant -> workspaceParticipant.getId().equals(workspaceParticipantId)
+        );
+    }
+
+    public void deleteWorkspace() {
+        this.participants.clear();
+        this.removed = true;
     }
 }

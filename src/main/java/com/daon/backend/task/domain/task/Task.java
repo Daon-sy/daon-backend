@@ -36,9 +36,8 @@ public class Task extends BaseTimeEntity {
     @Enumerated(EnumType.STRING)
     private TaskProgressStatus progressStatus;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "creator_id", nullable = false, updatable = false)
-    private ProjectParticipant creator;
+    // workspaceParticipantId
+    private Long creatorId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "task_manager_id")
@@ -59,13 +58,13 @@ public class Task extends BaseTimeEntity {
 
     @Builder
     public Task(String title, String content, LocalDateTime startDate, LocalDateTime endDate, boolean emergency,
-                ProjectParticipant creator, ProjectParticipant taskManager, Project project, Board board) {
+                Long creatorId, ProjectParticipant taskManager, Project project, Board board) {
         this.title = title;
         this.content = content;
         this.startDate = startDate;
         this.endDate = endDate;
         this.emergency = emergency;
-        this.creator = creator;
+        this.creatorId = creatorId;
         this.taskManager = taskManager;
         this.project = project;
         this.board = board;
@@ -95,5 +94,24 @@ public class Task extends BaseTimeEntity {
 
     public void modifyProgressStatus(TaskProgressStatus progressStatus) {
         this.progressStatus = Optional.ofNullable(progressStatus).orElse(this.progressStatus);
+    }
+
+    public void removeTaskManager() {
+        this.taskManager = null;
+    }
+
+    public void removeCreator() {
+        this.creatorId = null;
+    }
+
+    public void removeTask() {
+        this.removed = true;
+        removeTaskManager();
+        removeCreator();
+    }
+
+    public void removeTaskWhenBoardDeleted() {
+        this.removed = true;
+        removeTaskManager();
     }
 }
