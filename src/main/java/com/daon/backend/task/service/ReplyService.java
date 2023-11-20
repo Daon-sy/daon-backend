@@ -2,7 +2,6 @@ package com.daon.backend.task.service;
 
 import com.daon.backend.task.domain.project.NotProjectParticipantException;
 import com.daon.backend.task.domain.project.Project;
-import com.daon.backend.task.domain.project.ProjectNotFoundException;
 import com.daon.backend.task.domain.project.ProjectParticipant;
 import com.daon.backend.task.domain.task.*;
 import com.daon.backend.task.dto.ReplySummary;
@@ -15,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -29,7 +29,6 @@ public class ReplyService {
     public CreateReplyResponseDto createReply(Long projectId,
                                               Long taskId,
                                               CreateReplyRequestDto requestDto) {
-
         String memberId = sessionMemberProvider.getMemberId();
 
         Task task = taskRepository.findTaskByTaskId(taskId)
@@ -55,14 +54,13 @@ public class ReplyService {
         Task task = taskRepository.findTaskByTaskId(taskId)
                 .orElseThrow(() -> new TaskNotFoundException(taskId));
         Project project = task.getProject();
-        ProjectParticipant writer = project.findProjectParticipantByMemberId(memberId)
+        ProjectParticipant currentParticipant = project.findProjectParticipantByMemberId(memberId)
                 .orElseThrow(() -> new NotProjectParticipantException(memberId, projectId));
-        List<ReplySummary> list = replyRepository.findReplyListByTaskId(taskId);
+        List<ReplySummary> list = replyRepository.findReplyListByTaskId(taskId).stream()
+                .map(reply -> new ReplySummary(reply, currentParticipant))
+                .collect(Collectors.toList());
 
-        return FindRepliesResponseDto.builder()
-                .Replies(list)
-                .taskId(taskId)
-                .build();
+        return new FindRepliesResponseDto(list, taskId);
     }
 
     @Transactional

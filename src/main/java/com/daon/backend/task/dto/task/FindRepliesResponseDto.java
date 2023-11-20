@@ -1,27 +1,22 @@
 package com.daon.backend.task.dto.task;
 
 import com.daon.backend.task.dto.ReplySummary;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 
 @Getter
-@NoArgsConstructor
 public class FindRepliesResponseDto {
 
     private int totalCount;
 
     private Long taskId;
 
-    private List<ReplySummary> Replies;
+    private List<ReplySummary> replies;
 
-    @Builder
-    public FindRepliesResponseDto(List<ReplySummary> Replies, Long taskId) {
-        this.totalCount = Replies.size();
-        this.Replies = Replies;
+    public FindRepliesResponseDto(List<ReplySummary> replies, Long taskId) {
+        this.totalCount = replies.size();
+        this.replies = replies;
         this.taskId = taskId;
     }
 }

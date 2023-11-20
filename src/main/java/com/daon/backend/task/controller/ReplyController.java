@@ -26,7 +26,7 @@ import static com.daon.backend.task.domain.authority.Authority.*;
 @RequestMapping("/api/workspaces/{workspaceId}/projects/{projectId}/tasks/{taskId}/reply")
 public class ReplyController {
 
-    private ReplyService replyService;
+    private final ReplyService replyService;
 
     @Operation(summary = "댓글 생성", description = "댓글 생성 요청입니다.")
     @ApiResponses(value = {

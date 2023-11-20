@@ -3,9 +3,11 @@ package com.daon.backend.task.dto;
 import com.daon.backend.task.domain.project.ProjectParticipant;
 import com.daon.backend.task.domain.task.Reply;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 
+@Getter
 public class ReplySummary {
 
     private Long replyId;
@@ -14,7 +16,7 @@ public class ReplySummary {
 
     private ReplyWriter writer;
 
-    private boolean isWriter;
+    private Boolean isWriter;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime createdAt;
@@ -22,11 +24,11 @@ public class ReplySummary {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime modifiedAt;
 
-    public ReplySummary(Reply reply, ProjectParticipant projectParticipant) {
+    public ReplySummary(Reply reply, ProjectParticipant currentParticipant) {
         this.replyId = reply.getId();
         this.content = reply.getContent();
-        this.writer = new ReplyWriter(projectParticipant);
-        this.isWriter = reply.getWriter().getMemberId().equals(projectParticipant.getMemberId());
+        this.writer = new ReplyWriter(reply.getWriter());
+        this.isWriter = reply.getWriter().getMemberId().equals(currentParticipant.getMemberId());
         this.createdAt = reply.getCreatedAt();
         this.modifiedAt = reply.getModifiedAt();
     }
