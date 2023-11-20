@@ -2,8 +2,6 @@ package com.daon.backend.member.controller;
 
 import com.daon.backend.member.dto.*;
 import com.daon.backend.member.service.MemberService;
-import com.daon.backend.task.domain.authority.CheckRole;
-import com.daon.backend.task.dto.project.FindBoardsResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -13,8 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-
-import static com.daon.backend.task.domain.authority.Authority.BD_READ;
 
 @Tag(name = "Member", description = "Member domain API")
 @RestController
@@ -69,8 +65,8 @@ public class MemberController {
     })
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/me/emails")
-    public void addEmail(@RequestBody @Valid AddEmailRequestDto requestDto) {
-        memberService.addEmail(requestDto);
+    public void createEmail(@RequestBody @Valid AddEmailRequestDto requestDto) {
+        memberService.createEmail(requestDto);
     }
 
     @Operation(summary = "이메일 목록 조회", description = "이메일 목록 조회 요청입니다.")
