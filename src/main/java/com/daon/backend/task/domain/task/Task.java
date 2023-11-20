@@ -1,6 +1,10 @@
 package com.daon.backend.task.domain.task;
 
+import com.daon.backend.common.event.Events;
 import com.daon.backend.config.BaseTimeEntity;
+import com.daon.backend.notification.domain.NotificationType;
+import com.daon.backend.notification.domain.SendNotificationEvent;
+import com.daon.backend.notification.dto.response.DesignatedManagerResponseDto;
 import com.daon.backend.task.domain.project.Board;
 import com.daon.backend.task.domain.project.Project;
 import com.daon.backend.task.domain.project.ProjectParticipant;
@@ -82,6 +86,17 @@ public class Task extends BaseTimeEntity {
         this.progressStatus = progressStatus;
         this.board = board;
         this.taskManager = taskManager;
+
+        DesignatedManagerResponseDto designatedManagerEventResponse = createDesignatedManagerEventResponse();
+        Events.raise(SendNotificationEvent.create(
+                NotificationType.REGISTERED_TASK_MANAGER, designatedManagerEventResponse, taskManager.getMemberId()
+        ));
+    }
+
+    private DesignatedManagerResponseDto createDesignatedManagerEventResponse() {
+        return new DesignatedManagerResponseDto(
+                this.project.getWorkspace().getId(), this.project.getWorkspace().getTitle(),
+                this.project.getId(), this.project.getTitle(), this.id, this.title);
     }
 
     public void addTaskBookmark(TaskBookmark taskBookmark) {
