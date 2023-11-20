@@ -57,8 +57,8 @@ public class Task extends BaseTimeEntity {
     @OneToMany(mappedBy = "task", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<TaskBookmark> taskBookmarks = new ArrayList<>();
 
-    @OneToMany(mappedBy = "task", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
-    private List<Reply> replies = new ArrayList<>();
+    @OneToMany(mappedBy = "task", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = false)
+    private List<TaskReply> taskReplies = new ArrayList<>();
 
     @Builder
     public Task(String title, String content, LocalDateTime startDate, LocalDateTime endDate, boolean emergency,
@@ -100,22 +100,22 @@ public class Task extends BaseTimeEntity {
         this.progressStatus = Optional.ofNullable(progressStatus).orElse(this.progressStatus);
     }
 
-    public void modifyContent(Long replyId, String content) {
-        Reply findReply = this.replies.stream()
-                .filter(reply -> !reply.isRemoved() && reply.getId().equals(replyId))
+    public void modifyTaskReplyContent(Long taskReplyId, String content) {
+        TaskReply findTaskReply = this.taskReplies.stream()
+                .filter(taskReply -> !taskReply.isRemoved() && taskReply.getId().equals(taskReplyId))
                 .findFirst()
-                .orElseThrow(() -> new ReplyNotFoundException(this.id, replyId));
+                .orElseThrow(() -> new TaskReplyNotFoundException(this.id, taskReplyId));
 
-        findReply.modifyContent(content);
+        findTaskReply.modifyTaskReplyContent(content);
     }
 
-    public void deleteReply(Long replyId) {
-        this.replies.remove(
-                this.replies.stream()
+    public void deleteTaskReply(Long taskReplyId) {
+        this.taskReplies.remove(
+                this.taskReplies.stream()
 
-                .filter(reply -> reply.getId().equals(replyId))
+                .filter(taskReply -> taskReply.getId().equals(taskReplyId))
                 .findFirst()
-                .orElseThrow(() -> new ReplyNotFoundException(replyId))
+                .orElseThrow(() -> new TaskReplyNotFoundException(taskReplyId))
         );
     }
 }

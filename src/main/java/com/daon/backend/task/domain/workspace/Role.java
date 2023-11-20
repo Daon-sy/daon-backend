@@ -27,7 +27,8 @@ public enum Role {
                     PF_READ, PF_UPDATE,
                     PJ_CREATE, PJ_READ, PJ_UPDATE, PJ_DELETE,
                     BD_CREATE, BD_READ, BD_UPDATE, BD_DELETE,
-                    TSK_CREATE, TSK_READ, TSK_UPDATE, TSK_DELETE
+                    TSK_CREATE, TSK_READ, TSK_UPDATE, TSK_DELETE,
+                    REP_CREATE, REP_READ, REP_UPDATE, REP_DELETE
             )
     ),
 
@@ -41,7 +42,8 @@ public enum Role {
                     PF_READ, PF_UPDATE,
                     PJ_READ,
                     BD_READ,
-                    TSK_CREATE, TSK_READ, TSK_UPDATE, TSK_DELETE
+                    TSK_CREATE, TSK_READ, TSK_UPDATE, TSK_DELETE,
+                    REP_CREATE, REP_READ, REP_UPDATE, REP_DELETE
             )
     ),
     ;

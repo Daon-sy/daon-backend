@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class CreateReplyResponseDto {
+public class CreateTaskReplyResponseDto {
 
     private Long replyId;
 }

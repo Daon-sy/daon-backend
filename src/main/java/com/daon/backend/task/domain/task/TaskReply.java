@@ -2,18 +2,21 @@ package com.daon.backend.task.domain.task;
 
 import com.daon.backend.config.BaseTimeEntity;
 import com.daon.backend.task.domain.project.ProjectParticipant;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Reply extends BaseTimeEntity {
+public class TaskReply extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "reply_id")
+    @Column(name = "taskReply_id")
     private Long id;
 
     private String content;
@@ -24,24 +27,20 @@ public class Reply extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "writer_id", nullable = false, updatable = false)
-    private ProjectParticipant writer; //작성자
+    private ProjectParticipant taskReplyWriter; //작성자
 
     private boolean removed;
 
     @Builder
-    public Reply(String content,
-                 Task task,
-                 ProjectParticipant writer) {
+    public TaskReply(String content,
+                     Task task,
+                     ProjectParticipant taskReplyWriter) {
         this.content = content;
         this.task = task;
-        this.writer = writer;
+        this.taskReplyWriter = taskReplyWriter;
     }
 
-    public void modifyContent(String content) {
+    public void modifyTaskReplyContent(String content) {
         this.content = content;
-    }
-
-    public void deleteReply() {
-        this.removed = true;
     }
 }

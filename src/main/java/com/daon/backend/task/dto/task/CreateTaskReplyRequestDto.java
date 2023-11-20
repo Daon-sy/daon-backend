@@ -8,7 +8,7 @@ import javax.validation.constraints.Size;
 
 @Getter
 @NoArgsConstructor
-public class CreateReplyRequestDto {
+public class CreateTaskReplyRequestDto {
 
     @Size(max = 500)
     @NotBlank
