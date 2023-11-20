@@ -1,6 +1,7 @@
 package com.daon.backend.notification.controller;
 
-import com.daon.backend.notification.service.NotificationService;
+import com.daon.backend.notification.infrastructure.NotificationService;
+import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -13,10 +14,11 @@ public class NotificationController {
 
     private final NotificationService notificationService;
 
-    @GetMapping(value = "/subscribe", produces = "text/event-stream")
-    public SseEmitter subscribe(
+    @Operation(summary = "실시간 이벤트(알림) 구독", description = "실시간 이벤트(알림) 구독 요청입니다.")
+    @GetMapping(value = "/api/subscribe/alarm", produces = "text/event-stream")
+    public SseEmitter subscribeAlarm(
             @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
 
-        return notificationService.subscribe(lastEventId);
+        return notificationService.subscribeAlarm(lastEventId);
     }
 }

@@ -1,6 +1,10 @@
 package com.daon.backend.task.domain.workspace;
 
+import com.daon.backend.common.event.Events;
 import com.daon.backend.config.BaseTimeEntity;
+import com.daon.backend.notification.domain.NotificationType;
+import com.daon.backend.notification.domain.SendNotificationEvent;
+import com.daon.backend.notification.dto.response.InviteWorkspaceAlarmResponseDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -119,6 +123,14 @@ public class Workspace extends BaseTimeEntity {
 
     public void addWorkspaceInvitation(WorkspaceInvitation workspaceInvitation) {
         this.invitations.add(workspaceInvitation);
+
+        InviteWorkspaceAlarmResponseDto inviteEventResponse = createInviteEventResponse();
+        Events.raise(SendNotificationEvent.create(
+                NotificationType.INVITE_WORKSPACE, inviteEventResponse, workspaceInvitation.getMemberId()));
+    }
+
+    private InviteWorkspaceAlarmResponseDto createInviteEventResponse() {
+        return new InviteWorkspaceAlarmResponseDto(this.id, this.title);
     }
 
     public void removeWorkspaceInvitation(String memberId) {
