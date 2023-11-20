@@ -76,6 +76,4 @@ public class ReplyController {
                             @PathVariable("replyId") Long replyId) {
         replyService.deleteReply(projectId, taskId, replyId);
     }
-
-
 }

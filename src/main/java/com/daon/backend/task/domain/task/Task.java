@@ -2,7 +2,6 @@ package com.daon.backend.task.domain.task;
 
 import com.daon.backend.config.BaseTimeEntity;
 import com.daon.backend.task.domain.project.Board;
-import com.daon.backend.task.domain.project.BoardNotFoundException;
 import com.daon.backend.task.domain.project.Project;
 import com.daon.backend.task.domain.project.ProjectParticipant;
 import lombok.AccessLevel;
@@ -111,9 +110,12 @@ public class Task extends BaseTimeEntity {
     }
 
     public void deleteReply(Long replyId) {
-        this.replies.stream()
+        this.replies.remove(
+                this.replies.stream()
+
                 .filter(reply -> reply.getId().equals(replyId))
                 .findFirst()
-                .ifPresent(Reply::deleteReply);
+                .orElseThrow(() -> new ReplyNotFoundException(replyId))
+        );
     }
 }
