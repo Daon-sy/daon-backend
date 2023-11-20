@@ -2,6 +2,7 @@ package com.daon.backend.task.domain.task;
 
 import com.daon.backend.config.BaseTimeEntity;
 import com.daon.backend.task.domain.project.Board;
+import com.daon.backend.task.domain.project.BoardNotFoundException;
 import com.daon.backend.task.domain.project.Project;
 import com.daon.backend.task.domain.project.ProjectParticipant;
 import lombok.AccessLevel;
@@ -57,6 +58,9 @@ public class Task extends BaseTimeEntity {
     @OneToMany(mappedBy = "task", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<TaskBookmark> taskBookmarks = new ArrayList<>();
 
+    @OneToMany(mappedBy = "task", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    private List<Reply> replies = new ArrayList<>();
+
     @Builder
     public Task(String title, String content, LocalDateTime startDate, LocalDateTime endDate, boolean emergency,
                 ProjectParticipant creator, ProjectParticipant taskManager, Project project, Board board) {
@@ -95,5 +99,21 @@ public class Task extends BaseTimeEntity {
 
     public void modifyProgressStatus(TaskProgressStatus progressStatus) {
         this.progressStatus = Optional.ofNullable(progressStatus).orElse(this.progressStatus);
+    }
+
+    public void modifyContent(Long replyId, String content) {
+        Reply findReply = this.replies.stream()
+                .filter(reply -> !reply.isRemoved() && reply.getId().equals(replyId))
+                .findFirst()
+                .orElseThrow(() -> new ReplyNotFoundException(this.id, replyId));
+
+        findReply.modifyContent(content);
+    }
+
+    public void deleteReply(Long replyId) {
+        this.replies.stream()
+                .filter(reply -> reply.getId().equals(replyId))
+                .findFirst()
+                .ifPresent(Reply::deleteReply);
     }
 }

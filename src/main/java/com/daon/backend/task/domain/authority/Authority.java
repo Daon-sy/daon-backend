@@ -33,6 +33,11 @@ public enum Authority {
     TSK_READ("할 일 읽기"),
     TSK_UPDATE("할 일 수정"),
     TSK_DELETE("할 일 삭제"),
+    // reply
+    REP_CREATE("댓글 생성"),
+    REP_READ("댓글 조회"),
+    REP_UPDATE("댓글 수정"),
+    REP_DELETE("댓글 삭제"),
     ;
 
     private final String description;
