@@ -86,5 +86,14 @@ public class MemberController {
     public void deleteEmail(@PathVariable("memberEmailId") Long memberEmailId) {
         memberService.deleteEmail(memberEmailId);
     }
+  
+    @Operation(summary = "회원 탈퇴", description = "회원 탈퇴 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "회원 탈퇴 성공")
+    })
+    @DeleteMapping("/me")
+    public void withdrawMember() {
+        memberService.withdrawMember();
+    }
 }
 

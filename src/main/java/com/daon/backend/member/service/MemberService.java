@@ -20,6 +20,7 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final SessionMemberProvider sessionMemberProvider;
+    private final MemberServiceThroughTask memberServiceThroughTask;
 
     @Transactional
     public void signUp(SignUpRequestDto requestDto) {
@@ -94,5 +95,15 @@ public class MemberService {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> MemberNotFoundException.byMemberId(memberId));
         member.removeEmail(memberEmailId);
+    }
+  
+    public void withdrawMember() {
+        String memberId = sessionMemberProvider.getMemberId();
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(() -> MemberNotFoundException.byMemberId(memberId));
+
+        memberServiceThroughTask.deleteRelatedTaskDomains(memberId);
+
+        member.withdrawMember();
     }
 }

@@ -48,8 +48,8 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
     }
 
     @Override
-    public Optional<WorkspaceParticipant> findWorkspaceParticipantByWorkspaceAndMemberId(Workspace workspace, String memberId) {
-        return workspaceParticipantJpaRepository.findByWorkspaceAndMemberId(workspace, memberId);
+    public Optional<WorkspaceParticipant> findWorkspaceParticipantByWorkspaceIdAndMemberId(Long workspaceId, String memberId) {
+        return workspaceParticipantJpaRepository.findByWorkspaceIdAndMemberId(workspaceId, memberId);
     }
 
     @Override

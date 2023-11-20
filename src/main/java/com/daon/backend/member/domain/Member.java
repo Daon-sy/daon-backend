@@ -80,6 +80,10 @@ public class Member extends BaseTimeEntity {
         );
     }
 
+    public void withdrawMember() {
+        this.removed = true;
+    }
+
     @PostPersist
     private void raiseCreatedEvent() {
         Events.raise(MemberCreatedEvent.create(id, name, emails.get(0).getEmail()));
