@@ -15,11 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-@Entity @Getter
+@Entity
+@Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Task extends BaseTimeEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "task_id")
     private Long id;
 
@@ -55,6 +57,9 @@ public class Task extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "task", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<TaskBookmark> taskBookmarks = new ArrayList<>();
+
+    @OneToMany(mappedBy = "task", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = false)
+    private List<TaskReply> taskReplies = new ArrayList<>();
 
     @Builder
     public Task(String title, String content, LocalDateTime startDate, LocalDateTime endDate, boolean emergency,
@@ -94,6 +99,23 @@ public class Task extends BaseTimeEntity {
 
     public void modifyProgressStatus(TaskProgressStatus progressStatus) {
         this.progressStatus = Optional.ofNullable(progressStatus).orElse(this.progressStatus);
+    }
+
+    public void modifyTaskReplyContent(Long taskReplyId, String content) {
+        TaskReply findTaskReply = this.taskReplies.stream()
+                .filter(taskReply -> !taskReply.isRemoved() && taskReply.getId().equals(taskReplyId))
+                .findFirst()
+                .orElseThrow(() -> new TaskReplyNotFoundException(this.id, taskReplyId));
+
+        findTaskReply.modifyTaskReplyContent(content);
+    }
+
+    public void deleteTaskReply(Long taskReplyId) {
+        this.taskReplies.stream()
+                .filter(taskReply -> taskReply.getId().equals(taskReplyId))
+                .findFirst()
+                .orElseThrow(() -> new TaskReplyNotFoundException(taskReplyId))
+                .deleteTaskReply();
     }
 
     public void removeTaskManager() {
