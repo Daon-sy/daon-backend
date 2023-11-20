@@ -194,7 +194,10 @@ public class WorkspaceService {
                             .peek(project -> {
                                 List<Task> tasks = taskRepository.findAllTasksByProjectId(project.getId());
                                 tasks.stream()
-                                        .filter(task -> task.getTaskManager().getMemberId().equals(memberId))
+                                        .filter(task -> {
+                                            ProjectParticipant taskManager = task.getTaskManager();
+                                            return taskManager != null && taskManager.getMemberId().equals(memberId);
+                                        })
                                         .forEach(Task::removeTaskManager);
                                 tasks.stream()
                                         .filter(task -> task.getCreatorId().equals(workspaceParticipantId))
