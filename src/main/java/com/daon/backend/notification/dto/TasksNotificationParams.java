@@ -11,23 +11,23 @@ public class TasksNotificationParams {
 
     private Long boardId;
 
-    private boolean bookmarked;
+    private boolean bookmark;
 
     private boolean my;
 
     public boolean checkValidRequest() {
-        return projectId != null || boardId != null || bookmarked || my;
+        return projectId != null || boardId != null || bookmark || my;
     }
 
     public String getSuffixByParam() {
-        if (bookmarked) {
-            return "_bookmark";
+        if (bookmark) {
+            return "_bookmark_";
         } else if (my) {
-            return "_my";
+            return "_my_";
         } else if (boardId != null) {
-            return "_board_" + boardId + "_project_" + projectId; // tasks_1_board_1_project_3
+            return "_board_" + boardId + "_project_" + projectId + "_"; // tasks_1_board_1_project_3
         } else {
-            return "_project_" + projectId;
+            return "_project_" + projectId + "_";
         }
     }
 }

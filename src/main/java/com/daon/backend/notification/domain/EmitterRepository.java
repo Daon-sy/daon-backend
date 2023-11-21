@@ -14,6 +14,8 @@ public interface EmitterRepository {
 
     Map<String, SseEmitter> findAllEmittersStartWithTasks();
 
+    Map<String, SseEmitter> findAllEmitterStartWithTask();
+
     void deleteById(String id);
 
     void deleteAllEmitterStartWith(String memberId);

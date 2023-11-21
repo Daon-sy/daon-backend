@@ -42,6 +42,13 @@ public class EmitterRepositoryImpl implements EmitterRepository {
     }
 
     @Override
+    public Map<String, SseEmitter> findAllEmitterStartWithTask() {
+        return emitters.entrySet().stream()
+                .filter(entry -> entry.getKey().startsWith("task_"))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+
+    @Override
     public void deleteById(String id) {
         emitters.remove(id);
     }

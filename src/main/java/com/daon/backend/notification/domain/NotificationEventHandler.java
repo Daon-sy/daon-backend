@@ -1,7 +1,6 @@
-package com.daon.backend.notification.infrastructure;
+package com.daon.backend.notification.domain;
 
-import com.daon.backend.notification.domain.SendAlarmEvent;
-import com.daon.backend.notification.domain.SendFindTasksEvent;
+import com.daon.backend.notification.infrastructure.NotificationService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
@@ -23,8 +22,14 @@ public class NotificationEventHandler {
     @TransactionalEventListener
     @Async
     public void handle(SendFindTasksEvent event) {
-        notificationService.sendFindTasksEventResponse(
+        notificationService.sendFindTasksEventNotification(
                 event.getWorkspaceId(), event.getProjectId(), event.getBoardId()
         );
+    }
+
+    @TransactionalEventListener
+    @Async
+    public void handle(SendFindTaskEvent event) {
+        notificationService.sendFindTaskEventNotification(event.getTaskId());
     }
 }
