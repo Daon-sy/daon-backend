@@ -10,13 +10,11 @@ public interface EmitterRepository {
 
     void saveEventCache(String eventCacheId, Object event);
 
-    Map<String, SseEmitter> findAllEmitterStartWithByMemberId(String memberId);
+    Map<String, SseEmitter> findAllEmitterStartWithMemberId(String memberId);
 
-    Map<String, Object> findAllEventCacheStartWithByMemberId(String memberId);
+    Map<String, SseEmitter> findAllEmittersStartWithTasks();
 
     void deleteById(String id);
 
     void deleteAllEmitterStartWith(String memberId);
-
-    void deleteAllEventCacheStartWithId(String memberId);
 }

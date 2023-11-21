@@ -3,7 +3,8 @@ package com.daon.backend.task.domain.task;
 import com.daon.backend.common.event.Events;
 import com.daon.backend.config.BaseTimeEntity;
 import com.daon.backend.notification.domain.NotificationType;
-import com.daon.backend.notification.domain.SendNotificationEvent;
+import com.daon.backend.notification.domain.SendAlarmEvent;
+import com.daon.backend.notification.domain.SendFindTasksEvent;
 import com.daon.backend.notification.dto.response.DesignatedManagerResponseDto;
 import com.daon.backend.task.domain.project.Board;
 import com.daon.backend.task.domain.project.Project;
@@ -88,9 +89,12 @@ public class Task extends BaseTimeEntity {
         this.taskManager = taskManager;
 
         DesignatedManagerResponseDto designatedManagerEventResponse = createDesignatedManagerEventResponse();
-        Events.raise(SendNotificationEvent.create(
+        Events.raise(SendAlarmEvent.create(
                 NotificationType.REGISTERED_TASK_MANAGER, designatedManagerEventResponse, taskManager.getMemberId()
         ));
+
+        Events.raise(SendFindTasksEvent.create(
+                this.project.getWorkspace().getId(), this.project.getId(), this.board.getId()));
     }
 
     private DesignatedManagerResponseDto createDesignatedManagerEventResponse() {
@@ -109,6 +113,9 @@ public class Task extends BaseTimeEntity {
 
     public void modifyProgressStatus(TaskProgressStatus progressStatus) {
         this.progressStatus = Optional.ofNullable(progressStatus).orElse(this.progressStatus);
+
+        Events.raise(SendFindTasksEvent.create(
+                this.project.getWorkspace().getId(), this.project.getId(), this.board.getId()));
     }
 
     public void removeTaskManager() {

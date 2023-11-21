@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public class SendNotificationEvent {
+public class SendAlarmEvent {
 
     private NotificationType notificationType;
 
@@ -14,7 +14,7 @@ public class SendNotificationEvent {
 
     private String memberId;
 
-    public static SendNotificationEvent create(NotificationType notificationType, Object notificationData, String memberId) {
-        return new SendNotificationEvent(notificationType, notificationData, memberId);
+    public static SendAlarmEvent create(NotificationType notificationType, Object notificationData, String memberId) {
+        return new SendAlarmEvent(notificationType, notificationData, memberId);
     }
 }

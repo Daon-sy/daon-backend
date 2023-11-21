@@ -3,7 +3,7 @@ package com.daon.backend.task.domain.workspace;
 import com.daon.backend.common.event.Events;
 import com.daon.backend.config.BaseTimeEntity;
 import com.daon.backend.notification.domain.NotificationType;
-import com.daon.backend.notification.domain.SendNotificationEvent;
+import com.daon.backend.notification.domain.SendAlarmEvent;
 import com.daon.backend.notification.dto.response.DeportationWorkspaceResponseDto;
 import com.daon.backend.notification.dto.response.InviteWorkspaceAlarmResponseDto;
 import lombok.AccessLevel;
@@ -126,7 +126,7 @@ public class Workspace extends BaseTimeEntity {
         this.invitations.add(workspaceInvitation);
 
         InviteWorkspaceAlarmResponseDto inviteEventResponse = createInviteEventResponse();
-        Events.raise(SendNotificationEvent.create(
+        Events.raise(SendAlarmEvent.create(
                 NotificationType.INVITE_WORKSPACE, inviteEventResponse, workspaceInvitation.getMemberId()));
     }
 
@@ -153,7 +153,7 @@ public class Workspace extends BaseTimeEntity {
         );
 
         DeportationWorkspaceResponseDto deportationEventResponse = createDeportationEventResponse();
-        Events.raise(SendNotificationEvent.create(
+        Events.raise(SendAlarmEvent.create(
                 NotificationType.DEPORTATION_WORKSPACE, deportationEventResponse, workspaceParticipantMemberId)
         );
     }

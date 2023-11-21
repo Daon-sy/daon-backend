@@ -75,7 +75,6 @@ public class TaskService {
             taskManager = project.findProjectParticipantByProjectParticipantId(taskManagerId)
                     .orElseThrow(() -> new NotProjectParticipantException(memberId, project.getId()));
         }
-
         task.modifyTask(
                 requestDto.getTitle(),
                 requestDto.getContent(),
