@@ -49,7 +49,6 @@ public class TaskController {
         taskService.modifyTask(projectId, taskId, requestDto);
     }
 
-
     @Operation(summary = "할 일 단건 조회", description = "할 일 단건 조회 요청입니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "할 일 단건 조회 성공")
@@ -81,5 +80,15 @@ public class TaskController {
     public SetBookmarkResponseDto setBookmark(@PathVariable("projectId") Long projectId,
                                               @PathVariable("taskId") Long taskId) {
         return taskService.setBookmark(projectId, taskId);
+    }
+
+    @Operation(summary = "할 일 삭제", description = "할 일 삭제 요청입니다..")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "할 일 삭제 성공")
+    })
+    @CheckRole(authority = PJ_DELETE)
+    @DeleteMapping("/{taskId}")
+    public void deleteTask(@PathVariable("taskId") Long taskId) {
+        taskService.deleteTask(taskId);
     }
 }
