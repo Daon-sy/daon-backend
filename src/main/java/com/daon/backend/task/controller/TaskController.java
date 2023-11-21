@@ -86,7 +86,7 @@ public class TaskController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "할 일 삭제 성공")
     })
-    @CheckRole(authority = PJ_DELETE)
+    @CheckRole(authority = TSK_DELETE)
     @DeleteMapping("/{taskId}")
     public void deleteTask(@PathVariable("taskId") Long taskId) {
         taskService.deleteTask(taskId);
