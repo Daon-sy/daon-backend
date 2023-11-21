@@ -58,7 +58,7 @@ public class Task extends BaseTimeEntity {
     @OneToMany(mappedBy = "task", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<TaskBookmark> taskBookmarks = new ArrayList<>();
 
-    @OneToMany(mappedBy = "task", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = false)
+    @OneToMany(mappedBy = "task", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<TaskReply> taskReplies = new ArrayList<>();
 
     @Builder

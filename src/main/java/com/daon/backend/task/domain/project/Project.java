@@ -1,6 +1,7 @@
 package com.daon.backend.task.domain.project;
 
 import com.daon.backend.config.BaseTimeEntity;
+import com.daon.backend.task.domain.task.Task;
 import com.daon.backend.task.domain.workspace.Workspace;
 import com.daon.backend.task.domain.workspace.WorkspaceParticipant;
 import lombok.AccessLevel;
@@ -33,11 +34,14 @@ public class Project extends BaseTimeEntity {
 
     private boolean removed;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<ProjectParticipant> participants = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<Board> boards = new ArrayList<>();
+
+    @OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    private List<Task> tasks = new ArrayList<>();
 
     @Builder
     public Project(Workspace workspace, String title, String description, ProjectCreator projectCreator) {
