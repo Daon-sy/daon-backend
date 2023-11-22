@@ -14,12 +14,12 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
-import static com.daon.backend.task.domain.project.QBoard.board;
+import static com.daon.backend.task.domain.board.QBoard.board;
 import static com.daon.backend.task.domain.project.QProject.project;
 import static com.daon.backend.task.domain.project.QProjectParticipant.projectParticipant;
 import static com.daon.backend.task.domain.task.QTask.task;
 import static com.daon.backend.task.domain.task.QTaskBookmark.taskBookmark;
-import static com.querydsl.core.types.Projections.*;
+import static com.querydsl.core.types.Projections.constructor;
 
 @Repository
 @RequiredArgsConstructor

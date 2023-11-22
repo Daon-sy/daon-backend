@@ -6,6 +6,10 @@ import com.daon.backend.notification.domain.NotificationType;
 import com.daon.backend.notification.domain.SendAlarmEvent;
 import com.daon.backend.notification.dto.response.DeportationProjectResponseDto;
 import com.daon.backend.notification.dto.response.InviteProjectAlarmResponseDto;
+import com.daon.backend.task.domain.board.Board;
+import com.daon.backend.task.domain.board.BoardNotFoundException;
+import com.daon.backend.task.domain.board.CanNotDeleteBoardException;
+import com.daon.backend.task.domain.board.SameBoardExistsException;
 import com.daon.backend.task.domain.task.Task;
 import com.daon.backend.task.domain.workspace.Workspace;
 import com.daon.backend.task.domain.workspace.WorkspaceParticipant;
@@ -29,15 +33,15 @@ public class Project extends BaseTimeEntity {
     @Column(name = "project_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "workspace_id")
-    private Workspace workspace;
-
     private String title;
 
     private String description;
 
     private boolean removed;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "workspace_id")
+    private Workspace workspace;
 
     @OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<ProjectParticipant> participants = new ArrayList<>();
@@ -84,30 +88,6 @@ public class Project extends BaseTimeEntity {
 
     public void addBoard(String title) {
         this.boards.add(new Board(this, title));
-    }
-
-    public void modifyBoard(Long boardId, String title) {
-        Board findBoard = this.boards.stream()
-                .filter(board -> !board.isRemoved() && board.getId().equals(boardId))
-                .findFirst()
-                .orElseThrow(() -> new BoardNotFoundException(this.id, boardId));
-
-        findBoard.modifyTitle(title);
-    }
-
-    public void deleteBoard(Long boardId) {
-        if (checkCanDeleteBoard()) {
-            this.boards.stream()
-                    .filter(board -> board.getId().equals(boardId))
-                    .findFirst()
-                    .ifPresent(Board::deleteBoard);
-        } else {
-            throw new CanNotDeleteBoardException();
-        }
-    }
-
-    public boolean checkCanDeleteBoard() {
-        return this.boards.size() > 1;
     }
 
     public Board getBoardByBoardId(Long boardId) {

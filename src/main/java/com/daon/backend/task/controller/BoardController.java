@@ -1,9 +1,9 @@
 package com.daon.backend.task.controller;
 
 import com.daon.backend.task.domain.authority.CheckRole;
-import com.daon.backend.task.dto.project.CreateBoardRequestDto;
-import com.daon.backend.task.dto.project.FindBoardsResponseDto;
-import com.daon.backend.task.dto.project.ModifyBoardRequestDto;
+import com.daon.backend.task.dto.board.CreateBoardRequestDto;
+import com.daon.backend.task.dto.board.FindBoardsResponseDto;
+import com.daon.backend.task.dto.board.ModifyBoardRequestDto;
 import com.daon.backend.task.service.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

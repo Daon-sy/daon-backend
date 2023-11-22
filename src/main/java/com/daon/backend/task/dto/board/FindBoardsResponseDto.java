@@ -1,6 +1,6 @@
-package com.daon.backend.task.dto.project;
+package com.daon.backend.task.dto.board;
 
-import com.daon.backend.task.domain.project.Board;
+import com.daon.backend.task.domain.board.Board;
 import lombok.Getter;
 
 import java.util.List;

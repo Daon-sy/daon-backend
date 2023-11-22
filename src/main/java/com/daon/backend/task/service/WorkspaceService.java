@@ -1,6 +1,6 @@
 package com.daon.backend.task.service;
 
-import com.daon.backend.task.domain.project.Board;
+import com.daon.backend.task.domain.board.Board;
 import com.daon.backend.task.domain.project.Project;
 import com.daon.backend.task.domain.project.ProjectParticipant;
 import com.daon.backend.task.domain.project.ProjectRepository;

@@ -1,5 +1,6 @@
 package com.daon.backend.task.service;
 
+import com.daon.backend.task.domain.board.Board;
 import com.daon.backend.task.domain.project.*;
 import com.daon.backend.task.domain.task.Task;
 import com.daon.backend.task.domain.task.TaskBookmark;
@@ -9,8 +10,6 @@ import com.daon.backend.task.dto.task.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -136,6 +135,9 @@ public class TaskService {
         task.modifyProgressStatus(requestDto.getProgressStatus());
     }
 
+    /**
+     * 할 일  삭제
+     */
     public void deleteTask(Long taskId) {
         Task task = taskRepository.findTaskByTaskId(taskId)
                 .orElseThrow(() -> new TaskNotFoundException(taskId));

@@ -1,4 +1,4 @@
-package com.daon.backend.task.dto.project;
+package com.daon.backend.task.dto.board;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -8,7 +8,7 @@ import javax.validation.constraints.Size;
 
 @Getter
 @NoArgsConstructor
-public class ModifyBoardRequestDto {
+public class CreateBoardRequestDto {
 
     @NotBlank
     @Size(max = 20)
