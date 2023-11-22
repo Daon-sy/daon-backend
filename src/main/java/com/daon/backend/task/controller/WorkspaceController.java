@@ -162,14 +162,4 @@ public class WorkspaceController {
     public void deleteWorkspace(@PathVariable("workspaceId") Long workspaceId) {
         workspaceService.deleteWorkspace(workspaceId);
     }
-
-    @Operation(summary = "개인 워크스페이스 초기화", description = "개인 워크스페이스 초기화 요청입니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "개인 워크스페이스 초기화 성공")
-    })
-    @CheckRole(authority = WS_DELETE)
-    @DeleteMapping("reset/{workspaceId}")
-    public void resetWorkspace(@PathVariable("workspaceId") Long workspaceId) {
-        workspaceService.resetWorkspace(workspaceId);
-    }
 }
