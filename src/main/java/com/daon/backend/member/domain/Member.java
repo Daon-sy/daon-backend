@@ -1,7 +1,7 @@
 package com.daon.backend.member.domain;
 
 import com.daon.backend.common.event.Events;
-import com.daon.backend.config.BaseTimeEntity;
+import com.daon.backend.config.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,11 +18,11 @@ import java.util.List;
 import java.util.Optional;
 
 @Audited
-@AuditOverride(forClass = BaseTimeEntity.class)
+@AuditOverride(forClass = BaseEntity.class)
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member extends BaseTimeEntity {
+public class Member extends BaseEntity {
 
     @Id
     @GeneratedValue(generator = "uuid2")
