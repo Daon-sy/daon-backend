@@ -238,7 +238,7 @@ public class WorkspaceService {
 
         Workspace workspace = workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
-        workspace.deportWorkspace(workspaceParticipantId);
+        workspace.deportWorkspace(workspaceParticipantId, workspaceParticipantMemberId);
     }
 
     @Transactional

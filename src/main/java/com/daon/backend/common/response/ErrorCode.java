@@ -16,6 +16,8 @@ public enum ErrorCode {
     INVALID_REFRESH_TOKEN(1502, "리프레시 토큰이 유효하지 않습니다. 다시 로그인 해주세요."),
     UNAUTHORIZED_MEMBER(1503, "해당 요청에 대한 권한이 없습니다."),
 
+    TYPE_NOT_SPECIFIC(1700, "SSE 연결 요청(할 일 목록 조회)에 타입이 지정되지 않았습니다. Param을 확인해 주세요."),
+
     INVALID_TARGET(1800, "유효하지 않은 분류 값입니다. 검색 필터를 확인해 주세요."),
 
     IMAGE_IOEXCEPTION(1900, "이미지 업로드 중 오류가 발생했습니다."),

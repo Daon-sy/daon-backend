@@ -1,6 +1,11 @@
 package com.daon.backend.task.domain.project;
 
+import com.daon.backend.common.event.Events;
 import com.daon.backend.config.BaseTimeEntity;
+import com.daon.backend.notification.domain.NotificationType;
+import com.daon.backend.notification.domain.SendAlarmEvent;
+import com.daon.backend.notification.dto.response.DeportationProjectResponseDto;
+import com.daon.backend.notification.dto.response.InviteProjectAlarmResponseDto;
 import com.daon.backend.task.domain.task.Task;
 import com.daon.backend.task.domain.workspace.Workspace;
 import com.daon.backend.task.domain.workspace.WorkspaceParticipant;
@@ -65,6 +70,16 @@ public class Project extends BaseTimeEntity {
 
     public void addParticipant(String memberId, WorkspaceParticipant workspaceParticipant) {
         this.participants.add(new ProjectParticipant(this, workspaceParticipant, memberId));
+
+        InviteProjectAlarmResponseDto inviteEventResponse = createInviteEventResponse(workspaceParticipant);
+        Events.raise(SendAlarmEvent.create(NotificationType.INVITE_PROJECT, inviteEventResponse, memberId));
+    }
+
+    private InviteProjectAlarmResponseDto createInviteEventResponse(WorkspaceParticipant workspaceParticipant) {
+        return new InviteProjectAlarmResponseDto(
+                workspaceParticipant.getWorkspace().getId(), workspaceParticipant.getWorkspace().getTitle(),
+                this.id, this.title
+        );
     }
 
     public void addBoard(String title) {
@@ -130,9 +145,21 @@ public class Project extends BaseTimeEntity {
     }
 
     public void deportProject(Long projectParticipantId) {
-        this.participants.removeIf(
-                projectParticipant -> projectParticipant.getId().equals(projectParticipantId)
+        ProjectParticipant projectParticipant = this.participants.stream()
+                .filter(participant -> participant.getId().equals(projectParticipantId))
+                .findFirst()
+                .orElseThrow(() -> new NotProjectParticipantException(this.id));
+        this.participants.remove(projectParticipant);
+
+        DeportationProjectResponseDto deportationEventResponse = createDeportationEventResponse();
+        Events.raise(SendAlarmEvent.create(
+                NotificationType.DEPORTATION_PROJECT, deportationEventResponse, projectParticipant.getMemberId())
         );
+    }
+
+    private DeportationProjectResponseDto createDeportationEventResponse() {
+        return new DeportationProjectResponseDto(
+                this.workspace.getId(), this.workspace.getTitle(), this.id, this.title);
     }
 
     public void removeProject() {

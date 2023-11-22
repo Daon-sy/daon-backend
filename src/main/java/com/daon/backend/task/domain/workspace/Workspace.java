@@ -1,6 +1,11 @@
 package com.daon.backend.task.domain.workspace;
 
+import com.daon.backend.common.event.Events;
 import com.daon.backend.config.BaseTimeEntity;
+import com.daon.backend.notification.domain.NotificationType;
+import com.daon.backend.notification.domain.SendAlarmEvent;
+import com.daon.backend.notification.dto.response.DeportationWorkspaceResponseDto;
+import com.daon.backend.notification.dto.response.InviteWorkspaceAlarmResponseDto;
 import com.daon.backend.task.domain.project.Project;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -123,6 +128,14 @@ public class Workspace extends BaseTimeEntity {
 
     public void addWorkspaceInvitation(WorkspaceInvitation workspaceInvitation) {
         this.invitations.add(workspaceInvitation);
+
+        InviteWorkspaceAlarmResponseDto inviteEventResponse = createInviteEventResponse();
+        Events.raise(SendAlarmEvent.create(
+                NotificationType.INVITE_WORKSPACE, inviteEventResponse, workspaceInvitation.getMemberId()));
+    }
+
+    private InviteWorkspaceAlarmResponseDto createInviteEventResponse() {
+        return new InviteWorkspaceAlarmResponseDto(this.id, this.title);
     }
 
     public void removeWorkspaceInvitation(String memberId) {
@@ -138,10 +151,19 @@ public class Workspace extends BaseTimeEntity {
         this.participants.removeIf(workspaceParticipant -> workspaceParticipant.getMemberId().equals(memberId));
     }
 
-    public void deportWorkspace(Long workspaceParticipantId) {
+    public void deportWorkspace(Long workspaceParticipantId, String workspaceParticipantMemberId) {
         this.participants.removeIf(
                 workspaceParticipant -> workspaceParticipant.getId().equals(workspaceParticipantId)
         );
+
+        DeportationWorkspaceResponseDto deportationEventResponse = createDeportationEventResponse();
+        Events.raise(SendAlarmEvent.create(
+                NotificationType.DEPORTATION_WORKSPACE, deportationEventResponse, workspaceParticipantMemberId)
+        );
+    }
+
+    private DeportationWorkspaceResponseDto createDeportationEventResponse() {
+        return new DeportationWorkspaceResponseDto(this.id, this.title);
     }
 
     public void deleteWorkspace() {
