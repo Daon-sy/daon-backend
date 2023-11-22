@@ -1,6 +1,12 @@
 package com.daon.backend.task.domain.task;
 
+import com.daon.backend.common.event.Events;
 import com.daon.backend.config.BaseTimeEntity;
+import com.daon.backend.notification.domain.NotificationType;
+import com.daon.backend.notification.domain.SendAlarmEvent;
+import com.daon.backend.notification.domain.SendFindTaskEvent;
+import com.daon.backend.notification.domain.SendFindTasksEvent;
+import com.daon.backend.notification.dto.response.DesignatedManagerResponseDto;
 import com.daon.backend.task.domain.project.Board;
 import com.daon.backend.task.domain.project.Project;
 import com.daon.backend.task.domain.project.ProjectParticipant;
@@ -79,6 +85,10 @@ public class Task extends BaseTimeEntity {
 
     public void modifyTask(String title, String content, LocalDateTime startDate, LocalDateTime endDate, boolean emergency,
                            TaskProgressStatus progressStatus, Board board, ProjectParticipant taskManager) {
+        if (taskManager != null && taskManager.getId().equals(this.taskManager.getId())) {
+            publishSendAlarmEvent(taskManager);
+        }
+
         this.title = title;
         this.content = content;
         this.startDate = startDate;
@@ -87,6 +97,9 @@ public class Task extends BaseTimeEntity {
         this.progressStatus = progressStatus;
         this.board = board;
         this.taskManager = taskManager;
+
+        publishSendTaskEvent();
+        publishSendTasksEvent();
     }
 
     public void addTaskBookmark(TaskBookmark taskBookmark) {
@@ -99,6 +112,9 @@ public class Task extends BaseTimeEntity {
 
     public void modifyProgressStatus(TaskProgressStatus progressStatus) {
         this.progressStatus = Optional.ofNullable(progressStatus).orElse(this.progressStatus);
+
+        publishSendTaskEvent();
+        publishSendTasksEvent();
     }
 
     public void modifyTaskReplyContent(Long taskReplyId, String content) {
@@ -135,5 +151,24 @@ public class Task extends BaseTimeEntity {
     public void removeTaskWhenBoardDeleted() {
         this.removed = true;
         removeTaskManager();
+    }
+
+    private void publishSendAlarmEvent(ProjectParticipant taskManager) {
+        DesignatedManagerResponseDto designatedManagerEventResponse = new DesignatedManagerResponseDto(
+                this.project.getWorkspace().getId(), this.project.getWorkspace().getTitle(),
+                this.project.getId(), this.project.getTitle(), this.id, this.title);
+
+        Events.raise(SendAlarmEvent.create(
+                NotificationType.REGISTERED_TASK_MANAGER, designatedManagerEventResponse, taskManager.getMemberId()
+        ));
+    }
+
+    private void publishSendTasksEvent() {
+        Events.raise(SendFindTasksEvent.create(
+                this.project.getWorkspace().getId(), this.project.getId(), this.board.getId()));
+    }
+
+    private void publishSendTaskEvent() {
+        Events.raise(SendFindTaskEvent.create(this.getId()));
     }
 }
