@@ -246,7 +246,7 @@ public class WorkspaceService {
         Workspace workspace = workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
         if (workspace.getDivision().equals(Division.PERSONAL)) {
-            throw new CanNotDeletePersonalWorkspaceException(workspaceId);
+            throw new CanNotPersonalWorkspaceException(workspaceId);
         }
 
         List<Project> projects = projectRepository.findAllProjectsByWorkspaceId(workspaceId);
