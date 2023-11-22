@@ -1,8 +1,6 @@
 package com.daon.backend.member.dto;
 
 import com.daon.backend.member.domain.Email;
-import com.daon.backend.task.domain.project.Board;
-import com.daon.backend.task.dto.project.FindBoardsResponseDto;
 import lombok.Getter;
 
 import java.util.List;

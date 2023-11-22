@@ -17,6 +17,8 @@ public class ProjectParticipant extends BaseTimeEntity {
     @Column(name = "project_participant_id")
     private Long id;
 
+    private String memberId;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
     private Project project;
@@ -24,8 +26,6 @@ public class ProjectParticipant extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "workspace_partipant_id")
     private WorkspaceParticipant workspaceParticipant;
-
-    private String memberId;
 
     @Builder
     public ProjectParticipant(Project project, WorkspaceParticipant workspaceParticipant, String memberId) {

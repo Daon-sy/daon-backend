@@ -1,8 +1,8 @@
 package com.daon.backend.notification.controller;
 
 import com.daon.backend.common.exception.DomainSpecificAdvice;
-import com.daon.backend.common.response.ErrorCode;
-import com.daon.backend.common.response.ErrorResponse;
+import com.daon.backend.common.error.ErrorCode;
+import com.daon.backend.common.error.ErrorResponse;
 import com.daon.backend.notification.domain.TypeNotSpecifiedException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

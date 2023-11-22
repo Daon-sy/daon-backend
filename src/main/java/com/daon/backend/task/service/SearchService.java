@@ -21,10 +21,16 @@ public class SearchService {
     private final ProjectRepository projectRepository;
     private final TaskRepository taskRepository;
 
+    /**
+     * 할 일 목록 조회
+     */
     public FindTasksResponseDto searchTasks(TaskSearchParams params) {
         return new FindTasksResponseDto(taskRepository.findTaskSummaries(sessionMemberProvider.getMemberId(), params));
     }
 
+    /**
+     * 통합 검색
+     */
     public <T> Slice<T> integratedSearchByTitle(String target, String title, Pageable pageable) {
         String memberId = sessionMemberProvider.getMemberId();
 

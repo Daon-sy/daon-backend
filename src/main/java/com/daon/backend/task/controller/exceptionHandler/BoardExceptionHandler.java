@@ -1,11 +1,11 @@
-package com.daon.backend.task.controller;
+package com.daon.backend.task.controller.exceptionHandler;
 
 import com.daon.backend.common.exception.DomainSpecificAdvice;
-import com.daon.backend.common.response.ErrorCode;
-import com.daon.backend.common.response.ErrorResponse;
-import com.daon.backend.task.domain.project.BoardNotFoundException;
-import com.daon.backend.task.domain.project.CanNotDeleteBoardException;
-import com.daon.backend.task.domain.project.SameBoardExistsException;
+import com.daon.backend.common.error.ErrorCode;
+import com.daon.backend.common.error.ErrorResponse;
+import com.daon.backend.task.domain.board.BoardNotFoundException;
+import com.daon.backend.task.domain.board.CanNotDeleteBoardException;
+import com.daon.backend.task.domain.board.SameBoardExistsException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

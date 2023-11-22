@@ -21,6 +21,8 @@ public class TaskReply extends BaseTimeEntity {
 
     private String content;
 
+    private boolean removed;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "task_id", nullable = false)
     private Task task; //할일
@@ -28,8 +30,6 @@ public class TaskReply extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "writer_id", nullable = false, updatable = false)
     private ProjectParticipant taskReplyWriter; //작성자
-
-    private boolean removed;
 
     @Builder
     public TaskReply(String content,

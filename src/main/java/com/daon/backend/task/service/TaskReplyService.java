@@ -24,6 +24,9 @@ public class TaskReplyService {
     private final TaskReplyRepository taskReplyRepository;
     private final SessionMemberProvider sessionMemberProvider;
 
+    /**
+     * 할 일 댓글 생성
+     */
     @Transactional
     public CreateTaskReplyResponseDto createTaskReply(Long projectId, Long taskId,
                                                       CreateTaskReplyRequestDto requestDto) {
@@ -40,6 +43,9 @@ public class TaskReplyService {
         return new CreateTaskReplyResponseDto(taskReplyId);
     }
 
+    /**
+     * 할 일 댓글 목록 조회
+     */
     public FindTaskRepliesResponseDto findTaskReplies(Long projectId, Long taskId) {
         ProjectParticipant taskReplyWriter = getProjectParticipantOrElseThrow(projectId);
         List<TaskReplySummary> list = taskReplyRepository.findTaskReplyByTaskId(taskId).stream()
@@ -49,6 +55,9 @@ public class TaskReplyService {
         return new FindTaskRepliesResponseDto(list, taskId);
     }
 
+    /**
+     * 할 일 댓글 수정
+     */
     @Transactional
     public void modifyTaskReplyContent(Long projectId, Long taskId, Long taskReplyId, ModifyTaskReplyRequestDto requestDto) {
         String memberId = sessionMemberProvider.getMemberId();
@@ -60,6 +69,9 @@ public class TaskReplyService {
         }
     }
 
+    /**
+     * 할 일 댓글 삭제
+     */
     @Transactional
     public void deleteTaskReply(Long projectId, Long taskId, Long taskReplyId) {
         String memberId = sessionMemberProvider.getMemberId();

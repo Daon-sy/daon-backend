@@ -16,10 +16,6 @@ public class WorkspaceParticipant extends BaseTimeEntity {
     @Column(name = "workspace_participant_id")
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "workspace_id")
-    private Workspace workspace;
-
     @Embedded
     private Profile profile;
 
@@ -27,6 +23,10 @@ public class WorkspaceParticipant extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "workspace_id")
+    private Workspace workspace;
 
     private WorkspaceParticipant(Workspace workspace, Profile profile, String memberId, Role role) {
         this.workspace = workspace;

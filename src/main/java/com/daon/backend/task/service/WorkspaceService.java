@@ -1,6 +1,6 @@
 package com.daon.backend.task.service;
 
-import com.daon.backend.task.domain.project.Board;
+import com.daon.backend.task.domain.board.Board;
 import com.daon.backend.task.domain.project.Project;
 import com.daon.backend.task.domain.project.ProjectParticipant;
 import com.daon.backend.task.domain.project.ProjectRepository;
@@ -29,6 +29,9 @@ public class WorkspaceService {
     private final ProjectRepository projectRepository;
     private final TaskRepository taskRepository;
 
+    /**
+     * 워크스페이스 생성
+     */
     @Transactional
     public CreateWorkspaceResponseDto createWorkspace(CreateWorkspaceRequestDto requestDto) {
         Workspace workspace = Workspace.createOfGroup(
@@ -49,6 +52,9 @@ public class WorkspaceService {
         return new CreateWorkspaceResponseDto(workspaceId);
     }
 
+    /**
+     * 워크스페이스 목록 조회
+     */
     public FindWorkspacesResponseDto findWorkspaces() {
         String memberId = sessionMemberProvider.getMemberId();
         return new FindWorkspacesResponseDto(
@@ -71,6 +77,9 @@ public class WorkspaceService {
         workspaceRepository.save(workspace);
     }
 
+    /**
+     * 워크스페이스 참여자 목록 조회
+     */
     public FindWorkspaceParticipantsResponseDto findWorkspaceParticipants(Long workspaceId) {
         List<WorkspaceParticipant> workspaceParticipants =
                 workspaceRepository.findWorkspaceParticipantsByWorkspaceId(workspaceId);
@@ -95,6 +104,9 @@ public class WorkspaceService {
         return workspace.isWorkspaceParticipantsByMemberId(memberId);
     }
 
+    /**
+     * 워크스페이스 수정
+     */
     @Transactional
     public void modifyWorkspace(ModifyWorkspaceRequestDto requestDto, Long workspaceId) {
         Workspace workspace = workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
@@ -102,6 +114,9 @@ public class WorkspaceService {
         workspace.modifyWorkspace(requestDto.getTitle(), requestDto.getDescription(), requestDto.getImageUrl(), requestDto.getSubject());
     }
 
+    /**
+     * 워크스페이스 참여자 권한 변경
+     */
     @Transactional
     public void modifyParticipantRole(ModifyRoleRequestDto requestDto, Long workspaceId) {
         Long workspaceParticipantId = requestDto.getWorkspaceParticipantId();
@@ -111,6 +126,9 @@ public class WorkspaceService {
         workspaceParticipant.modifyRole(requestDto.getRole());
     }
 
+    /**
+     * 프로필(본인) 수정
+     */
     @Transactional
     public void modifyProfile(Long workspaceId, ModifyProfileRequestDto requestDto) {
         String memberId = sessionMemberProvider.getMemberId();
@@ -125,6 +143,9 @@ public class WorkspaceService {
         );
     }
 
+    /**
+     * 프로필(본인) 조회
+     */
     public FindProfileResponseDto findProfile(Long workspaceId) {
         String memberId = sessionMemberProvider.getMemberId();
         Workspace findWorkspace = workspaceRepository.findWorkspaceWithParticipantsByWorkspaceId(workspaceId)
@@ -134,6 +155,9 @@ public class WorkspaceService {
         return new FindProfileResponseDto(workspaceParticipant);
     }
 
+    /**
+     * 워크스페이스 단 건 조회
+     */
     public FindWorkspaceResponseDto findWorkspace(Long workspaceId) {
         Workspace workspace = workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
@@ -141,6 +165,9 @@ public class WorkspaceService {
         return new FindWorkspaceResponseDto(workspace);
     }
 
+    /**
+     * 워크스페이스 초대
+     */
     @Transactional
     public void inviteMember(Long workspaceId, InviteMemberRequestDto requestDto) {
         String memberId = dbMemberProvider.getMemberIdByUsername(requestDto.getUsername());
@@ -150,6 +177,9 @@ public class WorkspaceService {
         workspace.addWorkspaceInvitation(new WorkspaceInvitation(memberId, workspace));
     }
 
+    /**
+     * 워크스페이스 참여
+     */
     @Transactional
     public void joinWorkspace(Long workspaceId, JoinWorkspaceRequestDto requestDto) {
         String memberId = sessionMemberProvider.getMemberId();
@@ -241,8 +271,17 @@ public class WorkspaceService {
         workspace.deportWorkspace(workspaceParticipantId, workspaceParticipantMemberId);
     }
 
+    /**
+     * 워크스페이스 삭제
+     */
     @Transactional
     public void deleteWorkspace(Long workspaceId) {
+        Workspace workspace = workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+        if (workspace.getDivision().equals(Division.PERSONAL)) {
+            throw new CanNotDeletePersonalWorkspaceException(workspaceId);
+        }
+
         List<Project> projects = projectRepository.findAllProjectsByWorkspaceId(workspaceId);
         projects.stream()
                 .peek(project -> {
@@ -252,8 +291,6 @@ public class WorkspaceService {
                 })
                 .forEach(Project::removeProject);
 
-        Workspace workspace = workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
-                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
         workspace.deleteWorkspace();
     }
 }

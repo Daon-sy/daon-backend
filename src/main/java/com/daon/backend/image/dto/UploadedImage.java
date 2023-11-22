@@ -1,4 +1,4 @@
-package com.daon.backend.image.service;
+package com.daon.backend.image.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

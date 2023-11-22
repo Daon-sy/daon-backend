@@ -17,6 +17,8 @@ public interface ProjectRepository {
 
     Optional<Project> findProjectWithParticipantsById(Long projectId);
 
+    Optional<Project> findProjectWithBoardsByProjectId(Long projectId);
+
     Optional<ProjectParticipant> findProjectParticipantByProjectIdAndMemberId(Long projectId, String memberId);
 
     List<ProjectParticipant> findProjectParticipantsWithWorkspaceParticipantsByProjectId(Long projectId);
@@ -28,8 +30,6 @@ public interface ProjectRepository {
     List<Project> findAllProjectsByWorkspaceParticipant(WorkspaceParticipant workspaceParticipant);
 
     List<Project> findProjectsByWorkspaceParticipantId(Long workspaceParticipantId);
-
-    Optional<Project> findProjectWithBoardsByProjectId(Long projectId);
 
     Slice<ProjectSummary> searchProjectSummariesByTitle(String memberId, String title, Pageable pageable);
 }

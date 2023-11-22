@@ -1,20 +1,20 @@
 package com.daon.backend.task.service;
 
-import com.daon.backend.task.domain.project.Board;
+import com.daon.backend.task.domain.board.Board;
+import com.daon.backend.task.domain.board.BoardNotFoundException;
+import com.daon.backend.task.domain.board.BoardRepository;
+import com.daon.backend.task.domain.board.CanNotDeleteBoardException;
 import com.daon.backend.task.domain.project.Project;
 import com.daon.backend.task.domain.project.ProjectNotFoundException;
 import com.daon.backend.task.domain.project.ProjectRepository;
-import com.daon.backend.task.domain.task.Task;
-import com.daon.backend.task.domain.task.TaskRepository;
-import com.daon.backend.task.dto.project.CreateBoardRequestDto;
-import com.daon.backend.task.dto.project.FindBoardsResponseDto;
-import com.daon.backend.task.dto.project.ModifyBoardRequestDto;
+import com.daon.backend.task.dto.board.CreateBoardRequestDto;
+import com.daon.backend.task.dto.board.FindBoardsResponseDto;
+import com.daon.backend.task.dto.board.ModifyBoardRequestDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Comparator;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -23,24 +23,30 @@ import java.util.stream.Collectors;
 public class BoardService {
 
     private final ProjectRepository projectRepository;
-    private final TaskRepository taskRepository;
+    private final BoardRepository boardRepository;
 
+    /**
+     * 보드 생성
+     */
     @Transactional
     public void createBoard(Long projectId, CreateBoardRequestDto requestDto) {
-        Project findProject = projectRepository.findProjectWithBoardsByProjectId(projectId)
+        Project project = projectRepository.findProjectWithBoardsByProjectId(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
         String title = requestDto.getTitle();
-        findProject.throwIfTitleExist(title);
-        findProject.addBoard(title);
+        project.throwIfTitleExist(title);
+        project.addBoard(title);
     }
 
+    /**
+     * 보드 목록 조회
+     */
     public FindBoardsResponseDto findBoards(Long projectId) {
-        Project findProject = projectRepository.findProjectByProjectId(projectId)
+        Project project = projectRepository.findProjectByProjectId(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
         return new FindBoardsResponseDto(
-                findProject.getBoards().stream()
+                project.getBoards().stream()
                         .filter(board -> !board.isRemoved())
                         .sorted(Comparator.comparing(Board::getCreatedAt).thenComparing(Board::getId))
                         .map(FindBoardsResponseDto.BoardInfo::new)
@@ -48,20 +54,32 @@ public class BoardService {
         );
     }
 
+    /**
+     * 보드 수정
+     */
     @Transactional
     public void modifyBoard(Long projectId, Long boardId, ModifyBoardRequestDto requestDto) {
-        Project findProject = projectRepository.findProjectByProjectId(projectId)
-                .orElseThrow(() -> new ProjectNotFoundException(projectId));
+        Board board = boardRepository.findBoardByBoardId(boardId)
+                .orElseThrow(() -> new BoardNotFoundException(projectId, boardId));
 
-        findProject.modifyBoard(boardId, requestDto.getTitle());
+        board.modifyBoard(requestDto.getTitle());
     }
 
+    /**
+     * 보드 삭제
+     */
     @Transactional
     public void deleteBoard(Long projectId, Long boardId) {
-        Project findProject = projectRepository.findProjectByProjectId(projectId)
+        Project project = projectRepository.findProjectWithBoardsByProjectId(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
-        List<Task> tasks = taskRepository.findTasksByProjectIdAndBoardId(projectId, boardId);
-        tasks.forEach(Task::removeTaskWhenBoardDeleted);
-        findProject.deleteBoard(boardId);
+
+        if (project.getBoards().size() > 1) {
+            boardRepository.deleteTasksRelatedBoard(boardId);
+            boardRepository.findBoardByBoardId(boardId)
+                    .orElseThrow(() -> new BoardNotFoundException(projectId, boardId))
+                    .deleteBoard();
+        } else {
+            throw new CanNotDeleteBoardException();
+        }
     }
 }

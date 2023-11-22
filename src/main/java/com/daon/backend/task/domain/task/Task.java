@@ -7,7 +7,7 @@ import com.daon.backend.notification.domain.SendAlarmEvent;
 import com.daon.backend.notification.domain.SendFindTaskEvent;
 import com.daon.backend.notification.domain.SendFindTasksEvent;
 import com.daon.backend.notification.dto.response.DesignatedManagerResponseDto;
-import com.daon.backend.task.domain.project.Board;
+import com.daon.backend.task.domain.board.Board;
 import com.daon.backend.task.domain.project.Project;
 import com.daon.backend.task.domain.project.ProjectParticipant;
 import lombok.AccessLevel;
@@ -47,6 +47,8 @@ public class Task extends BaseTimeEntity {
     // workspaceParticipantId
     private Long creatorId;
 
+    private boolean removed;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "task_manager_id")
     private ProjectParticipant taskManager;
@@ -58,8 +60,6 @@ public class Task extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_id", nullable = false)
     private Board board;
-
-    private boolean removed;
 
     @OneToMany(mappedBy = "task", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<TaskBookmark> taskBookmarks = new ArrayList<>();
@@ -143,14 +143,9 @@ public class Task extends BaseTimeEntity {
     }
 
     public void removeTask() {
-        this.removed = true;
         removeTaskManager();
         removeCreator();
-    }
-
-    public void removeTaskWhenBoardDeleted() {
         this.removed = true;
-        removeTaskManager();
     }
 
     private void publishSendAlarmEvent(ProjectParticipant taskManager) {

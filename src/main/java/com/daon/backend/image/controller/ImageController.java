@@ -2,7 +2,7 @@ package com.daon.backend.image.controller;
 
 import com.daon.backend.image.dto.UploadImageResponseDto;
 import com.daon.backend.image.service.ImageFileService;
-import com.daon.backend.image.service.UploadedImage;
+import com.daon.backend.image.dto.UploadedImage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

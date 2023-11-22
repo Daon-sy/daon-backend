@@ -1,5 +1,6 @@
 package com.daon.backend.task.service;
 
+import com.daon.backend.task.domain.board.Board;
 import com.daon.backend.task.domain.project.*;
 import com.daon.backend.task.domain.task.Task;
 import com.daon.backend.task.domain.task.TaskBookmark;
@@ -10,8 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -21,6 +20,9 @@ public class TaskService {
     private final TaskRepository taskRepository;
     private final SessionMemberProvider sessionMemberProvider;
 
+    /**
+     * 할 일 생성
+     */
     @Transactional
     public CreateTaskResponseDto createTask(Long projectId, CreateTaskRequestDto requestDto) {
         String memberId = sessionMemberProvider.getMemberId();
@@ -54,6 +56,9 @@ public class TaskService {
         return new CreateTaskResponseDto(taskId);
     }
 
+    /**
+     * 할 일 단 건 조회
+     */
     public FindTaskResponseDto findTask(Long taskId) {
         return new FindTaskResponseDto(
                 taskRepository.findTaskDetail(sessionMemberProvider.getMemberId(), taskId)
@@ -61,6 +66,9 @@ public class TaskService {
         );
     }
 
+    /**
+     * 할 일 수정
+     */
     @Transactional
     public void modifyTask(Long projectId, Long taskId, ModifyTaskRequestDto requestDto) {
         String memberId = sessionMemberProvider.getMemberId();
@@ -89,6 +97,9 @@ public class TaskService {
         );
     }
 
+    /**
+     * 북마크 설정/해제
+     */
     @Transactional
     public SetBookmarkResponseDto setBookmark(Long projectId, Long taskId) {
         String memberId = sessionMemberProvider.getMemberId();
@@ -114,6 +125,9 @@ public class TaskService {
         return new SetBookmarkResponseDto(created);
     }
 
+    /**
+     * 할 일 진행 상태 변경
+     */
     @Transactional
     public void modifyTaskProgressStatus(Long projectId, Long taskId, ModifyProgressStatusRequestDto requestDto) {
         Task task = taskRepository.findTaskByTaskId(taskId)
@@ -121,6 +135,9 @@ public class TaskService {
         task.modifyProgressStatus(requestDto.getProgressStatus());
     }
 
+    /**
+     * 할 일  삭제
+     */
     public void deleteTask(Long taskId) {
         Task task = taskRepository.findTaskByTaskId(taskId)
                 .orElseThrow(() -> new TaskNotFoundException(taskId));

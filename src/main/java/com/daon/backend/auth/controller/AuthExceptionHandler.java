@@ -2,8 +2,8 @@ package com.daon.backend.auth.controller;
 
 import com.daon.backend.auth.domain.InvalidRefreshTokenException;
 import com.daon.backend.auth.domain.UnauthenticatedMemberException;
-import com.daon.backend.common.response.ErrorCode;
-import com.daon.backend.common.response.ErrorResponse;
+import com.daon.backend.common.error.ErrorCode;
+import com.daon.backend.common.error.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

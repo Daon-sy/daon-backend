@@ -1,11 +1,15 @@
-package com.daon.backend.task.domain.project;
+package com.daon.backend.task.domain.board;
 
 import com.daon.backend.config.BaseTimeEntity;
+import com.daon.backend.task.domain.project.Project;
+import com.daon.backend.task.domain.task.Task;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -15,20 +19,23 @@ public class Board extends BaseTimeEntity {
     @Column(name = "board_id")
     private Long id;
 
+    private String title;
+
+    private boolean removed;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
     private Project project;
 
-    private String title;
-
-    private boolean removed;
+    @OneToMany(mappedBy = "board", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    private List<Task> tasks = new ArrayList<>();
 
     public Board(Project project, String title) {
         this.project = project;
         this.title = title;
     }
 
-    public void modifyTitle(String title) {
+    public void modifyBoard(String title) {
         this.title = title;
     }
 
