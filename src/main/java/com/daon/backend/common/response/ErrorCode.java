@@ -33,6 +33,7 @@ public enum ErrorCode {
     NOT_WORKSPACE_PARTICIPANT(3001, "해당 워크스페이스에 접근 권한이 없습니다."),
     SAME_MEMBER_EXISTS_IN_WORKSPACE(3002, "해당 워크스페이스에 이미 참여 중인 회원입니다."),
     NOT_INVITED_MEMBER(3003, "해당 워크스페이스에 초대 받은 회원이 아닙니다."),
+    CAN_NOT_DELETE_PERSONAL_WORKSPACE(3004, "개인 워크스페이스는 삭제할 수 없습니다."),
 
     // 프로젝트
     PROJECT_NOT_FOUND(4000, "존재하지 않는 프로젝트입니다."),

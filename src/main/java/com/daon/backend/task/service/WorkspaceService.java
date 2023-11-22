@@ -243,6 +243,12 @@ public class WorkspaceService {
 
     @Transactional
     public void deleteWorkspace(Long workspaceId) {
+        Workspace workspace = workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+        if (workspace.getDivision().equals(Division.PERSONAL)) {
+            throw new CanNotDeletePersonalWorkspaceException(workspaceId);
+        }
+
         List<Project> projects = projectRepository.findAllProjectsByWorkspaceId(workspaceId);
         projects.stream()
                 .peek(project -> {
@@ -252,8 +258,6 @@ public class WorkspaceService {
                 })
                 .forEach(Project::removeProject);
 
-        Workspace workspace = workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
-                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
         workspace.deleteWorkspace();
     }
 }

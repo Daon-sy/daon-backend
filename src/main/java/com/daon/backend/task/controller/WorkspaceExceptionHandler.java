@@ -3,10 +3,7 @@ package com.daon.backend.task.controller;
 import com.daon.backend.common.exception.DomainSpecificAdvice;
 import com.daon.backend.common.response.ErrorCode;
 import com.daon.backend.common.response.ErrorResponse;
-import com.daon.backend.task.domain.workspace.NotInvitedMemberException;
-import com.daon.backend.task.domain.workspace.NotWorkspaceParticipantException;
-import com.daon.backend.task.domain.workspace.SameMemberExistsException;
-import com.daon.backend.task.domain.workspace.WorkspaceNotFoundException;
+import com.daon.backend.task.domain.workspace.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,5 +39,12 @@ public class WorkspaceExceptionHandler {
         log.info("{}", e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ErrorResponse.createError(ErrorCode.NOT_INVITED_MEMBER));
+    }
+
+    @ExceptionHandler(CanNotDeletePersonalWorkspaceException.class)
+    public ResponseEntity<ErrorResponse> canNotDeletePersonalWorkspaceExceptionHandle(CanNotDeletePersonalWorkspaceException e) {
+        log.info("{}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.createError(ErrorCode.CAN_NOT_DELETE_PERSONAL_WORKSPACE));
     }
 }
