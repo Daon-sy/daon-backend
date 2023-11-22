@@ -170,4 +170,12 @@ public class Workspace extends BaseTimeEntity {
         this.participants.clear();
         this.removed = true;
     }
+
+    public void resetWorkspace(String findName) {
+        projects.clear();
+        this.imageUrl = null;
+        this.description = null;
+        this.title = findName + "님의 개인워크스페이스 입니다.";
+        this.subject = null;
+    }
 }
