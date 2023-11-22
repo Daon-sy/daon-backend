@@ -74,8 +74,8 @@ public class WorkspaceController {
     })
     @CheckRole(authority = WSP_ROLE_UPDATE)
     @PostMapping("/{workspaceId}/participants/role")
-    public void modifyRole(@PathVariable("workspaceId") Long workspaceId,
-                           @RequestBody @Valid ModifyRoleRequestDto requestDto) {
+    public void modifyParticipantRole(@PathVariable("workspaceId") Long workspaceId,
+                                      @RequestBody @Valid ModifyRoleRequestDto requestDto) {
         workspaceService.modifyParticipantRole(requestDto, workspaceId);
     }
 
@@ -111,9 +111,9 @@ public class WorkspaceController {
         return workspaceService.findWorkspace(workspaceId);
     }
 
-    @Operation(summary = "워크스페이스 참여자 초대", description = "워크스페이스 참여자 초대 요청입니다.")
+    @Operation(summary = "워크스페이스 초대", description = "워크스페이스 초대 요청입니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "워크스페이스 참여자 초대 성공")
+            @ApiResponse(responseCode = "200", description = "워크스페이스 초대 성공")
     })
     @CheckRole(authority = WSP_INVITE)
     @PostMapping("/{workspaceId}/invite")

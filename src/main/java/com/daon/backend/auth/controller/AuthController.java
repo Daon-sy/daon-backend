@@ -4,7 +4,6 @@ import com.daon.backend.auth.domain.Tokens;
 import com.daon.backend.auth.domain.UnauthenticatedMemberException;
 import com.daon.backend.auth.dto.SignInRequestDto;
 import com.daon.backend.auth.service.AuthService;
-import com.daon.backend.common.response.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

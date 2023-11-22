@@ -23,6 +23,9 @@ public class ProjectService {
     private final SessionMemberProvider sessionMemberProvider;
     private final TaskRepository taskRepository;
 
+    /**
+     * 프로젝트 생성
+     */
     @Transactional
     public CreateProjectResponseDto createProject(Long workspaceId, CreateProjectRequestDto requestDto) {
         Workspace workspace = getWorkspaceOrElseThrow(workspaceId);
@@ -52,6 +55,9 @@ public class ProjectService {
                 .orElseThrow(() -> new NotWorkspaceParticipantException(memberId, workspaceId));
     }
 
+    /**
+     * 프로젝트 목록 조회
+     */
     public FindProjectsResponseDto findAllProjectInWorkspace(Long workspaceId) {
         Workspace workspace = getWorkspaceOrElseThrow(workspaceId);
 
@@ -66,6 +72,9 @@ public class ProjectService {
         );
     }
 
+    /**
+     * 프로젝트 초대
+     */
     @Transactional
     public void inviteWorkspaceParticipant(Long projectId, InviteWorkspaceParticipantRequestDto requestDto) {
         Long workspaceParticipantId = requestDto.getWorkspaceParticipantId();
@@ -84,6 +93,9 @@ public class ProjectService {
         return project.isProjectParticipants(memberId);
     }
 
+    /**
+     * 프로젝트 참여자 목록 조회
+     */
     public FindProjectParticipantsResponseDto findProjectParticipants(Long projectId) {
         List<ProjectParticipant> participants = projectRepository.findProjectParticipantsWithWorkspaceParticipantsByProjectId(projectId);
 
@@ -94,6 +106,9 @@ public class ProjectService {
         );
     }
 
+    /**
+     * 프로젝트 수정
+     */
     @Transactional
     public void modifyProject(Long projectId, ModifyProjectRequestDto requestDto) {
         Project project = projectRepository.findProjectWithParticipantsById(projectId)
@@ -101,6 +116,9 @@ public class ProjectService {
         project.modifyProject(requestDto.getTitle(), requestDto.getDescription());
     }
 
+    /**
+     * 프로젝트 단 건 조회
+     */
     public FindProjectResponseDto findProject(Long projectId) {
         Project project = projectRepository.findProjectByProjectId(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
@@ -142,6 +160,9 @@ public class ProjectService {
         project.deportProject(projectParticipantId);
     }
 
+    /**
+     * 프로젝트 삭제
+     */
     @Transactional
     public void deleteProject(Long projectId) {
         Project project = projectRepository.findProjectWithBoardsByProjectId(projectId)

@@ -1,7 +1,7 @@
 package com.daon.backend.security;
 
-import com.daon.backend.common.response.ErrorCode;
-import com.daon.backend.common.response.ErrorResponse;
+import com.daon.backend.common.error.ErrorCode;
+import com.daon.backend.common.error.ErrorResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

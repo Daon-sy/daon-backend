@@ -5,6 +5,7 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.util.IOUtils;
+import com.daon.backend.image.dto.UploadedImage;
 import com.daon.backend.image.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,10 @@ public class S3ImageFileService implements ImageFileService {
     private final AmazonS3 amazonS3;
 
     // TODO security 추가되면 userId 사용하기
+
+    /**
+     * 이미지 업로드
+     */
     @Override
     public UploadedImage upload(MultipartFile multipartFile) {
         if (multipartFile == null || multipartFile.isEmpty()) {

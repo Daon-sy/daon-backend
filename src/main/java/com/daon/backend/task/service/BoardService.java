@@ -25,6 +25,9 @@ public class BoardService {
     private final ProjectRepository projectRepository;
     private final TaskRepository taskRepository;
 
+    /**
+     * 보드 생성
+     */
     @Transactional
     public void createBoard(Long projectId, CreateBoardRequestDto requestDto) {
         Project findProject = projectRepository.findProjectWithBoardsByProjectId(projectId)
@@ -35,6 +38,9 @@ public class BoardService {
         findProject.addBoard(title);
     }
 
+    /**
+     * 보드 목록 조회
+     */
     public FindBoardsResponseDto findBoards(Long projectId) {
         Project findProject = projectRepository.findProjectByProjectId(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
@@ -48,6 +54,9 @@ public class BoardService {
         );
     }
 
+    /**
+     * 보드 수정
+     */
     @Transactional
     public void modifyBoard(Long projectId, Long boardId, ModifyBoardRequestDto requestDto) {
         Project findProject = projectRepository.findProjectByProjectId(projectId)
@@ -56,6 +65,9 @@ public class BoardService {
         findProject.modifyBoard(boardId, requestDto.getTitle());
     }
 
+    /**
+     * 보드 삭제
+     */
     @Transactional
     public void deleteBoard(Long projectId, Long boardId) {
         Project findProject = projectRepository.findProjectByProjectId(projectId)
