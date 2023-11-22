@@ -48,7 +48,7 @@ public class Member extends BaseTimeEntity {
         this.password = passwordEncoder.encode(password);
         this.name = name;
 
-        this.addEmail(email);
+        this.createEmail(email);
     }
 
     public void checkPassword(String targetPassword, PasswordEncoder passwordEncoder) {
@@ -67,16 +67,16 @@ public class Member extends BaseTimeEntity {
         this.name = Optional.ofNullable(name).orElse(this.name);
     }
 
-    public void addEmail(String email) {
+    public void createEmail(String email) {
         this.emails.add(new Email(this, email));
     }
 
-    public void removeEmail(String email) {
+    public void removeEmail(Long memberEmailId) {
         this.emails.remove(
                 this.emails.stream()
-                        .filter(memberEmail -> memberEmail.emailEquals(email))
+                        .filter(memberEmail -> memberEmail.getId().equals(memberEmailId))
                         .findFirst()
-                        .orElseThrow(() -> new EmailNotFoundException(email))
+                        .orElseThrow(() -> new EmailNotFoundException(memberEmailId))
         );
     }
 

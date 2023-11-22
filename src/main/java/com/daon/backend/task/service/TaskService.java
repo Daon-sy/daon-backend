@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -117,5 +119,11 @@ public class TaskService {
         Task task = taskRepository.findTaskByTaskId(taskId)
                 .orElseThrow(() -> new TaskNotFoundException(projectId, taskId));
         task.modifyProgressStatus(requestDto.getProgressStatus());
+    }
+
+    public void deleteTask(Long taskId) {
+        Task task = taskRepository.findTaskByTaskId(taskId)
+                .orElseThrow(() -> new TaskNotFoundException(taskId));
+        task.removeTask();
     }
 }

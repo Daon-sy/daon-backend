@@ -6,6 +6,7 @@ import com.daon.backend.notification.domain.NotificationType;
 import com.daon.backend.notification.domain.SendAlarmEvent;
 import com.daon.backend.notification.dto.response.DeportationWorkspaceResponseDto;
 import com.daon.backend.notification.dto.response.InviteWorkspaceAlarmResponseDto;
+import com.daon.backend.task.domain.project.Project;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -42,11 +43,14 @@ public class Workspace extends BaseTimeEntity {
 
     private boolean removed;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "workspace", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "workspace", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<WorkspaceParticipant> participants = new ArrayList<>();
 
     @OneToMany(mappedBy = "workspace", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<WorkspaceInvitation> invitations = new ArrayList<>();
+
+    @OneToMany(mappedBy = "workspace", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    private List<Project> projects = new ArrayList<>();
 
     @Builder(access = AccessLevel.PRIVATE)
     private Workspace(String title, String description, Division division,

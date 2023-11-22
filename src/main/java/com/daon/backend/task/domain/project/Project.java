@@ -6,6 +6,7 @@ import com.daon.backend.notification.domain.NotificationType;
 import com.daon.backend.notification.domain.SendAlarmEvent;
 import com.daon.backend.notification.dto.response.DeportationProjectResponseDto;
 import com.daon.backend.notification.dto.response.InviteProjectAlarmResponseDto;
+import com.daon.backend.task.domain.task.Task;
 import com.daon.backend.task.domain.workspace.Workspace;
 import com.daon.backend.task.domain.workspace.WorkspaceParticipant;
 import lombok.AccessLevel;
@@ -38,11 +39,14 @@ public class Project extends BaseTimeEntity {
 
     private boolean removed;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<ProjectParticipant> participants = new ArrayList<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<Board> boards = new ArrayList<>();
+
+    @OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    private List<Task> tasks = new ArrayList<>();
 
     @Builder
     public Project(Workspace workspace, String title, String description, ProjectCreator projectCreator) {
