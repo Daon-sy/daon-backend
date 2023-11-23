@@ -9,7 +9,6 @@ import com.daon.backend.task.dto.*;
 import com.daon.backend.task.dto.task.history.HistoryBoard;
 import com.daon.backend.task.dto.task.history.HistoryProjectParticipant;
 import com.daon.backend.task.dto.task.history.TaskHistory;
-import com.daon.backend.task.dto.task.history.TaskHistoryResponseDto;
 import com.daon.backend.task.infrastructure.board.BoardJpaRepository;
 import com.daon.backend.task.infrastructure.project.ProjectParticipantJpaRepository;
 import com.querydsl.core.BooleanBuilder;
@@ -207,11 +206,6 @@ public class TaskRepositoryImpl implements TaskRepository {
                                 .and(task.removed.isFalse()))
                         .fetchOne()
         );
-    }
-
-    @Override
-    public List<Task> findTasksByProjectIdAndBoardId(Long projectId, Long boardId) {
-        return taskJpaRepository.findTasksByProjectIdAndBoardIdAndRemovedFalse(projectId, boardId);
     }
 
     @Override
