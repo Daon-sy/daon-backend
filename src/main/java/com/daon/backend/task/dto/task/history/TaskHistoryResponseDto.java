@@ -1,15 +1,14 @@
 package com.daon.backend.task.dto.task.history;
 
 import lombok.Getter;
-
-import java.util.List;
+import org.springframework.data.domain.Slice;
 
 @Getter
 public class TaskHistoryResponseDto {
 
-    private List<TaskHistory> histories;
+    private Slice<TaskHistory> histories;
 
-    public TaskHistoryResponseDto(List<TaskHistory> histories) {
+    public TaskHistoryResponseDto(Slice<TaskHistory> histories) {
         this.histories = histories;
     }
 }

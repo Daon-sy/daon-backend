@@ -220,7 +220,10 @@ public class TaskRepositoryImpl implements TaskRepository {
         AuditQuery query = AuditReaderFactory.get(em).createQuery()
                 .forRevisionsOfEntityWithChanges(Task.class, true)
                 .add(AuditEntity.id().eq(taskId))
-                .addOrder(AuditEntity.revisionNumber().desc());
+                .addOrder(AuditEntity.revisionNumber().desc())
+                .setFirstResult((int) pageable.getOffset())
+                .setMaxResults(pageable.getPageSize() + 2)
+                ;
 
         List<TaskHistory> taskHistories = new ArrayList<>();
 
@@ -233,7 +236,13 @@ public class TaskRepositoryImpl implements TaskRepository {
             lastHistory = prevData;
         }
 
-        return new TaskHistoryResponseDto(taskHistories);
+        boolean hasNext = false;
+        if (taskHistories.size() > pageable.getPageSize()) {
+            taskHistories.remove(pageable.getPageSize());
+            hasNext = true;
+        }
+
+        return new TaskHistoryResponseDto(new SliceImpl<>(taskHistories, pageable, hasNext));
     }
 
     private TaskHistory generateTaskHistory(Object[] currentHistory, Object[] prevHistory, Long projectId) {

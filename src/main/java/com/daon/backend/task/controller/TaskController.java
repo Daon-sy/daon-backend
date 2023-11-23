@@ -95,6 +95,10 @@ public class TaskController {
         taskService.deleteTask(taskId);
     }
 
+    @Operation(summary = "할 일 히스토리 조회", description = "할 일 히스토리 조회 요청입니다..")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "할 일 히스토리 조회 성공")
+    })
     @CheckRole(authority = TSK_READ)
     @GetMapping("/{taskId}/history")
     public TaskHistoryResponseDto taskHistory(@PathVariable Long projectId, @PathVariable Long taskId, @PageableDefault Pageable pageable) {
