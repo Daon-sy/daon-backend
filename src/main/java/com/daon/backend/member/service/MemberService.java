@@ -127,7 +127,6 @@ public class MemberService {
                 .orElseThrow(() -> MemberNotFoundException.byMemberId(memberId));
 
         memberServiceThroughTask.deleteRelatedTaskDomains(memberId);
-
         member.withdrawMember();
     }
 }

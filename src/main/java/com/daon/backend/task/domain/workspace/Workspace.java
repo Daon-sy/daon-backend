@@ -154,6 +154,10 @@ public class Workspace extends BaseEntity {
                 .orElseThrow(() -> new NotWorkspaceParticipantException(this.id));
     }
 
+    public List<WorkspaceParticipant> getWorkspaceParticipants() {
+        return this.participants;
+    }
+
     public boolean isPersonal() {
         return this.division.equals(Division.PERSONAL);
     }

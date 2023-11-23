@@ -22,7 +22,7 @@ public class MemberServiceThroughTaskImpl implements MemberServiceThroughTask {
     public void deleteRelatedTaskDomains(String memberId) {
         List<Workspace> workspaces = workspaceRepository.findWorkspacesByMemberId(memberId);
         workspaces.forEach(workspace -> {
-            List<WorkspaceParticipant> workspaceParticipants = workspaceRepository.findWorkspaceParticipantsByWorkspaceId(workspace.getId());
+            List<WorkspaceParticipant> workspaceParticipants = workspace.getWorkspaceParticipants();
             long adminCount = workspaceParticipants.stream()
                     .filter(workspaceParticipant -> Role.WORKSPACE_ADMIN.equals(workspaceParticipant.getRole()))
                     .count();
