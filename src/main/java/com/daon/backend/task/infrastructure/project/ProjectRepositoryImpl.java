@@ -13,6 +13,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,6 +29,7 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     private final ProjectJpaRepository projectJpaRepository;
     private final ProjectParticipantJpaRepository projectParticipantJpaRepository;
     private final JPAQueryFactory queryFactory;
+    private final EntityManager em;
 
     @Override
     public Project save(Project project) {
@@ -35,8 +37,8 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     }
 
     @Override
-    public Optional<Project> findById(Long projectId) {
-        return projectJpaRepository.findProjectById(projectId);
+    public Optional<Project> findProjectById(Long projectId) {
+        return projectJpaRepository.findProjectByIdAndRemovedFalse(projectId);
     }
 
     @Override
@@ -133,10 +135,13 @@ public class ProjectRepositoryImpl implements ProjectRepository {
                 .set(task.taskManager, (ProjectParticipant) null)
                 .where(task.taskManager.id.eq(projectParticipantId))
                 .execute();
+
+        em.flush();
+        em.clear();
     }
 
     @Override
-    public void deleteTasksRelatedProject(Long projectId) {
+    public void deleteTasksAndBoardsRelatedProject(Long projectId) {
         queryFactory
                 .update(task)
                 .set(task.taskManager, (ProjectParticipant) null)
@@ -144,14 +149,14 @@ public class ProjectRepositoryImpl implements ProjectRepository {
                 .set(task.removed, true)
                 .where(task.project.id.eq(projectId))
                 .execute();
-    }
 
-    @Override
-    public void deleteBoardsRelatedProject(Long projectId) {
         queryFactory
                 .update(board)
                 .set(board.removed, true)
                 .where(board.project.id.eq(projectId))
                 .execute();
+
+        em.flush();
+        em.clear();
     }
 }

@@ -28,7 +28,7 @@ public class TaskService {
         String memberId = sessionMemberProvider.getMemberId();
         Long taskManagerId = requestDto.getTaskManagerId();
 
-        Project project = projectRepository.findById(projectId)
+        Project project = projectRepository.findProjectById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
         ProjectParticipant projectParticipant = project.findProjectParticipantByMemberId(memberId)
                 .orElseThrow(() -> new NotProjectParticipantException(memberId, projectId));
@@ -74,10 +74,10 @@ public class TaskService {
         String memberId = sessionMemberProvider.getMemberId();
         Long taskManagerId = requestDto.getTaskManagerId();
 
-        Project project = projectRepository.findById(projectId)
+        Project project = projectRepository.findProjectById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
         Board board = project.getBoardByBoardId(requestDto.getBoardId());
-        Task task = taskRepository.findTaskByTaskId(taskId)
+        Task task = taskRepository.findTaskById(taskId)
                 .orElseThrow(() -> new TaskNotFoundException(projectId, taskId));
 
         ProjectParticipant taskManager = null;
@@ -110,7 +110,7 @@ public class TaskService {
                         .orElseThrow(() -> new NotProjectParticipantException(memberId, projectId));
         Long projectParticipantId = projectParticipant.getId();
 
-        Task task = taskRepository.findTaskByTaskId(taskId)
+        Task task = taskRepository.findTaskById(taskId)
                 .orElseThrow(() -> new TaskNotFoundException(taskId));
 
         boolean isBookmarked = taskRepository.existsTaskBookmarkByTaskIdAndProjectParticipantId(taskId, projectParticipantId);
@@ -130,7 +130,7 @@ public class TaskService {
      */
     @Transactional
     public void modifyTaskProgressStatus(Long projectId, Long taskId, ModifyProgressStatusRequestDto requestDto) {
-        Task task = taskRepository.findTaskByTaskId(taskId)
+        Task task = taskRepository.findTaskById(taskId)
                 .orElseThrow(() -> new TaskNotFoundException(projectId, taskId));
         task.modifyProgressStatus(requestDto.getProgressStatus());
     }
@@ -139,7 +139,7 @@ public class TaskService {
      * 할 일  삭제
      */
     public void deleteTask(Long taskId) {
-        Task task = taskRepository.findTaskByTaskId(taskId)
+        Task task = taskRepository.findTaskById(taskId)
                 .orElseThrow(() -> new TaskNotFoundException(taskId));
         task.deleteTask();
     }

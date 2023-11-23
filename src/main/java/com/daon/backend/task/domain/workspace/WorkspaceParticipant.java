@@ -1,11 +1,14 @@
 package com.daon.backend.task.domain.workspace;
 
 import com.daon.backend.config.BaseTimeEntity;
+import com.daon.backend.task.domain.project.ProjectParticipant;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Entity @Getter
@@ -27,6 +30,9 @@ public class WorkspaceParticipant extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "workspace_id")
     private Workspace workspace;
+
+    @OneToMany(mappedBy = "workspaceParticipant", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    private List<ProjectParticipant> participants = new ArrayList<>();
 
     private WorkspaceParticipant(Workspace workspace, Profile profile, String memberId, Role role) {
         this.workspace = workspace;

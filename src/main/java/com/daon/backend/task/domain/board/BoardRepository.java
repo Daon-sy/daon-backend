@@ -4,7 +4,7 @@ import java.util.Optional;
 
 public interface BoardRepository {
 
-    Optional<Board> findBoardByBoardId(Long boardId);
+    Optional<Board> findBoardById(Long boardId);
 
     void deleteTasksRelatedBoard(Long boardId);
 }

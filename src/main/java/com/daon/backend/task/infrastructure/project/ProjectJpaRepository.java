@@ -12,7 +12,7 @@ import java.util.Optional;
 public interface ProjectJpaRepository extends JpaRepository<Project, Long> {
 
     @EntityGraph(attributePaths = {"workspace", "task"})
-    Optional<Project> findProjectById(Long projectId);
+    Optional<Project> findProjectByIdAndRemovedFalse(Long projectId);
 
     @EntityGraph(attributePaths = "participants")
     Optional<Project> findProjectWithParticipantsByIdAndRemovedFalse(Long projectId);
@@ -26,8 +26,9 @@ public interface ProjectJpaRepository extends JpaRepository<Project, Long> {
     List<Project> findAllProjectsByWorkspaceId(Long workspaceId);
 
     @Modifying
-    @Query("UPDATE Task t SET t.taskManager = NULL " +
-            "WHERE t.taskManager IN (SELECT tm FROM ProjectParticipant tm WHERE tm.memberId = :memberId) " +
+    @Query("UPDATE Task t " +
+            "SET t.taskManager = NULL " +
+            "WHERE t.taskManager IN (SELECT pp FROM ProjectParticipant pp WHERE pp.memberId = :memberId) " +
             "AND t.project.id = :projectId")
     void deleteTaskManagerRelatedProjectByMemberId(Long projectId, String memberId);
 }

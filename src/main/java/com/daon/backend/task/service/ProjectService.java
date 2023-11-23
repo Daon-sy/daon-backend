@@ -42,7 +42,7 @@ public class ProjectService {
     }
 
     private Workspace getWorkspaceOrElseThrow(Long workspaceId) {
-        return workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
+        return workspaceRepository.findWorkspaceById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
     }
 
@@ -78,7 +78,7 @@ public class ProjectService {
         WorkspaceParticipant workspaceParticipant = workspaceRepository.findWorkspaceParticipantByWorkspaceParticipantId(workspaceParticipantId)
                 .orElseThrow(() -> new NotWorkspaceParticipantException(workspaceParticipantId));
 
-        Project project = projectRepository.findById(projectId)
+        Project project = projectRepository.findProjectById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
         project.addParticipant(workspaceParticipant.getMemberId(), workspaceParticipant);
     }
@@ -117,7 +117,7 @@ public class ProjectService {
      * 프로젝트 단 건 조회
      */
     public FindProjectResponseDto findProject(Long projectId) {
-        Project project = projectRepository.findById(projectId)
+        Project project = projectRepository.findProjectById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
         return new FindProjectResponseDto(project);
@@ -142,7 +142,7 @@ public class ProjectService {
     @Transactional
     public void deportProjectParticipant(Long projectId, DeportProjectParticipantRequestDto requestDto) {
         Long projectParticipantId = requestDto.getProjectParticipantId();
-        Project project = projectRepository.findById(projectId)
+        Project project = projectRepository.findProjectById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
         projectRepository.deleteTaskManagerByProjectParticipantId(projectParticipantId);
@@ -157,8 +157,7 @@ public class ProjectService {
         Project project = projectRepository.findProjectWithBoardsByProjectId(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
-        projectRepository.deleteTasksRelatedProject(projectId);
-        projectRepository.deleteBoardsRelatedProject(projectId);
+        projectRepository.deleteTasksAndBoardsRelatedProject(projectId);
         project.deleteProject();
     }
 }

@@ -12,7 +12,7 @@ public interface ProjectRepository {
 
     Project save(Project project);
 
-    Optional<Project> findById(Long projectId);
+    Optional<Project> findProjectById(Long projectId);
 
     Optional<Project> findProjectWithParticipantsByProjectId(Long projectId);
 
@@ -38,7 +38,5 @@ public interface ProjectRepository {
 
     void deleteTaskManagerByProjectParticipantId(Long projectParticipantId);
 
-    void deleteTasksRelatedProject(Long projectId);
-
-    void deleteBoardsRelatedProject(Long projectId);
+    void deleteTasksAndBoardsRelatedProject(Long projectId);
 }

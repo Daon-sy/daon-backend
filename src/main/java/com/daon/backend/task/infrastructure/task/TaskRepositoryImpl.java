@@ -35,8 +35,8 @@ public class TaskRepositoryImpl implements TaskRepository {
     }
 
     @Override
-    public Optional<Task> findTaskByTaskId(Long taskId) {
-        return taskJpaRepository.findByIdAndRemovedFalse(taskId);
+    public Optional<Task> findTaskById(Long taskId) {
+        return taskJpaRepository.findTaskByIdAndRemovedFalse(taskId);
     }
 
     @Override

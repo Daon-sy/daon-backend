@@ -3,14 +3,34 @@ package com.daon.backend.task.infrastructure.workspace;
 import com.daon.backend.task.domain.workspace.Workspace;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
 public interface WorkspaceJpaRepository extends JpaRepository<Workspace, Long> {
 
     @EntityGraph(attributePaths = "participants")
+    Optional<Workspace> findWorkspaceByIdAndRemovedFalse(Long workspaceId);
+
+    @EntityGraph(attributePaths = "participants")
     Optional<Workspace> findWorkspaceWithParticipantsByIdAndRemovedFalse(Long workspaceId);
 
-    Optional<Workspace> findByIdAndRemovedFalse(Long workspaceId);
+    @Modifying
+    @Query("UPDATE Task t " +
+            "SET t.taskManager = null, t.creatorId = null, t.removed = true " +
+            "WHERE t.project IN (SELECT p FROM Project p WHERE p.workspace.id = :workspaceId)")
+    void deleteTasksRelatedWorkspace(Long workspaceId);
 
+    @Modifying
+    @Query("UPDATE Board b " +
+            "SET b.removed = true " +
+            "WHERE b.project IN (SELECT p FROM Project p WHERE p.workspace.id = :workspaceId)")
+    void deleteBoardsRelatedWorkspace(Long workspaceId);
+
+    @Modifying
+    @Query("UPDATE Project p " +
+            "SET p.removed = true " +
+            "WHERE p.workspace.id = :workspaceId")
+    void deleteProjectsRelatedWorkspace(Long workspaceId);
 }
