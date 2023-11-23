@@ -1,5 +1,6 @@
 package com.daon.backend.task.service;
 
+import com.daon.backend.common.response.slice.SliceResponse;
 import com.daon.backend.task.domain.board.Board;
 import com.daon.backend.task.domain.project.*;
 import com.daon.backend.task.domain.task.Task;
@@ -7,6 +8,7 @@ import com.daon.backend.task.domain.task.TaskBookmark;
 import com.daon.backend.task.domain.task.TaskNotFoundException;
 import com.daon.backend.task.domain.task.TaskRepository;
 import com.daon.backend.task.dto.task.*;
+import com.daon.backend.task.dto.task.history.TaskHistory;
 import com.daon.backend.task.dto.task.history.TaskHistoryResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -146,7 +148,7 @@ public class TaskService {
         task.deleteTask();
     }
 
-    public TaskHistoryResponseDto findTaskHistory(Long projectId, Long taskId, Pageable pageable) {
-        return taskRepository.findTaskHistoriesByProjectIdAndTaskId(projectId, taskId, pageable);
+    public SliceResponse<TaskHistory> findTaskHistory(Long projectId, Long taskId, Pageable pageable) {
+        return new SliceResponse<>(taskRepository.findTaskHistoriesByProjectIdAndTaskId(projectId, taskId, pageable));
     }
 }

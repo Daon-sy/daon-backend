@@ -1,5 +1,6 @@
 package com.daon.backend.task.service;
 
+import com.daon.backend.common.response.slice.SliceResponse;
 import com.daon.backend.task.domain.project.ProjectRepository;
 import com.daon.backend.task.domain.task.TaskRepository;
 import com.daon.backend.task.domain.workspace.WorkspaceRepository;
@@ -31,16 +32,16 @@ public class SearchService {
     /**
      * 통합 검색
      */
-    public <T> Slice<T> integratedSearchByTitle(String target, String title, Pageable pageable) {
+    public <T> SliceResponse<T> integratedSearchByTitle(String target, String title, Pageable pageable) {
         String memberId = sessionMemberProvider.getMemberId();
 
         switch (target) {
             case "workspace":
-                return (Slice<T>) workspaceRepository.searchWorkspaceSummariesByTitle(memberId, title, pageable);
+                return new SliceResponse(workspaceRepository.searchWorkspaceSummariesByTitle(memberId, title, pageable));
             case "project":
-                return (Slice<T>) projectRepository.searchProjectSummariesByTitle(memberId, title, pageable);
+                return new SliceResponse(projectRepository.searchProjectSummariesByTitle(memberId, title, pageable));
             case "task":
-                return (Slice<T>) taskRepository.searchTaskSummariesByTitle(memberId, title, pageable);
+                return new SliceResponse(taskRepository.searchTaskSummariesByTitle(memberId, title, pageable));
             default:
                 throw new InvalidTargetException(target);
         }

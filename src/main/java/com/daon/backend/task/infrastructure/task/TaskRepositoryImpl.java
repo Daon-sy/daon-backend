@@ -1,5 +1,6 @@
 package com.daon.backend.task.infrastructure.task;
 
+import com.daon.backend.common.history.Revision;
 import com.daon.backend.task.domain.board.Board;
 import com.daon.backend.task.domain.project.ProjectParticipant;
 import com.daon.backend.task.domain.task.Task;
@@ -209,7 +210,12 @@ public class TaskRepositoryImpl implements TaskRepository {
     }
 
     @Override
-    public TaskHistoryResponseDto findTaskHistoriesByProjectIdAndTaskId(Long projectId, Long taskId, Pageable pageable) {
+    public List<Task> findTasksByProjectIdAndBoardId(Long projectId, Long boardId) {
+        return taskJpaRepository.findTasksByProjectIdAndBoardIdAndRemovedFalse(projectId, boardId);
+    }
+
+    @Override
+    public Slice<TaskHistory> findTaskHistoriesByProjectIdAndTaskId(Long projectId, Long taskId, Pageable pageable) {
         AuditQuery query = AuditReaderFactory.get(em).createQuery()
                 .forRevisionsOfEntityWithChanges(Task.class, true)
                 .add(AuditEntity.id().eq(taskId))
@@ -235,10 +241,11 @@ public class TaskRepositoryImpl implements TaskRepository {
             hasNext = true;
         }
 
-        return new TaskHistoryResponseDto(new SliceImpl<>(taskHistories, pageable, hasNext));
+        return new SliceImpl<>(taskHistories, pageable, hasNext);
     }
 
     private TaskHistory generateTaskHistory(Object[] currentHistory, Object[] prevHistory, Long projectId) {
+        Revision revision = (Revision) currentHistory[1];
         Set<String> modifiedFields = (Set<String>) currentHistory[3];
         String modifiedField = modifiedFields.stream().findFirst().orElseThrow();
 
@@ -263,8 +270,9 @@ public class TaskRepositoryImpl implements TaskRepository {
                 Board prevBoard = boardJpaRepository.findById(prevBoardId).orElseThrow();
 
                 taskHistory = new TaskHistory(
+                        revision.getRev(),
                         modifiedField,
-                        fieldType.getTypeName(),
+                        fieldType.getSimpleName(),
                         new HistoryBoard(
                                 prevBoard.getId(),
                                 prevBoard.getTitle()
@@ -280,7 +288,8 @@ public class TaskRepositoryImpl implements TaskRepository {
                         ),
                         task.getModifiedAt()
                 );
-            } else if (fieldType.equals(ProjectParticipant.class)) {
+            }
+            else if (fieldType.equals(ProjectParticipant.class)) {
                 HistoryProjectParticipant from = null;
                 HistoryProjectParticipant to = null;
                 if (prevFieldData != null) {
@@ -304,6 +313,7 @@ public class TaskRepositoryImpl implements TaskRepository {
                 }
 
                 taskHistory = new TaskHistory(
+                        revision.getRev(),
                         modifiedField,
                         fieldType.getSimpleName(),
                         from,
@@ -318,6 +328,7 @@ public class TaskRepositoryImpl implements TaskRepository {
             }
             else if (fieldType.equals(LocalDateTime.class)) {
                 taskHistory = new TaskHistory(
+                        revision.getRev(),
                         modifiedField,
                         "Date",
                         prevFieldData == null ? null : ((LocalDateTime) prevFieldData).format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
@@ -332,6 +343,7 @@ public class TaskRepositoryImpl implements TaskRepository {
             }
             else {
                 taskHistory = new TaskHistory(
+                        revision.getRev(),
                         modifiedField,
                         fieldType.getSimpleName(),
                         prevFieldData,
