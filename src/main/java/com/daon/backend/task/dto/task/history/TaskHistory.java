@@ -8,6 +8,7 @@ import java.time.LocalDateTime;
 @Getter
 public class TaskHistory {
 
+    private Long revId;
     private String fieldName;
     private String fieldType;
     private Object from;
@@ -17,8 +18,9 @@ public class TaskHistory {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime modifiedAt;
 
-    public TaskHistory(String fieldName, String fieldType, Object from, Object to,
+    public TaskHistory(Long revId, String fieldName, String fieldType, Object from, Object to,
                        HistoryProjectParticipant modifier, LocalDateTime modifiedAt) {
+        this.revId = revId;
         this.fieldName = fieldName;
         this.fieldType = fieldType;
         this.from = from;
