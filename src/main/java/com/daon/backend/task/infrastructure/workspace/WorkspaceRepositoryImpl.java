@@ -5,6 +5,7 @@ import com.daon.backend.task.domain.workspace.Workspace;
 import com.daon.backend.task.domain.workspace.WorkspaceParticipant;
 import com.daon.backend.task.domain.workspace.WorkspaceRepository;
 import com.daon.backend.task.dto.WorkspaceSummary;
+import com.daon.backend.task.infrastructure.project.ProjectJpaRepository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
 
     private final WorkspaceJpaRepository workspaceJpaRepository;
     private final WorkspaceParticipantJpaRepository workspaceParticipantJpaRepository;
+    private final ProjectJpaRepository projectJpaRepository;
     private final JPAQueryFactory queryFactory;
     private final EntityManager em;
 
@@ -114,8 +116,13 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
         workspaceJpaRepository.deleteTasksRelatedWorkspace(workspaceId);
         workspaceJpaRepository.deleteBoardsRelatedWorkspace(workspaceId);
         workspaceJpaRepository.deleteProjectsRelatedWorkspace(workspaceId);
+    }
+
+    @Override
+    public void deleteAllRelatedWorkspaceParticipant(Long workspaceParticipantId, String memberId) {
+        workspaceJpaRepository.deleteTaskManagerRelatedWorkspaceParticipant(workspaceParticipantId);
+        projectJpaRepository.deleteProjectParticipantByWorkspaceParticipant(workspaceParticipantId, memberId);
 
         em.flush();
-        em.clear();
     }
 }

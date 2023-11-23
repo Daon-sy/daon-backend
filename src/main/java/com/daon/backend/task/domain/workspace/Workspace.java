@@ -147,8 +147,21 @@ public class Workspace extends BaseEntity {
                 .anyMatch(workspaceInvitation -> workspaceInvitation.getMemberId().equals(memberId));
     }
 
+    public WorkspaceParticipant getWorkspaceParticipant(Long workspaceParticipantId) {
+        return this.participants.stream()
+                .filter(workspaceParticipant -> workspaceParticipant.getId().equals(workspaceParticipantId))
+                .findFirst()
+                .orElseThrow(() -> new NotWorkspaceParticipantException(this.id));
+    }
+
     public boolean isPersonal() {
         return this.division.equals(Division.PERSONAL);
+    }
+
+    public boolean canWithdrawWorkspace() {
+        return this.participants.stream()
+                .filter(workspaceParticipant -> workspaceParticipant.getRole().equals(Role.WORKSPACE_ADMIN))
+                .count() > 1;
     }
 
     public void withdrawWorkspace(String memberId) {

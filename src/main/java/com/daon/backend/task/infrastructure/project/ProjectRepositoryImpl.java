@@ -137,7 +137,6 @@ public class ProjectRepositoryImpl implements ProjectRepository {
                 .execute();
 
         em.flush();
-        em.clear();
     }
 
     @Override
@@ -157,6 +156,5 @@ public class ProjectRepositoryImpl implements ProjectRepository {
                 .execute();
 
         em.flush();
-        em.clear();
     }
 }

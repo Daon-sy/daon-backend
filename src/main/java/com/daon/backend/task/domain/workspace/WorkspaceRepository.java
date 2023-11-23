@@ -28,4 +28,6 @@ public interface WorkspaceRepository {
     Slice<WorkspaceSummary> searchWorkspaceSummariesByTitle(String memberId, String title, Pageable pageable);
 
     void deleteAllRelatedWorkspace(Long workspaceId);
+
+    void deleteAllRelatedWorkspaceParticipant(Long workspaceParticipantId, String memberId);
 }
