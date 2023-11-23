@@ -12,9 +12,11 @@ public class TaskReplySummary {
 
     private Long replyId;
 
+    private Long taskId;
+
     private String content;
 
-    private TaskReplyWriter taskReplyWriter;
+    private TaskReplyWriter writer;
 
     private Boolean isWriter;
 
@@ -26,8 +28,9 @@ public class TaskReplySummary {
 
     public TaskReplySummary(TaskReply taskReply, ProjectParticipant currentParticipant) {
         this.replyId = taskReply.getId();
+        this.taskId = taskReply.getTask().getId();
         this.content = taskReply.getContent();
-        this.taskReplyWriter = new TaskReplyWriter(taskReply.getTaskReplyWriter());
+        this.writer = new TaskReplyWriter(taskReply.getTaskReplyWriter());
         this.isWriter = taskReply.getTaskReplyWriter().getMemberId().equals(currentParticipant.getMemberId());
         this.createdAt = taskReply.getCreatedAt();
         this.modifiedAt = taskReply.getModifiedAt();
