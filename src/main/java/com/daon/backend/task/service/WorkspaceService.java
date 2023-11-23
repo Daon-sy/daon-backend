@@ -293,4 +293,24 @@ public class WorkspaceService {
 
         workspace.deleteWorkspace();
     }
+
+    @Transactional
+    public void resetWorkspace(Long workspaceId) {
+        List<Project> projects = projectRepository.findAllProjectsByWorkspaceId(workspaceId);
+        projects.stream()
+                .peek(project -> {
+                    taskRepository.findAllTasksByProjectId(project.getId())
+                            .forEach(Task::removeTask);
+                    project.getBoards().forEach(Board::deleteBoard);
+                })
+                .forEach(Project::removeProject);
+
+        String memberId = sessionMemberProvider.getMemberId();
+        Workspace workspace = workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+        WorkspaceParticipant workspaceParticipant = workspaceRepository.findWorkspaceParticipantByWorkspaceIdAndMemberId(workspaceId, memberId)
+                .orElseThrow(() -> new NotWorkspaceParticipantException(workspaceId));
+        String findName = workspaceParticipant.getProfile().getName();
+        workspace.resetWorkspace(findName);
+    }
 }
