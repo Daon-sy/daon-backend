@@ -1,7 +1,9 @@
 package com.daon.backend.task.controller;
 
+import com.daon.backend.common.response.slice.SliceResponse;
 import com.daon.backend.task.domain.authority.CheckRole;
 import com.daon.backend.task.dto.task.*;
+import com.daon.backend.task.dto.task.history.TaskHistory;
 import com.daon.backend.task.dto.task.history.TaskHistoryResponseDto;
 import com.daon.backend.task.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -101,7 +103,7 @@ public class TaskController {
     })
     @CheckRole(authority = TSK_READ)
     @GetMapping("/{taskId}/history")
-    public TaskHistoryResponseDto taskHistory(@PathVariable Long projectId, @PathVariable Long taskId, @PageableDefault Pageable pageable) {
+    public SliceResponse<TaskHistory> taskHistory(@PathVariable Long projectId, @PathVariable Long taskId, @PageableDefault Pageable pageable) {
         return taskService.findTaskHistory(projectId, taskId, pageable);
     }
 }

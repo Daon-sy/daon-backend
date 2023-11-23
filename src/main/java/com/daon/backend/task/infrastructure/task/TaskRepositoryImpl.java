@@ -1,5 +1,6 @@
 package com.daon.backend.task.infrastructure.task;
 
+import com.daon.backend.common.response.slice.SliceResponse;
 import com.daon.backend.task.domain.board.Board;
 import com.daon.backend.task.domain.project.ProjectParticipant;
 import com.daon.backend.task.domain.task.Task;
@@ -216,7 +217,7 @@ public class TaskRepositoryImpl implements TaskRepository {
     }
 
     @Override
-    public TaskHistoryResponseDto findTaskHistoriesByProjectIdAndTaskId(Long projectId, Long taskId, Pageable pageable) {
+    public Slice<TaskHistory> findTaskHistoriesByProjectIdAndTaskId(Long projectId, Long taskId, Pageable pageable) {
         AuditQuery query = AuditReaderFactory.get(em).createQuery()
                 .forRevisionsOfEntityWithChanges(Task.class, true)
                 .add(AuditEntity.id().eq(taskId))
@@ -242,7 +243,7 @@ public class TaskRepositoryImpl implements TaskRepository {
             hasNext = true;
         }
 
-        return new TaskHistoryResponseDto(new SliceImpl<>(taskHistories, pageable, hasNext));
+        return new SliceImpl<>(taskHistories, pageable, hasNext);
     }
 
     private TaskHistory generateTaskHistory(Object[] currentHistory, Object[] prevHistory, Long projectId) {

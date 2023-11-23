@@ -1,7 +1,7 @@
 package com.daon.backend.common.exception;
 
-import com.daon.backend.common.error.ErrorCode;
-import com.daon.backend.common.error.ErrorResponse;
+import com.daon.backend.common.response.error.ErrorCode;
+import com.daon.backend.common.response.error.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

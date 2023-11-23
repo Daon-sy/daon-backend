@@ -1,4 +1,4 @@
-package com.daon.backend.common.error;
+package com.daon.backend.common.response.error;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

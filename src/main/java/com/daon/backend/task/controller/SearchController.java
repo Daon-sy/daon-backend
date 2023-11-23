@@ -1,5 +1,6 @@
 package com.daon.backend.task.controller;
 
+import com.daon.backend.common.response.slice.SliceResponse;
 import com.daon.backend.task.domain.authority.Authority;
 import com.daon.backend.task.domain.authority.CheckRole;
 import com.daon.backend.task.dto.TaskSearchParams;
@@ -36,9 +37,9 @@ public class SearchController {
             @ApiResponse(responseCode = "200", description = "통합 검색 성공")
     })
     @GetMapping("/search")
-    public <T> T integratedSearch(@RequestParam("target") String target,
-                                  @RequestParam("title") String title,
-                                  Pageable pageable) {
-        return (T) searchService.integratedSearchByTitle(target, title, pageable);
+    public <T> SliceResponse<T> integratedSearch(@RequestParam("target") String target,
+                                                @RequestParam("title") String title,
+                                                Pageable pageable) {
+        return searchService.integratedSearchByTitle(target, title, pageable);
     }
 }
