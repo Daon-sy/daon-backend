@@ -47,7 +47,7 @@ public enum ErrorCode {
 
     // 할 일
     TASK_NOT_FOUND(5000, "생성된 할 일이 없습니다."),
-    REPLY_NOT_FOUND(5000, "생성된 댓글이 없습니다.")
+    REPLY_NOT_FOUND(5100, "생성된 댓글이 없습니다.")
     ;
 
     private final int code;
