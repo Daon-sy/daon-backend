@@ -1,8 +1,8 @@
 package com.daon.backend.image.controller;
 
 import com.daon.backend.common.exception.DomainSpecificAdvice;
-import com.daon.backend.common.error.ErrorCode;
-import com.daon.backend.common.error.ErrorResponse;
+import com.daon.backend.common.response.error.ErrorCode;
+import com.daon.backend.common.response.error.ErrorResponse;
 import com.daon.backend.image.service.EmptyImageException;
 import com.daon.backend.image.service.ImageIOException;
 import com.daon.backend.image.service.NotAllowedContentTypeException;
