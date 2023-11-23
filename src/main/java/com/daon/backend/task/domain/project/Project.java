@@ -10,6 +10,7 @@ import com.daon.backend.task.domain.board.Board;
 import com.daon.backend.task.domain.board.BoardNotFoundException;
 import com.daon.backend.task.domain.board.SameBoardExistsException;
 import com.daon.backend.task.domain.task.Task;
+import com.daon.backend.task.domain.task.TaskNotFoundException;
 import com.daon.backend.task.domain.workspace.Workspace;
 import com.daon.backend.task.domain.workspace.WorkspaceParticipant;
 import lombok.AccessLevel;
@@ -98,6 +99,13 @@ public class Project extends BaseEntity {
                 .filter(board -> board.getId().equals(boardId))
                 .findFirst()
                 .orElseThrow(() -> new BoardNotFoundException(this.getId(), boardId));
+    }
+
+    public Task getTaskByTaskId(Long taskId) {
+        return tasks.stream()
+                .filter(task -> task.getId().equals(taskId))
+                .findFirst()
+                .orElseThrow(() -> new TaskNotFoundException(this.getId(), taskId));
     }
 
     public void throwIfTitleExist(String title) {
