@@ -228,10 +228,10 @@ public class WorkspaceService {
                                             ProjectParticipant taskManager = task.getTaskManager();
                                             return taskManager != null && taskManager.getMemberId().equals(memberId);
                                         })
-                                        .forEach(Task::removeTaskManager);
+                                        .forEach(Task::deleteTaskManager);
                                 tasks.stream()
                                         .filter(task -> task.getCreatorId().equals(workspaceParticipantId))
-                                        .forEach(Task::removeCreator);
+                                        .forEach(Task::deleteCreator);
                             })
                             .forEach(project -> project.withdrawProject(memberId))
                     );
@@ -259,10 +259,10 @@ public class WorkspaceService {
                                 ProjectParticipant taskManager = task.getTaskManager();
                                 return taskManager != null && taskManager.getMemberId().equals(workspaceParticipantMemberId);
                             })
-                            .forEach(Task::removeTaskManager);
+                            .forEach(Task::deleteTaskManager);
                     tasks.stream()
                             .filter(task -> task.getCreatorId().equals(workspaceParticipantId))
-                            .forEach(Task::removeCreator);
+                            .forEach(Task::deleteCreator);
                 })
                 .forEach(project -> project.withdrawProject(workspaceParticipantMemberId));
 
@@ -286,10 +286,10 @@ public class WorkspaceService {
         projects.stream()
                 .peek(project -> {
                     taskRepository.findAllTasksByProjectId(project.getId())
-                            .forEach(Task::removeTask);
+                            .forEach(Task::deleteTask);
                     project.getBoards().forEach(Board::deleteBoard);
                 })
-                .forEach(Project::removeProject);
+                .forEach(Project::deleteProject);
 
         workspace.deleteWorkspace();
     }

@@ -8,7 +8,6 @@ import com.daon.backend.notification.dto.response.DeportationProjectResponseDto;
 import com.daon.backend.notification.dto.response.InviteProjectAlarmResponseDto;
 import com.daon.backend.task.domain.board.Board;
 import com.daon.backend.task.domain.board.BoardNotFoundException;
-import com.daon.backend.task.domain.board.CanNotDeleteBoardException;
 import com.daon.backend.task.domain.board.SameBoardExistsException;
 import com.daon.backend.task.domain.task.Task;
 import com.daon.backend.task.domain.workspace.Workspace;
@@ -46,10 +45,10 @@ public class Project extends BaseTimeEntity {
     @OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<ProjectParticipant> participants = new ArrayList<>();
 
-    @OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "project", cascade = CascadeType.PERSIST)
     private List<Board> boards = new ArrayList<>();
 
-    @OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "project", cascade = CascadeType.PERSIST)
     private List<Task> tasks = new ArrayList<>();
 
     @Builder
@@ -81,7 +80,8 @@ public class Project extends BaseTimeEntity {
 
     private InviteProjectAlarmResponseDto createInviteEventResponse(WorkspaceParticipant workspaceParticipant) {
         return new InviteProjectAlarmResponseDto(
-                workspaceParticipant.getWorkspace().getId(), workspaceParticipant.getWorkspace().getTitle(),
+                workspaceParticipant.getWorkspace().getId(),
+                workspaceParticipant.getWorkspace().getTitle(),
                 this.id, this.title
         );
     }
@@ -137,13 +137,17 @@ public class Project extends BaseTimeEntity {
         );
     }
 
-    private DeportationProjectResponseDto createDeportationEventResponse() {
-        return new DeportationProjectResponseDto(
-                this.workspace.getId(), this.workspace.getTitle(), this.id, this.title);
-    }
-
-    public void removeProject() {
+    public void deleteProject() {
         this.participants.clear();
         this.removed = true;
+    }
+
+    private DeportationProjectResponseDto createDeportationEventResponse() {
+        return new DeportationProjectResponseDto(
+                this.workspace.getId(),
+                this.workspace.getTitle(),
+                this.id,
+                this.title
+        );
     }
 }

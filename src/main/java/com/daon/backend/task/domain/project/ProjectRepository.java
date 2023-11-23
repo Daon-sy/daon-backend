@@ -4,7 +4,6 @@ import com.daon.backend.task.domain.workspace.WorkspaceParticipant;
 import com.daon.backend.task.dto.ProjectSummary;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,11 +12,13 @@ public interface ProjectRepository {
 
     Project save(Project project);
 
-    Optional<Project> findProjectByProjectId(Long projectId);
+    Optional<Project> findById(Long projectId);
 
-    Optional<Project> findProjectWithParticipantsById(Long projectId);
+    Optional<Project> findProjectWithParticipantsByProjectId(Long projectId);
 
     Optional<Project> findProjectWithBoardsByProjectId(Long projectId);
+
+    Optional<Project> findProjectWithTasksByProjectId(Long projectId);
 
     Optional<ProjectParticipant> findProjectParticipantByProjectIdAndMemberId(Long projectId, String memberId);
 
@@ -32,4 +33,12 @@ public interface ProjectRepository {
     List<Project> findProjectsByWorkspaceParticipantId(Long workspaceParticipantId);
 
     Slice<ProjectSummary> searchProjectSummariesByTitle(String memberId, String title, Pageable pageable);
+
+    void deleteTaskManagerRelatedProjectByMemberId(Long projectId, String memberId);
+
+    void deleteTaskManagerByProjectParticipantId(Long projectParticipantId);
+
+    void deleteTasksRelatedProject(Long projectId);
+
+    void deleteBoardsRelatedProject(Long projectId);
 }

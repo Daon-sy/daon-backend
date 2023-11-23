@@ -28,7 +28,7 @@ public class TaskService {
         String memberId = sessionMemberProvider.getMemberId();
         Long taskManagerId = requestDto.getTaskManagerId();
 
-        Project project = projectRepository.findProjectByProjectId(projectId)
+        Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
         ProjectParticipant projectParticipant = project.findProjectParticipantByMemberId(memberId)
                 .orElseThrow(() -> new NotProjectParticipantException(memberId, projectId));
@@ -74,7 +74,7 @@ public class TaskService {
         String memberId = sessionMemberProvider.getMemberId();
         Long taskManagerId = requestDto.getTaskManagerId();
 
-        Project project = projectRepository.findProjectByProjectId(projectId)
+        Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
         Board board = project.getBoardByBoardId(requestDto.getBoardId());
         Task task = taskRepository.findTaskByTaskId(taskId)
@@ -141,6 +141,6 @@ public class TaskService {
     public void deleteTask(Long taskId) {
         Task task = taskRepository.findTaskByTaskId(taskId)
                 .orElseThrow(() -> new TaskNotFoundException(taskId));
-        task.removeTask();
+        task.deleteTask();
     }
 }

@@ -134,17 +134,17 @@ public class Task extends BaseTimeEntity {
                 .deleteTaskReply();
     }
 
-    public void removeTaskManager() {
+    public void deleteTaskManager() {
         this.taskManager = null;
     }
 
-    public void removeCreator() {
+    public void deleteCreator() {
         this.creatorId = null;
     }
 
-    public void removeTask() {
-        removeTaskManager();
-        removeCreator();
+    public void deleteTask() {
+        deleteTaskManager();
+        deleteCreator();
         this.removed = true;
     }
 

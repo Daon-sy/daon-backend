@@ -42,7 +42,7 @@ public class BoardService {
      * 보드 목록 조회
      */
     public FindBoardsResponseDto findBoards(Long projectId) {
-        Project project = projectRepository.findProjectByProjectId(projectId)
+        Project project = projectRepository.findById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
         return new FindBoardsResponseDto(

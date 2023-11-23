@@ -16,8 +16,6 @@ public interface TaskRepository {
 
     Optional<Task> findTaskByTaskId(Long taskId);
 
-    List<Task> findTasksByProjectId(Long projectId);
-
     List<Task> findAllTasksByProjectId(Long projectId);
 
     boolean existsTaskBookmarkByTaskIdAndProjectParticipantId(Long taskId, Long projectParticipantId);
@@ -27,6 +25,4 @@ public interface TaskRepository {
     Slice<TaskSearchResult> searchTaskSummariesByTitle(String memberId, String title, Pageable pageable);
 
     Optional<TaskDetail> findTaskDetail(String memberId, Long taskId);
-
-    List<Task> findTasksByProjectIdAndBoardId(Long projectId, Long boardId);
 }

@@ -40,11 +40,6 @@ public class TaskRepositoryImpl implements TaskRepository {
     }
 
     @Override
-    public List<Task> findTasksByProjectId(Long projectId) {
-        return taskJpaRepository.findTasksByProjectIdAndRemovedFalse(projectId);
-    }
-
-    @Override
     public List<Task> findAllTasksByProjectId(Long projectId) {
         return taskJpaRepository.findAllTasksByProjectId(projectId);
     }
@@ -192,10 +187,4 @@ public class TaskRepositoryImpl implements TaskRepository {
                         .fetchOne()
         );
     }
-
-    @Override
-    public List<Task> findTasksByProjectIdAndBoardId(Long projectId, Long boardId) {
-        return taskJpaRepository.findTasksByProjectIdAndBoardIdAndRemovedFalse(projectId, boardId);
-    }
-
 }
