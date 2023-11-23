@@ -4,6 +4,7 @@ import com.daon.backend.task.dto.TaskDetail;
 import com.daon.backend.task.dto.TaskSearchParams;
 import com.daon.backend.task.dto.TaskSearchResult;
 import com.daon.backend.task.dto.TaskSummary;
+import com.daon.backend.task.dto.task.history.TaskHistoryResponseDto;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
@@ -29,4 +30,6 @@ public interface TaskRepository {
     Optional<TaskDetail> findTaskDetail(String memberId, Long taskId);
 
     List<Task> findTasksByProjectIdAndBoardId(Long projectId, Long boardId);
+
+    TaskHistoryResponseDto findTaskHistoriesByProjectIdAndTaskId(Long projectId, Long taskId, Pageable pageable);
 }

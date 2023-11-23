@@ -1,6 +1,6 @@
 package com.daon.backend.task.domain.board;
 
-import com.daon.backend.config.BaseTimeEntity;
+import com.daon.backend.config.BaseEntity;
 import com.daon.backend.task.domain.project.Project;
 import com.daon.backend.task.domain.task.Task;
 import lombok.AccessLevel;
@@ -13,7 +13,7 @@ import java.util.List;
 
 @Entity @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Board extends BaseTimeEntity {
+public class Board extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "board_id")

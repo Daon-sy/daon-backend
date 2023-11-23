@@ -2,6 +2,7 @@ package com.daon.backend.task.controller;
 
 import com.daon.backend.task.domain.authority.CheckRole;
 import com.daon.backend.task.dto.task.*;
+import com.daon.backend.task.dto.task.history.TaskHistoryResponseDto;
 import com.daon.backend.task.service.TaskService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -9,6 +10,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -90,5 +93,15 @@ public class TaskController {
     @DeleteMapping("/{taskId}")
     public void deleteTask(@PathVariable("taskId") Long taskId) {
         taskService.deleteTask(taskId);
+    }
+
+    @Operation(summary = "할 일 히스토리 조회", description = "할 일 히스토리 조회 요청입니다..")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "할 일 히스토리 조회 성공")
+    })
+    @CheckRole(authority = TSK_READ)
+    @GetMapping("/{taskId}/history")
+    public TaskHistoryResponseDto taskHistory(@PathVariable Long projectId, @PathVariable Long taskId, @PageableDefault Pageable pageable) {
+        return taskService.findTaskHistory(projectId, taskId, pageable);
     }
 }

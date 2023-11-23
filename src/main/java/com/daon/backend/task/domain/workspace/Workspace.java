@@ -1,7 +1,7 @@
 package com.daon.backend.task.domain.workspace;
 
 import com.daon.backend.common.event.Events;
-import com.daon.backend.config.BaseTimeEntity;
+import com.daon.backend.config.BaseEntity;
 import com.daon.backend.notification.domain.NotificationType;
 import com.daon.backend.notification.domain.SendAlarmEvent;
 import com.daon.backend.notification.dto.response.DeportationWorkspaceResponseDto;
@@ -20,7 +20,7 @@ import java.util.Optional;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Workspace extends BaseTimeEntity {
+public class Workspace extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
