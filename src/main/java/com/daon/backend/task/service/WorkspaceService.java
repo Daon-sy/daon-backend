@@ -1,5 +1,6 @@
 package com.daon.backend.task.service;
 
+import com.daon.backend.task.domain.board.Board;
 import com.daon.backend.task.domain.project.Project;
 import com.daon.backend.task.domain.project.ProjectParticipant;
 import com.daon.backend.task.domain.project.ProjectRepository;
@@ -290,5 +291,25 @@ public class WorkspaceService {
 
         workspace.deleteWorkspace();
         workspaceRepository.deleteAllRelatedWorkspace(workspaceId);
+    }
+
+    @Transactional
+    public void resetWorkspace(Long workspaceId) {
+        List<Project> projects = projectRepository.findAllProjectsByWorkspaceId(workspaceId);
+        projects.stream()
+                .peek(project -> {
+                    taskRepository.findAllTasksByProjectId(project.getId())
+                            .forEach(Task::deleteTask);
+                    project.getBoards().forEach(Board::deleteBoard);
+                })
+                .forEach(Project::deleteProject);
+
+        String memberId = sessionMemberProvider.getMemberId();
+        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+        WorkspaceParticipant workspaceParticipant = workspaceRepository.findWorkspaceParticipantByWorkspaceIdAndMemberId(workspaceId, memberId)
+                .orElseThrow(() -> new NotWorkspaceParticipantException(workspaceId));
+        String findName = workspaceParticipant.getProfile().getName();
+        workspace.resetWorkspace(findName);
     }
 }

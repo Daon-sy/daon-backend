@@ -1,7 +1,7 @@
 package com.daon.backend.task.domain.project;
 
 import com.daon.backend.common.event.Events;
-import com.daon.backend.config.BaseTimeEntity;
+import com.daon.backend.config.BaseEntity;
 import com.daon.backend.notification.domain.NotificationType;
 import com.daon.backend.notification.domain.SendAlarmEvent;
 import com.daon.backend.notification.dto.response.DeportationProjectResponseDto;
@@ -25,7 +25,7 @@ import java.util.Optional;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Project extends BaseTimeEntity {
+public class Project extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

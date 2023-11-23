@@ -7,7 +7,9 @@ import com.daon.backend.task.domain.task.TaskBookmark;
 import com.daon.backend.task.domain.task.TaskNotFoundException;
 import com.daon.backend.task.domain.task.TaskRepository;
 import com.daon.backend.task.dto.task.*;
+import com.daon.backend.task.dto.task.history.TaskHistoryResponseDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -142,5 +144,9 @@ public class TaskService {
         Task task = taskRepository.findTaskById(taskId)
                 .orElseThrow(() -> new TaskNotFoundException(taskId));
         task.deleteTask();
+    }
+
+    public TaskHistoryResponseDto findTaskHistory(Long projectId, Long taskId, Pageable pageable) {
+        return taskRepository.findTaskHistoriesByProjectIdAndTaskId(projectId, taskId, pageable);
     }
 }

@@ -1,6 +1,6 @@
 package com.daon.backend.task.domain.workspace;
 
-import com.daon.backend.config.BaseTimeEntity;
+import com.daon.backend.config.BaseEntity;
 import com.daon.backend.task.domain.project.ProjectParticipant;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -13,7 +13,7 @@ import java.util.Optional;
 
 @Entity @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class WorkspaceParticipant extends BaseTimeEntity {
+public class WorkspaceParticipant extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "workspace_participant_id")

@@ -12,6 +12,10 @@ import java.util.Optional;
 
 public interface ProjectParticipantJpaRepository extends JpaRepository<ProjectParticipant, Long> {
 
+    @EntityGraph(attributePaths = {"workspaceParticipant", "project"})
+    @Override
+    Optional<ProjectParticipant> findById(Long id);
+
     @Query("select pjp.project " +
            "from ProjectParticipant pjp " +
            "where pjp.workspaceParticipant = :workspaceParticipant and pjp.project.removed = false")

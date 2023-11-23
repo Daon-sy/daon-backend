@@ -1,6 +1,6 @@
 package com.daon.backend.task.domain.task;
 
-import com.daon.backend.config.BaseTimeEntity;
+import com.daon.backend.config.BaseEntity;
 import com.daon.backend.task.domain.project.ProjectParticipant;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import javax.persistence.*;
 
 @Entity @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TaskBookmark extends BaseTimeEntity {
+public class TaskBookmark extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "task_bookmark_id")
