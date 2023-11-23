@@ -19,6 +19,7 @@ public class TaskReply extends BaseEntity {
     @Column(name = "task_reply_id")
     private Long id;
 
+    @Column(length = 500)
     private String content;
 
     private boolean removed;
