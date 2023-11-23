@@ -86,7 +86,7 @@ public class TaskReplyService {
     public ProjectParticipant getProjectParticipantOrElseThrow(Long projectId) {
         String memberId = sessionMemberProvider.getMemberId();
 
-        Project project = projectRepository.findProjectByProjectId(projectId)
+        Project project = projectRepository.findProjectById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
         return project.findProjectParticipantByMemberId(memberId)
@@ -94,7 +94,7 @@ public class TaskReplyService {
     }
 
     public Task getTaskOrElseThrow(Long taskId) {
-        return taskRepository.findTaskByTaskId(taskId)
+        return taskRepository.findTaskById(taskId)
                 .orElseThrow(() -> new TaskNotFoundException(taskId));
     }
 }

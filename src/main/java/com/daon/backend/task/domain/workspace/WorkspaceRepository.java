@@ -11,7 +11,7 @@ public interface WorkspaceRepository {
 
     Workspace save(Workspace workspace);
 
-    Optional<Workspace> findWorkspaceByWorkspaceId(Long workspaceId);
+    Optional<Workspace> findWorkspaceById(Long workspaceId);
 
     Optional<Workspace> findWorkspaceWithParticipantsByWorkspaceId(Long workspaceId);
 
@@ -26,4 +26,6 @@ public interface WorkspaceRepository {
     Role findParticipantRoleByMemberIdAndWorkspaceId(String memberId, Long workspaceId);
 
     Slice<WorkspaceSummary> searchWorkspaceSummariesByTitle(String memberId, String title, Pageable pageable);
+
+    void deleteAllRelatedWorkspace(Long workspaceId);
 }

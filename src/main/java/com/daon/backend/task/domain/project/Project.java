@@ -45,10 +45,10 @@ public class Project extends BaseEntity {
     @OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<ProjectParticipant> participants = new ArrayList<>();
 
-    @OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    @OneToMany(mappedBy = "project", cascade = CascadeType.PERSIST)
     private List<Board> boards = new ArrayList<>();
 
-    @OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "project", cascade = CascadeType.PERSIST)
     private List<Task> tasks = new ArrayList<>();
 
     @Builder
@@ -80,7 +80,8 @@ public class Project extends BaseEntity {
 
     private InviteProjectAlarmResponseDto createInviteEventResponse(WorkspaceParticipant workspaceParticipant) {
         return new InviteProjectAlarmResponseDto(
-                workspaceParticipant.getWorkspace().getId(), workspaceParticipant.getWorkspace().getTitle(),
+                workspaceParticipant.getWorkspace().getId(),
+                workspaceParticipant.getWorkspace().getTitle(),
                 this.id, this.title
         );
     }
@@ -136,13 +137,17 @@ public class Project extends BaseEntity {
         );
     }
 
-    private DeportationProjectResponseDto createDeportationEventResponse() {
-        return new DeportationProjectResponseDto(
-                this.workspace.getId(), this.workspace.getTitle(), this.id, this.title);
-    }
-
-    public void removeProject() {
+    public void deleteProject() {
         this.participants.clear();
         this.removed = true;
+    }
+
+    private DeportationProjectResponseDto createDeportationEventResponse() {
+        return new DeportationProjectResponseDto(
+                this.workspace.getId(),
+                this.workspace.getTitle(),
+                this.id,
+                this.title
+        );
     }
 }

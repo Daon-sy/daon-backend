@@ -147,6 +147,10 @@ public class Workspace extends BaseEntity {
                 .anyMatch(workspaceInvitation -> workspaceInvitation.getMemberId().equals(memberId));
     }
 
+    public boolean isPersonal() {
+        return this.division.equals(Division.PERSONAL);
+    }
+
     public void withdrawWorkspace(String memberId) {
         this.participants.removeIf(workspaceParticipant -> workspaceParticipant.getMemberId().equals(memberId));
     }
@@ -168,6 +172,7 @@ public class Workspace extends BaseEntity {
 
     public void deleteWorkspace() {
         this.participants.clear();
+        this.invitations.clear();
         this.removed = true;
     }
 

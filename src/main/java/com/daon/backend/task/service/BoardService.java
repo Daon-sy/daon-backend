@@ -42,7 +42,7 @@ public class BoardService {
      * 보드 목록 조회
      */
     public FindBoardsResponseDto findBoards(Long projectId) {
-        Project project = projectRepository.findProjectByProjectId(projectId)
+        Project project = projectRepository.findProjectById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
         return new FindBoardsResponseDto(
@@ -59,7 +59,7 @@ public class BoardService {
      */
     @Transactional
     public void modifyBoard(Long projectId, Long boardId, ModifyBoardRequestDto requestDto) {
-        Board board = boardRepository.findBoardByBoardId(boardId)
+        Board board = boardRepository.findBoardById(boardId)
                 .orElseThrow(() -> new BoardNotFoundException(projectId, boardId));
 
         board.modifyBoard(requestDto.getTitle());
@@ -75,7 +75,7 @@ public class BoardService {
 
         if (project.getBoards().size() > 1) {
             boardRepository.deleteTasksRelatedBoard(boardId);
-            boardRepository.findBoardByBoardId(boardId)
+            boardRepository.findBoardById(boardId)
                     .orElseThrow(() -> new BoardNotFoundException(projectId, boardId))
                     .deleteBoard();
         } else {

@@ -13,6 +13,7 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +27,7 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
     private final WorkspaceJpaRepository workspaceJpaRepository;
     private final WorkspaceParticipantJpaRepository workspaceParticipantJpaRepository;
     private final JPAQueryFactory queryFactory;
+    private final EntityManager em;
 
     @Override
     public Workspace save(Workspace workspace) {
@@ -33,8 +35,8 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
     }
 
     @Override
-    public Optional<Workspace> findWorkspaceByWorkspaceId(Long workspaceId) {
-        return workspaceJpaRepository.findByIdAndRemovedFalse(workspaceId);
+    public Optional<Workspace> findWorkspaceById(Long workspaceId) {
+        return workspaceJpaRepository.findWorkspaceByIdAndRemovedFalse(workspaceId);
     }
 
     @Override
@@ -105,5 +107,15 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
         }
 
         return new SliceImpl<>(workspaceSummaries, pageable, hasNext);
+    }
+
+    @Override
+    public void deleteAllRelatedWorkspace(Long workspaceId) {
+        workspaceJpaRepository.deleteTasksRelatedWorkspace(workspaceId);
+        workspaceJpaRepository.deleteBoardsRelatedWorkspace(workspaceId);
+        workspaceJpaRepository.deleteProjectsRelatedWorkspace(workspaceId);
+
+        em.flush();
+        em.clear();
     }
 }

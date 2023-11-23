@@ -6,7 +6,10 @@ import com.daon.backend.task.domain.project.ProjectParticipant;
 import com.daon.backend.task.domain.task.Task;
 import com.daon.backend.task.domain.task.TaskRepository;
 import com.daon.backend.task.dto.*;
-import com.daon.backend.task.dto.task.history.*;
+import com.daon.backend.task.dto.task.history.HistoryBoard;
+import com.daon.backend.task.dto.task.history.HistoryProjectParticipant;
+import com.daon.backend.task.dto.task.history.TaskHistory;
+import com.daon.backend.task.dto.task.history.TaskHistoryResponseDto;
 import com.daon.backend.task.infrastructure.board.BoardJpaRepository;
 import com.daon.backend.task.infrastructure.project.ProjectParticipantJpaRepository;
 import com.querydsl.core.BooleanBuilder;
@@ -53,13 +56,8 @@ public class TaskRepositoryImpl implements TaskRepository {
     }
 
     @Override
-    public Optional<Task> findTaskByTaskId(Long taskId) {
-        return taskJpaRepository.findByIdAndRemovedFalse(taskId);
-    }
-
-    @Override
-    public List<Task> findTasksByProjectId(Long projectId) {
-        return taskJpaRepository.findTasksByProjectIdAndRemovedFalse(projectId);
+    public Optional<Task> findTaskById(Long taskId) {
+        return taskJpaRepository.findTaskByIdAndRemovedFalse(taskId);
     }
 
     @Override
@@ -117,10 +115,10 @@ public class TaskRepositoryImpl implements TaskRepository {
                         )
                 )
                 .from(task)
-                .join(task.project, project)
-                .leftJoin(task.board, board)
-                .leftJoin(task.taskManager, projectParticipant)
-                .leftJoin(taskBookmark).on(task.eq(taskBookmark.task).and(taskBookmark.memberId.eq(memberId)))
+                    .join(task.project, project)
+                    .leftJoin(task.board, board)
+                    .leftJoin(task.taskManager, projectParticipant)
+                    .leftJoin(taskBookmark).on(task.eq(taskBookmark.task).and(taskBookmark.memberId.eq(memberId)))
                 .where(builder.and(task.removed.isFalse()))
                 .fetch();
     }

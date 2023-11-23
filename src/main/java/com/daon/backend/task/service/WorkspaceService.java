@@ -109,7 +109,7 @@ public class WorkspaceService {
      */
     @Transactional
     public void modifyWorkspace(ModifyWorkspaceRequestDto requestDto, Long workspaceId) {
-        Workspace workspace = workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
+        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
         workspace.modifyWorkspace(requestDto.getTitle(), requestDto.getDescription(), requestDto.getImageUrl(), requestDto.getSubject());
     }
@@ -159,7 +159,7 @@ public class WorkspaceService {
      * 워크스페이스 단 건 조회
      */
     public FindWorkspaceResponseDto findWorkspace(Long workspaceId) {
-        Workspace workspace = workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
+        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
 
         return new FindWorkspaceResponseDto(workspace);
@@ -171,7 +171,7 @@ public class WorkspaceService {
     @Transactional
     public void inviteMember(Long workspaceId, InviteMemberRequestDto requestDto) {
         String memberId = dbMemberProvider.getMemberIdByUsername(requestDto.getUsername());
-        Workspace workspace = workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
+        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
 
         workspace.addWorkspaceInvitation(new WorkspaceInvitation(memberId, workspace));
@@ -183,7 +183,7 @@ public class WorkspaceService {
     @Transactional
     public void joinWorkspace(Long workspaceId, JoinWorkspaceRequestDto requestDto) {
         String memberId = sessionMemberProvider.getMemberId();
-        Workspace workspace = workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
+        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
 
         if (workspace.checkInvitedMember(memberId)) {
@@ -207,8 +207,15 @@ public class WorkspaceService {
     @Transactional
     public void withdrawWorkspace(Long workspaceId) {
         String memberId = sessionMemberProvider.getMemberId();
-        Workspace workspace = workspaceRepository.findWorkspaceWithParticipantsByWorkspaceId(workspaceId)
+        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+        /**
+         * 1. 담당자 모두 삭제
+         * 2. 생성자 모두 삭제
+         * 3. 프로젝트 참여자(본인) 모두 삭제
+         * 4. 워크스페이스 참여자(본인) 삭제
+         */
+
         Long workspaceParticipantId = workspace.findWorkspaceParticipantByMemberId(memberId).getId();
 
         List<WorkspaceParticipant> workspaceParticipants = workspace.getParticipants();
@@ -228,10 +235,10 @@ public class WorkspaceService {
                                             ProjectParticipant taskManager = task.getTaskManager();
                                             return taskManager != null && taskManager.getMemberId().equals(memberId);
                                         })
-                                        .forEach(Task::removeTaskManager);
+                                        .forEach(Task::deleteTaskManager);
                                 tasks.stream()
                                         .filter(task -> task.getCreatorId().equals(workspaceParticipantId))
-                                        .forEach(Task::removeCreator);
+                                        .forEach(Task::deleteCreator);
                             })
                             .forEach(project -> project.withdrawProject(memberId))
                     );
@@ -259,14 +266,14 @@ public class WorkspaceService {
                                 ProjectParticipant taskManager = task.getTaskManager();
                                 return taskManager != null && taskManager.getMemberId().equals(workspaceParticipantMemberId);
                             })
-                            .forEach(Task::removeTaskManager);
+                            .forEach(Task::deleteTaskManager);
                     tasks.stream()
                             .filter(task -> task.getCreatorId().equals(workspaceParticipantId))
-                            .forEach(Task::removeCreator);
+                            .forEach(Task::deleteCreator);
                 })
                 .forEach(project -> project.withdrawProject(workspaceParticipantMemberId));
 
-        Workspace workspace = workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
+        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
         workspace.deportWorkspace(workspaceParticipantId, workspaceParticipantMemberId);
     }
@@ -276,22 +283,14 @@ public class WorkspaceService {
      */
     @Transactional
     public void deleteWorkspace(Long workspaceId) {
-        Workspace workspace = workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
+        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
-        if (workspace.getDivision().equals(Division.PERSONAL)) {
+        if (workspace.isPersonal()) {
             throw new CanNotDeletePersonalWorkspaceException(workspaceId);
         }
 
-        List<Project> projects = projectRepository.findAllProjectsByWorkspaceId(workspaceId);
-        projects.stream()
-                .peek(project -> {
-                    taskRepository.findAllTasksByProjectId(project.getId())
-                            .forEach(Task::removeTask);
-                    project.getBoards().forEach(Board::deleteBoard);
-                })
-                .forEach(Project::removeProject);
-
         workspace.deleteWorkspace();
+        workspaceRepository.deleteAllRelatedWorkspace(workspaceId);
     }
 
     @Transactional
@@ -300,13 +299,13 @@ public class WorkspaceService {
         projects.stream()
                 .peek(project -> {
                     taskRepository.findAllTasksByProjectId(project.getId())
-                            .forEach(Task::removeTask);
+                            .forEach(Task::deleteTask);
                     project.getBoards().forEach(Board::deleteBoard);
                 })
-                .forEach(Project::removeProject);
+                .forEach(Project::deleteProject);
 
         String memberId = sessionMemberProvider.getMemberId();
-        Workspace workspace = workspaceRepository.findWorkspaceByWorkspaceId(workspaceId)
+        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
         WorkspaceParticipant workspaceParticipant = workspaceRepository.findWorkspaceParticipantByWorkspaceIdAndMemberId(workspaceId, memberId)
                 .orElseThrow(() -> new NotWorkspaceParticipantException(workspaceId));

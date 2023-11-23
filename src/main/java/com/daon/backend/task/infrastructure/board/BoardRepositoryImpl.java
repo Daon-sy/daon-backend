@@ -21,8 +21,8 @@ public class BoardRepositoryImpl implements BoardRepository {
     private final EntityManager em;
 
     @Override
-    public Optional<Board> findBoardByBoardId(Long boardId) {
-        return boardJpaRepository.findById(boardId);
+    public Optional<Board> findBoardById(Long boardId) {
+        return boardJpaRepository.findBoardByIdAndRemovedFalse(boardId);
     }
 
     @Override

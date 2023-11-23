@@ -27,7 +27,7 @@ public class Board extends BaseEntity {
     @JoinColumn(name = "project_id")
     private Project project;
 
-    @OneToMany(mappedBy = "board", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "board", cascade = CascadeType.PERSIST)
     private List<Task> tasks = new ArrayList<>();
 
     public Board(Project project, String title) {

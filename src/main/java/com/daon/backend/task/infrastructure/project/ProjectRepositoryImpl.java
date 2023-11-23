@@ -13,11 +13,14 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 
+import static com.daon.backend.task.domain.board.QBoard.board;
 import static com.daon.backend.task.domain.project.QProject.project;
 import static com.daon.backend.task.domain.project.QProjectParticipant.projectParticipant;
+import static com.daon.backend.task.domain.task.QTask.task;
 
 @Repository
 @RequiredArgsConstructor
@@ -26,6 +29,7 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     private final ProjectJpaRepository projectJpaRepository;
     private final ProjectParticipantJpaRepository projectParticipantJpaRepository;
     private final JPAQueryFactory queryFactory;
+    private final EntityManager em;
 
     @Override
     public Project save(Project project) {
@@ -33,12 +37,12 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     }
 
     @Override
-    public Optional<Project> findProjectByProjectId(Long projectId) {
-        return projectJpaRepository.findByIdAndRemovedFalse(projectId);
+    public Optional<Project> findProjectById(Long projectId) {
+        return projectJpaRepository.findProjectByIdAndRemovedFalse(projectId);
     }
 
     @Override
-    public Optional<Project> findProjectWithParticipantsById(Long projectId) {
+    public Optional<Project> findProjectWithParticipantsByProjectId(Long projectId) {
         return projectJpaRepository.findProjectWithParticipantsByIdAndRemovedFalse(projectId);
     }
 
@@ -82,6 +86,11 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     }
 
     @Override
+    public Optional<Project> findProjectWithTasksByProjectId(Long projectId) {
+        return projectJpaRepository.findProjectWithTasksByIdAndRemovedFalse(projectId);
+    }
+
+    @Override
     public Slice<ProjectSummary> searchProjectSummariesByTitle(String memberId, String title, Pageable pageable) {
         final int pageSize = pageable.getPageSize();
         final long offset = pageable.getOffset();
@@ -112,5 +121,42 @@ public class ProjectRepositoryImpl implements ProjectRepository {
         }
 
         return new SliceImpl<>(projectSummaries, pageable, hasNext);
+    }
+
+    @Override
+    public void deleteTaskManagerRelatedProjectByMemberId(Long projectId, String memberId) {
+        projectJpaRepository.deleteTaskManagerRelatedProjectByMemberId(projectId, memberId);
+    }
+
+    @Override
+    public void deleteTaskManagerByProjectParticipantId(Long projectParticipantId) {
+        queryFactory
+                .update(task)
+                .set(task.taskManager, (ProjectParticipant) null)
+                .where(task.taskManager.id.eq(projectParticipantId))
+                .execute();
+
+        em.flush();
+        em.clear();
+    }
+
+    @Override
+    public void deleteTasksAndBoardsRelatedProject(Long projectId) {
+        queryFactory
+                .update(task)
+                .set(task.taskManager, (ProjectParticipant) null)
+                .set(task.creatorId, (Long) null)
+                .set(task.removed, true)
+                .where(task.project.id.eq(projectId))
+                .execute();
+
+        queryFactory
+                .update(board)
+                .set(board.removed, true)
+                .where(board.project.id.eq(projectId))
+                .execute();
+
+        em.flush();
+        em.clear();
     }
 }
