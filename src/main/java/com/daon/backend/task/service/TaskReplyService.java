@@ -1,18 +1,16 @@
 package com.daon.backend.task.service;
 
+import com.daon.backend.common.response.slice.SliceResponse;
 import com.daon.backend.task.domain.project.*;
 import com.daon.backend.task.domain.task.*;
 import com.daon.backend.task.dto.TaskReplySummary;
 import com.daon.backend.task.dto.task.CreateTaskReplyRequestDto;
 import com.daon.backend.task.dto.task.CreateTaskReplyResponseDto;
-import com.daon.backend.task.dto.task.FindTaskRepliesResponseDto;
 import com.daon.backend.task.dto.task.ModifyTaskReplyRequestDto;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -46,13 +44,13 @@ public class TaskReplyService {
     /**
      * 할 일 댓글 목록 조회
      */
-    public FindTaskRepliesResponseDto findTaskReplies(Long projectId, Long taskId) {
+    public SliceResponse<TaskReplySummary> findTaskReplies(Long projectId, Long taskId, Pageable pageable) {
         ProjectParticipant taskReplyWriter = getProjectParticipantOrElseThrow(projectId);
-        List<TaskReplySummary> list = taskReplyRepository.findTaskReplyByTaskId(taskId).stream()
-                .map(taskReply -> new TaskReplySummary(taskReply, taskReplyWriter))
-                .collect(Collectors.toList());
 
-        return new FindTaskRepliesResponseDto(list, taskId);
+        return new SliceResponse<>(
+                taskReplyRepository.findTaskReplyByTaskId(taskId, pageable)
+                .map(taskReply -> new TaskReplySummary(taskReply, taskReplyWriter))
+        );
     }
 
     /**
