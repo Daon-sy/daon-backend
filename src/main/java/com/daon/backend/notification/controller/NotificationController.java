@@ -30,8 +30,8 @@ public class NotificationController {
         return notificationService.subscribeTasks(workspaceId, params);
     }
 
-    @Operation(summary = "실시간 이벤트(할 일 목록 조회) 구독", description = "실시간 이벤트(할 일 목록 조회) 구독 요청입니다.")
-    @GetMapping(value = "/workspaces/projects//tasks/{taskId}")
+    @Operation(summary = "실시간 이벤트(할 일 상세 조회) 구독", description = "실시간 이벤트(할 일 상세 조회) 구독 요청입니다.")
+    @GetMapping(value = "/workspaces/projects/tasks/{taskId}")
     public SseEmitter subscribeTask(@PathVariable("taskId") Long taskId) {
 
         return notificationService.subscribeTask(taskId);
