@@ -35,7 +35,7 @@ public class MemberController {
             @ApiResponse(responseCode = "200", description = "회원 정보 수정 성공")
     })
     @PatchMapping("/me")
-    public void modifyMember(@RequestBody ModifyMemberRequestDto requestDto){
+    public void modifyMember(@RequestBody @Valid ModifyMemberRequestDto requestDto){
         memberService.modifyMember(requestDto);
     }
 
@@ -54,7 +54,7 @@ public class MemberController {
             @ApiResponse(responseCode = "200", description = "회원 검색 성공")
     })
     @GetMapping
-    public SearchMemberResponseDto searchMember(@RequestParam("username") String username) {
+    public SearchMemberResponseDto searchMember(@RequestParam String username) {
 
         return memberService.searchMember(username);
     }
@@ -83,7 +83,7 @@ public class MemberController {
             @ApiResponse(responseCode = "200", description = "이메일 삭제 성공")
     })
     @DeleteMapping("/me/emails/{memberEmailId}")
-    public void deleteEmail(@PathVariable("memberEmailId") Long memberEmailId) {
+    public void deleteEmail(@PathVariable Long memberEmailId) {
         memberService.deleteEmail(memberEmailId);
     }
   

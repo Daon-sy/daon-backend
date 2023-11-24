@@ -24,7 +24,7 @@ public class NotificationController {
 
     @Operation(summary = "실시간 이벤트(할 일 목록 조회) 구독", description = "실시간 이벤트(할 일 목록 조회) 구독 요청입니다.")
     @GetMapping(value = "/workspaces/{workspaceId}/type", produces = "text/event-stream")
-    public SseEmitter subscribeTasks(@PathVariable("workspaceId") Long workspaceId ,
+    public SseEmitter subscribeTasks(@PathVariable Long workspaceId ,
                                      @ModelAttribute TasksNotificationParams params) {
 
         return notificationService.subscribeTasks(workspaceId, params);
@@ -32,7 +32,7 @@ public class NotificationController {
 
     @Operation(summary = "실시간 이벤트(할 일 상세 조회) 구독", description = "실시간 이벤트(할 일 상세 조회) 구독 요청입니다.")
     @GetMapping(value = "/workspaces/projects/tasks/{taskId}")
-    public SseEmitter subscribeTask(@PathVariable("taskId") Long taskId) {
+    public SseEmitter subscribeTask(@PathVariable Long taskId) {
 
         return notificationService.subscribeTask(taskId);
     }

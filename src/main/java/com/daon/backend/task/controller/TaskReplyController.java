@@ -35,8 +35,8 @@ public class TaskReplyController {
     @ResponseStatus(HttpStatus.CREATED)
     @CheckRole(authority = REP_CREATE)
     @PostMapping
-    public CreateTaskReplyResponseDto createTaskReply(@PathVariable("projectId") Long projectId,
-                                                      @PathVariable("taskId") Long taskId,
+    public CreateTaskReplyResponseDto createTaskReply(@PathVariable Long projectId,
+                                                      @PathVariable Long taskId,
                                                       @RequestBody @Valid CreateTaskReplyRequestDto requestDto) {
         return taskReplyService.createTaskReply(projectId, taskId, requestDto);
     }
@@ -47,8 +47,8 @@ public class TaskReplyController {
     })
     @CheckRole(authority = REP_READ)
     @GetMapping
-    public FindTaskRepliesResponseDto findTaskReplies(@PathVariable("projectId") Long projectId,
-                                                      @PathVariable("taskId") Long taskId) {
+    public FindTaskRepliesResponseDto findTaskReplies(@PathVariable Long projectId,
+                                                      @PathVariable Long taskId) {
         return taskReplyService.findTaskReplies(projectId, taskId);
     }
 
@@ -58,9 +58,9 @@ public class TaskReplyController {
     })
     @CheckRole(authority = REP_UPDATE)
     @PutMapping("/{taskReplyId}")
-    public void modifyTaskReply(@PathVariable("projectId") Long projectId,
-                                @PathVariable("taskId") Long taskId,
-                                @PathVariable("taskReplyId") Long taskReplyId,
+    public void modifyTaskReply(@PathVariable Long projectId,
+                                @PathVariable Long taskId,
+                                @PathVariable Long taskReplyId,
                                 @RequestBody @Valid ModifyTaskReplyRequestDto requestDto) {
         taskReplyService.modifyTaskReplyContent(projectId, taskId, taskReplyId, requestDto);
     }
@@ -71,9 +71,9 @@ public class TaskReplyController {
     })
     @CheckRole(authority = REP_DELETE)
     @DeleteMapping("/{taskReplyId}")
-    public void deleteTaskReply(@PathVariable("projectId") Long projectId,
-                                @PathVariable("taskId") Long taskId,
-                                @PathVariable("taskReplyId") Long taskReplyId) {
+    public void deleteTaskReply(@PathVariable Long projectId,
+                                @PathVariable Long taskId,
+                                @PathVariable Long taskReplyId) {
         taskReplyService.deleteTaskReply(projectId, taskId, taskReplyId);
     }
 }
