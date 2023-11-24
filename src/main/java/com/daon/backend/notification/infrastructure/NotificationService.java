@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
@@ -48,9 +49,15 @@ public class NotificationService {
 
     private SseEmitter emitterInitialSetting(String emitterId, String memberId) {
         SseEmitter emitter = emitterRepository.save(emitterId, new SseEmitter(Long.MAX_VALUE));
-        emitter.onCompletion(() -> emitterRepository.deleteById(emitterId));
-        emitter.onTimeout(() -> emitterRepository.deleteById(emitterId));
-        emitter.onError((e) -> emitterRepository.deleteById(emitterId));
+        emitter.onCompletion(() -> {
+            emitterRepository.deleteById(emitterId);
+            log.debug("emitter completed... emitter-id: {}", emitterId);
+        });
+        emitter.onTimeout(() -> {
+            emitterRepository.deleteById(emitterId);
+            log.debug("emitter timeout... emitter-id: {}", emitterId);
+        });
+        emitter.onError((e) -> emitter.complete());
 
         // 503 에러 방지
         String errorPreventionData = "{\"message\": \"EventStream Created\", \"memberId\": \"" + memberId + "\"}";
@@ -171,6 +178,20 @@ public class NotificationService {
             Long findTaskId = Long.valueOf(StringUtils.substringBetween(key, TASK_EMITTER_ID_PREFIX, "_"));
             if (Objects.equals(taskId, findTaskId)) {
                 sendNotification(emitter, key, key, DEFAULT_MESSAGE);
+            }
+        });
+    }
+
+    @Scheduled(fixedRate = 130_000)
+    private void sendHeartbeat() {
+        Map<String, SseEmitter> emitterMap = emitterRepository.findAll();
+        log.debug("send heartbeat to all emitter... emitter count: {}", emitterMap.values().size());
+
+        emitterMap.forEach((key, emitter) -> {
+            try {
+                emitter.send(SseEmitter.event().name("heartbeat").data(""));
+            } catch (IOException e) {
+                emitterRepository.deleteById(key);
             }
         });
     }

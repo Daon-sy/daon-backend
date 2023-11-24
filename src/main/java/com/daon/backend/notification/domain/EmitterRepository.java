@@ -10,6 +10,8 @@ public interface EmitterRepository {
 
     void saveEventCache(String eventCacheId, Object event);
 
+    Map<String, SseEmitter> findAll();
+
     Map<String, SseEmitter> findAllEmitterStartWithMemberId(String memberId);
 
     Map<String, SseEmitter> findAllEmittersStartWithTasks();
