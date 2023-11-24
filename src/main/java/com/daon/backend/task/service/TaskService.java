@@ -9,7 +9,6 @@ import com.daon.backend.task.domain.task.TaskNotFoundException;
 import com.daon.backend.task.domain.task.TaskRepository;
 import com.daon.backend.task.dto.task.*;
 import com.daon.backend.task.dto.task.history.TaskHistory;
-import com.daon.backend.task.dto.task.history.TaskHistoryResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -149,6 +148,9 @@ public class TaskService {
         task.deleteTask();
     }
 
+    /**
+     * 할 일 히스토리 조회
+     */
     public SliceResponse<TaskHistory> findTaskHistory(Long projectId, Long taskId, Pageable pageable) {
         return new SliceResponse<>(taskRepository.findTaskHistoriesByProjectIdAndTaskId(projectId, taskId, pageable));
     }

@@ -14,7 +14,6 @@ import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,7 +28,6 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
     private final WorkspaceParticipantJpaRepository workspaceParticipantJpaRepository;
     private final ProjectJpaRepository projectJpaRepository;
     private final JPAQueryFactory queryFactory;
-    private final EntityManager em;
 
     @Override
     public Workspace save(Workspace workspace) {
@@ -122,7 +120,5 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
     public void deleteAllRelatedWorkspaceParticipant(Long workspaceParticipantId, String memberId) {
         workspaceJpaRepository.deleteTaskManagerRelatedWorkspaceParticipant(workspaceParticipantId);
         projectJpaRepository.deleteProjectParticipantByWorkspaceParticipant(workspaceParticipantId, memberId);
-
-        em.flush();
     }
 }

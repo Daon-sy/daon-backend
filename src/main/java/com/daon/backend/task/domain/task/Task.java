@@ -149,13 +149,8 @@ public class Task extends BaseEntity {
         this.taskManager = null;
     }
 
-    public void deleteCreator() {
-        this.creatorId = null;
-    }
-
     public void deleteTask() {
         deleteTaskManager();
-        deleteCreator();
         this.removed = true;
     }
 
