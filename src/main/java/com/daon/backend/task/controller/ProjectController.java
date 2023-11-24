@@ -32,7 +32,7 @@ public class ProjectController {
     @ResponseStatus(HttpStatus.CREATED)
     @CheckRole(authority = PJ_CREATE)
     @PostMapping
-    public CreateProjectResponseDto createProject(@PathVariable("workspaceId") Long workspaceId,
+    public CreateProjectResponseDto createProject(@PathVariable Long workspaceId,
                                                   @RequestBody @Valid CreateProjectRequestDto requestDto) {
         return projectService.createProject(workspaceId, requestDto);
     }
@@ -43,7 +43,7 @@ public class ProjectController {
     })
     @CheckRole(authority = PJ_READ)
     @GetMapping
-    public FindProjectsResponseDto findProjects(@PathVariable("workspaceId") Long workspaceId) {
+    public FindProjectsResponseDto findProjects(@PathVariable Long workspaceId) {
 
         return projectService.findAllProjectInWorkspace(workspaceId);
     }
@@ -54,7 +54,7 @@ public class ProjectController {
     })
     @CheckRole(authority = PJ_CREATE)
     @PostMapping("/{projectId}/invite")
-    public void inviteWorkspaceParticipant(@PathVariable("projectId") Long projectId,
+    public void inviteWorkspaceParticipant(@PathVariable Long projectId,
                                            @RequestBody @Valid InviteWorkspaceParticipantRequestDto requestDto) {
         projectService.inviteWorkspaceParticipant(projectId, requestDto);
     }
@@ -65,7 +65,7 @@ public class ProjectController {
     })
     @CheckRole(authority = PJ_READ)
     @GetMapping("/{projectId}/participants")
-    public FindProjectParticipantsResponseDto findProjectParticipants(@PathVariable("projectId") Long projectId) {
+    public FindProjectParticipantsResponseDto findProjectParticipants(@PathVariable Long projectId) {
         return projectService.findProjectParticipants(projectId);
     }
 
@@ -75,7 +75,7 @@ public class ProjectController {
     })
     @CheckRole(authority = PJ_UPDATE)
     @PatchMapping("/{projectId}")
-    public void modifyProject(@PathVariable("projectId") Long projectId,
+    public void modifyProject(@PathVariable Long projectId,
                               @RequestBody @Valid ModifyProjectRequestDto requestDto) {
         projectService.modifyProject(projectId, requestDto);
     }
@@ -86,7 +86,7 @@ public class ProjectController {
     })
     @CheckRole(authority = PJ_READ)
     @GetMapping("/{projectId}")
-    public FindProjectResponseDto findProject(@PathVariable("projectId") Long projectId) {
+    public FindProjectResponseDto findProject(@PathVariable Long projectId) {
         return projectService.findProject(projectId);
     }
 
@@ -96,7 +96,7 @@ public class ProjectController {
     })
     @CheckRole(authority = PJ_READ)
     @DeleteMapping("/{projectId}/participants/me")
-    public void withdrawProject(@PathVariable("projectId") Long projectId) {
+    public void withdrawProject(@PathVariable Long projectId) {
         projectService.withdrawProject(projectId);
     }
 
@@ -106,7 +106,7 @@ public class ProjectController {
     })
     @CheckRole(authority = PJ_DROP)
     @PostMapping("/{projectId}/participants/deportation")
-    public void deportProjectParticipant(@PathVariable("projectId") Long projectId,
+    public void deportProjectParticipant(@PathVariable Long projectId,
                                          @RequestBody @Valid DeportProjectParticipantRequestDto requestDto) {
         projectService.deportProjectParticipant(projectId, requestDto);
     }
@@ -117,7 +117,7 @@ public class ProjectController {
     })
     @CheckRole(authority = PJ_DELETE)
     @DeleteMapping("/{projectId}")
-    public void deleteProject(@PathVariable("projectId") Long projectId) {
+    public void deleteProject(@PathVariable Long projectId) {
         projectService.deleteProject(projectId);
     }
 }

@@ -52,7 +52,7 @@ public class WorkspaceController {
     })
     @CheckRole(authority = PF_READ)
     @GetMapping("/{workspaceId}/participants/me")
-    public FindProfileResponseDto findProfile(@PathVariable("workspaceId") Long workspaceId) {
+    public FindProfileResponseDto findProfile(@PathVariable Long workspaceId) {
 
         return workspaceService.findProfile(workspaceId);
     }
@@ -63,7 +63,7 @@ public class WorkspaceController {
     })
     @CheckRole(authority = WS_READ)
     @GetMapping("/{workspaceId}/participants")
-    public FindWorkspaceParticipantsResponseDto findWorkspaceParticipants(@PathVariable("workspaceId") Long workspaceId) {
+    public FindWorkspaceParticipantsResponseDto findWorkspaceParticipants(@PathVariable Long workspaceId) {
 
         return workspaceService.findWorkspaceParticipants(workspaceId);
     }
@@ -74,7 +74,7 @@ public class WorkspaceController {
     })
     @CheckRole(authority = WSP_ROLE_UPDATE)
     @PostMapping("/{workspaceId}/participants/role")
-    public void modifyParticipantRole(@PathVariable("workspaceId") Long workspaceId,
+    public void modifyParticipantRole(@PathVariable Long workspaceId,
                                       @RequestBody @Valid ModifyRoleRequestDto requestDto) {
         workspaceService.modifyParticipantRole(requestDto, workspaceId);
     }
@@ -86,7 +86,7 @@ public class WorkspaceController {
     @CheckRole(authority = WS_UPDATE)
     @PatchMapping("/{workspaceId}")
     public void modifyWorkspace(@RequestBody ModifyWorkspaceRequestDto requestDto,
-                                @PathVariable("workspaceId") Long workspaceId) {
+                                @PathVariable Long workspaceId) {
         workspaceService.modifyWorkspace(requestDto, workspaceId);
     }
 
@@ -96,7 +96,7 @@ public class WorkspaceController {
     })
     @CheckRole(authority = PF_READ)
     @PatchMapping("/{workspaceId}/participants/me")
-    public void modifyProfile(@PathVariable("workspaceId") Long workspaceId,
+    public void modifyProfile(@PathVariable Long workspaceId,
                               @RequestBody @Valid ModifyProfileRequestDto requestDto) {
         workspaceService.modifyProfile(workspaceId, requestDto);
     }
@@ -107,7 +107,7 @@ public class WorkspaceController {
     })
     @CheckRole(authority = WS_READ)
     @GetMapping("/{workspaceId}")
-    public FindWorkspaceResponseDto findWorkspace(@PathVariable("workspaceId") Long workspaceId) {
+    public FindWorkspaceResponseDto findWorkspace(@PathVariable Long workspaceId) {
         return workspaceService.findWorkspace(workspaceId);
     }
 
@@ -117,7 +117,7 @@ public class WorkspaceController {
     })
     @CheckRole(authority = WSP_INVITE)
     @PostMapping("/{workspaceId}/invite")
-    public void inviteMember(@PathVariable("workspaceId") Long workspaceId,
+    public void inviteMember(@PathVariable Long workspaceId,
                              @RequestBody @Valid InviteMemberRequestDto requestDto) {
         workspaceService.inviteMember(workspaceId, requestDto);
     }
@@ -127,7 +127,7 @@ public class WorkspaceController {
             @ApiResponse(responseCode = "200", description = "워크스페이스 참여 성공")
     })
     @PostMapping("/{workspaceId}/join")
-    public void joinWorkspace(@PathVariable("workspaceId") Long workspaceId,
+    public void joinWorkspace(@PathVariable Long workspaceId,
                               @RequestBody @Valid JoinWorkspaceRequestDto requestDto) {
         workspaceService.joinWorkspace(workspaceId, requestDto);
     }
@@ -138,7 +138,7 @@ public class WorkspaceController {
     })
     @CheckRole(authority = WS_READ)
     @DeleteMapping("/{workspaceId}/participants/me")
-    public void withdrawWorkspace(@PathVariable("workspaceId") Long workspaceId) {
+    public void withdrawWorkspace(@PathVariable Long workspaceId) {
         workspaceService.withdrawWorkspace(workspaceId);
     }
 
@@ -148,7 +148,7 @@ public class WorkspaceController {
     })
     @CheckRole(authority = WSP_DROP)
     @PostMapping("/{workspaceId}/participants/deportation")
-    public void deportWorkspaceParticipant(@PathVariable("workspaceId") Long workspaceId,
+    public void deportWorkspaceParticipant(@PathVariable Long workspaceId,
                                            @RequestBody @Valid DeportWorkspaceParticipantRequestDto requestDto) {
         workspaceService.deportWorkspaceParticipant(workspaceId, requestDto);
     }
@@ -159,7 +159,7 @@ public class WorkspaceController {
     })
     @CheckRole(authority = WS_DELETE)
     @DeleteMapping("/{workspaceId}")
-    public void deleteWorkspace(@PathVariable("workspaceId") Long workspaceId) {
+    public void deleteWorkspace(@PathVariable Long workspaceId) {
         workspaceService.deleteWorkspace(workspaceId);
     }
 
@@ -169,7 +169,7 @@ public class WorkspaceController {
     })
     @CheckRole(authority = WS_DELETE)
     @DeleteMapping("reset/{workspaceId}")
-    public void resetWorkspace(@PathVariable("workspaceId") Long workspaceId) {
+    public void resetWorkspace(@PathVariable Long workspaceId) {
         workspaceService.resetWorkspace(workspaceId);
     }
 }

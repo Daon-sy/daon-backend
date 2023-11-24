@@ -37,8 +37,8 @@ public class SearchController {
             @ApiResponse(responseCode = "200", description = "통합 검색 성공")
     })
     @GetMapping("/search")
-    public <T> SliceResponse<T> integratedSearch(@RequestParam("target") String target,
-                                                @RequestParam("title") String title,
+    public <T> SliceResponse<T> integratedSearch(@RequestParam String target,
+                                                @RequestParam String title,
                                                 Pageable pageable) {
         return searchService.integratedSearchByTitle(target, title, pageable);
     }

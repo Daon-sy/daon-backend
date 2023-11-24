@@ -2,14 +2,10 @@ package com.daon.backend.task.domain.task;
 
 import com.daon.backend.common.event.Events;
 import com.daon.backend.config.BaseEntity;
-import com.daon.backend.notification.domain.NotificationType;
-import com.daon.backend.notification.domain.SendAlarmEvent;
-import com.daon.backend.notification.domain.SendFindTaskEvent;
-import com.daon.backend.notification.domain.SendFindTasksEvent;
-import com.daon.backend.notification.dto.response.DesignatedManagerResponseDto;
 import com.daon.backend.task.domain.board.Board;
 import com.daon.backend.task.domain.project.Project;
 import com.daon.backend.task.domain.project.ProjectParticipant;
+import com.daon.backend.task.dto.notification.DesignatedManagerAlarmResponseDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -153,37 +149,33 @@ public class Task extends BaseEntity {
         this.taskManager = null;
     }
 
-    public void deleteCreator() {
-        this.creatorId = null;
-    }
-
     public void deleteTask() {
         deleteTaskManager();
-        deleteCreator();
         this.removed = true;
     }
 
     private void publishSendAlarmEvent(ProjectParticipant taskManager) {
-        DesignatedManagerResponseDto designatedManagerEventResponse = new DesignatedManagerResponseDto(
-                this.project.getWorkspace().getId(),
-                this.project.getWorkspace().getTitle(),
-                this.project.getId(),
-                this.project.getTitle(),
-                this.id,
-                this.title
-        );
-
-        Events.raise(SendAlarmEvent.create(
-                NotificationType.REGISTERED_TASK_MANAGER, designatedManagerEventResponse, taskManager.getMemberId()
+        Events.raise(new DesignatedManagerAlarmEvent(
+                new DesignatedManagerAlarmResponseDto(
+                        this.project.getWorkspace().getId(),
+                        this.project.getWorkspace().getTitle(),
+                        this.project.getId(),
+                        this.project.getTitle(),
+                        this.id,
+                        this.title
+                ),
+                taskManager.getMemberId()
         ));
     }
 
     private void publishSendTasksEvent() {
-        Events.raise(SendFindTasksEvent.create(
-                this.project.getWorkspace().getId(), this.project.getId(), this.board.getId()));
+        Events.raise(new SendFindTasksEvent(
+                this.project.getWorkspace().getId(), this.project.getId(), this.board.getId()
+                )
+        );
     }
 
     private void publishSendTaskEvent() {
-        Events.raise(SendFindTaskEvent.create(this.getId()));
+        Events.raise(new SendFindTaskEvent(this.id));
     }
 }

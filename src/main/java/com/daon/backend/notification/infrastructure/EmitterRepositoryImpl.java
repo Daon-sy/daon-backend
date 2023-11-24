@@ -14,17 +14,11 @@ import java.util.stream.Collectors;
 public class EmitterRepositoryImpl implements EmitterRepository {
 
     private final Map<String, SseEmitter> emitters = new ConcurrentHashMap<>();
-    private final Map<String, Object> eventCache = new ConcurrentHashMap<>();
 
     @Override
     public SseEmitter save(String emitterId, SseEmitter sseEmitter) {
         emitters.put(emitterId, sseEmitter);
         return sseEmitter;
-    }
-
-    @Override
-    public void saveEventCache(String eventCacheId, Object event) {
-        eventCache.put(eventCacheId, event);
     }
 
     @Override
@@ -57,16 +51,4 @@ public class EmitterRepositoryImpl implements EmitterRepository {
     public void deleteById(String id) {
         emitters.remove(id);
     }
-
-    @Override
-    public void deleteAllEmitterStartWith(String memberId) {
-        emitters.forEach(
-                (key, emitter) -> {
-                    if (key.startsWith(memberId)) {
-                        emitters.remove(key);
-                    }
-                }
-        );
-    }
-
 }
