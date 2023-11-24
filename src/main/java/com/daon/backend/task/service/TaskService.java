@@ -9,7 +9,6 @@ import com.daon.backend.task.domain.task.TaskNotFoundException;
 import com.daon.backend.task.domain.task.TaskRepository;
 import com.daon.backend.task.dto.task.*;
 import com.daon.backend.task.dto.task.history.TaskHistory;
-import com.daon.backend.task.dto.task.history.TaskHistoryResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
