@@ -47,4 +47,11 @@ public class WorkspaceExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ErrorResponse.createError(ErrorCode.CAN_NOT_DELETE_PERSONAL_WORKSPACE));
     }
+
+    @ExceptionHandler(CanNotModifyMyRoleException.class)
+    public ResponseEntity<ErrorResponse> canNotModifyMyRoleExceptionHandle(CanNotModifyMyRoleException e) {
+        log.info("{}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.createError(ErrorCode.CAN_NOT_MODIFY_MY_ROLE));
+    }
 }
