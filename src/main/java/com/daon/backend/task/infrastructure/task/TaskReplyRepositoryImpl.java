@@ -20,6 +20,6 @@ public class TaskReplyRepositoryImpl implements TaskReplyRepository {
 
     @Override
     public List<TaskReply> findTaskReplyByTaskId(Long taskId) {
-        return taskReplyJpaRepository.findAllByTaskIdAndRemovedFalse(taskId);
+        return taskReplyJpaRepository.findAllByTaskId(taskId);
     }
 }
