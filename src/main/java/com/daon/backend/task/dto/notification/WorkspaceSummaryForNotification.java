@@ -1,11 +1,11 @@
-package com.daon.backend.notification.dto;
+package com.daon.backend.task.dto.notification;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class WorkspaceSummary {
+public class WorkspaceSummaryForNotification {
 
     private Long workspaceId;
 
