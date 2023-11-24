@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -25,9 +26,9 @@ public class NotificationService {
     private final NotificationRepository notificationRepository;
     private final ObjectMapper objectMapper;
 
-    private static final String DEFAULT_MESSAGE = "할 일이 변경되었습니다. 조회 요청을 보내주세요.";
     private static final String TASKS_EMITTER_ID_PREFIX = "tasks_";
     private static final String TASK_EMITTER_ID_PREFIX = "task_";
+    private static final String NOTIFICATION_TYPE_MESSAGE = "MESSAGE";
 
 
     /**
@@ -37,7 +38,7 @@ public class NotificationService {
         String memberId = sessionMemberProvider.getMemberId();
         String emitterId = memberId + "_" + System.currentTimeMillis();
 
-        SseEmitter emitter = emitterInitialSetting(emitterId, memberId);
+        SseEmitter emitter = emitterInitialSetting(emitterId);
 
         if (hasLostData(lastEventId)) {
             sendLostData(lastEventId, memberId, emitterId, emitter);
@@ -46,23 +47,24 @@ public class NotificationService {
         return emitter;
     }
 
-    private SseEmitter emitterInitialSetting(String emitterId, String memberId) {
+    private SseEmitter emitterInitialSetting(String emitterId) {
         SseEmitter emitter = emitterRepository.save(emitterId, new SseEmitter(Long.MAX_VALUE));
         emitter.onCompletion(() -> emitterRepository.deleteById(emitterId));
         emitter.onTimeout(() -> emitterRepository.deleteById(emitterId));
         emitter.onError((e) -> emitterRepository.deleteById(emitterId));
 
         // 503 에러 방지
-        String errorPreventionData = "{\"message\": \"EventStream Created\", \"memberId\": \"" + memberId + "\"}";
-        sendNotification(emitter, emitterId, emitterId, errorPreventionData);
+        String connectType = "CONNECTED";
+        sendNotification(emitter, emitterId, emitterId, null, connectType);
         return emitter;
     }
 
-    private void sendNotification(SseEmitter emitter, String eventId, String emitterId, Object data) {
+    private void sendNotification(SseEmitter emitter, String eventId, String emitterId, Object data, String type) {
         try {
-            emitter.send(SseEmitter.event()
+            SseEmitter.SseEventBuilder eventBuilder = SseEmitter.event()
                     .id(eventId)
-                    .data(data));
+                    .name(type);
+            emitter.send(eventBuilder.data(Objects.requireNonNullElse(data, "")));
         } catch (IOException e) {
             emitterRepository.deleteById(emitterId);
         }
@@ -73,10 +75,17 @@ public class NotificationService {
     }
 
     private void sendLostData(String lastEventId, String memberId, String emitterId, SseEmitter emitter) {
-        Map<String, SseEmitter> eventCaches = emitterRepository.findAllEmitterStartWithMemberId(memberId);
-        eventCaches.entrySet().stream()
-                .filter(entry -> lastEventId.compareTo(entry.getKey()) < 0)
-                .forEach(entry -> sendNotification(emitter, entry.getKey(), emitterId, entry.getValue()));
+        long now = Long.parseLong(lastEventId.substring(memberId.length() + 1));
+
+        List<Notification> notifications = notificationRepository.findNotSentNotifications(memberId, now);
+        notifications.forEach(notification -> sendNotification(
+                        emitter,
+                        emitterId,
+                        emitterId,
+                        notification.getNotificationData(),
+                        String.valueOf(notification.getNotificationType())
+                )
+        );
     }
 
     /**
@@ -84,24 +93,26 @@ public class NotificationService {
      */
     public void sendAlarm(NotificationType type, Object data, String memberId) throws JsonProcessingException {
         String notificationData = objectMapper.writeValueAsString(data);
+        long whenEventPublished = System.currentTimeMillis();
 
-        Notification notification = notificationRepository.save(createNotification(type, notificationData, memberId));
-        String eventId = memberId + "_" + System.currentTimeMillis();
+        String eventId = memberId + "_" + whenEventPublished;
+        notificationRepository.save(createNotification(type, notificationData, memberId, whenEventPublished));
 
         Map<String, SseEmitter> emitters = emitterRepository.findAllEmitterStartWithMemberId(memberId);
         emitters.forEach(
-                (key, emitter) -> {
-                    emitterRepository.saveEventCache(key, notification);
-                    sendNotification(emitter, eventId, key, notificationData);
-                }
+                (key, emitter) -> sendNotification(emitter, eventId, key, notificationData, String.valueOf(type))
         );
     }
 
-    private Notification createNotification(NotificationType notificationType, String notificationData, String memberId) {
+    private Notification createNotification(NotificationType notificationType,
+                                            String notificationData,
+                                            String memberId,
+                                            long now) {
         return Notification.builder()
                 .notificationType(notificationType)
                 .notificationData(notificationData)
                 .memberId(memberId)
+                .whenEventPublished(now)
                 .build();
     }
 
@@ -116,7 +127,7 @@ public class NotificationService {
         String memberId = sessionMemberProvider.getMemberId();
         String emitterId = TASKS_EMITTER_ID_PREFIX + workspaceId + params.getSuffixByParam() + memberId;
 
-        return emitterInitialSetting(emitterId, memberId);
+        return emitterInitialSetting(emitterId);
     }
 
     /**
@@ -134,18 +145,18 @@ public class NotificationService {
                     if (workspaceId.equals(emitterWorkspaceId) &&
                             projectId.equals(Long.parseLong(conditions[5])) &&
                             boardId.equals(Long.parseLong(conditions[3]))) {
-                        sendNotification(emitter, key, key, DEFAULT_MESSAGE);
+                        sendNotification(emitter, key, key, null, NOTIFICATION_TYPE_MESSAGE);
                     }
                     break;
                 case "project":
                     if (workspaceId.equals(emitterWorkspaceId) && projectId.equals(Long.parseLong(conditions[3]))) {
-                        sendNotification(emitter, key, key, DEFAULT_MESSAGE);
+                        sendNotification(emitter, key, key, null, NOTIFICATION_TYPE_MESSAGE);
                     }
                     break;
                 case "my":
                 case "bookmark":
                     if (workspaceId.equals(emitterWorkspaceId)) {
-                        sendNotification(emitter, key, key, DEFAULT_MESSAGE);
+                        sendNotification(emitter, key, key, null, NOTIFICATION_TYPE_MESSAGE);
                     }
                     break;
             }
@@ -159,7 +170,7 @@ public class NotificationService {
         String memberId = sessionMemberProvider.getMemberId();
         String emitterId = TASK_EMITTER_ID_PREFIX + taskId + "_" + memberId;
 
-        return emitterInitialSetting(emitterId, memberId);
+        return emitterInitialSetting(emitterId);
     }
 
     /**
@@ -170,7 +181,7 @@ public class NotificationService {
         emitters.forEach((key, emitter) -> {
             Long findTaskId = Long.valueOf(StringUtils.substringBetween(key, TASK_EMITTER_ID_PREFIX, "_"));
             if (Objects.equals(taskId, findTaskId)) {
-                sendNotification(emitter, key, key, DEFAULT_MESSAGE);
+                sendNotification(emitter, key, key, null, NOTIFICATION_TYPE_MESSAGE);
             }
         });
     }

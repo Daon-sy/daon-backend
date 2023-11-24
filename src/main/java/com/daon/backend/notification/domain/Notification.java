@@ -1,6 +1,5 @@
 package com.daon.backend.notification.domain;
 
-import com.daon.backend.config.BaseEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +10,7 @@ import javax.persistence.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Notification extends BaseEntity {
+public class Notification {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -26,10 +25,13 @@ public class Notification extends BaseEntity {
 
     private String memberId;
 
+    private long whenEventPublished;
+
     @Builder
-    public Notification(NotificationType notificationType, String notificationData, String memberId) {
+    public Notification(NotificationType notificationType, String notificationData, String memberId, long whenEventPublished) {
         this.notificationType = notificationType;
         this.notificationData = notificationData;
         this.memberId = memberId;
+        this.whenEventPublished = whenEventPublished;
     }
 }
