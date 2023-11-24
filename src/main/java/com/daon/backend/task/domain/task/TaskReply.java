@@ -22,8 +22,6 @@ public class TaskReply extends BaseEntity {
     @Column(length = 500)
     private String content;
 
-    private boolean removed;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "task_id", nullable = false)
     private Task task; //할일
@@ -43,9 +41,5 @@ public class TaskReply extends BaseEntity {
 
     public void modifyTaskReplyContent(String content) {
         this.content = content;
-    }
-
-    public void deleteTaskReply() {
-        this.removed = true;
     }
 }

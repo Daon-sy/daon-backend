@@ -77,7 +77,7 @@ public class Task extends BaseEntity {
     private List<TaskBookmark> taskBookmarks = new ArrayList<>();
 
     @NotAudited
-    @OneToMany(mappedBy = "task", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "task", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<TaskReply> taskReplies = new ArrayList<>();
 
     @Builder
@@ -99,7 +99,7 @@ public class Task extends BaseEntity {
     public void modifyTask(String title, String content, LocalDateTime startDate, LocalDateTime endDate, boolean emergency,
                            TaskProgressStatus progressStatus, Board board, ProjectParticipant taskManager) {
         if ((this.taskManager == null && taskManager != null) ||
-            (this.taskManager != null && taskManager != null && taskManager.getId().equals(this.getTaskManager().getId()))) {
+                (this.taskManager != null && taskManager != null && taskManager.getId().equals(this.getTaskManager().getId()))) {
             publishSendAlarmEvent(taskManager);
         }
 
@@ -133,7 +133,7 @@ public class Task extends BaseEntity {
 
     public void modifyTaskReplyContent(Long taskReplyId, String content) {
         TaskReply findTaskReply = this.taskReplies.stream()
-                .filter(taskReply -> !taskReply.isRemoved() && taskReply.getId().equals(taskReplyId))
+                .filter(taskReply -> taskReply.getId().equals(taskReplyId))
                 .findFirst()
                 .orElseThrow(() -> new TaskReplyNotFoundException(this.id, taskReplyId));
 
@@ -141,11 +141,12 @@ public class Task extends BaseEntity {
     }
 
     public void deleteTaskReply(Long taskReplyId) {
-        this.taskReplies.stream()
-                .filter(taskReply -> taskReply.getId().equals(taskReplyId))
-                .findFirst()
-                .orElseThrow(() -> new TaskReplyNotFoundException(taskReplyId))
-                .deleteTaskReply();
+        this.taskReplies.remove(
+                this.taskReplies.stream()
+                        .filter(taskReply -> taskReply.getId().equals(taskReplyId))
+                        .findFirst()
+                        .orElseThrow(() -> new TaskReplyNotFoundException(taskReplyId))
+        );
     }
 
     public void deleteTaskManager() {

@@ -8,6 +8,8 @@ public interface EmitterRepository {
 
     SseEmitter save(String emitterId, SseEmitter sseEmitter);
 
+    Map<String, SseEmitter> findAll();
+
     Map<String, SseEmitter> findAllEmitterStartWithMemberId(String memberId);
 
     Map<String, SseEmitter> findAllEmittersStartWithTasks();
