@@ -135,6 +135,7 @@ public class TaskService {
     /**
      * 할 일  삭제
      */
+    @Transactional
     public void deleteTask(Long taskId) {
         Task task = taskRepository.findTaskById(taskId)
                 .orElseThrow(() -> new TaskNotFoundException(taskId));
