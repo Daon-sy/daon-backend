@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface TaskReplyJpaRepository extends JpaRepository<TaskReply, Long> {
 
-    List<TaskReply> findAllByTaskIdAndRemovedFalse(Long taskId);
+    List<TaskReply> findAllByTaskId(Long taskId);
 
 }
