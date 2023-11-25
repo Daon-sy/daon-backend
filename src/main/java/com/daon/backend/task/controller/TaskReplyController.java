@@ -1,9 +1,10 @@
 package com.daon.backend.task.controller;
 
+import com.daon.backend.common.response.slice.SliceResponse;
 import com.daon.backend.task.domain.authority.CheckRole;
+import com.daon.backend.task.dto.TaskReplySummary;
 import com.daon.backend.task.dto.task.CreateTaskReplyRequestDto;
 import com.daon.backend.task.dto.task.CreateTaskReplyResponseDto;
-import com.daon.backend.task.dto.task.FindTaskRepliesResponseDto;
 import com.daon.backend.task.dto.task.ModifyTaskReplyRequestDto;
 import com.daon.backend.task.service.TaskReplyService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,6 +13,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -47,9 +50,10 @@ public class TaskReplyController {
     })
     @CheckRole(authority = REP_READ)
     @GetMapping
-    public FindTaskRepliesResponseDto findTaskReplies(@PathVariable Long projectId,
-                                                      @PathVariable Long taskId) {
-        return taskReplyService.findTaskReplies(projectId, taskId);
+    public SliceResponse<TaskReplySummary> findTaskReplies(@PathVariable Long projectId,
+                                                           @PathVariable Long taskId,
+                                                           @PageableDefault Pageable pageable) {
+        return taskReplyService.findTaskReplies(projectId, taskId, pageable);
     }
 
     @Operation(summary = "할일 댓글 수정", description = "할일 댓글 수정 요청입니다.")

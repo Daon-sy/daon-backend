@@ -13,6 +13,4 @@ public class CreateTaskReplyRequestDto {
     @Size(max = 500)
     @NotBlank
     private String content;
-
-    private Long writerId;
 }

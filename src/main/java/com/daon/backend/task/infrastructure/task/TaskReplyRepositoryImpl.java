@@ -3,6 +3,8 @@ package com.daon.backend.task.infrastructure.task;
 import com.daon.backend.task.domain.task.TaskReply;
 import com.daon.backend.task.domain.task.TaskReplyRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -20,6 +22,11 @@ public class TaskReplyRepositoryImpl implements TaskReplyRepository {
 
     @Override
     public List<TaskReply> findTaskReplyByTaskId(Long taskId) {
-        return taskReplyJpaRepository.findAllByTaskId(taskId);
+        return taskReplyJpaRepository.findAllByTaskIdOrderByCreatedAtDesc(taskId);
+    }
+
+    @Override
+    public Slice<TaskReply> findTaskReplyByTaskId(Long taskId, Pageable pageable) {
+        return taskReplyJpaRepository.findAllByTaskIdOrderByCreatedAtDesc(taskId, pageable);
     }
 }

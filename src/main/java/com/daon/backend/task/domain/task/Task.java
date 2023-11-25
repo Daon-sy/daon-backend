@@ -95,7 +95,7 @@ public class Task extends BaseEntity {
     public void modifyTask(String title, String content, LocalDateTime startDate, LocalDateTime endDate, boolean emergency,
                            TaskProgressStatus progressStatus, Board board, ProjectParticipant taskManager) {
         if ((this.taskManager == null && taskManager != null) ||
-                (this.taskManager != null && taskManager != null && taskManager.getId().equals(this.getTaskManager().getId()))) {
+                (this.taskManager != null && taskManager != null && !taskManager.getId().equals(this.getTaskManager().getId()))) {
             publishSendAlarmEvent(taskManager);
         }
 

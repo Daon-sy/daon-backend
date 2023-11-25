@@ -10,11 +10,11 @@ public class FindEmailsResponseDto {
 
     private int totalCount;
 
-    private List<EmailInfo> emails;
+    private List<EmailInfo> memberEmails;
 
-    public FindEmailsResponseDto(List<EmailInfo> emails) {
-        this.totalCount = emails.size();
-        this.emails = emails;
+    public FindEmailsResponseDto(List<EmailInfo> memberEmails) {
+        this.totalCount = memberEmails.size();
+        this.memberEmails = memberEmails;
     }
 
     @Getter
