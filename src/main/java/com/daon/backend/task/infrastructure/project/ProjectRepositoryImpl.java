@@ -67,20 +67,6 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     }
 
     @Override
-    public List<Project> findAllProjectsByWorkspaceParticipant(WorkspaceParticipant workspaceParticipant) {
-        return projectParticipantJpaRepository.findProjectsByWorkspaceParticipant(workspaceParticipant);
-    }
-
-    @Override
-    public List<Project> findProjectsByWorkspaceParticipantId(Long workspaceParticipantId) {
-        return queryFactory
-                .selectFrom(project)
-                .innerJoin(project.participants, projectParticipant)
-                .where(projectParticipant.workspaceParticipant.id.eq(workspaceParticipantId))
-                .fetch();
-    }
-
-    @Override
     public Optional<Project> findProjectWithBoardsByProjectId(Long projectId) {
         return projectJpaRepository.findProjectWithBoardsByIdAndRemovedFalse(projectId);
     }

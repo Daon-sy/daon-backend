@@ -28,10 +28,6 @@ public interface ProjectRepository {
 
     List<Project> findAllProjectsByWorkspaceId(Long workspaceId);
 
-    List<Project> findAllProjectsByWorkspaceParticipant(WorkspaceParticipant workspaceParticipant);
-
-    List<Project> findProjectsByWorkspaceParticipantId(Long workspaceParticipantId);
-
     Slice<ProjectSummary> searchProjectSummariesByTitle(String memberId, String title, Pageable pageable);
 
     void deleteTaskManagerRelatedProjectByMemberId(Long projectId, String memberId);
