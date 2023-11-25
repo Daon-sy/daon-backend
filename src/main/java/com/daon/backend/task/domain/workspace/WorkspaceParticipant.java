@@ -45,10 +45,6 @@ public class WorkspaceParticipant extends BaseEntity {
         return new WorkspaceParticipant(workspace, profile, memberId, Role.WORKSPACE_ADMIN);
     }
 
-    public static WorkspaceParticipant withProjectAdminRole(Workspace workspace, Profile profile, String memberId) {
-        return new WorkspaceParticipant(workspace, profile, memberId, Role.PROJECT_ADMIN);
-    }
-
     public static WorkspaceParticipant withBasicParticipantRole(Workspace workspace, Profile profile, String memberId) {
         return new WorkspaceParticipant(workspace, profile, memberId, Role.BASIC_PARTICIPANT);
     }

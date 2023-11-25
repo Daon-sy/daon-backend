@@ -1,10 +1,5 @@
 package com.daon.backend.task.service;
 
-import com.daon.backend.task.domain.board.Board;
-import com.daon.backend.task.domain.project.Project;
-import com.daon.backend.task.domain.project.ProjectRepository;
-import com.daon.backend.task.domain.task.Task;
-import com.daon.backend.task.domain.task.TaskRepository;
 import com.daon.backend.task.domain.workspace.*;
 import com.daon.backend.task.dto.WorkspaceSummary;
 import com.daon.backend.task.dto.workspace.*;
@@ -25,8 +20,6 @@ public class WorkspaceService {
     private final WorkspaceRepository workspaceRepository;
     private final SessionMemberProvider sessionMemberProvider;
     private final DbMemberProvider dbMemberProvider;
-    private final ProjectRepository projectRepository;
-    private final TaskRepository taskRepository;
 
     /**
      * 워크스페이스 생성
@@ -46,9 +39,7 @@ public class WorkspaceService {
                 )
         );
 
-        Long workspaceId = workspaceRepository.save(workspace).getId();
-
-        return new CreateWorkspaceResponseDto(workspaceId);
+        return new CreateWorkspaceResponseDto(workspaceRepository.save(workspace).getId());
     }
 
     /**
@@ -56,6 +47,7 @@ public class WorkspaceService {
      */
     public FindWorkspacesResponseDto findWorkspaces() {
         String memberId = sessionMemberProvider.getMemberId();
+
         return new FindWorkspacesResponseDto(
                 workspaceRepository.findWorkspacesByMemberId(memberId).stream()
                         .map(WorkspaceSummary::new)
@@ -97,7 +89,7 @@ public class WorkspaceService {
     }
 
     public boolean isWorkspaceParticipants(Long workspaceId, String memberId) {
-        Workspace workspace = workspaceRepository.findWorkspaceWithParticipantsByWorkspaceId(workspaceId)
+        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
 
         return workspace.isWorkspaceParticipantsByMemberId(memberId);
@@ -110,7 +102,12 @@ public class WorkspaceService {
     public void modifyWorkspace(ModifyWorkspaceRequestDto requestDto, Long workspaceId) {
         Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
-        workspace.modifyWorkspace(requestDto.getTitle(), requestDto.getDescription(), requestDto.getImageUrl(), requestDto.getSubject());
+        workspace.modifyWorkspace(
+                requestDto.getTitle(),
+                requestDto.getDescription(),
+                requestDto.getImageUrl(),
+                requestDto.getSubject()
+        );
     }
 
     /**
@@ -119,9 +116,10 @@ public class WorkspaceService {
     @Transactional
     public void modifyParticipantRole(ModifyRoleRequestDto requestDto, Long workspaceId) {
         Long workspaceParticipantId = requestDto.getWorkspaceParticipantId();
-        Workspace workspace = workspaceRepository.findWorkspaceWithParticipantsByWorkspaceId(workspaceId)
+        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
-        WorkspaceParticipant workspaceParticipant = workspace.findWorkspaceParticipantByWorkspaceParticipantId(workspaceParticipantId, workspaceId);
+        WorkspaceParticipant workspaceParticipant =
+                workspace.findWorkspaceParticipantByWorkspaceParticipantId(workspaceParticipantId, workspaceId);
 
         String memberIdWhoRequest = sessionMemberProvider.getMemberId();
         if (workspaceParticipant.getMemberId().equals(memberIdWhoRequest)) {
@@ -136,10 +134,10 @@ public class WorkspaceService {
     @Transactional
     public void modifyProfile(Long workspaceId, ModifyProfileRequestDto requestDto) {
         String memberId = sessionMemberProvider.getMemberId();
-        Workspace findWorkspace = workspaceRepository.findWorkspaceWithParticipantsByWorkspaceId(workspaceId)
+        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
 
-        WorkspaceParticipant workspaceParticipant = findWorkspace.findWorkspaceParticipantByMemberId(memberId);
+        WorkspaceParticipant workspaceParticipant = workspace.findWorkspaceParticipantByMemberId(memberId);
         workspaceParticipant.getProfile().modifyProfile(
                 requestDto.getName(),
                 requestDto.getImageUrl(),
@@ -152,10 +150,10 @@ public class WorkspaceService {
      */
     public FindProfileResponseDto findProfile(Long workspaceId) {
         String memberId = sessionMemberProvider.getMemberId();
-        Workspace findWorkspace = workspaceRepository.findWorkspaceWithParticipantsByWorkspaceId(workspaceId)
+        Workspace findWorkspace = workspaceRepository.findWorkspaceById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
-
         WorkspaceParticipant workspaceParticipant = findWorkspace.findWorkspaceParticipantByMemberId(memberId);
+
         return new FindProfileResponseDto(workspaceParticipant);
     }
 
@@ -258,21 +256,9 @@ public class WorkspaceService {
      */
     @Transactional
     public void resetWorkspace(Long workspaceId) {
-        List<Project> projects = projectRepository.findAllProjectsByWorkspaceId(workspaceId);
-        projects.stream()
-                .peek(project -> {
-                    taskRepository.findAllTasksByProjectId(project.getId())
-                            .forEach(Task::deleteTask);
-                    project.getBoards().forEach(Board::deleteBoard);
-                })
-                .forEach(Project::deleteProject);
-
-        String memberId = sessionMemberProvider.getMemberId();
         Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
-        WorkspaceParticipant workspaceParticipant = workspaceRepository.findWorkspaceParticipantByWorkspaceIdAndMemberId(workspaceId, memberId)
-                .orElseThrow(() -> new NotWorkspaceParticipantException(workspaceId));
-        String findName = workspaceParticipant.getProfile().getName();
-        workspace.resetWorkspace(findName);
+        String memberId = sessionMemberProvider.getMemberId();
+        workspace.resetWorkspace(memberId);
     }
 }

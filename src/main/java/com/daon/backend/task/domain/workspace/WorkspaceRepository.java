@@ -13,13 +13,7 @@ public interface WorkspaceRepository {
 
     Optional<Workspace> findWorkspaceById(Long workspaceId);
 
-    Optional<Workspace> findWorkspaceWithParticipantsByWorkspaceId(Long workspaceId);
-
     List<Workspace> findWorkspacesByMemberId(String memberId);
-
-    Optional<WorkspaceParticipant> findWorkspaceParticipantByWorkspaceIdAndMemberId(Long workspaceId, String memberId);
-
-    Optional<WorkspaceParticipant> findWorkspaceParticipantByWorkspaceParticipantId(Long workspaceParticipantId);
 
     List<WorkspaceParticipant> findWorkspaceParticipantsByWorkspaceId(Long workspaceId);
 

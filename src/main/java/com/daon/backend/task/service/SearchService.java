@@ -8,10 +8,7 @@ import com.daon.backend.task.dto.TaskSearchParams;
 import com.daon.backend.task.dto.task.FindTasksResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @RequiredArgsConstructor
 @Service

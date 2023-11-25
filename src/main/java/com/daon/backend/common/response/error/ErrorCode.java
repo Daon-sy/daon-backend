@@ -37,6 +37,7 @@ public enum ErrorCode {
     NOT_INVITED_MEMBER(3003, "해당 워크스페이스에 초대 받은 회원이 아닙니다."),
     CAN_NOT_DELETE_PERSONAL_WORKSPACE(3004, "개인 워크스페이스는 삭제할 수 없습니다."),
     CAN_NOT_MODIFY_MY_ROLE(3005, "본인의 참여자 권한은 변경할 수 없습니다."),
+    CAN_NOT_INVITE_PERSONAL_WORKSPACE(3006, "개인 워크스페이스에는 사용자를 초대할 수 없습니다."),
 
     // 프로젝트
     PROJECT_NOT_FOUND(4000, "존재하지 않는 프로젝트입니다."),
