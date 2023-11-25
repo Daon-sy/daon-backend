@@ -96,6 +96,15 @@ public class JwtManagerImpl implements JwtManager {
         return new Tokens(accessToken, refreshToken);
     }
 
+    @Override
+    public void prohibitTokens(String accessToken, String refreshToken) {
+        String BEARER_TYPE = "Bearer ";
+        String accessTokenValue = accessToken.substring(BEARER_TYPE.length());
+        Instant expirationOfAccessToken = parse(accessTokenValue).getExpiredAt();
+
+        refreshTokenRepository.prohibitAccessToken(accessTokenValue, refreshToken, "logout", expirationOfAccessToken);
+    }
+
     private Token buildAccessToken(Role role, String id) {
         Instant now = Instant.now();
         Instant expiration = now.plusSeconds(jwtProperties.getAccessTokenExpSec());

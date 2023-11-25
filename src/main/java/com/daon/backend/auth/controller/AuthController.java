@@ -13,10 +13,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -61,19 +58,33 @@ public class AuthController {
                 }).build();
     }
 
+    @Operation(summary = "로그아웃", description = "로그아웃 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "로그아웃 성공")
+    })
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(HttpServletRequest request) {
+        String refreshToken = getRefreshTokenValue(request);
+        String accessToken = request.getHeader(HttpHeaders.AUTHORIZATION);
+        authService.logout(accessToken, refreshToken);
+
+        ResponseCookie rtkCookie = ResponseCookie.from("rtk", "")
+                .path("/")
+                .maxAge(0)
+                .build();
+
+        return ResponseEntity.ok()
+                .headers(httpHeaders -> httpHeaders.add(HttpHeaders.SET_COOKIE, rtkCookie.toString()))
+                .build();
+    }
+
     @Operation(summary = "엑세스 토큰 재발급", description = "엑세스 토큰을 재발급하여 인증 헤더에 담아줍니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "재발급 성공")
     })
     @PostMapping("/reissue")
     public ResponseEntity<Void> reissueToken(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null) throw new UnauthenticatedMemberException();
-        String refreshTokenValue = Arrays.stream(cookies)
-                .filter(cookie -> cookie.getName().equals("rtk"))
-                .findFirst()
-                .map(Cookie::getValue)
-                .orElseThrow(UnauthenticatedMemberException::new);
+        String refreshTokenValue = getRefreshTokenValue(request);
 
         Tokens tokens = authService.reissue(refreshTokenValue);
         String rtkCookie = tokens.getRefreshToken() != null ? ResponseCookie.from("rtk", tokens.getRefreshToken().getValue())
@@ -99,5 +110,15 @@ public class AuthController {
                         );
                     }
                 }).build();
+    }
+
+    private static String getRefreshTokenValue(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null) throw new UnauthenticatedMemberException();
+        return Arrays.stream(cookies)
+                .filter(cookie -> cookie.getName().equals("rtk"))
+                .findFirst()
+                .map(Cookie::getValue)
+                .orElseThrow(UnauthenticatedMemberException::new);
     }
 }

@@ -20,6 +20,10 @@ public class AuthService {
         return jwtManager.issueTokens(memberDetails.getMemberId());
     }
 
+    public void logout(String accessToken, String refreshToken) {
+        jwtManager.prohibitTokens(accessToken, refreshToken);
+    }
+
     public Tokens reissue(String refreshToken) {
         return jwtManager.reissueTokens(refreshToken);
     }

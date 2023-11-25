@@ -26,7 +26,8 @@ public class RefreshTokenRepository {
         return Optional.of(memberId);
     }
 
-    public void remove(String refreshToken) {
+    public void prohibitAccessToken(String accessToken, String refreshToken, String message, Instant expiry) {
         redisRepository.remove(refreshToken);
+        redisRepository.set(accessToken, message, Duration.between(Instant.now(), expiry));
     }
 }

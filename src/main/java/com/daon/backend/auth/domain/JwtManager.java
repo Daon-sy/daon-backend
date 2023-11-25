@@ -11,4 +11,6 @@ public interface JwtManager {
 
     Tokens issueTokens(String memberId);
     Tokens reissueTokens(String refreshToken);
+
+    void prohibitTokens(String accessToken, String refreshToken);
 }
