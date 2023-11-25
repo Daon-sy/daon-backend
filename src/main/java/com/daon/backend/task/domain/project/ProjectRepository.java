@@ -17,8 +17,6 @@ public interface ProjectRepository {
 
     List<Project> findProjectsByMemberIdOrderByDesc(String memberId);
 
-    List<Project> findAllProjectsByWorkspaceId(Long workspaceId);
-
     List<ProjectParticipant> findProjectParticipantsByProjectId(Long projectId);
 
     Slice<ProjectSummary> searchProjectSummariesByTitle(String memberId, String title, Pageable pageable);

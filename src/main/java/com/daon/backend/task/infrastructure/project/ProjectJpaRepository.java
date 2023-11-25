@@ -6,15 +6,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface ProjectJpaRepository extends JpaRepository<Project, Long> {
 
     @EntityGraph(attributePaths = {"workspace", "tasks"})
     Optional<Project> findProjectByIdAndRemovedFalse(Long projectId);
-
-    List<Project> findAllProjectsByWorkspaceId(Long workspaceId);
 
     @Modifying
     @Query("UPDATE Task t " +

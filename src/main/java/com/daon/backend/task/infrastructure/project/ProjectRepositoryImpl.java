@@ -61,11 +61,6 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     }
 
     @Override
-    public List<Project> findAllProjectsByWorkspaceId(Long workspaceId) {
-        return projectJpaRepository.findAllProjectsByWorkspaceId(workspaceId);
-    }
-
-    @Override
     public Slice<ProjectSummary> searchProjectSummariesByTitle(String memberId, String title, Pageable pageable) {
         final int pageSize = pageable.getPageSize();
         final long offset = pageable.getOffset();
