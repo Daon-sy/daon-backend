@@ -15,7 +15,7 @@ public interface ProjectRepository {
 
     Optional<ProjectParticipant> findProjectParticipantByProjectIdAndMemberId(Long projectId, String memberId);
 
-    List<Project> findProjectsByMemberIdOrderByDesc(String memberId);
+    List<Project> findProjectsByMemberIdOrderByDesc(Long workspaceId, String memberId);
 
     List<ProjectParticipant> findProjectParticipantsByProjectId(Long projectId);
 

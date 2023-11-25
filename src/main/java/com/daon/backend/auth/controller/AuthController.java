@@ -112,7 +112,7 @@ public class AuthController {
                 }).build();
     }
 
-    private static String getRefreshTokenValue(HttpServletRequest request) {
+    private String getRefreshTokenValue(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies == null) throw new UnauthenticatedMemberException();
         return Arrays.stream(cookies)

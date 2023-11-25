@@ -48,7 +48,7 @@ public class ProjectService {
      */
     public FindProjectsResponseDto findProjects(Long workspaceId) {
         String memberId = sessionMemberProvider.getMemberId();
-        List<Project> projects = projectRepository.findProjectsByMemberIdOrderByDesc(memberId);
+        List<Project> projects = projectRepository.findProjectsByMemberIdOrderByDesc(workspaceId, memberId);
 
         return new FindProjectsResponseDto(
                 workspaceId,
