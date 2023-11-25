@@ -63,10 +63,19 @@ public class AuthController {
             @ApiResponse(responseCode = "200", description = "로그아웃 성공")
     })
     @PostMapping("/logout")
-    public void logout(HttpServletRequest request) {
+    public ResponseEntity<Void> logout(HttpServletRequest request) {
         String refreshToken = getRefreshTokenValue(request);
         String accessToken = request.getHeader(HttpHeaders.AUTHORIZATION);
         authService.logout(accessToken, refreshToken);
+
+        ResponseCookie rtkCookie = ResponseCookie.from("rtk", "")
+                .path("/")
+                .maxAge(0)
+                .build();
+
+        return ResponseEntity.ok()
+                .headers(httpHeaders -> httpHeaders.add(HttpHeaders.SET_COOKIE, rtkCookie.toString()))
+                .build();
     }
 
     @Operation(summary = "엑세스 토큰 재발급", description = "엑세스 토큰을 재발급하여 인증 헤더에 담아줍니다.")
