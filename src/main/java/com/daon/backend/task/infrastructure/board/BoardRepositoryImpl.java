@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import java.util.List;
 import java.util.Optional;
 
 import static com.daon.backend.task.domain.task.QTask.task;
@@ -23,6 +24,11 @@ public class BoardRepositoryImpl implements BoardRepository {
     @Override
     public Optional<Board> findBoardById(Long boardId) {
         return boardJpaRepository.findBoardByIdAndRemovedFalse(boardId);
+    }
+
+    @Override
+    public List<Board> findBoardsByProjectIdOrderByDESC(Long projectId) {
+        return boardJpaRepository.findBoardsByProjectIdAndRemovedFalseOrderByCreatedAtDesc(projectId);
     }
 
     @Override

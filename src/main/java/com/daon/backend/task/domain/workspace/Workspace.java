@@ -3,6 +3,7 @@ package com.daon.backend.task.domain.workspace;
 import com.daon.backend.common.event.Events;
 import com.daon.backend.config.BaseEntity;
 import com.daon.backend.task.domain.project.Project;
+import com.daon.backend.task.domain.project.ProjectNotFoundException;
 import com.daon.backend.task.dto.notification.DeportationWorkspaceAlarmResponseDto;
 import com.daon.backend.task.dto.notification.InviteWorkspaceAlarmResponseDto;
 import lombok.AccessLevel;
@@ -47,7 +48,7 @@ public class Workspace extends BaseEntity {
     @OneToMany(mappedBy = "workspace", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<WorkspaceInvitation> invitations = new ArrayList<>();
 
-    @OneToMany(mappedBy = "workspace", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "workspace", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<Project> projects = new ArrayList<>();
 
     @Builder(access = AccessLevel.PRIVATE)
@@ -117,6 +118,13 @@ public class Workspace extends BaseEntity {
                 .orElseThrow(() -> new NotWorkspaceParticipantException(memberId, id));
     }
 
+    public Project findProject(Long projectId) {
+        return this.projects.stream()
+                .filter(project -> project.getId().equals(projectId))
+                .findFirst()
+                .orElseThrow(() -> new ProjectNotFoundException(projectId));
+    }
+
     public void modifyWorkspace (String title, String description, String imageUrl, String subject) {
         this.title = Optional.ofNullable(title).orElse(this.title);
         this.description = Optional.ofNullable(description).orElse(this.description);
@@ -125,12 +133,16 @@ public class Workspace extends BaseEntity {
     }
 
     public void addWorkspaceInvitation(WorkspaceInvitation workspaceInvitation) {
-        this.invitations.add(workspaceInvitation);
+        if (isPersonal()) {
+            this.invitations.add(workspaceInvitation);
 
-        Events.raise(new InviteWorkspaceAlarmEvent(
-                new InviteWorkspaceAlarmResponseDto(this.id, this.title),
-                workspaceInvitation.getMemberId()
-        ));
+            Events.raise(new InviteWorkspaceAlarmEvent(
+                    new InviteWorkspaceAlarmResponseDto(this.id, this.title),
+                    workspaceInvitation.getMemberId()
+            ));
+        } else {
+            throw new CanNotInvitePersonalWorkspaceException(this.id);
+        }
     }
 
     public void removeWorkspaceInvitation(String memberId) {
@@ -184,11 +196,20 @@ public class Workspace extends BaseEntity {
         this.removed = true;
     }
 
-    public void resetWorkspace(String findName) {
-        projects.clear();
-        this.imageUrl = null;
-        this.description = null;
-        this.title = findName + "님의 개인워크스페이스 입니다.";
-        this.subject = null;
+    public void resetWorkspace(String memberId) {
+        if (isPersonal()) {
+            Profile profile = this.participants.get(0).getProfile();
+
+            this.participants.clear();
+            this.projects.clear();
+            this.title = profile.getName() + "님의 개인 워크스페이스 공간";
+            this.description = null;
+            this.subject = null;
+            this.imageUrl = null;
+
+            this.participants.add(WorkspaceParticipant.withWorkspaceAdminRole(this, profile, memberId));
+        } else {
+            throw new CanNotDeletePersonalWorkspaceException(this.id);
+        }
     }
 }

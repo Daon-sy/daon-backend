@@ -54,4 +54,11 @@ public class WorkspaceExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ErrorResponse.createError(ErrorCode.CAN_NOT_MODIFY_MY_ROLE));
     }
+
+    @ExceptionHandler(CanNotInvitePersonalWorkspaceException.class)
+    public ResponseEntity<ErrorResponse> canNotInvitePersonalWorkspaceExceptionHandle(CanNotInvitePersonalWorkspaceException e) {
+        log.info("{}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.createError(ErrorCode.CAN_NOT_INVITE_PERSONAL_WORKSPACE));
+    }
 }

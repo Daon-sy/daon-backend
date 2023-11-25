@@ -1,7 +1,10 @@
 package com.daon.backend.task.service;
 
 import com.daon.backend.task.domain.project.*;
-import com.daon.backend.task.domain.workspace.*;
+import com.daon.backend.task.domain.workspace.Workspace;
+import com.daon.backend.task.domain.workspace.WorkspaceNotFoundException;
+import com.daon.backend.task.domain.workspace.WorkspaceParticipant;
+import com.daon.backend.task.domain.workspace.WorkspaceRepository;
 import com.daon.backend.task.dto.ProjectSummary;
 import com.daon.backend.task.dto.project.*;
 import lombok.RequiredArgsConstructor;
@@ -25,45 +28,31 @@ public class ProjectService {
      */
     @Transactional
     public CreateProjectResponseDto createProject(Long workspaceId, CreateProjectRequestDto requestDto) {
-        Workspace workspace = getWorkspaceOrElseThrow(workspaceId);
-
+        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
         String memberId = sessionMemberProvider.getMemberId();
-        WorkspaceParticipant wsParticipant = getWorkspaceParticipantOrElseThrow(workspace.getId(), memberId);
+        WorkspaceParticipant workspaceParticipant = workspace.findWorkspaceParticipantByMemberId(memberId);
 
         Project project = Project.builder()
                 .workspace(workspace)
                 .title(requestDto.getTitle())
                 .description(requestDto.getDescription())
-                .projectCreator(new ProjectCreator(memberId, wsParticipant))
+                .projectCreator(new ProjectCreator(memberId, workspaceParticipant))
                 .build();
-        Long projectId = projectRepository.save(project).getId();
 
-        return new CreateProjectResponseDto(projectId);
-    }
-
-    private Workspace getWorkspaceOrElseThrow(Long workspaceId) {
-        return workspaceRepository.findWorkspaceById(workspaceId)
-                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
-    }
-
-    private WorkspaceParticipant getWorkspaceParticipantOrElseThrow(Long workspaceId,
-                                                                    String memberId) {
-        return workspaceRepository.findWorkspaceParticipantByWorkspaceIdAndMemberId(workspaceId, memberId)
-                .orElseThrow(() -> new NotWorkspaceParticipantException(memberId, workspaceId));
+        return new CreateProjectResponseDto(projectRepository.save(project).getId());
     }
 
     /**
      * 프로젝트 목록 조회
      */
-    public FindProjectsResponseDto findAllProjectInWorkspace(Long workspaceId) {
-        Workspace workspace = getWorkspaceOrElseThrow(workspaceId);
-
+    public FindProjectsResponseDto findProjects(Long workspaceId) {
         String memberId = sessionMemberProvider.getMemberId();
-        WorkspaceParticipant wsParticipant = getWorkspaceParticipantOrElseThrow(workspaceId, memberId);
+        List<Project> projects = projectRepository.findProjectsByMemberIdOrderByDesc(memberId);
 
         return new FindProjectsResponseDto(
-                workspace.getId(),
-                projectRepository.findProjectsByWorkspaceParticipant(wsParticipant).stream()
+                workspaceId,
+                projects.stream()
                         .map(ProjectSummary::new)
                         .collect(Collectors.toList())
         );
@@ -73,18 +62,18 @@ public class ProjectService {
      * 프로젝트 초대
      */
     @Transactional
-    public void inviteWorkspaceParticipant(Long projectId, InviteWorkspaceParticipantRequestDto requestDto) {
+    public void inviteWorkspaceParticipant(Long workspaceId, Long projectId, InviteWorkspaceParticipantRequestDto requestDto) {
         Long workspaceParticipantId = requestDto.getWorkspaceParticipantId();
-        WorkspaceParticipant workspaceParticipant = workspaceRepository.findWorkspaceParticipantByWorkspaceParticipantId(workspaceParticipantId)
-                .orElseThrow(() -> new NotWorkspaceParticipantException(workspaceParticipantId));
-
-        Project project = projectRepository.findProjectById(projectId)
-                .orElseThrow(() -> new ProjectNotFoundException(projectId));
+        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+        WorkspaceParticipant workspaceParticipant =
+                workspace.findWorkspaceParticipantByWorkspaceParticipantId(workspaceParticipantId, workspaceId);
+        Project project = workspace.findProject(projectId);
         project.addParticipant(workspaceParticipant.getMemberId(), workspaceParticipant);
     }
 
     public boolean isProjectParticipants(Long projectId, String memberId) {
-        Project project = projectRepository.findProjectWithParticipantsByProjectId(projectId)
+        Project project = projectRepository.findProjectById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
         return project.isProjectParticipants(memberId);
@@ -94,7 +83,7 @@ public class ProjectService {
      * 프로젝트 참여자 목록 조회
      */
     public FindProjectParticipantsResponseDto findProjectParticipants(Long projectId) {
-        List<ProjectParticipant> participants = projectRepository.findProjectParticipantsWithWorkspaceParticipantsByProjectId(projectId);
+        List<ProjectParticipant> participants = projectRepository.findProjectParticipantsByProjectId(projectId);
 
         return new FindProjectParticipantsResponseDto(
                 participants.stream()
@@ -108,7 +97,7 @@ public class ProjectService {
      */
     @Transactional
     public void modifyProject(Long projectId, ModifyProjectRequestDto requestDto) {
-        Project project = projectRepository.findProjectWithParticipantsByProjectId(projectId)
+        Project project = projectRepository.findProjectById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
         project.modifyProject(requestDto.getTitle(), requestDto.getDescription());
     }
@@ -129,7 +118,7 @@ public class ProjectService {
     @Transactional
     public void withdrawProject(Long projectId) {
         String memberId = sessionMemberProvider.getMemberId();
-        Project project = projectRepository.findProjectWithTasksByProjectId(projectId)
+        Project project = projectRepository.findProjectById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
         projectRepository.deleteTaskManagerRelatedProjectByMemberId(projectId, memberId);
@@ -154,7 +143,7 @@ public class ProjectService {
      */
     @Transactional
     public void deleteProject(Long projectId) {
-        Project project = projectRepository.findProjectWithBoardsByProjectId(projectId)
+        Project project = projectRepository.findProjectById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
         projectRepository.deleteTasksAndBoardsRelatedProject(projectId);

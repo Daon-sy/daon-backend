@@ -40,28 +40,18 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
     }
 
     @Override
-    public Optional<Workspace> findWorkspaceWithParticipantsByWorkspaceId(Long workspaceId) {
-        return workspaceJpaRepository.findWorkspaceWithParticipantsByIdAndRemovedFalse(workspaceId);
-    }
-
-    @Override
     public List<Workspace> findWorkspacesByMemberId(String memberId) {
-        return workspaceParticipantJpaRepository.findWorkspacesByMemberId(memberId);
-    }
-
-    @Override
-    public Optional<WorkspaceParticipant> findWorkspaceParticipantByWorkspaceIdAndMemberId(Long workspaceId, String memberId) {
-        return workspaceParticipantJpaRepository.findByWorkspaceIdAndMemberId(workspaceId, memberId);
-    }
-
-    @Override
-    public Optional<WorkspaceParticipant> findWorkspaceParticipantByWorkspaceParticipantId(Long workspaceParticipantId) {
-        return workspaceParticipantJpaRepository.findById(workspaceParticipantId);
+        return queryFactory
+                .selectFrom(workspace)
+                .innerJoin(workspace.participants, workspaceParticipant)
+                .where(workspaceParticipant.memberId.eq(memberId))
+                .orderBy(workspace.createdAt.desc())
+                .fetch();
     }
 
     @Override
     public List<WorkspaceParticipant> findWorkspaceParticipantsByWorkspaceId(Long workspaceId) {
-        return workspaceParticipantJpaRepository.findWorkspaceParticipantsByWorkspaceId(workspaceId);
+        return workspaceParticipantJpaRepository.findWorkspaceParticipantsByWorkspaceIdOrderByCreatedAtDesc(workspaceId);
     }
 
     @Override

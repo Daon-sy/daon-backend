@@ -168,7 +168,7 @@ public class WorkspaceController {
             @ApiResponse(responseCode = "200", description = "개인 워크스페이스 초기화 성공")
     })
     @CheckRole(authority = WS_DELETE)
-    @DeleteMapping("reset/{workspaceId}")
+    @PutMapping("/{workspaceId}/reset")
     public void resetWorkspace(@PathVariable Long workspaceId) {
         workspaceService.resetWorkspace(workspaceId);
     }

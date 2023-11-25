@@ -45,7 +45,7 @@ public class ProjectController {
     @GetMapping
     public FindProjectsResponseDto findProjects(@PathVariable Long workspaceId) {
 
-        return projectService.findAllProjectInWorkspace(workspaceId);
+        return projectService.findProjects(workspaceId);
     }
 
     @Operation(summary = "프로젝트 초대", description = "프로젝트 초대 요청입니다.")
@@ -54,9 +54,10 @@ public class ProjectController {
     })
     @CheckRole(authority = PJ_CREATE)
     @PostMapping("/{projectId}/invite")
-    public void inviteWorkspaceParticipant(@PathVariable Long projectId,
+    public void inviteWorkspaceParticipant(@PathVariable Long workspaceId,
+                                           @PathVariable Long projectId,
                                            @RequestBody @Valid InviteWorkspaceParticipantRequestDto requestDto) {
-        projectService.inviteWorkspaceParticipant(projectId, requestDto);
+        projectService.inviteWorkspaceParticipant(workspaceId, projectId, requestDto);
     }
 
     @Operation(summary = "프로젝트 참여자 목록 조회", description = "프로젝트 참여자 목록 조회입니다.")

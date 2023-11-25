@@ -43,10 +43,10 @@ public class Project extends BaseEntity {
     @OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<ProjectParticipant> participants = new ArrayList<>();
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<Board> boards = new ArrayList<>();
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<Task> tasks = new ArrayList<>();
 
     @Builder

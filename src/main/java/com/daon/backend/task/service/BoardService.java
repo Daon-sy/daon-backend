@@ -14,7 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -30,7 +30,7 @@ public class BoardService {
      */
     @Transactional
     public void createBoard(Long projectId, CreateBoardRequestDto requestDto) {
-        Project project = projectRepository.findProjectWithBoardsByProjectId(projectId)
+        Project project = projectRepository.findProjectById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
         String title = requestDto.getTitle();
@@ -42,13 +42,10 @@ public class BoardService {
      * 보드 목록 조회
      */
     public FindBoardsResponseDto findBoards(Long projectId) {
-        Project project = projectRepository.findProjectById(projectId)
-                .orElseThrow(() -> new ProjectNotFoundException(projectId));
+        List<Board> boards = boardRepository.findBoardsByProjectIdOrderByDESC(projectId);
 
         return new FindBoardsResponseDto(
-                project.getBoards().stream()
-                        .filter(board -> !board.isRemoved())
-                        .sorted(Comparator.comparing(Board::getCreatedAt).thenComparing(Board::getId))
+                boards.stream()
                         .map(FindBoardsResponseDto.BoardInfo::new)
                         .collect(Collectors.toList())
         );
@@ -70,7 +67,7 @@ public class BoardService {
      */
     @Transactional
     public void deleteBoard(Long projectId, Long boardId) {
-        Project project = projectRepository.findProjectWithBoardsByProjectId(projectId)
+        Project project = projectRepository.findProjectById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
         if (project.getBoards().size() > 1) {

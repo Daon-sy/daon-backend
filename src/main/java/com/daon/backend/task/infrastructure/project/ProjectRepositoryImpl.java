@@ -3,7 +3,6 @@ package com.daon.backend.task.infrastructure.project;
 import com.daon.backend.task.domain.project.Project;
 import com.daon.backend.task.domain.project.ProjectParticipant;
 import com.daon.backend.task.domain.project.ProjectRepository;
-import com.daon.backend.task.domain.workspace.WorkspaceParticipant;
 import com.daon.backend.task.dto.ProjectSummary;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -42,52 +41,23 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     }
 
     @Override
-    public Optional<Project> findProjectWithParticipantsByProjectId(Long projectId) {
-        return projectJpaRepository.findProjectWithParticipantsByIdAndRemovedFalse(projectId);
-    }
-
-    @Override
     public Optional<ProjectParticipant> findProjectParticipantByProjectIdAndMemberId(Long projectId, String memberId) {
         return projectParticipantJpaRepository.findProjectParticipantByProjectIdAndMemberId(projectId, memberId);
     }
 
     @Override
-    public List<ProjectParticipant> findProjectParticipantsWithWorkspaceParticipantsByProjectId(Long projectId) {
-        return projectParticipantJpaRepository.findProjectParticipantsWithWorkspaceParticipantsByProjectId(projectId);
-    }
-
-    @Override
-    public List<Project> findProjectsByWorkspaceParticipant(WorkspaceParticipant workspaceParticipant) {
-        return projectParticipantJpaRepository.findProjectsByWorkspaceParticipantAndRemovedFalse(workspaceParticipant);
-    }
-
-    @Override
-    public List<Project> findAllProjectsByWorkspaceId(Long workspaceId) {
-        return projectJpaRepository.findAllProjectsByWorkspaceId(workspaceId);
-    }
-
-    @Override
-    public List<Project> findAllProjectsByWorkspaceParticipant(WorkspaceParticipant workspaceParticipant) {
-        return projectParticipantJpaRepository.findProjectsByWorkspaceParticipant(workspaceParticipant);
-    }
-
-    @Override
-    public List<Project> findProjectsByWorkspaceParticipantId(Long workspaceParticipantId) {
+    public List<Project> findProjectsByMemberIdOrderByDesc(String memberId) {
         return queryFactory
                 .selectFrom(project)
                 .innerJoin(project.participants, projectParticipant)
-                .where(projectParticipant.workspaceParticipant.id.eq(workspaceParticipantId))
+                .where(projectParticipant.memberId.eq(memberId))
+                .orderBy(project.createdAt.desc())
                 .fetch();
     }
 
     @Override
-    public Optional<Project> findProjectWithBoardsByProjectId(Long projectId) {
-        return projectJpaRepository.findProjectWithBoardsByIdAndRemovedFalse(projectId);
-    }
-
-    @Override
-    public Optional<Project> findProjectWithTasksByProjectId(Long projectId) {
-        return projectJpaRepository.findProjectWithTasksByIdAndRemovedFalse(projectId);
+    public List<ProjectParticipant> findProjectParticipantsByProjectId(Long projectId) {
+        return projectParticipantJpaRepository.findProjectParticipantsByProjectIdOrderByCreatedAtDesc(projectId);
     }
 
     @Override

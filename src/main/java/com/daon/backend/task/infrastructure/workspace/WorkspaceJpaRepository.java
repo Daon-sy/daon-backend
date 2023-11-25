@@ -13,9 +13,6 @@ public interface WorkspaceJpaRepository extends JpaRepository<Workspace, Long> {
     @EntityGraph(attributePaths = "participants")
     Optional<Workspace> findWorkspaceByIdAndRemovedFalse(Long workspaceId);
 
-    @EntityGraph(attributePaths = "participants")
-    Optional<Workspace> findWorkspaceWithParticipantsByIdAndRemovedFalse(Long workspaceId);
-
     @Modifying
     @Query("UPDATE Task t " +
             "SET t.taskManager = null, t.creatorId = null, t.removed = true " +
@@ -40,4 +37,5 @@ public interface WorkspaceJpaRepository extends JpaRepository<Workspace, Long> {
             "WHERE t.taskManager IN (SELECT pp FROM ProjectParticipant pp " +
             "                        WHERE pp.workspaceParticipant.id = :workspaceParticipant)")
     void deleteTaskManagerRelatedWorkspaceParticipant(Long workspaceParticipant);
+
 }
