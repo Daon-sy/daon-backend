@@ -3,6 +3,7 @@ package com.daon.backend.task.domain.workspace;
 import com.daon.backend.common.event.Events;
 import com.daon.backend.config.BaseEntity;
 import com.daon.backend.task.domain.project.Project;
+import com.daon.backend.task.domain.project.ProjectNotFoundException;
 import com.daon.backend.task.dto.notification.DeportationWorkspaceAlarmResponseDto;
 import com.daon.backend.task.dto.notification.InviteWorkspaceAlarmResponseDto;
 import lombok.AccessLevel;
@@ -115,6 +116,13 @@ public class Workspace extends BaseEntity {
                 .filter(workspaceParticipant -> workspaceParticipant.getMemberId().equals(memberId))
                 .findFirst()
                 .orElseThrow(() -> new NotWorkspaceParticipantException(memberId, id));
+    }
+
+    public Project findProject(Long projectId) {
+        return this.projects.stream()
+                .filter(project -> project.getId().equals(projectId))
+                .findFirst()
+                .orElseThrow(() -> new ProjectNotFoundException(projectId));
     }
 
     public void modifyWorkspace (String title, String description, String imageUrl, String subject) {

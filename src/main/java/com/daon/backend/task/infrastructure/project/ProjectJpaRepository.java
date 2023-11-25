@@ -14,15 +14,6 @@ public interface ProjectJpaRepository extends JpaRepository<Project, Long> {
     @EntityGraph(attributePaths = {"workspace", "tasks"})
     Optional<Project> findProjectByIdAndRemovedFalse(Long projectId);
 
-    @EntityGraph(attributePaths = "participants")
-    Optional<Project> findProjectWithParticipantsByIdAndRemovedFalse(Long projectId);
-
-    @EntityGraph(attributePaths = "boards")
-    Optional<Project> findProjectWithBoardsByIdAndRemovedFalse(Long projectId);
-
-    @EntityGraph(attributePaths = "tasks")
-    Optional<Project> findProjectWithTasksByIdAndRemovedFalse(Long projectId);
-
     List<Project> findAllProjectsByWorkspaceId(Long workspaceId);
 
     @Modifying

@@ -31,7 +31,7 @@ public class BoardService {
      */
     @Transactional
     public void createBoard(Long projectId, CreateBoardRequestDto requestDto) {
-        Project project = projectRepository.findProjectWithBoardsByProjectId(projectId)
+        Project project = projectRepository.findProjectById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
         String title = requestDto.getTitle();
@@ -68,7 +68,7 @@ public class BoardService {
      */
     @Transactional
     public void deleteBoard(Long projectId, Long boardId) {
-        Project project = projectRepository.findProjectWithBoardsByProjectId(projectId)
+        Project project = projectRepository.findProjectById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
         if (project.getBoards().size() > 1) {

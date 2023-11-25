@@ -1,6 +1,5 @@
 package com.daon.backend.task.domain.project;
 
-import com.daon.backend.task.domain.workspace.WorkspaceParticipant;
 import com.daon.backend.task.dto.ProjectSummary;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -14,19 +13,13 @@ public interface ProjectRepository {
 
     Optional<Project> findProjectById(Long projectId);
 
-    Optional<Project> findProjectWithParticipantsByProjectId(Long projectId);
-
-    Optional<Project> findProjectWithBoardsByProjectId(Long projectId);
-
-    Optional<Project> findProjectWithTasksByProjectId(Long projectId);
-
     Optional<ProjectParticipant> findProjectParticipantByProjectIdAndMemberId(Long projectId, String memberId);
 
-    List<ProjectParticipant> findProjectParticipantsWithWorkspaceParticipantsByProjectId(Long projectId);
-
-    List<Project> findProjectsByWorkspaceParticipant(WorkspaceParticipant workspaceParticipant);
+    List<Project> findProjectsByMemberIdOrderByDesc(String memberId);
 
     List<Project> findAllProjectsByWorkspaceId(Long workspaceId);
+
+    List<ProjectParticipant> findProjectParticipantsByProjectId(Long projectId);
 
     Slice<ProjectSummary> searchProjectSummariesByTitle(String memberId, String title, Pageable pageable);
 
