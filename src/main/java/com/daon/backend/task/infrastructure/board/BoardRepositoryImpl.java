@@ -29,7 +29,6 @@ public class BoardRepositoryImpl implements BoardRepository {
     public void deleteTasksRelatedBoard(Long boardId) {
         queryFactory.update(task)
                 .set(task.taskManager, (ProjectParticipant) null)
-                .set(task.creatorId, (Long) null)
                 .set(task.removed, true)
                 .where(task.board.id.eq(boardId))
                 .execute();

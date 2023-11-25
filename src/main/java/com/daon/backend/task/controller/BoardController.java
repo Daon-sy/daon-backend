@@ -30,7 +30,7 @@ public class BoardController {
     @ResponseStatus(HttpStatus.CREATED)
     @CheckRole(authority = BD_CREATE)
     @PostMapping
-    public void createBoard(@PathVariable("projectId") Long projectId,
+    public void createBoard(@PathVariable Long projectId,
                             @RequestBody @Valid CreateBoardRequestDto requestDto) {
         boardService.createBoard(projectId, requestDto);
     }
@@ -41,7 +41,7 @@ public class BoardController {
     })
     @CheckRole(authority = BD_READ)
     @GetMapping
-    public FindBoardsResponseDto findBoards(@PathVariable("projectId") Long projectId) {
+    public FindBoardsResponseDto findBoards(@PathVariable Long projectId) {
         return boardService.findBoards(projectId);
     }
 
@@ -51,8 +51,8 @@ public class BoardController {
     })
     @CheckRole(authority = BD_UPDATE)
     @PutMapping("/{boardId}")
-    public void modifyBoard(@PathVariable("projectId") Long projectId,
-                            @PathVariable("boardId") Long boardId,
+    public void modifyBoard(@PathVariable Long projectId,
+                            @PathVariable Long boardId,
                             @RequestBody @Valid ModifyBoardRequestDto requestDto) {
         boardService.modifyBoard(projectId, boardId, requestDto);
     }
@@ -63,8 +63,8 @@ public class BoardController {
     })
     @CheckRole(authority = BD_DELETE)
     @DeleteMapping("/{boardId}")
-    public void deleteBoard(@PathVariable("projectId") Long projectId,
-                            @PathVariable("boardId") Long boardId) {
+    public void deleteBoard(@PathVariable Long projectId,
+                            @PathVariable Long boardId) {
         boardService.deleteBoard(projectId, boardId);
     }
 }

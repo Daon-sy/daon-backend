@@ -47,8 +47,8 @@ public class TaskController {
     })
     @CheckRole(authority = TSK_UPDATE)
     @PutMapping("/{taskId}")
-    public void modifyTask(@PathVariable("projectId") Long projectId,
-                           @PathVariable("taskId") Long taskId,
+    public void modifyTask(@PathVariable Long projectId,
+                           @PathVariable Long taskId,
                            @RequestBody @Valid ModifyTaskRequestDto requestDto) {
         taskService.modifyTask(projectId, taskId, requestDto);
     }
@@ -59,7 +59,7 @@ public class TaskController {
     })
     @CheckRole(authority = TSK_READ)
     @GetMapping("/{taskId}")
-    public FindTaskResponseDto findTask(@PathVariable("taskId") Long taskId) {
+    public FindTaskResponseDto findTask(@PathVariable Long taskId) {
         return taskService.findTask(taskId);
     }
 
@@ -69,8 +69,8 @@ public class TaskController {
     })
     @CheckRole(authority = TSK_UPDATE)
     @PatchMapping("/{taskId}")
-    public void modifyProgressStatus(@PathVariable("projectId") Long projectId,
-                                     @PathVariable("taskId") Long taskId,
+    public void modifyProgressStatus(@PathVariable Long projectId,
+                                     @PathVariable Long taskId,
                                      @RequestBody ModifyProgressStatusRequestDto requestDto) {
         taskService.modifyTaskProgressStatus(projectId, taskId, requestDto);
     }
@@ -81,8 +81,8 @@ public class TaskController {
     })
     @CheckRole(authority = TSK_READ)
     @PostMapping("/{taskId}/bookmark")
-    public SetBookmarkResponseDto setBookmark(@PathVariable("projectId") Long projectId,
-                                              @PathVariable("taskId") Long taskId) {
+    public SetBookmarkResponseDto setBookmark(@PathVariable Long projectId,
+                                              @PathVariable Long taskId) {
         return taskService.setBookmark(projectId, taskId);
     }
 
@@ -92,7 +92,7 @@ public class TaskController {
     })
     @CheckRole(authority = TSK_DELETE)
     @DeleteMapping("/{taskId}")
-    public void deleteTask(@PathVariable("taskId") Long taskId) {
+    public void deleteTask(@PathVariable Long taskId) {
         taskService.deleteTask(taskId);
     }
 

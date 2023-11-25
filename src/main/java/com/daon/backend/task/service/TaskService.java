@@ -148,6 +148,9 @@ public class TaskService {
         task.deleteTask();
     }
 
+    /**
+     * 할 일 히스토리 조회
+     */
     public SliceResponse<TaskHistory> findTaskHistory(Long projectId, Long taskId, Pageable pageable) {
         return new SliceResponse<>(taskRepository.findTaskHistoriesByProjectIdAndTaskId(projectId, taskId, pageable));
     }

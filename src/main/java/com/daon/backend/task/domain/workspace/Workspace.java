@@ -2,11 +2,9 @@ package com.daon.backend.task.domain.workspace;
 
 import com.daon.backend.common.event.Events;
 import com.daon.backend.config.BaseEntity;
-import com.daon.backend.notification.domain.NotificationType;
-import com.daon.backend.notification.domain.SendAlarmEvent;
-import com.daon.backend.notification.dto.response.DeportationWorkspaceResponseDto;
-import com.daon.backend.notification.dto.response.InviteWorkspaceAlarmResponseDto;
 import com.daon.backend.task.domain.project.Project;
+import com.daon.backend.task.dto.notification.DeportationWorkspaceAlarmResponseDto;
+import com.daon.backend.task.dto.notification.InviteWorkspaceAlarmResponseDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -129,13 +127,10 @@ public class Workspace extends BaseEntity {
     public void addWorkspaceInvitation(WorkspaceInvitation workspaceInvitation) {
         this.invitations.add(workspaceInvitation);
 
-        InviteWorkspaceAlarmResponseDto inviteEventResponse = createInviteEventResponse();
-        Events.raise(SendAlarmEvent.create(
-                NotificationType.INVITE_WORKSPACE, inviteEventResponse, workspaceInvitation.getMemberId()));
-    }
-
-    private InviteWorkspaceAlarmResponseDto createInviteEventResponse() {
-        return new InviteWorkspaceAlarmResponseDto(this.id, this.title);
+        Events.raise(new InviteWorkspaceAlarmEvent(
+                new InviteWorkspaceAlarmResponseDto(this.id, this.title),
+                workspaceInvitation.getMemberId()
+        ));
     }
 
     public void removeWorkspaceInvitation(String memberId) {
@@ -177,14 +172,10 @@ public class Workspace extends BaseEntity {
                 workspaceParticipant -> workspaceParticipant.getId().equals(workspaceParticipantId)
         );
 
-        DeportationWorkspaceResponseDto deportationEventResponse = createDeportationEventResponse();
-        Events.raise(SendAlarmEvent.create(
-                NotificationType.DEPORTATION_WORKSPACE, deportationEventResponse, workspaceParticipantMemberId)
-        );
-    }
-
-    private DeportationWorkspaceResponseDto createDeportationEventResponse() {
-        return new DeportationWorkspaceResponseDto(this.id, this.title);
+        Events.raise(new DeportationWorkspaceAlarmEvent(
+                new DeportationWorkspaceAlarmResponseDto(this.id, this.title),
+                workspaceParticipantMemberId
+        ));
     }
 
     public void deleteWorkspace() {

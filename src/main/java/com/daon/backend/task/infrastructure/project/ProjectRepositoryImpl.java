@@ -144,7 +144,6 @@ public class ProjectRepositoryImpl implements ProjectRepository {
         queryFactory
                 .update(task)
                 .set(task.taskManager, (ProjectParticipant) null)
-                .set(task.creatorId, (Long) null)
                 .set(task.removed, true)
                 .where(task.project.id.eq(projectId))
                 .execute();

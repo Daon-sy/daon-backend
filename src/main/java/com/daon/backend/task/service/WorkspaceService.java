@@ -122,6 +122,11 @@ public class WorkspaceService {
         Workspace workspace = workspaceRepository.findWorkspaceWithParticipantsByWorkspaceId(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
         WorkspaceParticipant workspaceParticipant = workspace.findWorkspaceParticipantByWorkspaceParticipantId(workspaceParticipantId, workspaceId);
+
+        String memberIdWhoRequest = sessionMemberProvider.getMemberId();
+        if (workspaceParticipant.getMemberId().equals(memberIdWhoRequest)) {
+            throw new CanNotModifyMyRoleException(memberIdWhoRequest);
+        }
         workspaceParticipant.modifyRole(requestDto.getRole());
     }
 
