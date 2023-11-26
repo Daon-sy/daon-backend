@@ -2,13 +2,15 @@ package com.daon.backend.task.infrastructure;
 
 import com.daon.backend.notification.domain.NotificationType;
 import com.daon.backend.notification.infrastructure.NotificationService;
+import com.daon.backend.task.domain.board.Board;
 import com.daon.backend.task.domain.project.DeportationProjectAlarmEvent;
 import com.daon.backend.task.domain.project.InviteProjectAlarmEvent;
-import com.daon.backend.task.domain.task.DesignatedManagerAlarmEvent;
-import com.daon.backend.task.domain.task.SendFindTaskEvent;
-import com.daon.backend.task.domain.task.SendFindTasksEvent;
+import com.daon.backend.task.domain.project.Project;
+import com.daon.backend.task.domain.task.*;
 import com.daon.backend.task.domain.workspace.DeportationWorkspaceAlarmEvent;
 import com.daon.backend.task.domain.workspace.InviteWorkspaceAlarmEvent;
+import com.daon.backend.task.domain.workspace.Workspace;
+import com.daon.backend.task.dto.notification.DesignatedManagerAlarmResponseDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
@@ -63,5 +65,45 @@ public class SendEventHandler {
         notificationService.sendFindTasksEventNotification(
                 event.getWorkspaceId(), event.getProjectId(), event.getBoardId()
         );
+    }
+
+    @TransactionalEventListener
+    @Async
+    public void handleTaskCreatedEvent(TaskCreatedEvent event) throws Exception {
+        Task task = event.getTask();
+        notifyTaskListUpdated(task);
+
+        Project project = task.getProject();
+        Workspace workspace = project.getWorkspace();
+        notificationService.sendAlarm(
+                NotificationType.REGISTERED_TASK_MANAGER,
+                new DesignatedManagerAlarmResponseDto(
+                        workspace.getId(),
+                        workspace.getTitle(),
+                        project.getId(),
+                        project.getTitle(),
+                        task.getId(),
+                        task.getTitle()
+                ),
+                task.getTaskManager().getMemberId()
+        );
+    }
+
+    private void notifyTaskListUpdated(Task task) {
+        Project project = task.getProject();
+        Workspace workspace = project.getWorkspace();
+        Board board = task.getBoard();
+        notificationService.sendFindTasksEventNotification(
+                workspace.getId(),
+                project.getId(),
+                board.getId()
+        );
+    }
+
+    @TransactionalEventListener
+    @Async
+    public void handleTaskRemovedEvent(TaskRemovedEvent event) {
+        Task task = event.getTask();
+        notifyTaskListUpdated(task);
     }
 }

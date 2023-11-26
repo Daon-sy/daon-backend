@@ -152,6 +152,8 @@ public class Task extends BaseEntity {
     public void deleteTask() {
         deleteTaskManager();
         this.removed = true;
+
+        Events.raise(new TaskRemovedEvent(this));
     }
 
     private void publishSendAlarmEvent(ProjectParticipant taskManager) {
@@ -177,5 +179,10 @@ public class Task extends BaseEntity {
 
     private void publishSendTaskEvent() {
         Events.raise(new SendFindTaskEvent(this.id));
+    }
+
+    @PostPersist
+    private void raiseTaskCreatedEvent() {
+        Events.raise(new TaskCreatedEvent(this));
     }
 }
