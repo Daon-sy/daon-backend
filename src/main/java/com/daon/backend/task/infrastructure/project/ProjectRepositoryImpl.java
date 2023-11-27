@@ -106,7 +106,6 @@ public class ProjectRepositoryImpl implements ProjectRepository {
                 .set(task.taskManager, (ProjectParticipant) null)
                 .where(task.taskManager.id.eq(projectParticipantId))
                 .execute();
-
         em.flush();
     }
 
@@ -118,13 +117,13 @@ public class ProjectRepositoryImpl implements ProjectRepository {
                 .set(task.removed, true)
                 .where(task.project.id.eq(projectId))
                 .execute();
+        em.flush();
 
         queryFactory
                 .update(board)
                 .set(board.removed, true)
                 .where(board.project.id.eq(projectId))
                 .execute();
-
         em.flush();
     }
 }

@@ -38,8 +38,6 @@ public class BoardRepositoryImpl implements BoardRepository {
                 .set(task.removed, true)
                 .where(task.board.id.eq(boardId))
                 .execute();
-
         em.flush();
-        em.clear();
     }
 }
