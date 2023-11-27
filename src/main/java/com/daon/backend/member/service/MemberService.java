@@ -121,6 +121,7 @@ public class MemberService {
     /**
      * 회원 탈퇴
      */
+    @Transactional
     public void withdrawMember() {
         String memberId = sessionMemberProvider.getMemberId();
         Member member = memberRepository.findById(memberId)

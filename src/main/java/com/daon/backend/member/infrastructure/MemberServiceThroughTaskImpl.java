@@ -29,7 +29,8 @@ public class MemberServiceThroughTaskImpl implements MemberServiceThroughTask {
             if (adminCount != 1) {
                 workspaceService.withdrawWorkspace(workspace.getId());
             } else {
-                workspaceService.deleteWorkspace(workspace.getId());
+                workspace.deleteWorkspace();
+                workspaceRepository.deleteAllRelatedWorkspace(workspace.getId());
             }
         });
     }
