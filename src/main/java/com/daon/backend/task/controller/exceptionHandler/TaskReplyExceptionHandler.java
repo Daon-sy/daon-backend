@@ -15,7 +15,7 @@ public class TaskReplyExceptionHandler {
 
     @ExceptionHandler(TaskReplyNotFoundException.class)
     public ResponseEntity<ErrorResponse> taskReplyNotFoundExceptionHandle(TaskReplyNotFoundException e) {
-        log.info("{}", e.getMessage());
+        log.error("{}", e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(ErrorResponse.createError(ErrorCode.REPLY_NOT_FOUND));
     }

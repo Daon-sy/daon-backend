@@ -18,6 +18,7 @@ import static com.daon.backend.member.domain.QMember.member;
 public class MemberRepositoryImpl implements MemberRepository {
 
     private final MemberJpaRepository memberJpaRepository;
+    private final EmailJpaRepository emailJpaRepository;
     private final JPAQueryFactory queryFactory;
 
     @Override
@@ -33,6 +34,11 @@ public class MemberRepositoryImpl implements MemberRepository {
     @Override
     public Optional<Member> findById(String memberId) {
         return memberJpaRepository.findByIdAndRemovedFalse(memberId);
+    }
+
+    @Override
+    public boolean existsByEmail(String email) {
+        return emailJpaRepository.existsEmailByEmail(email);
     }
 
     @Override

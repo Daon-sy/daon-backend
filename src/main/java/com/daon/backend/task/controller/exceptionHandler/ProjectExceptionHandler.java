@@ -16,14 +16,14 @@ public class ProjectExceptionHandler {
 
     @ExceptionHandler(NotProjectParticipantException.class)
     public ResponseEntity<ErrorResponse> notProjectParticipantExceptionHandle(NotProjectParticipantException e) {
-        log.info("{}", e.getMessage());
+        log.error("{}", e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(ErrorResponse.createError(ErrorCode.NOT_PROJECT_PARTICIPANT));
     }
 
     @ExceptionHandler(ProjectNotFoundException.class)
     public ResponseEntity<ErrorResponse> projectNotFoundExceptionHandle(ProjectNotFoundException e) {
-        log.info("{}", e.getMessage());
+        log.error("{}", e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(ErrorResponse.createError(ErrorCode.PROJECT_NOT_FOUND));
     }

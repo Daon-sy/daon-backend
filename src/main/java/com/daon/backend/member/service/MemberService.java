@@ -1,9 +1,6 @@
 package com.daon.backend.member.service;
 
-import com.daon.backend.member.domain.Member;
-import com.daon.backend.member.domain.MemberNotFoundException;
-import com.daon.backend.member.domain.MemberRepository;
-import com.daon.backend.member.domain.PasswordEncoder;
+import com.daon.backend.member.domain.*;
 import com.daon.backend.member.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -89,6 +86,10 @@ public class MemberService {
                 .orElseThrow(() -> MemberNotFoundException.byMemberId(memberId));
 
         String email = requestDto.getEmail();
+        if (memberRepository.existsByEmail(email)) {
+            throw new AlreadyExistsEmailException(email);
+        }
+
         member.createEmail(email);
     }
 

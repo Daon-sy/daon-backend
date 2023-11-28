@@ -15,49 +15,49 @@ public class WorkspaceExceptionHandler {
 
     @ExceptionHandler(WorkspaceNotFoundException.class)
     public ResponseEntity<ErrorResponse> workspaceNotFoundExceptionHandle(WorkspaceNotFoundException e) {
-        log.info("{}", e.getMessage());
+        log.error("{}", e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(ErrorResponse.createError(ErrorCode.WORKSPACE_NOT_FOUND));
     }
 
     @ExceptionHandler(NotWorkspaceParticipantException.class)
     public ResponseEntity<ErrorResponse> notWorkspaceParticipantExceptionHandle(NotWorkspaceParticipantException e) {
-        log.info("{}", e.getMessage());
+        log.error("{}", e.getMessage());
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(ErrorResponse.createError(ErrorCode.NOT_WORKSPACE_PARTICIPANT));
     }
 
     @ExceptionHandler(SameMemberExistsException.class)
     public ResponseEntity<ErrorResponse> sameMemberExistsExceptionHandle(SameMemberExistsException e) {
-        log.info("{}", e.getMessage());
+        log.error("{}", e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ErrorResponse.createError(ErrorCode.SAME_MEMBER_EXISTS_IN_WORKSPACE));
     }
 
     @ExceptionHandler(NotInvitedMemberException.class)
     public ResponseEntity<ErrorResponse> notInvitedMemberExceptionHandle(NotInvitedMemberException e) {
-        log.info("{}", e.getMessage());
+        log.error("{}", e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ErrorResponse.createError(ErrorCode.NOT_INVITED_MEMBER));
     }
 
     @ExceptionHandler(CanNotDeletePersonalWorkspaceException.class)
     public ResponseEntity<ErrorResponse> canNotDeletePersonalWorkspaceExceptionHandle(CanNotDeletePersonalWorkspaceException e) {
-        log.info("{}", e.getMessage());
+        log.error("{}", e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ErrorResponse.createError(ErrorCode.CAN_NOT_DELETE_PERSONAL_WORKSPACE));
     }
 
     @ExceptionHandler(CanNotModifyMyRoleException.class)
     public ResponseEntity<ErrorResponse> canNotModifyMyRoleExceptionHandle(CanNotModifyMyRoleException e) {
-        log.info("{}", e.getMessage());
+        log.error("{}", e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ErrorResponse.createError(ErrorCode.CAN_NOT_MODIFY_MY_ROLE));
     }
 
     @ExceptionHandler(CanNotInvitePersonalWorkspaceException.class)
     public ResponseEntity<ErrorResponse> canNotInvitePersonalWorkspaceExceptionHandle(CanNotInvitePersonalWorkspaceException e) {
-        log.info("{}", e.getMessage());
+        log.error("{}", e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ErrorResponse.createError(ErrorCode.CAN_NOT_INVITE_PERSONAL_WORKSPACE));
     }

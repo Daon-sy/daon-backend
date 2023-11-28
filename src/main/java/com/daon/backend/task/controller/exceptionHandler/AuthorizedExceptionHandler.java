@@ -15,7 +15,7 @@ public class AuthorizedExceptionHandler {
 
     @ExceptionHandler(UnAuthorizedMemberException.class)
     public ResponseEntity<ErrorResponse> unAuthorizedMemberExceptionHandle(UnAuthorizedMemberException e) {
-        log.info("{}", e.getMessage());
+        log.error("{}", e.getMessage());
         return ResponseEntity.status(HttpStatus.FORBIDDEN)
                 .body(ErrorResponse.createError(ErrorCode.UNAUTHORIZED_MEMBER));
     }

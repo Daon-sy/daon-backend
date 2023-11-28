@@ -3,6 +3,7 @@ package com.daon.backend.member.controller;
 import com.daon.backend.common.exception.DomainSpecificAdvice;
 import com.daon.backend.common.response.error.ErrorCode;
 import com.daon.backend.common.response.error.ErrorResponse;
+import com.daon.backend.member.domain.AlreadyExistsEmailException;
 import com.daon.backend.member.domain.EmailNotFoundException;
 import com.daon.backend.member.domain.MemberNotFoundException;
 import com.daon.backend.member.domain.PasswordMismatchException;
@@ -46,5 +47,13 @@ public class MemberErrorHandler {
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(ErrorResponse.createError(ErrorCode.EMAIL_NOT_FOUND));
+    }
+
+    @ExceptionHandler(AlreadyExistsEmailException.class)
+    public ResponseEntity<ErrorResponse> alreadyExistsEmailExceptionHandle(AlreadyExistsEmailException e) {
+        log.error("{}", e.getMessage());
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.createError(ErrorCode.ALREADY_EXISTS_EMAIL));
     }
 }
