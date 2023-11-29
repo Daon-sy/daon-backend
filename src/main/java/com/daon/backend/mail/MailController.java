@@ -11,8 +11,8 @@ public class MailController {
     private final MailService mailService;
 
     @PostMapping
-    public void sendMessage(@RequestParam String email) {
-        mailService.sendCodeToEmail(email);
+    public void sendVerificationEmail(@RequestBody SendVerificationEmailRequestDto requestDto) {
+        mailService.sendCodeToEmail(requestDto.getEmail());
     }
 
     @GetMapping
