@@ -15,7 +15,7 @@ public class NotificationExceptionHandler {
 
     @ExceptionHandler(TypeNotSpecifiedException.class)
     public ResponseEntity<ErrorResponse> typeNotSpecifiedExceptionHandle(TypeNotSpecifiedException e) {
-        log.info("{}", e.getMessage());
+        log.error("{}", e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ErrorResponse.createError(ErrorCode.TYPE_NOT_SPECIFIC));
     }

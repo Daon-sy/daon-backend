@@ -28,8 +28,8 @@ public class SearchController {
     })
     @CheckRole(authority = Authority.TSK_READ)
     @GetMapping("/workspaces/{workspaceId}/projects/tasks")
-    public FindTasksResponseDto searchTasks(@ModelAttribute TaskSearchParams params) {
-        return searchService.searchTasks(params);
+    public FindTasksResponseDto searchTasks(@PathVariable Long workspaceId, @ModelAttribute TaskSearchParams params) {
+        return searchService.searchTasks(workspaceId, params);
     }
 
     @Operation(summary = "통합 검색", description = "통합 검색 요청입니다.")
@@ -38,8 +38,8 @@ public class SearchController {
     })
     @GetMapping("/search")
     public <T> SliceResponse<T> integratedSearch(@RequestParam String target,
-                                                @RequestParam String title,
-                                                Pageable pageable) {
+                                                 @RequestParam String title,
+                                                 Pageable pageable) {
         return searchService.integratedSearchByTitle(target, title, pageable);
     }
 }

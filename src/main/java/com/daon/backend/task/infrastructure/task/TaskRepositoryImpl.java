@@ -70,7 +70,7 @@ public class TaskRepositoryImpl implements TaskRepository {
     }
 
     @Override
-    public List<TaskSummary> findTaskSummaries(String memberId, TaskSearchParams params) {
+    public List<TaskSummary> findTaskSummaries(String memberId, Long workspaceId, TaskSearchParams params) {
         BooleanBuilder builder = new BooleanBuilder();
         if (params.getProjectId() != null) {
             builder.and(task.project.id.eq(params.getProjectId()));
@@ -118,7 +118,8 @@ public class TaskRepositoryImpl implements TaskRepository {
                     .leftJoin(task.board, board)
                     .leftJoin(task.taskManager, projectParticipant)
                     .leftJoin(taskBookmark).on(task.eq(taskBookmark.task).and(taskBookmark.memberId.eq(memberId)))
-                .where(builder.and(task.removed.isFalse()))
+                .where(builder.and(task.removed.isFalse())
+                        .and(project.workspace.id.eq(workspaceId)))
                 .orderBy(task.emergency.desc(), task.modifiedAt.desc())
                 .fetch();
     }

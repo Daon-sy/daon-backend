@@ -13,5 +13,7 @@ public interface MemberRepository {
 
     Optional<Member> findById(String memberId);
 
+    boolean existsByEmail(String email);
+
     List<MemberSummary> searchMembersByUsername(String username);
 }

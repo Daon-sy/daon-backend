@@ -15,7 +15,7 @@ public class TaskExceptionHandler {
 
     @ExceptionHandler(TaskNotFoundException.class)
     public ResponseEntity<ErrorResponse> taskNotFoundExceptionHandle(TaskNotFoundException e) {
-        log.info("{}", e.getMessage());
+        log.error("{}", e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(ErrorResponse.createError(ErrorCode.TASK_NOT_FOUND));
     }

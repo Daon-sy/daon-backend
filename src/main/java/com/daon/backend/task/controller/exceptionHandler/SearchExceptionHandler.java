@@ -15,7 +15,7 @@ public class SearchExceptionHandler {
 
     @ExceptionHandler(InvalidTargetException.class)
     public ResponseEntity<ErrorResponse> invalidTargetExceptionHandle(InvalidTargetException e) {
-        log.info(e.getMessage());
+        log.error(e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ErrorResponse.createError(ErrorCode.INVALID_TARGET));
     }

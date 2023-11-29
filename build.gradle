@@ -62,6 +62,9 @@ dependencies {
 	// spring data envers
 	implementation 'org.springframework.data:spring-data-envers'
 
+	// mail
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+
 	compileOnly 'org.projectlombok:lombok'
 	testCompileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
