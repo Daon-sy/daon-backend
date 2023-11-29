@@ -10,14 +10,13 @@ public class MailController {
 
     private final MailService mailService;
 
-    @PostMapping
+    @PostMapping("/send")
     public void sendVerificationEmail(@RequestBody SendVerificationEmailRequestDto requestDto) {
         mailService.sendCodeToEmail(requestDto.getEmail());
     }
 
-    @GetMapping
-    public VerificationEmailResponseDto verificationEmail(@RequestParam String email,
-                                                          @RequestParam String code) {
-        return mailService.verifiedCode(email, code);
+    @PostMapping("/check")
+    public VerificationEmailResponseDto verificationEmail(@RequestBody VerificationEmailCodeRequestDto requestDto) {
+        return mailService.verifiedCode(requestDto.getEmail(), requestDto.getCode());
     }
 }
