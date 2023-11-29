@@ -22,8 +22,8 @@ public class SearchService {
     /**
      * 할 일 목록 조회
      */
-    public FindTasksResponseDto searchTasks(TaskSearchParams params) {
-        return new FindTasksResponseDto(taskRepository.findTaskSummaries(sessionMemberProvider.getMemberId(), params));
+    public FindTasksResponseDto searchTasks(Long workspaceId, TaskSearchParams params) {
+        return new FindTasksResponseDto(taskRepository.findTaskSummaries(sessionMemberProvider.getMemberId(), workspaceId, params));
     }
 
     /**

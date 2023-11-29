@@ -21,7 +21,7 @@ public interface TaskRepository {
 
     boolean existsTaskBookmarkByTaskIdAndProjectParticipantId(Long taskId, Long projectParticipantId);
 
-    List<TaskSummary> findTaskSummaries(String memberId, TaskSearchParams params);
+    List<TaskSummary> findTaskSummaries(String memberId, Long workspaceId, TaskSearchParams params);
 
     Slice<TaskSearchResult> searchTaskSummariesByTitle(String memberId, String title, Pageable pageable);
 
