@@ -1,7 +1,7 @@
 package com.daon.backend.task.domain.task;
 
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 
 import java.util.List;
 
@@ -11,5 +11,5 @@ public interface TaskReplyRepository {
 
     List<TaskReply> findTaskReplyByTaskId(Long taskId);
 
-    Slice<TaskReply> findTaskReplyByTaskId(Long taskId, Pageable pageable);
+    Page<TaskReply> findTaskReplyByTaskId(Long taskId, Pageable pageable);
 }
