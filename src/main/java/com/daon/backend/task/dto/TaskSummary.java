@@ -25,11 +25,13 @@ public class  TaskSummary {
     private boolean emergency;
     private boolean bookmark;
     private long replyCount;
+    private boolean myTask;
+
 
     public TaskSummary(Long taskId, ProjectSummary project, BoardSummary board,
                        TaskManager taskManager, String title, LocalDateTime startDate,
                        LocalDateTime endDate, TaskProgressStatus progressStatus,
-                       boolean emergency, boolean bookmark, long replyCount) {
+                       boolean emergency, boolean bookmark, long replyCount, boolean isTaskManager) {
         this.taskId = taskId;
         this.project = project;
         this.board = board;
@@ -41,5 +43,6 @@ public class  TaskSummary {
         this.emergency = emergency;
         this.bookmark = bookmark;
         this.replyCount = replyCount;
+        this.myTask = isTaskManager;
     }
 }
