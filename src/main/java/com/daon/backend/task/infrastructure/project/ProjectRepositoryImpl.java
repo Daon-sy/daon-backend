@@ -46,19 +46,19 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     }
 
     @Override
-    public List<Project> findProjectsByMemberIdOrderByDesc(Long workspaceId, String memberId) {
+    public List<Project> findProjectsByMemberId(Long workspaceId, String memberId) {
         return queryFactory
                 .selectFrom(project)
                 .innerJoin(project.participants, projectParticipant)
                 .where(projectParticipant.memberId.eq(memberId)
                         .and(project.workspace.id.eq(workspaceId)))
-                .orderBy(project.createdAt.desc())
+                .orderBy(project.createdAt.asc())
                 .fetch();
     }
 
     @Override
     public List<ProjectParticipant> findProjectParticipantsByProjectId(Long projectId) {
-        return projectParticipantJpaRepository.findProjectParticipantsByProjectIdOrderByCreatedAtDesc(projectId);
+        return projectParticipantJpaRepository.findProjectParticipantsByProjectIdOrderByCreatedAtAsc(projectId);
     }
 
     @Override
