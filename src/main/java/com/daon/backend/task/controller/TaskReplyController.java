@@ -1,6 +1,6 @@
 package com.daon.backend.task.controller;
 
-import com.daon.backend.common.response.slice.SliceResponse;
+import com.daon.backend.common.response.slice.PageResponse;
 import com.daon.backend.task.domain.authority.CheckRole;
 import com.daon.backend.task.dto.TaskReplySummary;
 import com.daon.backend.task.dto.task.CreateTaskReplyRequestDto;
@@ -50,9 +50,9 @@ public class TaskReplyController {
     })
     @CheckRole(authority = REP_READ)
     @GetMapping
-    public SliceResponse<TaskReplySummary> findTaskReplies(@PathVariable Long projectId,
-                                                           @PathVariable Long taskId,
-                                                           @PageableDefault Pageable pageable) {
+    public PageResponse<TaskReplySummary> findTaskReplies(@PathVariable Long projectId,
+                                                          @PathVariable Long taskId,
+                                                          @PageableDefault Pageable pageable) {
         return taskReplyService.findTaskReplies(projectId, taskId, pageable);
     }
 

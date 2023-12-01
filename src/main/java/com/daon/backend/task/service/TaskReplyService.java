@@ -1,6 +1,6 @@
 package com.daon.backend.task.service;
 
-import com.daon.backend.common.response.slice.SliceResponse;
+import com.daon.backend.common.response.slice.PageResponse;
 import com.daon.backend.task.domain.project.*;
 import com.daon.backend.task.domain.task.*;
 import com.daon.backend.task.dto.TaskReplySummary;
@@ -44,10 +44,10 @@ public class TaskReplyService {
     /**
      * 할 일 댓글 목록 조회
      */
-    public SliceResponse<TaskReplySummary> findTaskReplies(Long projectId, Long taskId, Pageable pageable) {
+    public PageResponse<TaskReplySummary> findTaskReplies(Long projectId, Long taskId, Pageable pageable) {
         ProjectParticipant taskReplyWriter = getProjectParticipantOrElseThrow(projectId);
 
-        return new SliceResponse<>(
+        return new PageResponse<>(
                 taskReplyRepository.findTaskReplyByTaskId(taskId, pageable)
                 .map(taskReply -> new TaskReplySummary(taskReply, taskReplyWriter))
         );

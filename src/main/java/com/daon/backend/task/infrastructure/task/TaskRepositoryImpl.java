@@ -3,6 +3,7 @@ package com.daon.backend.task.infrastructure.task;
 import com.daon.backend.common.history.Revision;
 import com.daon.backend.task.domain.board.Board;
 import com.daon.backend.task.domain.project.ProjectParticipant;
+import com.daon.backend.task.domain.task.QTaskReply;
 import com.daon.backend.task.domain.task.Task;
 import com.daon.backend.task.domain.task.TaskRepository;
 import com.daon.backend.task.dto.*;
@@ -12,6 +13,7 @@ import com.daon.backend.task.dto.task.history.TaskHistory;
 import com.daon.backend.task.infrastructure.board.BoardJpaRepository;
 import com.daon.backend.task.infrastructure.project.ProjectParticipantJpaRepository;
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.envers.AuditReaderFactory;
@@ -36,6 +38,7 @@ import static com.daon.backend.task.domain.project.QProject.project;
 import static com.daon.backend.task.domain.project.QProjectParticipant.projectParticipant;
 import static com.daon.backend.task.domain.task.QTask.task;
 import static com.daon.backend.task.domain.task.QTaskBookmark.taskBookmark;
+import static com.daon.backend.task.domain.task.QTaskReply.taskReply;
 import static com.querydsl.core.types.Projections.constructor;
 
 @Repository
@@ -110,7 +113,10 @@ public class TaskRepositoryImpl implements TaskRepository {
                                 task.endDate,
                                 task.progressStatus,
                                 task.emergency,
-                                taskBookmark.isNotNull()
+                                taskBookmark.isNotNull(),
+                                JPAExpressions.select(taskReply.count())
+                                        .from(taskReply)
+                                        .where(taskReply.task.id.eq(task.id))
                         )
                 )
                 .from(task)
