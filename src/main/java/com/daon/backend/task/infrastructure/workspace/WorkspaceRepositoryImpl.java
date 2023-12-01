@@ -45,13 +45,13 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
                 .selectFrom(workspace)
                 .innerJoin(workspace.participants, workspaceParticipant)
                 .where(workspaceParticipant.memberId.eq(memberId))
-                .orderBy(workspace.createdAt.desc())
+                .orderBy(workspace.createdAt.asc())
                 .fetch();
     }
 
     @Override
     public List<WorkspaceParticipant> findWorkspaceParticipantsByWorkspaceId(Long workspaceId) {
-        return workspaceParticipantJpaRepository.findWorkspaceParticipantsByWorkspaceIdOrderByCreatedAtDesc(workspaceId);
+        return workspaceParticipantJpaRepository.findWorkspaceParticipantsByWorkspaceIdOrderByCreatedAtAsc(workspaceId);
     }
 
     @Override

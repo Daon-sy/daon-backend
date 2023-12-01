@@ -12,5 +12,5 @@ public interface BoardJpaRepository extends JpaRepository<Board, Long> {
     @EntityGraph(attributePaths = {"project", "tasks"})
     Optional<Board> findBoardByIdAndRemovedFalse(Long boardId);
 
-    List<Board> findBoardsByProjectIdAndRemovedFalseOrderByCreatedAtDesc(Long projectId);
+    List<Board> findBoardsByProjectIdAndRemovedFalseOrderByCreatedAtAsc(Long projectId);
 }

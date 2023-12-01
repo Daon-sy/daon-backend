@@ -42,7 +42,7 @@ public class BoardService {
      * 보드 목록 조회
      */
     public FindBoardsResponseDto findBoards(Long projectId) {
-        List<Board> boards = boardRepository.findBoardsByProjectIdOrderByDESC(projectId);
+        List<Board> boards = boardRepository.findBoardsByProjectId(projectId);
 
         return new FindBoardsResponseDto(
                 boards.stream()
