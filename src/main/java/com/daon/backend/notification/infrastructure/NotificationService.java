@@ -221,4 +221,11 @@ public class NotificationService {
                 .collect(Collectors.toList())
         );
     }
+
+    /**
+     * 알림 읽음 처리
+     */
+    public void readNotification(Long notificationId) {
+        notificationRepository.readNotification(notificationId);
+    }
 }

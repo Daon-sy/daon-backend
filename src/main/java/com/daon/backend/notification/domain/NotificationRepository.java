@@ -9,4 +9,6 @@ public interface NotificationRepository {
     List<Notification> findNotifications(String memberId);
 
     List<Notification> findNotSentNotifications(String memberId, long now);
+
+    void readNotification(Long notificationId);
 }

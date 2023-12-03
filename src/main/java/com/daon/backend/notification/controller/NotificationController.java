@@ -44,4 +44,10 @@ public class NotificationController {
 
         return notificationService.findNotifications();
     }
+
+    @Operation(summary = "알림 읽음 처리", description = "알림 읽음 처리 요청입니다.")
+    @DeleteMapping("/notifications/{notificationId}")
+    public void readNotification(@PathVariable Long notificationId) {
+        notificationService.readNotification(notificationId);
+    }
 }

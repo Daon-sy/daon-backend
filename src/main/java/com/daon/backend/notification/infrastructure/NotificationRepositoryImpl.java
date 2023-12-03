@@ -35,4 +35,9 @@ public class NotificationRepositoryImpl implements NotificationRepository {
                         .and(notification.memberId.eq(memberId)))
                 .fetch();
     }
+
+    @Override
+    public void readNotification(Long notificationId) {
+        notificationJpaRepository.deleteById(notificationId);
+    }
 }
