@@ -133,7 +133,7 @@ public class Workspace extends BaseEntity {
     }
 
     public void addWorkspaceInvitation(WorkspaceInvitation workspaceInvitation) {
-        if (isPersonal()) {
+        if (!isPersonal()) {
             this.invitations.add(workspaceInvitation);
 
             Events.raise(new InviteWorkspaceAlarmEvent(
