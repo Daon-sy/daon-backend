@@ -23,6 +23,11 @@ public class NotificationRepositoryImpl implements NotificationRepository {
     }
 
     @Override
+    public List<Notification> findNotifications(String memberId) {
+        return notificationJpaRepository.findNotificationsByMemberId(memberId);
+    }
+
+    @Override
     public List<Notification> findNotSentNotifications(String memberId, long now) {
         return queryFactory
                 .selectFrom(notification)
