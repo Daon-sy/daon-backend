@@ -40,4 +40,9 @@ public class NotificationRepositoryImpl implements NotificationRepository {
     public void readNotification(Long notificationId) {
         notificationJpaRepository.deleteById(notificationId);
     }
+
+    @Override
+    public void deleteNotifications(String memberId) {
+        notificationJpaRepository.deleteAllByMemberId(memberId);
+    }
 }

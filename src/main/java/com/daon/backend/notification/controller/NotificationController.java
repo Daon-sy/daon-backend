@@ -50,4 +50,10 @@ public class NotificationController {
     public void readNotification(@PathVariable Long notificationId) {
         notificationService.readNotification(notificationId);
     }
+
+    @Operation(summary = "알림 목록 삭제", description = "알림 목록 삭제 요청입니다.")
+    @DeleteMapping("/notifications")
+    public void deleteNotifications() {
+        notificationService.deleteNotifications();
+    }
 }

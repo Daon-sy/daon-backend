@@ -228,4 +228,12 @@ public class NotificationService {
     public void readNotification(Long notificationId) {
         notificationRepository.readNotification(notificationId);
     }
+
+    /**
+     * 알림 목록 삭제
+     */
+    public void deleteNotifications() {
+        String memberId = sessionMemberProvider.getMemberId();
+        notificationRepository.deleteNotifications(memberId);
+    }
 }

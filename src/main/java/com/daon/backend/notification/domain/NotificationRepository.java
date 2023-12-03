@@ -11,4 +11,6 @@ public interface NotificationRepository {
     List<Notification> findNotSentNotifications(String memberId, long now);
 
     void readNotification(Long notificationId);
+
+    void deleteNotifications(String memberId);
 }
