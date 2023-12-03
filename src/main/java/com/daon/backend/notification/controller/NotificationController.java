@@ -1,5 +1,6 @@
 package com.daon.backend.notification.controller;
 
+import com.daon.backend.notification.dto.FindNotificationsResponse;
 import com.daon.backend.notification.dto.TasksNotificationParams;
 import com.daon.backend.notification.infrastructure.NotificationService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -31,9 +32,16 @@ public class NotificationController {
     }
 
     @Operation(summary = "실시간 이벤트(할 일 상세 조회) 구독", description = "실시간 이벤트(할 일 상세 조회) 구독 요청입니다.")
-    @GetMapping(value = "/subscribe/workspaces/projects/tasks/{taskId}")
+    @GetMapping("/subscribe/workspaces/projects/tasks/{taskId}")
     public SseEmitter subscribeTask(@PathVariable Long taskId) {
 
         return notificationService.subscribeTask(taskId);
+    }
+
+    @Operation(summary = "알림 목록 조회", description = "알림 목록 조회 요청입니다.")
+    @GetMapping("/notifications")
+    public FindNotificationsResponse findNotifications() {
+
+        return notificationService.findNotifications();
     }
 }

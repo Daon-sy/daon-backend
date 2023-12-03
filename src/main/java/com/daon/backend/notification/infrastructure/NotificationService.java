@@ -2,6 +2,7 @@ package com.daon.backend.notification.infrastructure;
 
 import com.daon.backend.member.service.SessionMemberProvider;
 import com.daon.backend.notification.domain.*;
+import com.daon.backend.notification.dto.FindNotificationsResponse;
 import com.daon.backend.notification.dto.TasksNotificationParams;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -16,6 +17,7 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -205,5 +207,18 @@ public class NotificationService {
                 emitterRepository.deleteById(key);
             }
         });
+    }
+
+    /**
+     * 알림 목록 조회
+     */
+    public FindNotificationsResponse findNotifications() {
+        String memberId = sessionMemberProvider.getMemberId();
+
+        return new FindNotificationsResponse(
+                notificationRepository.findNotifications(memberId).stream()
+                .map(FindNotificationsResponse.NotificationSummary::new)
+                .collect(Collectors.toList())
+        );
     }
 }
