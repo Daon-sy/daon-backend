@@ -15,7 +15,7 @@ public class NotificationController {
     private final NotificationService notificationService;
 
     @Operation(summary = "실시간 이벤트(알림) 구독", description = "실시간 이벤트(알림) 구독 요청입니다.")
-    @GetMapping(value = "/alarm", produces = "text/event-stream")
+    @GetMapping(value = "/notifications", produces = "text/event-stream")
     public SseEmitter subscribeAlarm(
             @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
 
