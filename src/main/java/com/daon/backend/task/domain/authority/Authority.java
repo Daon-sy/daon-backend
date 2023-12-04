@@ -12,6 +12,12 @@ public enum Authority {
     WS_UPDATE("워크스페이스 수정"),
     WS_DELETE("워크스페이스 삭제"),
 
+    // workspace-notice
+    WSN_CREATE("워크스페이스 공지사항 생성"),
+    WSN_READ("워크스페이스 공지사항 조회"),
+    WSN_UPDATE("워크스페이스 공지사항 수정"),
+    WSN_DELETE("워크스페이스 공지사항 삭제"),
+
     // workspace-participant
     WSP_INVITE("워크스페이스 사용자 초대"),
     WSP_DROP("워크스페이스 사용자 내보내기"),
