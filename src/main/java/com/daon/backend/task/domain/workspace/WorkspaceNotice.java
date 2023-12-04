@@ -9,6 +9,9 @@ import org.hibernate.envers.Audited;
 
 import javax.persistence.*;
 
+import java.util.Objects;
+import java.util.Optional;
+
 import static org.hibernate.envers.RelationTargetAuditMode.NOT_AUDITED;
 
 @Entity
@@ -18,7 +21,7 @@ public class WorkspaceNotice extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "workspace_notice_id", updatable = false)
+    @Column(name = "notice_id", updatable = false)
     private Long id;
 
     @Column(nullable = false, length = 50)
@@ -44,5 +47,12 @@ public class WorkspaceNotice extends BaseEntity {
         this.content = content;
     }
 
+    public void modifyWorkspaceNotice(WorkspaceParticipant newWorkspaceNoticeWriter, String title, String content){
+        if (!Objects.equals(this.workspaceNoticeWriter, newWorkspaceNoticeWriter)) {
+            this.workspaceNoticeWriter = newWorkspaceNoticeWriter;
+        }
+        this.title = Optional.ofNullable(title).orElse(this.title);
+        this.content=Optional.ofNullable(content).orElse(this.content);
+    }
 
 }
