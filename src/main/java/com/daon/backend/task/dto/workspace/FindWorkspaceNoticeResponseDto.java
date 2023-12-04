@@ -1,6 +1,5 @@
 package com.daon.backend.task.dto.workspace;
 
-import com.daon.backend.task.domain.workspace.Workspace;
 import com.daon.backend.task.domain.workspace.WorkspaceNotice;
 import com.daon.backend.task.dto.WorkspaceNoticeSummary;
 import lombok.Getter;
