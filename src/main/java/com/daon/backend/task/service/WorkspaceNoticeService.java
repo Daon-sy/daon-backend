@@ -79,4 +79,12 @@ public class WorkspaceNoticeService{
 
         workspaceNotice.modifyWorkspaceNotice(workspaceNoticeWriter,requestDto.getTitle(), requestDto.getContent());
     }
+
+    /**
+     * 워크스페이스 공지사항 삭제
+     * */
+    @Transactional
+    public void deleteWorkspaceNotice(Long noticeId){
+        workspaceNoticeRepository.deleteById(noticeId);
+    }
 }
