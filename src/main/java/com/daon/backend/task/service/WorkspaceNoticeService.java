@@ -2,10 +2,7 @@ package com.daon.backend.task.service;
 
 import com.daon.backend.task.domain.workspace.*;
 import com.daon.backend.task.dto.WorkspaceNoticeSummary;
-import com.daon.backend.task.dto.workspace.CreateWorkspaceNoticeRequestDto;
-import com.daon.backend.task.dto.workspace.CreateWorkspaceNoticeResponseDto;
-import com.daon.backend.task.dto.workspace.FindWorkspaceNoticeResponseDto;
-import com.daon.backend.task.dto.workspace.FindWorkspaceNoticesResponseDto;
+import com.daon.backend.task.dto.workspace.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -66,5 +63,20 @@ public class WorkspaceNoticeService{
                 .orElseThrow(() -> new WorkspaceNoticeNotFoundException(noticeId));
 
         return new FindWorkspaceNoticeResponseDto(workspaceNotice);
+    }
+
+    /**
+     * 워크스페이스 공지사항 수정
+     * */
+    @Transactional
+    public void modifyWorkspaceNoticeContent(Long workspaceId, Long noticeId, ModifyWorkspaceNoticeRequestDto requestDto){
+        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+        String memberId = sessionMemberProvider.getMemberId();
+        WorkspaceParticipant workspaceNoticeWriter = workspace.findWorkspaceParticipantByMemberId(memberId);
+        WorkspaceNotice workspaceNotice = workspaceNoticeRepository.findWorkspaceNoticeById(noticeId)
+                .orElseThrow(() -> new WorkspaceNoticeNotFoundException(noticeId));
+
+        workspaceNotice.modifyWorkspaceNotice(workspaceNoticeWriter,requestDto.getTitle(), requestDto.getContent());
     }
 }
