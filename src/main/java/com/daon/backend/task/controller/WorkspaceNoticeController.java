@@ -2,10 +2,7 @@ package com.daon.backend.task.controller;
 
 import com.daon.backend.task.domain.authority.Authority;
 import com.daon.backend.task.domain.authority.CheckRole;
-import com.daon.backend.task.dto.workspace.CreateWorkspaceNoticeRequestDto;
-import com.daon.backend.task.dto.workspace.CreateWorkspaceNoticeResponseDto;
-import com.daon.backend.task.dto.workspace.FindWorkspaceNoticeResponseDto;
-import com.daon.backend.task.dto.workspace.FindWorkspaceNoticesResponseDto;
+import com.daon.backend.task.dto.workspace.*;
 import com.daon.backend.task.service.WorkspaceNoticeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -15,6 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @Slf4j
 @RestController
@@ -54,4 +53,17 @@ public class WorkspaceNoticeController {
     public FindWorkspaceNoticeResponseDto findWorkspace(@PathVariable Long noticeId){
         return workspaceNoticeService.findWorkspaceNotice(noticeId);
     }
+
+    @Operation(summary = "워크스페이스 공지사항 수정", description = "워크스페이스 공지사항 수정 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "워크스페이스 공지사항 수정 성공")
+    })
+    @CheckRole(authority = Authority.WSN_UPDATE)
+    @PatchMapping("/{noticeId}")
+    public void modifyWorkspaceNotice(@PathVariable Long workspaceId,
+                                      @PathVariable Long noticeId,
+                                      @RequestBody @Valid ModifyWorkspaceNoticeRequestDto requestDto) {
+        workspaceNoticeService.modifyWorkspaceNoticeContent(workspaceId, noticeId, requestDto);
+    }
+
 }
