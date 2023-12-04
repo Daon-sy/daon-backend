@@ -10,4 +10,5 @@ public interface WorkspaceNoticeRepository {
 
     Optional<WorkspaceNotice> findWorkspaceNoticeById(Long noticeId);
 
+    void deleteById(Long noticeId);
 }

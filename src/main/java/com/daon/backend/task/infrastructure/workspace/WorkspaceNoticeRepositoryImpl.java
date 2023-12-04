@@ -29,5 +29,10 @@ public class WorkspaceNoticeRepositoryImpl implements WorkspaceNoticeRepository 
         return workspaceNoticeJpaRepository.findWorkspaceNoticeById(noticeId);
     }
 
+    @Override
+    public void deleteById(Long noticeId) {
+        workspaceNoticeJpaRepository.deleteById(noticeId);
+    }
+
 
 }
