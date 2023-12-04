@@ -5,6 +5,9 @@ import com.daon.backend.task.domain.workspace.WorkspaceNoticeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+import java.util.Optional;
+
 @Repository
 @RequiredArgsConstructor
 public class WorkspaceNoticeRepositoryImpl implements WorkspaceNoticeRepository {
@@ -15,4 +18,16 @@ public class WorkspaceNoticeRepositoryImpl implements WorkspaceNoticeRepository 
     public WorkspaceNotice save(WorkspaceNotice workspaceNotice) {
         return workspaceNoticeJpaRepository.save(workspaceNotice);
     }
+
+    @Override
+    public List<WorkspaceNotice> findWorkspacesByWorkspaceId(Long workspaceId) {
+        return workspaceNoticeJpaRepository.findWorkspaceNoticeByWorkspaceIdOrderByCreatedAtAsc(workspaceId);
+    }
+
+    @Override
+    public Optional<WorkspaceNotice> findWorkspaceNoticeById(Long noticeId) {
+        return workspaceNoticeJpaRepository.findWorkspaceNoticeById(noticeId);
+    }
+
+
 }
