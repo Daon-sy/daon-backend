@@ -66,4 +66,13 @@ public class WorkspaceNoticeController {
         workspaceNoticeService.modifyWorkspaceNoticeContent(workspaceId, noticeId, requestDto);
     }
 
+    @Operation(summary = "워크스페이스 공지사항 삭제", description = "워크스페이스 공지사항 삭제 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "워크스페이스 공지사항 삭제 성공")
+    })
+    @CheckRole(authority = Authority.WSN_DELETE)
+    @DeleteMapping("/{noticeId}")
+    public void deleteWorkspaceNotice(@PathVariable Long noticeId){
+        workspaceNoticeService.deleteWorkspaceNotice(noticeId);
+    }
 }
