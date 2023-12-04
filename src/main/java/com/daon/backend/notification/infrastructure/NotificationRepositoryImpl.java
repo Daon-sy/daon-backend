@@ -23,11 +23,26 @@ public class NotificationRepositoryImpl implements NotificationRepository {
     }
 
     @Override
+    public List<Notification> findNotifications(String memberId) {
+        return notificationJpaRepository.findNotificationsByMemberId(memberId);
+    }
+
+    @Override
     public List<Notification> findNotSentNotifications(String memberId, long now) {
         return queryFactory
                 .selectFrom(notification)
                 .where(notification.whenEventPublished.gt(now)
                         .and(notification.memberId.eq(memberId)))
                 .fetch();
+    }
+
+    @Override
+    public void readNotification(Long notificationId) {
+        notificationJpaRepository.deleteById(notificationId);
+    }
+
+    @Override
+    public void deleteNotifications(String memberId) {
+        notificationJpaRepository.deleteAllByMemberId(memberId);
     }
 }
