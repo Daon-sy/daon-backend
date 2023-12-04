@@ -10,8 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 public class WorkspaceNoticeSummary {
 
-    private Long workspaceNoticeId;
-    private Long workspaceId;
+    private Long noticeId;
     private WorkspaceNoticeWriter writer;
     private String title;
     private String content;
@@ -22,20 +21,18 @@ public class WorkspaceNoticeSummary {
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDateTime modifiedAt;
 
-    public  WorkspaceNoticeSummary(Long workspaceNoticeId, WorkspaceSummary workspace, WorkspaceParticipant workspaceParticipant,
+    public  WorkspaceNoticeSummary(Long noticeId, WorkspaceParticipant workspaceParticipant,
                                    String title, String content, LocalDateTime createdAt, LocalDateTime modifiedAt){
-        this.workspaceNoticeId = workspaceNoticeId;
-        this.workspaceId = workspace.getWorkspaceId();
+        this.noticeId = noticeId;
         this.writer = new WorkspaceNoticeWriter(workspaceParticipant);
         this.title = title;
         this.content = content;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
-
     }
+
     public WorkspaceNoticeSummary(WorkspaceNotice workspaceNotice){
-        this.workspaceNoticeId = workspaceNotice.getId();
-        this.workspaceId = workspaceNotice.getWorkspace().getId();
+        this.noticeId = workspaceNotice.getId();
         this.writer = new WorkspaceNoticeWriter(workspaceNotice.getWorkspaceNoticeWriter());
         this.title = workspaceNotice.getTitle();
         this.content = workspaceNotice.getContent();
