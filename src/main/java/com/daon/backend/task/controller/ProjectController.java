@@ -91,7 +91,7 @@ public class ProjectController {
         return projectService.findProject(projectId);
     }
 
-    @Operation(summary = "프로젝트 탈퇴", description = "프로젝트 탈퇴 요청입니다..")
+    @Operation(summary = "프로젝트 탈퇴", description = "프로젝트 탈퇴 요청입니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "프로젝트 탈퇴 성공")
     })
@@ -101,7 +101,7 @@ public class ProjectController {
         projectService.withdrawProject(projectId);
     }
 
-    @Operation(summary = "프로젝트 참여자 강퇴", description = "프로젝트 참여자 강퇴 요청입니다..")
+    @Operation(summary = "프로젝트 참여자 강퇴", description = "프로젝트 참여자 강퇴 요청입니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "프로젝트 참여자 강퇴 성공")
     })
@@ -112,7 +112,7 @@ public class ProjectController {
         projectService.deportProjectParticipant(projectId, requestDto);
     }
 
-    @Operation(summary = "프로젝트 삭제", description = "프로젝트 삭제 요청입니다..")
+    @Operation(summary = "프로젝트 삭제", description = "프로젝트 삭제 요청입니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "프로젝트 삭제 성공")
     })
@@ -120,5 +120,15 @@ public class ProjectController {
     @DeleteMapping("/{projectId}")
     public void deleteProject(@PathVariable Long projectId) {
         projectService.deleteProject(projectId);
+    }
+
+    @Operation(summary = "프로젝트 나의 참여자 정보 조회", description = "프로젝트 나의 참여자 정보 조회 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "프로젝트 나의 참여자 정보 조회 성공")
+    })
+    @CheckRole(authority = PJ_READ)
+    @GetMapping("/{projectId}/participants/me")
+    public FindMyProfileResponseDto findMyProfile(@PathVariable Long projectId) {
+        return projectService.findMyProfile(projectId);
     }
 }
