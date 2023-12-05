@@ -26,7 +26,6 @@ import static com.daon.backend.task.domain.authority.Authority.*;
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "Task", description = "Task domain API")
-@RequestMapping("/api/workspaces/{workspaceId}/projects/{projectId}/tasks")
 public class TaskController {
 
     private final TaskService taskService;
@@ -37,7 +36,7 @@ public class TaskController {
     })
     @ResponseStatus(HttpStatus.CREATED)
     @CheckRole(authority = TSK_CREATE)
-    @PostMapping
+    @PostMapping("/api/workspaces/{workspaceId}/projects/{projectId}/tasks")
     public CreateTaskResponseDto createTask(@PathVariable("projectId") Long projectId,
                                             @RequestBody @Valid CreateTaskRequestDto requestDto) {
         return taskService.createTask(projectId, requestDto);
@@ -48,7 +47,7 @@ public class TaskController {
             @ApiResponse(responseCode = "200", description = "할 일 수정 성공")
     })
     @CheckRole(authority = TSK_UPDATE)
-    @PutMapping("/{taskId}")
+    @PutMapping("/api/workspaces/{workspaceId}/projects/{projectId}/tasks/{taskId}")
     public void modifyTask(@PathVariable Long projectId,
                            @PathVariable Long taskId,
                            @RequestBody @Valid ModifyTaskRequestDto requestDto) {
@@ -60,7 +59,7 @@ public class TaskController {
             @ApiResponse(responseCode = "200", description = "할 일 단건 조회 성공")
     })
     @CheckRole(authority = TSK_READ)
-    @GetMapping("/{taskId}")
+    @GetMapping("/api/workspaces/{workspaceId}/projects/{projectId}/tasks/{taskId}")
     public FindTaskResponseDto findTask(@PathVariable Long taskId) {
         return taskService.findTask(taskId);
     }
@@ -70,7 +69,7 @@ public class TaskController {
             @ApiResponse(responseCode = "200", description = "할 일 목록 조회 성공")
     })
     @CheckRole(authority = Authority.TSK_READ)
-    @GetMapping("/workspaces/{workspaceId}/projects/tasks")
+    @GetMapping("/api/workspaces/{workspaceId}/projects/tasks")
     public FindTasksResponseDto searchTasks(@PathVariable Long workspaceId, @ModelAttribute TaskSearchParams params) {
         return taskService.searchTasks(workspaceId, params);
     }
@@ -80,7 +79,7 @@ public class TaskController {
             @ApiResponse(responseCode = "200", description = "할 일 진행 상태 변경 성공")
     })
     @CheckRole(authority = TSK_UPDATE)
-    @PatchMapping("/{taskId}")
+    @PatchMapping("/api/workspaces/{workspaceId}/projects/{projectId}/tasks/{taskId}")
     public void modifyProgressStatus(@PathVariable Long projectId,
                                      @PathVariable Long taskId,
                                      @RequestBody ModifyProgressStatusRequestDto requestDto) {
@@ -92,7 +91,7 @@ public class TaskController {
             @ApiResponse(responseCode = "200", description = "북마크 설정/해제 요청 성공")
     })
     @CheckRole(authority = TSK_READ)
-    @PostMapping("/{taskId}/bookmark")
+    @PostMapping("/api/workspaces/{workspaceId}/projects/{projectId}/tasks/{taskId}/bookmark")
     public SetBookmarkResponseDto setBookmark(@PathVariable Long projectId,
                                               @PathVariable Long taskId) {
         return taskService.setBookmark(projectId, taskId);
@@ -103,7 +102,7 @@ public class TaskController {
             @ApiResponse(responseCode = "200", description = "할 일 삭제 성공")
     })
     @CheckRole(authority = TSK_DELETE)
-    @DeleteMapping("/{taskId}")
+    @DeleteMapping("/api/workspaces/{workspaceId}/projects/{projectId}/tasks/{taskId}")
     public void deleteTask(@PathVariable Long taskId) {
         taskService.deleteTask(taskId);
     }
@@ -113,7 +112,7 @@ public class TaskController {
             @ApiResponse(responseCode = "200", description = "할 일 히스토리 조회 성공")
     })
     @CheckRole(authority = TSK_READ)
-    @GetMapping("/{taskId}/history")
+    @GetMapping("/api/workspaces/{workspaceId}/projects/{projectId}/tasks/{taskId}/history")
     public SliceResponse<TaskHistory> taskHistory(@PathVariable Long projectId,
                                                   @PathVariable Long taskId,
                                                   @PageableDefault Pageable pageable) {
