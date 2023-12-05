@@ -172,11 +172,11 @@ public class WorkspaceService {
      */
     @Transactional
     public void inviteMember(Long workspaceId, InviteMemberRequestDto requestDto) {
-        String memberId = dbMemberProvider.getMemberIdByUsername(requestDto.getUsername());
+        String invitedMemberId = dbMemberProvider.getMemberIdByUsername(requestDto.getUsername());
         Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
 
-        workspace.addWorkspaceInvitation(new WorkspaceInvitation(memberId, workspace));
+        workspace.addWorkspaceInvitation(invitedMemberId, new WorkspaceInvitation(invitedMemberId, workspace));
     }
 
     /**
@@ -260,5 +260,12 @@ public class WorkspaceService {
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
         String memberId = sessionMemberProvider.getMemberId();
         workspace.resetWorkspace(memberId);
+    }
+
+    /**
+     * 회원 검색
+     */
+    public SearchMemberResponseDto searchMember(Long workspaceId, String username) {
+        return new SearchMemberResponseDto(dbMemberProvider.searchMemberByUsername(username, workspaceId));
     }
 }

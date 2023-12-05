@@ -6,5 +6,11 @@ public interface NotificationRepository {
 
     Notification save(Notification notification);
 
+    List<Notification> findNotifications(String memberId);
+
     List<Notification> findNotSentNotifications(String memberId, long now);
+
+    void readNotification(Long notificationId);
+
+    void deleteNotifications(String memberId);
 }

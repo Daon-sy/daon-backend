@@ -7,6 +7,7 @@ import com.daon.backend.task.domain.task.Task;
 import com.daon.backend.task.domain.task.TaskBookmark;
 import com.daon.backend.task.domain.task.TaskNotFoundException;
 import com.daon.backend.task.domain.task.TaskRepository;
+import com.daon.backend.task.dto.TaskSearchParams;
 import com.daon.backend.task.dto.task.*;
 import com.daon.backend.task.dto.task.history.TaskHistory;
 import lombok.RequiredArgsConstructor;
@@ -28,17 +29,14 @@ public class TaskService {
      */
     @Transactional
     public CreateTaskResponseDto createTask(Long projectId, CreateTaskRequestDto requestDto) {
-        String memberId = sessionMemberProvider.getMemberId();
-        Long taskManagerId = requestDto.getTaskManagerId();
-
         Project project = projectRepository.findProjectById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
-        ProjectParticipant projectParticipant = project.findProjectParticipantByMemberId(memberId)
-                .orElseThrow(() -> new NotProjectParticipantException(memberId, projectId));
 
+        Long taskManagerId = requestDto.getTaskManagerId();
         ProjectParticipant taskManager = null;
         if (taskManagerId != null) {
-            taskManager = projectParticipant;
+            taskManager = project.findProjectParticipantByProjectParticipantId(taskManagerId)
+                    .orElseThrow(() -> new NotProjectParticipantException(projectId));
         }
 
         Board board = project.getBoardByBoardId(requestDto.getBoardId());
@@ -49,14 +47,12 @@ public class TaskService {
                 .startDate(requestDto.getStartDate())
                 .endDate(requestDto.getEndDate())
                 .emergency(requestDto.isEmergency())
-                .creatorId(projectParticipant.getWorkspaceParticipant().getId())
                 .taskManager(taskManager)
                 .project(project)
                 .board(board)
                 .build();
 
-        Long taskId = taskRepository.save(task).getId();
-        return new CreateTaskResponseDto(taskId);
+        return new CreateTaskResponseDto(taskRepository.save(task).getId());
     }
 
     /**
@@ -70,24 +66,29 @@ public class TaskService {
     }
 
     /**
+     * 할 일 목록 조회
+     */
+    public FindTasksResponseDto searchTasks(Long workspaceId, TaskSearchParams params) {
+        return new FindTasksResponseDto(taskRepository.findTaskSummaries(sessionMemberProvider.getMemberId(), workspaceId, params));
+    }
+
+    /**
      * 할 일 수정
      */
     @Transactional
     public void modifyTask(Long projectId, Long taskId, ModifyTaskRequestDto requestDto) {
-        String memberId = sessionMemberProvider.getMemberId();
-        Long taskManagerId = requestDto.getTaskManagerId();
-
         Project project = projectRepository.findProjectById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
         Board board = project.getBoardByBoardId(requestDto.getBoardId());
-        Task task = taskRepository.findTaskById(taskId)
-                .orElseThrow(() -> new TaskNotFoundException(projectId, taskId));
+        Task task = project.getTaskByTaskId(taskId);
 
+        Long taskManagerId = requestDto.getTaskManagerId();
         ProjectParticipant taskManager = null;
         if (taskManagerId != null) {
             taskManager = project.findProjectParticipantByProjectParticipantId(taskManagerId)
-                    .orElseThrow(() -> new NotProjectParticipantException(memberId, project.getId()));
+                    .orElseThrow(() -> new NotProjectParticipantException(projectId));
         }
+
         task.modifyTask(
                 requestDto.getTitle(),
                 requestDto.getContent(),
