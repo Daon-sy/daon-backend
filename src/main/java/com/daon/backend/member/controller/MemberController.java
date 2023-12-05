@@ -49,16 +49,6 @@ public class MemberController {
         return memberService.findMember();
     }
 
-    @Operation(summary = "회원 검색", description = "회원 검색 요청입니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "회원 검색 성공")
-    })
-    @GetMapping
-    public SearchMemberResponseDto searchMember(@RequestParam String username) {
-
-        return memberService.searchMember(username);
-    }
-
     @Operation(summary = "이메일 추가", description = "이메일 추가 요청입니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "201", description = "이메일 추가 성공")

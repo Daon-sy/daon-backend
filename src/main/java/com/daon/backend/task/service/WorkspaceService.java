@@ -261,4 +261,11 @@ public class WorkspaceService {
         String memberId = sessionMemberProvider.getMemberId();
         workspace.resetWorkspace(memberId);
     }
+
+    /**
+     * 회원 검색
+     */
+    public SearchMemberResponseDto searchMember(Long workspaceId, String username) {
+        return new SearchMemberResponseDto(dbMemberProvider.searchMemberByUsername(username, workspaceId));
+    }
 }
