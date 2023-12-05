@@ -46,7 +46,7 @@ public class WorkspaceNoticeService{
     * 워크스페이스 공지사항 목록 조회
     * */
     public FindWorkspaceNoticesResponseDto findWorkspaceNotices(Long workspaceId){
-        List<WorkspaceNotice> workspaceNotices = workspaceNoticeRepository.findWorkspacesByWorkspaceId(workspaceId);
+        List<WorkspaceNotice> workspaceNotices = workspaceNoticeRepository.findWorkspaceNoticesByWorkspaceId(workspaceId);
 
         return new FindWorkspaceNoticesResponseDto(
                 workspaceNotices.stream()
@@ -74,9 +74,7 @@ public class WorkspaceNoticeService{
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
         String memberId = sessionMemberProvider.getMemberId();
         WorkspaceParticipant workspaceNoticeWriter = workspace.findWorkspaceParticipantByMemberId(memberId);
-        WorkspaceNotice workspaceNotice = workspaceNoticeRepository.findWorkspaceNoticeById(noticeId)
-                .orElseThrow(() -> new WorkspaceNoticeNotFoundException(noticeId));
-
+        WorkspaceNotice workspaceNotice = workspace.findWorkspaceNoticeById(noticeId);
         workspaceNotice.modifyWorkspaceNotice(workspaceNoticeWriter,requestDto.getTitle(), requestDto.getContent());
     }
 
@@ -84,7 +82,9 @@ public class WorkspaceNoticeService{
      * 워크스페이스 공지사항 삭제
      * */
     @Transactional
-    public void deleteWorkspaceNotice(Long noticeId){
-        workspaceNoticeRepository.deleteById(noticeId);
+    public void deleteWorkspaceNotice(Long workspaceId, Long noticeId) {
+        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+        workspace.removeWorkspaceNotice(noticeId);
     }
 }

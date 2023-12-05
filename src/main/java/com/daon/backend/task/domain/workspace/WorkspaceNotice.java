@@ -6,12 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.envers.Audited;
-import org.hibernate.envers.NotAudited;
-
 import javax.persistence.*;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -42,8 +37,6 @@ public class WorkspaceNotice extends BaseEntity {
     @JoinColumn(name = "workspace_partipant_id")
     private WorkspaceParticipant workspaceNoticeWriter;
 
-    @OneToMany(mappedBy = "workspace", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<WorkspaceNotice> workspaceNotices = new ArrayList<>();
 
     @Builder
     private WorkspaceNotice(Workspace workspace, WorkspaceParticipant workspaceNoticeWriter, String title, String content ){
@@ -61,12 +54,4 @@ public class WorkspaceNotice extends BaseEntity {
         this.content=Optional.ofNullable(content).orElse(this.content);
     }
 
-    public void deleteWorkspaceNotice(Long noticeId){
-        this.workspaceNotices.remove(
-                this.workspaceNotices.stream()
-                        .filter(notice -> notice.getId().equals(noticeId))
-                        .findFirst()
-                        .orElseThrow(()-> new WorkspaceNoticeNotFoundException(noticeId))
-        );
-    }
 }

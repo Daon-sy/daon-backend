@@ -74,7 +74,8 @@ public class WorkspaceNoticeController {
     })
     @CheckRole(authority = Authority.WSN_DELETE)
     @DeleteMapping("/{noticeId}")
-    public void deleteWorkspaceNotice(@PathVariable Long noticeId){
-        workspaceNoticeService.deleteWorkspaceNotice(noticeId);
+    public void deleteWorkspaceNotice(@PathVariable Long workspaceId,
+                                      @PathVariable Long noticeId){
+        workspaceNoticeService.deleteWorkspaceNotice(workspaceId, noticeId);
     }
 }
