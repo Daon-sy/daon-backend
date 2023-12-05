@@ -61,4 +61,11 @@ public class WorkspaceExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ErrorResponse.createError(ErrorCode.CAN_NOT_INVITE_PERSONAL_WORKSPACE));
     }
+
+    @ExceptionHandler(AlreadyInvitedMemberException.class)
+    public ResponseEntity<ErrorResponse> alreadyInvitedMemberExceptionHandle(AlreadyInvitedMemberException e) {
+        log.error("{}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.createError(ErrorCode.ALREADY_INVITED_MEMBER));
+    }
 }

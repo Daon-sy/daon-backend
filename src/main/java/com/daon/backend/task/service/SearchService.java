@@ -4,8 +4,6 @@ import com.daon.backend.common.response.slice.SliceResponse;
 import com.daon.backend.task.domain.project.ProjectRepository;
 import com.daon.backend.task.domain.task.TaskRepository;
 import com.daon.backend.task.domain.workspace.WorkspaceRepository;
-import com.daon.backend.task.dto.TaskSearchParams;
-import com.daon.backend.task.dto.task.FindTasksResponseDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -19,12 +17,7 @@ public class SearchService {
     private final ProjectRepository projectRepository;
     private final TaskRepository taskRepository;
 
-    /**
-     * 할 일 목록 조회
-     */
-    public FindTasksResponseDto searchTasks(Long workspaceId, TaskSearchParams params) {
-        return new FindTasksResponseDto(taskRepository.findTaskSummaries(sessionMemberProvider.getMemberId(), workspaceId, params));
-    }
+
 
     /**
      * 통합 검색

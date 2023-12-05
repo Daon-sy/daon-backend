@@ -7,6 +7,7 @@ import com.daon.backend.task.domain.task.Task;
 import com.daon.backend.task.domain.task.TaskBookmark;
 import com.daon.backend.task.domain.task.TaskNotFoundException;
 import com.daon.backend.task.domain.task.TaskRepository;
+import com.daon.backend.task.dto.TaskSearchParams;
 import com.daon.backend.task.dto.task.*;
 import com.daon.backend.task.dto.task.history.TaskHistory;
 import lombok.RequiredArgsConstructor;
@@ -62,6 +63,13 @@ public class TaskService {
                 taskRepository.findTaskDetail(sessionMemberProvider.getMemberId(), taskId)
                         .orElseThrow(() -> new TaskNotFoundException(taskId))
         );
+    }
+
+    /**
+     * 할 일 목록 조회
+     */
+    public FindTasksResponseDto searchTasks(Long workspaceId, TaskSearchParams params) {
+        return new FindTasksResponseDto(taskRepository.findTaskSummaries(sessionMemberProvider.getMemberId(), workspaceId, params));
     }
 
     /**
