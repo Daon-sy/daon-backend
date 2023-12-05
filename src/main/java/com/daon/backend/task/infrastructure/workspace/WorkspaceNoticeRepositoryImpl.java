@@ -20,8 +20,8 @@ public class WorkspaceNoticeRepositoryImpl implements WorkspaceNoticeRepository 
     }
 
     @Override
-    public List<WorkspaceNotice> findWorkspacesByWorkspaceId(Long workspaceId) {
-        return workspaceNoticeJpaRepository.findWorkspaceNoticeByWorkspaceIdOrderByCreatedAtAsc(workspaceId);
+    public List<WorkspaceNotice> findWorkspaceNoticesByWorkspaceId(Long workspaceId) {
+        return workspaceNoticeJpaRepository.findWorkspaceNoticeByWorkspaceIdOrderByCreatedAtDesc(workspaceId);
     }
 
     @Override

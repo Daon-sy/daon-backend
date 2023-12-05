@@ -6,7 +6,7 @@ import java.util.Optional;
 public interface WorkspaceNoticeRepository {
     WorkspaceNotice save(WorkspaceNotice workspaceNotice);
 
-    List<WorkspaceNotice> findWorkspacesByWorkspaceId(Long workspaceId);
+    List<WorkspaceNotice> findWorkspaceNoticesByWorkspaceId(Long workspaceId);
 
     Optional<WorkspaceNotice> findWorkspaceNoticeById(Long noticeId);
 

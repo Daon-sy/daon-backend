@@ -8,12 +8,8 @@ import java.util.List;
 import java.util.Optional;
 
 public interface WorkspaceNoticeJpaRepository extends JpaRepository<WorkspaceNotice, Long> {
-
-    @EntityGraph(attributePaths = {"workspace"})
     Optional<WorkspaceNotice> findWorkspaceNoticeById(Long noticeId);
-
-    List<WorkspaceNotice> findWorkspaceNoticeByWorkspaceIdOrderByCreatedAtAsc(Long workspaceId);
-
+    List<WorkspaceNotice> findWorkspaceNoticeByWorkspaceIdOrderByCreatedAtDesc(Long workspaceId);
     void deleteById(Long noticeId);
 
 }
