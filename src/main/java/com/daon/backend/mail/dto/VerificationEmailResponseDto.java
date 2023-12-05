@@ -1,4 +1,4 @@
-package com.daon.backend.mail;
+package com.daon.backend.mail.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
