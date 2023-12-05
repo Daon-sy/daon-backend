@@ -30,6 +30,7 @@ public class Member extends BaseEntity {
     @Column(name = "member_id", updatable = false, length = 36)
     private String id;
 
+    @Column(unique = true)
     private String username;
 
     private String password;
