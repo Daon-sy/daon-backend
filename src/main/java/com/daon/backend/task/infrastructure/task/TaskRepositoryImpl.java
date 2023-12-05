@@ -124,7 +124,8 @@ public class TaskRepositoryImpl implements TaskRepository {
                                 taskBookmark.isNotNull(),
                                 JPAExpressions.select(taskReply.count())
                                         .from(taskReply)
-                                        .where(taskReply.task.id.eq(task.id))
+                                        .where(taskReply.task.id.eq(task.id)),
+                                task.taskManager.memberId.eq(memberId)
                         )
                 )
                 .from(task)

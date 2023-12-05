@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,7 +49,7 @@ public class ProjectService {
      */
     public FindProjectsResponseDto findProjects(Long workspaceId) {
         String memberId = sessionMemberProvider.getMemberId();
-        List<Project> projects = projectRepository.findProjectsByMemberIdOrderByDesc(workspaceId, memberId);
+        List<Project> projects = projectRepository.findProjectsByMemberId(workspaceId, memberId);
 
         return new FindProjectsResponseDto(
                 workspaceId,
@@ -148,5 +149,15 @@ public class ProjectService {
 
         projectRepository.deleteTasksAndBoardsRelatedProject(projectId);
         project.deleteProject();
+    }
+
+    /**
+     * 프로젝트 나의 참여자 정보 조회
+     */
+    public FindMyProfileResponseDto findMyProfile(Long projectId) {
+        String memberId = sessionMemberProvider.getMemberId();
+        ProjectParticipant projectParticipant = projectRepository.findProjectParticipantByProjectIdAndMemberId(projectId, memberId)
+                .orElseThrow(() -> new NotProjectParticipantException(memberId, projectId));
+        return new FindMyProfileResponseDto(projectParticipant);
     }
 }

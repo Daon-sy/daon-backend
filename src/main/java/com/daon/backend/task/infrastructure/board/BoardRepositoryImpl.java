@@ -27,8 +27,8 @@ public class BoardRepositoryImpl implements BoardRepository {
     }
 
     @Override
-    public List<Board> findBoardsByProjectIdOrderByDESC(Long projectId) {
-        return boardJpaRepository.findBoardsByProjectIdAndRemovedFalseOrderByCreatedAtDesc(projectId);
+    public List<Board> findBoardsByProjectId(Long projectId) {
+        return boardJpaRepository.findBoardsByProjectIdAndRemovedFalseOrderByCreatedAtAsc(projectId);
     }
 
     @Override

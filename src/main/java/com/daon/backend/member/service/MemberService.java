@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -65,15 +64,6 @@ public class MemberService {
                 .orElseThrow(() -> MemberNotFoundException.byMemberId(memberId));
 
         return new FindMemberResponseDto(member);
-    }
-
-    /**
-     * 회원 검색
-     */
-    public SearchMemberResponseDto searchMember(String username) {
-        List<MemberSummary> memberSummaries = memberRepository.searchMembersByUsername(username);
-
-        return new SearchMemberResponseDto(memberSummaries);
     }
 
     /**

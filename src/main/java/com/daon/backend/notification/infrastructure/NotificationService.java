@@ -2,6 +2,8 @@ package com.daon.backend.notification.infrastructure;
 
 import com.daon.backend.member.service.SessionMemberProvider;
 import com.daon.backend.notification.domain.*;
+import com.daon.backend.notification.dto.FindNotificationsResponse;
+import com.daon.backend.notification.dto.NotificationSummary;
 import com.daon.backend.notification.dto.TasksNotificationParams;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -10,15 +12,18 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class NotificationService {
 
@@ -99,15 +104,22 @@ public class NotificationService {
      * 알림 이벤트 응답 보내기
      */
     public void sendAlarm(NotificationType type, Object data, String memberId) throws JsonProcessingException {
-        String notificationData = objectMapper.writeValueAsString(data);
         long whenEventPublished = System.currentTimeMillis();
 
         String eventId = memberId + "_" + whenEventPublished;
-        notificationRepository.save(createNotification(type, notificationData, memberId, whenEventPublished));
+        Notification notification = notificationRepository.save(
+                createNotification(type, objectMapper.writeValueAsString(data), memberId, whenEventPublished)
+        );
 
         Map<String, SseEmitter> emitters = emitterRepository.findAllEmitterStartWithMemberId(memberId);
         emitters.forEach(
-                (key, emitter) -> sendNotification(emitter, eventId, key, notificationData, String.valueOf(type))
+                (key, emitter) -> sendNotification(
+                        emitter,
+                        eventId,
+                        key,
+                        new NotificationSummary(notification),
+                        String.valueOf(type)
+                )
         );
     }
 
@@ -194,7 +206,7 @@ public class NotificationService {
     }
 
     @Scheduled(fixedRate = 130_000)
-    private void sendHeartbeat() {
+    protected void sendHeartbeat() {
         Map<String, SseEmitter> emitterMap = emitterRepository.findAll();
         log.debug("send heartbeat to all emitter... emitter count: {}", emitterMap.values().size());
 
@@ -205,5 +217,33 @@ public class NotificationService {
                 emitterRepository.deleteById(key);
             }
         });
+    }
+
+    /**
+     * 알림 목록 조회
+     */
+    public FindNotificationsResponse findNotifications() {
+        String memberId = sessionMemberProvider.getMemberId();
+
+        return new FindNotificationsResponse(
+                notificationRepository.findNotifications(memberId).stream()
+                        .map(NotificationSummary::new)
+                        .collect(Collectors.toList())
+        );
+    }
+
+    /**
+     * 알림 읽음 처리
+     */
+    public void readNotification(Long notificationId) {
+        notificationRepository.readNotification(notificationId);
+    }
+
+    /**
+     * 알림 목록 삭제
+     */
+    public void deleteNotifications() {
+        String memberId = sessionMemberProvider.getMemberId();
+        notificationRepository.deleteNotifications(memberId);
     }
 }

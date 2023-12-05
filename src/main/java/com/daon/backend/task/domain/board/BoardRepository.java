@@ -7,7 +7,7 @@ public interface BoardRepository {
 
     Optional<Board> findBoardById(Long boardId);
 
-    List<Board> findBoardsByProjectIdOrderByDESC(Long projectId);
+    List<Board> findBoardsByProjectId(Long projectId);
 
     void deleteTasksRelatedBoard(Long boardId);
 }
