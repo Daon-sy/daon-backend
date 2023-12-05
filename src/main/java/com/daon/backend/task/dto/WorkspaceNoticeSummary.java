@@ -21,16 +21,6 @@ public class WorkspaceNoticeSummary {
     @JsonFormat(pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDateTime modifiedAt;
 
-    public  WorkspaceNoticeSummary(Long noticeId, WorkspaceParticipant workspaceParticipant,
-                                   String title, String content, LocalDateTime createdAt, LocalDateTime modifiedAt){
-        this.noticeId = noticeId;
-        this.writer = new WorkspaceNoticeWriter(workspaceParticipant);
-        this.title = title;
-        this.content = content;
-        this.createdAt = createdAt;
-        this.modifiedAt = modifiedAt;
-    }
-
     public WorkspaceNoticeSummary(WorkspaceNotice workspaceNotice){
         this.noticeId = workspaceNotice.getId();
         this.writer = new WorkspaceNoticeWriter(workspaceNotice.getWorkspaceNoticeWriter());

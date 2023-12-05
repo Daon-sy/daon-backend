@@ -40,8 +40,9 @@ public class WorkspaceNoticeController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "워크스페이스 공지사항 목록 조회 성공")
     })
+    @CheckRole(authority = Authority.WSN_READ)
     @GetMapping
-    public FindWorkspaceNoticesResponseDto findWorkspaceNoticesResponseDto(@PathVariable Long workspaceId){
+    public FindWorkspaceNoticesResponseDto findWorkspaceNotices(@PathVariable Long workspaceId){
         return workspaceNoticeService.findWorkspaceNotices(workspaceId);
     }
 
@@ -49,8 +50,9 @@ public class WorkspaceNoticeController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "워크스페이스 공지사항 단건 조회 성공")
     })
+    @CheckRole(authority = Authority.WSN_READ)
     @GetMapping("/{noticeId}")
-    public FindWorkspaceNoticeResponseDto findWorkspace(@PathVariable Long noticeId){
+    public FindWorkspaceNoticeResponseDto findWorkspaceNotice(@PathVariable Long noticeId){
         return workspaceNoticeService.findWorkspaceNotice(noticeId);
     }
 
