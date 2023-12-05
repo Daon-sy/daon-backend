@@ -125,21 +125,27 @@ public class Workspace extends BaseEntity {
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
     }
 
-    public void modifyWorkspace (String title, String description, String imageUrl, String subject) {
+    public void modifyWorkspace(String title, String description, String imageUrl, String subject) {
         this.title = Optional.ofNullable(title).orElse(this.title);
         this.description = Optional.ofNullable(description).orElse(this.description);
         this.imageUrl = Optional.ofNullable(imageUrl).orElse(this.imageUrl);
         this.subject = Optional.ofNullable(subject).orElse(this.subject);
     }
 
-    public void addWorkspaceInvitation(WorkspaceInvitation workspaceInvitation) {
+    public void addWorkspaceInvitation(String invitedMemberId, WorkspaceInvitation workspaceInvitation) {
         if (!isPersonal()) {
-            this.invitations.add(workspaceInvitation);
+            boolean alreadyInvited = this.invitations.stream()
+                    .anyMatch(invitation -> invitation.getMemberId().equals(invitedMemberId));
+            if (alreadyInvited) {
+                throw new AlreadyInvitedMemberException(invitedMemberId);
+            } else {
+                this.invitations.add(workspaceInvitation);
 
-            Events.raise(new InviteWorkspaceAlarmEvent(
-                    new InviteWorkspaceAlarmResponseDto(this.id, this.title),
-                    workspaceInvitation.getMemberId()
-            ));
+                Events.raise(new InviteWorkspaceAlarmEvent(
+                        new InviteWorkspaceAlarmResponseDto(this.id, this.title),
+                        workspaceInvitation.getMemberId()
+                ));
+            }
         } else {
             throw new CanNotInvitePersonalWorkspaceException(this.id);
         }

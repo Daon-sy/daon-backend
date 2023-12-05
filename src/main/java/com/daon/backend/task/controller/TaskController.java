@@ -1,7 +1,9 @@
 package com.daon.backend.task.controller;
 
 import com.daon.backend.common.response.slice.SliceResponse;
+import com.daon.backend.task.domain.authority.Authority;
 import com.daon.backend.task.domain.authority.CheckRole;
+import com.daon.backend.task.dto.TaskSearchParams;
 import com.daon.backend.task.dto.task.*;
 import com.daon.backend.task.dto.task.history.TaskHistory;
 import com.daon.backend.task.service.TaskService;
@@ -61,6 +63,16 @@ public class TaskController {
     @GetMapping("/{taskId}")
     public FindTaskResponseDto findTask(@PathVariable Long taskId) {
         return taskService.findTask(taskId);
+    }
+
+    @Operation(summary = "할 일 목록 조회", description = "할 일 목록 조회 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "할 일 목록 조회 성공")
+    })
+    @CheckRole(authority = Authority.TSK_READ)
+    @GetMapping("/workspaces/{workspaceId}/projects/tasks")
+    public FindTasksResponseDto searchTasks(@PathVariable Long workspaceId, @ModelAttribute TaskSearchParams params) {
+        return taskService.searchTasks(workspaceId, params);
     }
 
     @Operation(summary = "할 일 진행 상태 변경", description = "할 일 진행 상태 변경 요청입니다.")
