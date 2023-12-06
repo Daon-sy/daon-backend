@@ -284,15 +284,18 @@ public class WorkspaceService {
         Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
 
-        Long receiverId = requestDto.getWorkspaceParticipantId();
-        Long senderId = workspace.findWorkspaceParticipantByMemberId(memberId).getId();
-        workspace.checkMessageCanBeSend(senderId, receiverId);
+        WorkspaceParticipant receiver = workspace.findWorkspaceParticipantByWorkspaceParticipantId(
+                requestDto.getWorkspaceParticipantId(),
+                workspaceId
+        );
+        WorkspaceParticipant sender = workspace.findWorkspaceParticipantByMemberId(memberId);
 
+        workspace.checkMessageCanBeSend(sender.getId(), receiver.getId());
         workspace.saveMessage(
                 requestDto.getTitle(),
                 requestDto.getContent(),
-                receiverId,
-                senderId
+                receiver,
+                sender
         );
     }
 

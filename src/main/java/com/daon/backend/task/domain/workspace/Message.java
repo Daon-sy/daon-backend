@@ -1,6 +1,8 @@
 package com.daon.backend.task.domain.workspace;
 
+import com.daon.backend.common.event.Events;
 import com.daon.backend.config.BaseEntity;
+import com.daon.backend.task.dto.notification.SendReceiveMessageAlarmResponseDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -37,17 +39,45 @@ public class Message extends BaseEntity {
     @JoinColumn(name = "workspace_id")
     private Workspace workspace;
 
+    @Transient
+    private WorkspaceParticipant sender;
+
+    @Transient
+    private WorkspaceParticipant receiver;
+
     @Builder
-    public Message(String title, String content, Long receiverId, Long senderId, Workspace workspace) {
+    public Message(String title,
+                   String content,
+                   Long receiverId,
+                   Long senderId,
+                   Workspace workspace,
+                   WorkspaceParticipant sender,
+                   WorkspaceParticipant receiver) {
         this.title = title;
         this.content = content;
         this.readed = false;
         this.receiverId = receiverId;
         this.senderId = senderId;
         this.workspace = workspace;
+        this.sender = sender;
+        this.receiver = receiver;
     }
 
     public void readMessage() {
         this.readed = true;
+    }
+
+    @PostPersist
+    private void createMessageEvent() {
+        Events.raise(new SendReceiveMessageAlarmEvent(
+                new SendReceiveMessageAlarmResponseDto(
+                        workspace.getId(),
+                        workspace.getTitle(),
+                        sender,
+                        id,
+                        getCreatedAt()
+                ),
+                receiver.getMemberId()
+        ));
     }
 }

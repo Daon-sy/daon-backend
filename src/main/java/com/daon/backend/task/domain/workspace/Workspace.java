@@ -223,14 +223,10 @@ public class Workspace extends BaseEntity {
         }
     }
 
-    public void saveMessage(String title, String content, Long receiverId, Long senderId) {
-        this.messages.add(new Message(
-                title,
-                content,
-                receiverId,
-                senderId,
-                this
-        ));
+    public void saveMessage(String title, String content, WorkspaceParticipant receiver, WorkspaceParticipant sender) {
+        this.messages.add(
+                new Message(title, content, receiver.getId(), sender.getId(), this, sender, receiver)
+        );
     }
 
     public void checkMessageCanBeSend(Long senderId, Long receiverId) {

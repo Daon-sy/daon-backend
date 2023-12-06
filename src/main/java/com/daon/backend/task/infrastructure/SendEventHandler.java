@@ -9,6 +9,7 @@ import com.daon.backend.task.domain.project.Project;
 import com.daon.backend.task.domain.task.*;
 import com.daon.backend.task.domain.workspace.DeportationWorkspaceAlarmEvent;
 import com.daon.backend.task.domain.workspace.InviteWorkspaceAlarmEvent;
+import com.daon.backend.task.domain.workspace.SendReceiveMessageAlarmEvent;
 import com.daon.backend.task.domain.workspace.Workspace;
 import com.daon.backend.task.dto.notification.DesignatedManagerAlarmResponseDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -51,6 +52,13 @@ public class SendEventHandler {
     @Async
     public void handle(DesignatedManagerAlarmEvent event) throws JsonProcessingException {
         notificationService.sendAlarm(NotificationType.REGISTERED_TASK_MANAGER, event.getData(), event.getMemberId());
+    }
+
+
+    @TransactionalEventListener
+    @Async
+    public void handle(SendReceiveMessageAlarmEvent event) throws JsonProcessingException {
+        notificationService.sendAlarm(NotificationType.RECEIVE_MESSAGE, event.getData(), event.getMemberId());
     }
 
     @TransactionalEventListener

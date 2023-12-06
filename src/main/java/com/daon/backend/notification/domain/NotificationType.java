@@ -12,6 +12,7 @@ public enum NotificationType {
     DEPORTATION_WORKSPACE("워크스페이스에서 추방됨"),
     DEPORTATION_PROJECT("프로젝트에서 추방됨"),
     REGISTERED_TASK_MANAGER("할 일 담당자로 지정됨"),
+    RECEIVE_MESSAGE("쪽지 받음"),
     ;
 
     private final String descriptionType;
