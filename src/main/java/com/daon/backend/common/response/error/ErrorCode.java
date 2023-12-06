@@ -45,6 +45,7 @@ public enum ErrorCode {
     ALREADY_INVITED_MEMBER(3007, "해당 워크스페이스에 이미 초대된 회원입니다."),
     CAN_NOT_SEND_MESSAGE_TO_ME(3008, "본인에게는 쪽지를 보낼 수 없습니다."),
     MESSAGE_NOT_FOUND(3009, "해당 쪽지를 찾을 수 없습니다."),
+    NOT_THE_MESSAGE_RECEIVER(3010, "요청자와 메시지 수신자가 일치하지 않습니다."),
 
     // 프로젝트
     PROJECT_NOT_FOUND(4000, "존재하지 않는 프로젝트입니다."),

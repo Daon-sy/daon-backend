@@ -297,14 +297,32 @@ public class WorkspaceService {
     /**
      * 쪽지 단건 조회
      */
+    @Transactional
     public FindMessageResponseDto findMessage(Long workspaceId, Long messageId) {
         String memberId = sessionMemberProvider.getMemberId();
         Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+        Long receiverId = workspace.findWorkspaceParticipantByMemberId(memberId).getId();
 
-        WorkspaceParticipant sender = workspace.findWorkspaceParticipantByMemberId(memberId);
-        Message message = workspace.findMessage(messageId);
+        Message message = workspace.findMessage(messageId, receiverId);
+        message.readMessage();
+
+        Long senderId = message.getSenderId();
+        WorkspaceParticipant sender = workspace.findWorkspaceParticipantByWorkspaceParticipantId(senderId, workspaceId);
 
         return new FindMessageResponseDto(message, sender);
+    }
+
+    /**
+     * 쪽지 삭제
+     */
+    @Transactional
+    public void deleteMessage(Long workspaceId, Long messageId) {
+        String memberId = sessionMemberProvider.getMemberId();
+        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+        Long receiverId = workspace.findWorkspaceParticipantByMemberId(memberId).getId();
+
+        workspace.deleteMessage(messageId, receiverId);
     }
 }

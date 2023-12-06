@@ -82,4 +82,11 @@ public class WorkspaceExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ErrorResponse.createError(ErrorCode.MESSAGE_NOT_FOUND));
     }
+
+    @ExceptionHandler(NotTheMessageReceiverException.class)
+    public ResponseEntity<ErrorResponse> notTheMessageReceiverException(NotTheMessageReceiverException e) {
+        log.error("{}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.createError(ErrorCode.NOT_THE_MESSAGE_RECEIVER));
+    }
 }

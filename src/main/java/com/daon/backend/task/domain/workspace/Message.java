@@ -46,4 +46,8 @@ public class Message extends BaseEntity {
         this.senderId = senderId;
         this.workspace = workspace;
     }
+
+    public void readMessage() {
+        this.readed = true;
+    }
 }

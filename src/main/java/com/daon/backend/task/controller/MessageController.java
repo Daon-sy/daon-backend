@@ -40,4 +40,14 @@ public class MessageController {
                                               @PathVariable Long messageId) {
         return workspaceService.findMessage(workspaceId, messageId);
     }
+
+    @Operation(summary = "쪽지 삭제", description = "쪽지 삭제 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "쪽지 삭제 성공")
+    })
+    @DeleteMapping("/api/workspaces/{workspaceId}/messages/{messageId}")
+    public void deleteMessage(@PathVariable Long workspaceId,
+                              @PathVariable Long messageId) {
+        workspaceService.deleteMessage(workspaceId, messageId);
+    }
 }
