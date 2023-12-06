@@ -27,4 +27,6 @@ public interface WorkspaceRepository {
     void deleteAllRelatedWorkspaceParticipant(Long workspaceParticipantId, String memberId);
 
     Page<Message> findMessages(Workspace workspace, Long receiverId, Pageable pageable);
+
+    void readAllMessages(Long workspaceId, Long receiverId);
 }

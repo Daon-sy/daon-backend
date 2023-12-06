@@ -14,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+import static com.daon.backend.task.domain.workspace.QMessage.*;
 import static com.daon.backend.task.domain.workspace.QWorkspace.workspace;
 import static com.daon.backend.task.domain.workspace.QWorkspaceParticipant.workspaceParticipant;
 
@@ -111,6 +112,16 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
     @Override
     public Page<Message> findMessages(Workspace workspace, Long receiverId, Pageable pageable) {
         return messageJpaRepository.findAllByWorkspaceAndReceiverIdOrderByCreatedAtDesc(workspace, receiverId, pageable);
+    }
+
+    @Override
+    public void readAllMessages(Long workspaceId, Long receiverId) {
+        queryFactory
+                .update(message)
+                .set(message.readed, true)
+                .where(message.workspace.id.eq(workspaceId)
+                        .and(message.receiverId.eq(receiverId)))
+                .execute();
     }
 
 }

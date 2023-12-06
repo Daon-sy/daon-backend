@@ -353,4 +353,16 @@ public class WorkspaceService {
         workspace.deleteMessage(messageId, receiverId);
     }
 
+    /**
+     * 쪽지 모두 읽기
+     */
+    @Transactional
+    public void readAllMessages(Long workspaceId) {
+        String memberId = sessionMemberProvider.getMemberId();
+        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+        Long receiverId = workspace.findWorkspaceParticipantByMemberId(memberId).getId();
+
+        workspaceRepository.readAllMessages(workspaceId, receiverId);
+    }
 }
