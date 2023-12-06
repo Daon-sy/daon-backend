@@ -52,6 +52,9 @@ public class Workspace extends BaseEntity {
     @OneToMany(mappedBy = "workspace", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<Project> projects = new ArrayList<>();
 
+    @OneToMany(mappedBy = "workspace", cascade = {CascadeType.ALL}, orphanRemoval = true)
+    private List<WorkspaceNotice> workspaceNotices = new ArrayList<>();
+
     @OneToMany(mappedBy = "workspace", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<Message> messages = new ArrayList<>();
 
@@ -162,6 +165,27 @@ public class Workspace extends BaseEntity {
         } else {
             throw new CanNotInvitePersonalWorkspaceException(this.id);
         }
+    }
+
+    public void removeWorkspaceInvitation(String memberId) {
+        this.invitations.removeIf(workspaceInvitation -> workspaceInvitation.getMemberId().equals(memberId));
+    }
+
+    public WorkspaceNotice findWorkspaceNoticeById(Long noticeId) {
+        return this.workspaceNotices.stream()
+                .filter(notice -> notice.getId().equals(noticeId))
+                .findFirst()
+                .orElseThrow(() -> new WorkspaceNoticeNotFoundException(noticeId));
+    }
+
+    public void removeWorkspaceNotice(Long noticeId) {
+        WorkspaceNotice notice = findWorkspaceNoticeById(noticeId);
+        this.workspaceNotices.remove(notice);
+    }
+
+    public boolean checkInvitedMember(String memberId) {
+        return this.invitations.stream()
+                .anyMatch(workspaceInvitation -> workspaceInvitation.getMemberId().equals(memberId));
     }
 
     public WorkspaceParticipant getWorkspaceParticipant(Long workspaceParticipantId) {
