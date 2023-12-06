@@ -1,6 +1,7 @@
 package com.daon.backend.task.domain.workspace;
 
 import com.daon.backend.task.dto.WorkspaceSummary;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 
@@ -24,4 +25,6 @@ public interface WorkspaceRepository {
     void deleteAllRelatedWorkspace(Long workspaceId);
 
     void deleteAllRelatedWorkspaceParticipant(Long workspaceParticipantId, String memberId);
+
+    Page<Message> findMessages(Workspace workspace, Long receiverId, Pageable pageable);
 }

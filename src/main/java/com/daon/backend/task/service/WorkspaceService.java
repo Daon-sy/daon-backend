@@ -1,5 +1,6 @@
 package com.daon.backend.task.service;
 
+import com.daon.backend.common.response.slice.PageResponse;
 import com.daon.backend.task.domain.workspace.*;
 import com.daon.backend.task.domain.workspace.exception.CanNotDeletePersonalWorkspaceException;
 import com.daon.backend.task.domain.workspace.exception.CanNotModifyMyRoleException;
@@ -9,6 +10,7 @@ import com.daon.backend.task.dto.WorkspaceSummary;
 import com.daon.backend.task.dto.workspace.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -81,7 +83,7 @@ public class WorkspaceService {
 
         return new FindWorkspaceParticipantsResponseDto(
                 workspaceParticipants.stream()
-                        .map(FindWorkspaceParticipantsResponseDto.WorkspaceParticipantProfile::new)
+                        .map(FindWorkspaceParticipantsResponseDto.WorkspaceParticipantProfileDetail::new)
                         .collect(Collectors.toList())
         );
     }
@@ -314,6 +316,28 @@ public class WorkspaceService {
     }
 
     /**
+     * 쪽지 목록 조회
+     */
+    public PageResponse<MessageSummary> findMessages(Long workspaceId, Pageable pageable) {
+        String memberId = sessionMemberProvider.getMemberId();
+        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+        Long receiverId = workspace.findWorkspaceParticipantByMemberId(memberId).getId();
+
+        return new PageResponse<>(
+                workspaceRepository.findMessages(workspace, receiverId, pageable)
+                        .map(message ->
+                                new MessageSummary(
+                                        message,
+                                        workspace.findWorkspaceParticipantByWorkspaceParticipantId(
+                                                message.getSenderId(),
+                                                workspaceId)
+                                )
+                        )
+        );
+    }
+
+    /**
      * 쪽지 삭제
      */
     @Transactional
@@ -325,4 +349,5 @@ public class WorkspaceService {
 
         workspace.deleteMessage(messageId, receiverId);
     }
+
 }

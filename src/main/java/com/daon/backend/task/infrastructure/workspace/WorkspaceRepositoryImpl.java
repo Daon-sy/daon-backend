@@ -1,14 +1,11 @@
 package com.daon.backend.task.infrastructure.workspace;
 
-import com.daon.backend.task.domain.workspace.Role;
-import com.daon.backend.task.domain.workspace.Workspace;
-import com.daon.backend.task.domain.workspace.WorkspaceParticipant;
-import com.daon.backend.task.domain.workspace.WorkspaceRepository;
+import com.daon.backend.task.domain.workspace.*;
 import com.daon.backend.task.dto.WorkspaceSummary;
-import com.daon.backend.task.infrastructure.project.ProjectJpaRepository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -26,7 +23,7 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
 
     private final WorkspaceJpaRepository workspaceJpaRepository;
     private final WorkspaceParticipantJpaRepository workspaceParticipantJpaRepository;
-    private final ProjectJpaRepository projectJpaRepository;
+    private final MessageJpaRepository messageJpaRepository;
     private final JPAQueryFactory queryFactory;
 
     @Override
@@ -109,6 +106,11 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
     @Override
     public void deleteAllRelatedWorkspaceParticipant(Long workspaceParticipantId, String memberId) {
         workspaceJpaRepository.deleteTaskManagerRelatedWorkspaceParticipant(workspaceParticipantId);
-//        projectJpaRepository.deleteProjectParticipantByWorkspaceParticipant(workspaceParticipantId, memberId);
     }
+
+    @Override
+    public Page<Message> findMessages(Workspace workspace, Long receiverId, Pageable pageable) {
+        return messageJpaRepository.findAllByWorkspaceAndReceiverIdOrderByCreatedAtDesc(workspace, receiverId, pageable);
+    }
+
 }
