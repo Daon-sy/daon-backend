@@ -1,6 +1,10 @@
 package com.daon.backend.task.service;
 
 import com.daon.backend.task.domain.workspace.*;
+import com.daon.backend.task.domain.workspace.exception.CanNotDeletePersonalWorkspaceException;
+import com.daon.backend.task.domain.workspace.exception.CanNotModifyMyRoleException;
+import com.daon.backend.task.domain.workspace.exception.NotInvitedMemberException;
+import com.daon.backend.task.domain.workspace.exception.WorkspaceNotFoundException;
 import com.daon.backend.task.dto.WorkspaceSummary;
 import com.daon.backend.task.dto.workspace.*;
 import lombok.RequiredArgsConstructor;
@@ -267,5 +271,26 @@ public class WorkspaceService {
      */
     public SearchMemberResponseDto searchMember(Long workspaceId, String username) {
         return new SearchMemberResponseDto(dbMemberProvider.searchMemberByUsername(username, workspaceId));
+    }
+
+    /**
+     * 쪽지 보내기
+     */
+    @Transactional
+    public void createMessage(Long workspaceId, SendMessageRequestDto requestDto) {
+        String memberId = sessionMemberProvider.getMemberId();
+        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+
+        Long receiverId = requestDto.getWorkspaceParticipantId();
+        Long senderId = workspace.findWorkspaceParticipantByMemberId(memberId).getId();
+        workspace.checkMessageCanBeSend(senderId, receiverId);
+
+        workspace.saveMessage(
+                requestDto.getTitle(),
+                requestDto.getContent(),
+                receiverId,
+                senderId
+        );
     }
 }

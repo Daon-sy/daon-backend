@@ -4,6 +4,7 @@ import com.daon.backend.common.event.Events;
 import com.daon.backend.config.BaseEntity;
 import com.daon.backend.task.domain.project.Project;
 import com.daon.backend.task.domain.project.ProjectNotFoundException;
+import com.daon.backend.task.domain.workspace.exception.*;
 import com.daon.backend.task.dto.notification.DeportationWorkspaceAlarmResponseDto;
 import com.daon.backend.task.dto.notification.InviteWorkspaceAlarmResponseDto;
 import lombok.AccessLevel;
@@ -50,6 +51,9 @@ public class Workspace extends BaseEntity {
 
     @OneToMany(mappedBy = "workspace", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<Project> projects = new ArrayList<>();
+
+    @OneToMany(mappedBy = "workspace", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    private List<Message> messages = new ArrayList<>();
 
     @Builder(access = AccessLevel.PRIVATE)
     private Workspace(String title, String description, Division division,
@@ -216,6 +220,26 @@ public class Workspace extends BaseEntity {
             this.participants.add(WorkspaceParticipant.withWorkspaceAdminRole(this, profile, memberId));
         } else {
             throw new CanNotDeletePersonalWorkspaceException(this.id);
+        }
+    }
+
+    public void saveMessage(String title, String content, Long receiverId, Long senderId) {
+        this.messages.add(new Message(
+                title,
+                content,
+                receiverId,
+                senderId,
+                this
+        ));
+    }
+
+    public void checkMessageCanBeSend(Long senderId, Long receiverId) {
+        if (this.participants.stream()
+                .anyMatch(workspaceParticipant -> workspaceParticipant.getId().equals(receiverId))) {
+            throw new NotWorkspaceParticipantException(this.id);
+        }
+        if (senderId.equals(receiverId)) {
+            throw new CanNotSendMessageToMeException(senderId);
         }
     }
 }
