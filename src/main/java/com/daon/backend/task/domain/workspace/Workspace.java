@@ -235,11 +235,18 @@ public class Workspace extends BaseEntity {
 
     public void checkMessageCanBeSend(Long senderId, Long receiverId) {
         if (this.participants.stream()
-                .anyMatch(workspaceParticipant -> workspaceParticipant.getId().equals(receiverId))) {
+                .noneMatch(workspaceParticipant -> workspaceParticipant.getId().equals(receiverId))) {
             throw new NotWorkspaceParticipantException(this.id);
         }
         if (senderId.equals(receiverId)) {
             throw new CanNotSendMessageToMeException(senderId);
         }
+    }
+
+    public Message findMessage(Long messageId) {
+        return this.messages.stream()
+                .filter(message -> message.getId().equals(messageId))
+                .findFirst()
+                .orElseThrow(() -> new MessageNotFoundException(messageId));
     }
 }

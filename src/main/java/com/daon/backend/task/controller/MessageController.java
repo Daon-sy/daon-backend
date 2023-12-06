@@ -1,6 +1,7 @@
 package com.daon.backend.task.controller;
 
 import com.daon.backend.task.domain.authority.CheckRole;
+import com.daon.backend.task.dto.workspace.FindMessageResponseDto;
 import com.daon.backend.task.dto.workspace.SendMessageRequestDto;
 import com.daon.backend.task.service.WorkspaceService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -28,5 +29,15 @@ public class MessageController {
     public void createMessage(@PathVariable Long workspaceId,
                             @RequestBody SendMessageRequestDto requestDto) {
         workspaceService.createMessage(workspaceId, requestDto);
+    }
+
+    @Operation(summary = "쪽지 단건 조회", description = "쪽지 단건 조회 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "쪽지 단건 조회 성공")
+    })
+    @GetMapping("/api/workspaces/{workspaceId}/messages/{messageId}")
+    public FindMessageResponseDto findMessage(@PathVariable Long workspaceId,
+                                              @PathVariable Long messageId) {
+        return workspaceService.findMessage(workspaceId, messageId);
     }
 }

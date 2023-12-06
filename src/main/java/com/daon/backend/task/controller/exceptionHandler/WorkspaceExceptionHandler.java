@@ -70,9 +70,16 @@ public class WorkspaceExceptionHandler {
     }
 
     @ExceptionHandler(CanNotSendMessageToMeException.class)
-    public ResponseEntity<ErrorResponse> canNotSendMessageToMeException(CanNotSendMessageToMeException e) {
+    public ResponseEntity<ErrorResponse> canNotSendMessageToMeExceptionHandle(CanNotSendMessageToMeException e) {
         log.error("{}", e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ErrorResponse.createError(ErrorCode.CAN_NOT_SEND_MESSAGE_TO_ME));
+    }
+
+    @ExceptionHandler(MessageNotFoundException.class)
+    public ResponseEntity<ErrorResponse> messageNotFoundExceptionHandle(MessageNotFoundException e) {
+        log.error("{}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.createError(ErrorCode.MESSAGE_NOT_FOUND));
     }
 }

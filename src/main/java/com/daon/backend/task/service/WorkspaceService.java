@@ -293,4 +293,18 @@ public class WorkspaceService {
                 senderId
         );
     }
+
+    /**
+     * 쪽지 단건 조회
+     */
+    public FindMessageResponseDto findMessage(Long workspaceId, Long messageId) {
+        String memberId = sessionMemberProvider.getMemberId();
+        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+
+        WorkspaceParticipant sender = workspace.findWorkspaceParticipantByMemberId(memberId);
+        Message message = workspace.findMessage(messageId);
+
+        return new FindMessageResponseDto(message, sender);
+    }
 }

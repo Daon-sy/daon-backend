@@ -44,6 +44,7 @@ public enum ErrorCode {
     CAN_NOT_INVITE_PERSONAL_WORKSPACE(3006, "개인 워크스페이스에는 사용자를 초대할 수 없습니다."),
     ALREADY_INVITED_MEMBER(3007, "해당 워크스페이스에 이미 초대된 회원입니다."),
     CAN_NOT_SEND_MESSAGE_TO_ME(3008, "본인에게는 쪽지를 보낼 수 없습니다."),
+    MESSAGE_NOT_FOUND(3009, "해당 쪽지를 찾을 수 없습니다."),
 
     // 프로젝트
     PROJECT_NOT_FOUND(4000, "존재하지 않는 프로젝트입니다."),

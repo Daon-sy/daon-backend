@@ -3,7 +3,6 @@ package com.daon.backend.task.infrastructure.task;
 import com.daon.backend.common.history.Revision;
 import com.daon.backend.task.domain.board.Board;
 import com.daon.backend.task.domain.project.ProjectParticipant;
-import com.daon.backend.task.domain.task.QTaskReply;
 import com.daon.backend.task.domain.task.Task;
 import com.daon.backend.task.domain.task.TaskRepository;
 import com.daon.backend.task.dto.*;
