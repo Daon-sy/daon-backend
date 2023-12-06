@@ -23,6 +23,11 @@ public enum Authority {
     WSP_DROP("워크스페이스 사용자 내보내기"),
     WSP_ROLE_UPDATE("워크스페이스 사용자 역할 변경"),
 
+    // message
+    MSG_CREATE("쪽지 생성"),
+    MSG_READ("쪽지 조회"),
+    MSG_DELETE("쪽지 삭제"),
+
     // profile
     PF_READ("프로필 조회"),
     PF_UPDATE("프로필 수정"),

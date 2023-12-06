@@ -58,7 +58,11 @@ public class Project extends BaseEntity {
         this.title = title;
         this.description = description;
 
-        addParticipant(projectCreator.getMemberId(), projectCreator.getWorkspaceParticipant());
+        this.participants.add(new ProjectParticipant(
+                this,
+                projectCreator.getWorkspaceParticipant(),
+                projectCreator.getMemberId())
+        );
         addBoard(DEFAULT_BOARD_TITLE);
     }
 

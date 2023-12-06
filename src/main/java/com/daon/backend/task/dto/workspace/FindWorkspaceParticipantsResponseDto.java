@@ -12,16 +12,16 @@ public class FindWorkspaceParticipantsResponseDto {
 
     private int totalCount;
 
-    private List<WorkspaceParticipantProfile> workspaceParticipants;
+    private List<WorkspaceParticipantProfileDetail> workspaceParticipants;
 
-    public FindWorkspaceParticipantsResponseDto(List<WorkspaceParticipantProfile> workspaceParticipants) {
+    public FindWorkspaceParticipantsResponseDto(List<WorkspaceParticipantProfileDetail> workspaceParticipants) {
         this.totalCount = workspaceParticipants.size();
         this.workspaceParticipants = workspaceParticipants;
     }
 
     @Getter
     @AllArgsConstructor
-    public static class WorkspaceParticipantProfile {
+    public static class WorkspaceParticipantProfileDetail {
 
         private Long workspaceParticipantId;
 
@@ -34,7 +34,7 @@ public class FindWorkspaceParticipantsResponseDto {
         private Role role;
 
 
-        public WorkspaceParticipantProfile(WorkspaceParticipant workspaceParticipant) {
+        public WorkspaceParticipantProfileDetail(WorkspaceParticipant workspaceParticipant) {
             this.workspaceParticipantId = workspaceParticipant.getId();
             this.name = workspaceParticipant.getProfile().getName();
             this.imageUrl = workspaceParticipant.getProfile().getImageUrl();

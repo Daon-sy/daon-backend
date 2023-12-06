@@ -172,4 +172,14 @@ public class WorkspaceController {
     public void resetWorkspace(@PathVariable Long workspaceId) {
         workspaceService.resetWorkspace(workspaceId);
     }
+
+    @Operation(summary = "회원 검색", description = "회원 검색 요청입니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "회원 검색 성공")
+    })
+    @GetMapping("/{workspaceId}/search-member")
+    public SearchMemberResponseDto searchMember(@PathVariable Long workspaceId,
+                                                @RequestParam String username) {
+        return workspaceService.searchMember(workspaceId, username);
+    }
 }
