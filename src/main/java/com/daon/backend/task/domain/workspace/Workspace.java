@@ -100,7 +100,16 @@ public class Workspace extends BaseEntity {
     }
 
     public void addParticipant(String memberId, Profile profile) {
-        this.participants.add(WorkspaceParticipant.withBasicParticipantRole(this, profile, memberId));
+        WorkspaceInvitation invitation = this.invitations.stream()
+                .filter(workspaceInvitation -> workspaceInvitation.getMemberId().equals(memberId))
+                .findFirst()
+                .orElseThrow(() -> new NotInvitedMemberException(this.id, memberId));
+
+        this.participants.add(
+                WorkspaceParticipant.withRole(this, profile, memberId, invitation.getRole())
+        );
+
+        this.invitations.removeIf(workspaceInvitation -> workspaceInvitation.getMemberId().equals(memberId));
     }
 
     public boolean isWorkspaceParticipantsByMemberId(String memberId) {
@@ -153,15 +162,6 @@ public class Workspace extends BaseEntity {
         } else {
             throw new CanNotInvitePersonalWorkspaceException(this.id);
         }
-    }
-
-    public void removeWorkspaceInvitation(String memberId) {
-        this.invitations.removeIf(workspaceInvitation -> workspaceInvitation.getMemberId().equals(memberId));
-    }
-
-    public boolean checkInvitedMember(String memberId) {
-        return this.invitations.stream()
-                .anyMatch(workspaceInvitation -> workspaceInvitation.getMemberId().equals(memberId));
     }
 
     public WorkspaceParticipant getWorkspaceParticipant(Long workspaceParticipantId) {

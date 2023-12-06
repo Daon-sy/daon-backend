@@ -4,7 +4,6 @@ import com.daon.backend.common.response.slice.PageResponse;
 import com.daon.backend.task.domain.workspace.*;
 import com.daon.backend.task.domain.workspace.exception.CanNotDeletePersonalWorkspaceException;
 import com.daon.backend.task.domain.workspace.exception.CanNotModifyMyRoleException;
-import com.daon.backend.task.domain.workspace.exception.NotInvitedMemberException;
 import com.daon.backend.task.domain.workspace.exception.WorkspaceNotFoundException;
 import com.daon.backend.task.dto.WorkspaceSummary;
 import com.daon.backend.task.dto.workspace.*;
@@ -182,7 +181,7 @@ public class WorkspaceService {
         Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
 
-        workspace.addWorkspaceInvitation(invitedMemberId, new WorkspaceInvitation(invitedMemberId, workspace));
+        workspace.addWorkspaceInvitation(invitedMemberId, new WorkspaceInvitation(invitedMemberId, workspace, requestDto.getRole()));
     }
 
     /**
@@ -194,19 +193,14 @@ public class WorkspaceService {
         Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
 
-        if (workspace.checkInvitedMember(memberId)) {
-            workspace.addParticipant(
-                    memberId,
-                    new Profile(
-                            requestDto.getName(),
-                            requestDto.getImageUrl(),
-                            requestDto.getEmail()
-                    )
-            );
-            workspace.removeWorkspaceInvitation(memberId);
-        } else {
-            throw new NotInvitedMemberException(workspaceId, memberId);
-        }
+        workspace.addParticipant(
+                memberId,
+                new Profile(
+                        requestDto.getName(),
+                        requestDto.getImageUrl(),
+                        requestDto.getEmail()
+                )
+        );
     }
 
     /**
