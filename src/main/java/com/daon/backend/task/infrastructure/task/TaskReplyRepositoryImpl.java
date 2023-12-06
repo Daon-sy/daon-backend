@@ -7,8 +7,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
-
 @Repository
 @RequiredArgsConstructor
 public class TaskReplyRepositoryImpl implements TaskReplyRepository {
@@ -18,11 +16,6 @@ public class TaskReplyRepositoryImpl implements TaskReplyRepository {
     @Override
     public TaskReply save(TaskReply taskReply) {
         return taskReplyJpaRepository.save(taskReply);
-    }
-
-    @Override
-    public List<TaskReply> findTaskReplyByTaskId(Long taskId) {
-        return taskReplyJpaRepository.findAllByTaskIdOrderByCreatedAtDesc(taskId);
     }
 
     @Override

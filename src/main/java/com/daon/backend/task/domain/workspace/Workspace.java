@@ -4,6 +4,7 @@ import com.daon.backend.common.event.Events;
 import com.daon.backend.config.BaseEntity;
 import com.daon.backend.task.domain.project.Project;
 import com.daon.backend.task.domain.project.ProjectNotFoundException;
+import com.daon.backend.task.domain.workspace.exception.*;
 import com.daon.backend.task.dto.notification.DeportationWorkspaceAlarmResponseDto;
 import com.daon.backend.task.dto.notification.InviteWorkspaceAlarmResponseDto;
 import lombok.AccessLevel;
@@ -51,6 +52,9 @@ public class Workspace extends BaseEntity {
     @OneToMany(mappedBy = "workspace", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<Project> projects = new ArrayList<>();
 
+    @OneToMany(mappedBy = "workspace", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    private List<Message> messages = new ArrayList<>();
+
     @Builder(access = AccessLevel.PRIVATE)
     private Workspace(String title, String description, Division division,
                       String imageUrl, String subject, WorkspaceCreator creator) {
@@ -96,7 +100,16 @@ public class Workspace extends BaseEntity {
     }
 
     public void addParticipant(String memberId, Profile profile) {
-        this.participants.add(WorkspaceParticipant.withBasicParticipantRole(this, profile, memberId));
+        WorkspaceInvitation invitation = this.invitations.stream()
+                .filter(workspaceInvitation -> workspaceInvitation.getMemberId().equals(memberId))
+                .findFirst()
+                .orElseThrow(() -> new NotInvitedMemberException(this.id, memberId));
+
+        this.participants.add(
+                WorkspaceParticipant.withRole(this, profile, memberId, invitation.getRole())
+        );
+
+        this.invitations.removeIf(workspaceInvitation -> workspaceInvitation.getMemberId().equals(memberId));
     }
 
     public boolean isWorkspaceParticipantsByMemberId(String memberId) {
@@ -149,15 +162,6 @@ public class Workspace extends BaseEntity {
         } else {
             throw new CanNotInvitePersonalWorkspaceException(this.id);
         }
-    }
-
-    public void removeWorkspaceInvitation(String memberId) {
-        this.invitations.removeIf(workspaceInvitation -> workspaceInvitation.getMemberId().equals(memberId));
-    }
-
-    public boolean checkInvitedMember(String memberId) {
-        return this.invitations.stream()
-                .anyMatch(workspaceInvitation -> workspaceInvitation.getMemberId().equals(memberId));
     }
 
     public WorkspaceParticipant getWorkspaceParticipant(Long workspaceParticipantId) {
@@ -217,5 +221,39 @@ public class Workspace extends BaseEntity {
         } else {
             throw new CanNotDeletePersonalWorkspaceException(this.id);
         }
+    }
+
+    public void saveMessage(String title, String content, WorkspaceParticipant receiver, WorkspaceParticipant sender) {
+        this.messages.add(
+                new Message(title, content, receiver.getId(), sender.getId(), this, sender, receiver)
+        );
+    }
+
+    public void checkMessageCanBeSend(Long senderId, Long receiverId) {
+        if (this.participants.stream()
+                .noneMatch(workspaceParticipant -> workspaceParticipant.getId().equals(receiverId))) {
+            throw new NotWorkspaceParticipantException(this.id);
+        }
+        if (senderId.equals(receiverId)) {
+            throw new CanNotSendMessageToMeException(senderId);
+        }
+    }
+
+    public Message findMessage(Long messageId, Long receiverId) {
+        Message findMessage = this.messages.stream()
+                .filter(message -> message.getId().equals(messageId))
+                .findFirst()
+                .orElseThrow(() -> new MessageNotFoundException(messageId));
+
+        if (!findMessage.getReceiverId().equals(receiverId)) {
+            throw new NotTheMessageReceiverException();
+        }
+
+        return findMessage;
+    }
+
+    public void deleteMessage(Long messageId, Long receiverId) {
+        Message findMessage = findMessage(messageId, receiverId);
+        this.messages.removeIf(message -> message.equals(findMessage));
     }
 }

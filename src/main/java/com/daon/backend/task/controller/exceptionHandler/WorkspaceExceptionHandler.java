@@ -3,7 +3,7 @@ package com.daon.backend.task.controller.exceptionHandler;
 import com.daon.backend.common.exception.DomainSpecificAdvice;
 import com.daon.backend.common.response.error.ErrorCode;
 import com.daon.backend.common.response.error.ErrorResponse;
-import com.daon.backend.task.domain.workspace.*;
+import com.daon.backend.task.domain.workspace.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -67,5 +67,26 @@ public class WorkspaceExceptionHandler {
         log.error("{}", e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ErrorResponse.createError(ErrorCode.ALREADY_INVITED_MEMBER));
+    }
+
+    @ExceptionHandler(CanNotSendMessageToMeException.class)
+    public ResponseEntity<ErrorResponse> canNotSendMessageToMeExceptionHandle(CanNotSendMessageToMeException e) {
+        log.error("{}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.createError(ErrorCode.CAN_NOT_SEND_MESSAGE_TO_ME));
+    }
+
+    @ExceptionHandler(MessageNotFoundException.class)
+    public ResponseEntity<ErrorResponse> messageNotFoundExceptionHandle(MessageNotFoundException e) {
+        log.error("{}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.createError(ErrorCode.MESSAGE_NOT_FOUND));
+    }
+
+    @ExceptionHandler(NotTheMessageReceiverException.class)
+    public ResponseEntity<ErrorResponse> notTheMessageReceiverException(NotTheMessageReceiverException e) {
+        log.error("{}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.createError(ErrorCode.NOT_THE_MESSAGE_RECEIVER));
     }
 }

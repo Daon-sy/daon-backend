@@ -1,10 +1,15 @@
 package com.daon.backend.task.service;
 
+import com.daon.backend.common.response.slice.PageResponse;
 import com.daon.backend.task.domain.workspace.*;
+import com.daon.backend.task.domain.workspace.exception.CanNotDeletePersonalWorkspaceException;
+import com.daon.backend.task.domain.workspace.exception.CanNotModifyMyRoleException;
+import com.daon.backend.task.domain.workspace.exception.WorkspaceNotFoundException;
 import com.daon.backend.task.dto.WorkspaceSummary;
 import com.daon.backend.task.dto.workspace.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -77,7 +82,7 @@ public class WorkspaceService {
 
         return new FindWorkspaceParticipantsResponseDto(
                 workspaceParticipants.stream()
-                        .map(FindWorkspaceParticipantsResponseDto.WorkspaceParticipantProfile::new)
+                        .map(FindWorkspaceParticipantsResponseDto.WorkspaceParticipantProfileDetail::new)
                         .collect(Collectors.toList())
         );
     }
@@ -176,7 +181,7 @@ public class WorkspaceService {
         Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
 
-        workspace.addWorkspaceInvitation(invitedMemberId, new WorkspaceInvitation(invitedMemberId, workspace));
+        workspace.addWorkspaceInvitation(invitedMemberId, new WorkspaceInvitation(invitedMemberId, workspace, requestDto.getRole()));
     }
 
     /**
@@ -188,19 +193,14 @@ public class WorkspaceService {
         Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
 
-        if (workspace.checkInvitedMember(memberId)) {
-            workspace.addParticipant(
-                    memberId,
-                    new Profile(
-                            requestDto.getName(),
-                            requestDto.getImageUrl(),
-                            requestDto.getEmail()
-                    )
-            );
-            workspace.removeWorkspaceInvitation(memberId);
-        } else {
-            throw new NotInvitedMemberException(workspaceId, memberId);
-        }
+        workspace.addParticipant(
+                memberId,
+                new Profile(
+                        requestDto.getName(),
+                        requestDto.getImageUrl(),
+                        requestDto.getEmail()
+                )
+        );
     }
 
     /**
@@ -267,5 +267,96 @@ public class WorkspaceService {
      */
     public SearchMemberResponseDto searchMember(Long workspaceId, String username) {
         return new SearchMemberResponseDto(dbMemberProvider.searchMemberByUsername(username, workspaceId));
+    }
+
+    /**
+     * 쪽지 보내기
+     */
+    @Transactional
+    public void createMessage(Long workspaceId, SendMessageRequestDto requestDto) {
+        String memberId = sessionMemberProvider.getMemberId();
+        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+
+        WorkspaceParticipant receiver = workspace.findWorkspaceParticipantByWorkspaceParticipantId(
+                requestDto.getWorkspaceParticipantId(),
+                workspaceId
+        );
+        WorkspaceParticipant sender = workspace.findWorkspaceParticipantByMemberId(memberId);
+
+        workspace.checkMessageCanBeSend(sender.getId(), receiver.getId());
+        workspace.saveMessage(
+                requestDto.getTitle(),
+                requestDto.getContent(),
+                receiver,
+                sender
+        );
+    }
+
+    /**
+     * 쪽지 단건 조회
+     */
+    @Transactional
+    public FindMessageResponseDto findMessage(Long workspaceId, Long messageId) {
+        String memberId = sessionMemberProvider.getMemberId();
+        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+        Long receiverId = workspace.findWorkspaceParticipantByMemberId(memberId).getId();
+
+        Message message = workspace.findMessage(messageId, receiverId);
+        message.readMessage();
+
+        Long senderId = message.getSenderId();
+        WorkspaceParticipant sender = workspace.findWorkspaceParticipantByWorkspaceParticipantId(senderId, workspaceId);
+
+        return new FindMessageResponseDto(message, sender);
+    }
+
+    /**
+     * 쪽지 목록 조회
+     */
+    public PageResponse<MessageSummary> findMessages(Long workspaceId, Pageable pageable) {
+        String memberId = sessionMemberProvider.getMemberId();
+        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+        Long receiverId = workspace.findWorkspaceParticipantByMemberId(memberId).getId();
+
+        return new PageResponse<>(
+                workspaceRepository.findMessages(workspace, receiverId, pageable)
+                        .map(message ->
+                                new MessageSummary(
+                                        message,
+                                        workspace.findWorkspaceParticipantByWorkspaceParticipantId(
+                                                message.getSenderId(),
+                                                workspaceId)
+                                )
+                        )
+        );
+    }
+
+    /**
+     * 쪽지 삭제
+     */
+    @Transactional
+    public void deleteMessage(Long workspaceId, Long messageId) {
+        String memberId = sessionMemberProvider.getMemberId();
+        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+        Long receiverId = workspace.findWorkspaceParticipantByMemberId(memberId).getId();
+
+        workspace.deleteMessage(messageId, receiverId);
+    }
+
+    /**
+     * 쪽지 모두 읽기
+     */
+    @Transactional
+    public void readAllMessages(Long workspaceId) {
+        String memberId = sessionMemberProvider.getMemberId();
+        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+        Long receiverId = workspace.findWorkspaceParticipantByMemberId(memberId).getId();
+
+        workspaceRepository.readAllMessages(workspaceId, receiverId);
     }
 }
