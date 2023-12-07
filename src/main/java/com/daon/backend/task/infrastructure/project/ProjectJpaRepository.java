@@ -19,9 +19,4 @@ public interface ProjectJpaRepository extends JpaRepository<Project, Long> {
             "WHERE t.taskManager IN (SELECT pp FROM ProjectParticipant pp WHERE pp.memberId = :memberId) " +
             "AND t.project.id = :projectId")
     void deleteTaskManagerRelatedProjectByMemberId(Long projectId, String memberId);
-
-    @Modifying
-    @Query("DELETE ProjectParticipant pp " +
-            "WHERE pp.workspaceParticipant.id = :workspaceParticipantId AND pp.memberId = :memberId")
-    void deleteProjectParticipantByWorkspaceParticipant(Long workspaceParticipantId, String memberId);
 }

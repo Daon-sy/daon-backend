@@ -2,7 +2,7 @@ package com.daon.backend.task.service;
 
 import com.daon.backend.task.domain.project.*;
 import com.daon.backend.task.domain.workspace.Workspace;
-import com.daon.backend.task.domain.workspace.WorkspaceNotFoundException;
+import com.daon.backend.task.domain.workspace.exception.WorkspaceNotFoundException;
 import com.daon.backend.task.domain.workspace.WorkspaceParticipant;
 import com.daon.backend.task.domain.workspace.WorkspaceRepository;
 import com.daon.backend.task.dto.ProjectSummary;
@@ -148,5 +148,15 @@ public class ProjectService {
 
         projectRepository.deleteTasksAndBoardsRelatedProject(projectId);
         project.deleteProject();
+    }
+
+    /**
+     * 프로젝트 나의 참여자 정보 조회
+     */
+    public FindMyProfileResponseDto findMyProfile(Long projectId) {
+        String memberId = sessionMemberProvider.getMemberId();
+        ProjectParticipant projectParticipant = projectRepository.findProjectParticipantByProjectIdAndMemberId(projectId, memberId)
+                .orElseThrow(() -> new NotProjectParticipantException(memberId, projectId));
+        return new FindMyProfileResponseDto(projectParticipant);
     }
 }

@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -18,12 +19,16 @@ public class WorkspaceInvitation {
 
     private String memberId;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "workspace_id")
     private Workspace workspace;
 
-    public WorkspaceInvitation(String memberId, Workspace workspace) {
+    public WorkspaceInvitation(String memberId, Workspace workspace, Role role) {
         this.memberId = memberId;
         this.workspace = workspace;
+        this.role = Objects.requireNonNullElse(role, Role.BASIC_PARTICIPANT);
     }
 }

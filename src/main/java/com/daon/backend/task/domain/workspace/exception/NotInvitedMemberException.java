@@ -1,4 +1,4 @@
-package com.daon.backend.task.domain.workspace;
+package com.daon.backend.task.domain.workspace.exception;
 
 import com.daon.backend.common.exception.AbstractException;
 

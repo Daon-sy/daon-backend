@@ -1,14 +1,11 @@
 package com.daon.backend.task.infrastructure.workspace;
 
-import com.daon.backend.task.domain.workspace.Role;
-import com.daon.backend.task.domain.workspace.Workspace;
-import com.daon.backend.task.domain.workspace.WorkspaceParticipant;
-import com.daon.backend.task.domain.workspace.WorkspaceRepository;
+import com.daon.backend.task.domain.workspace.*;
 import com.daon.backend.task.dto.WorkspaceSummary;
-import com.daon.backend.task.infrastructure.project.ProjectJpaRepository;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -17,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 import java.util.Optional;
 
+import static com.daon.backend.task.domain.workspace.QMessage.*;
 import static com.daon.backend.task.domain.workspace.QWorkspace.workspace;
 import static com.daon.backend.task.domain.workspace.QWorkspaceParticipant.workspaceParticipant;
 
@@ -26,7 +24,7 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
 
     private final WorkspaceJpaRepository workspaceJpaRepository;
     private final WorkspaceParticipantJpaRepository workspaceParticipantJpaRepository;
-    private final ProjectJpaRepository projectJpaRepository;
+    private final MessageJpaRepository messageJpaRepository;
     private final JPAQueryFactory queryFactory;
 
     @Override
@@ -109,6 +107,21 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
     @Override
     public void deleteAllRelatedWorkspaceParticipant(Long workspaceParticipantId, String memberId) {
         workspaceJpaRepository.deleteTaskManagerRelatedWorkspaceParticipant(workspaceParticipantId);
-//        projectJpaRepository.deleteProjectParticipantByWorkspaceParticipant(workspaceParticipantId, memberId);
     }
+
+    @Override
+    public Page<Message> findMessages(Workspace workspace, Long receiverId, Pageable pageable) {
+        return messageJpaRepository.findAllByWorkspaceAndReceiverIdOrderByCreatedAtDesc(workspace, receiverId, pageable);
+    }
+
+    @Override
+    public void readAllMessages(Long workspaceId, Long receiverId) {
+        queryFactory
+                .update(message)
+                .set(message.readed, true)
+                .where(message.workspace.id.eq(workspaceId)
+                        .and(message.receiverId.eq(receiverId)))
+                .execute();
+    }
+
 }
