@@ -1,6 +1,7 @@
 package com.daon.backend.task.service;
 
 import com.daon.backend.task.domain.workspace.*;
+import com.daon.backend.task.domain.workspace.exception.WorkspaceNotFoundException;
 import com.daon.backend.task.dto.WorkspaceNoticeSummary;
 import com.daon.backend.task.dto.workspace.*;
 import lombok.RequiredArgsConstructor;
