@@ -315,14 +315,14 @@ public class WorkspaceService {
     /**
      * 쪽지 목록 조회
      */
-    public PageResponse<MessageSummary> findMessages(Long workspaceId, Pageable pageable) {
+    public PageResponse<MessageSummary> findMessages(Long workspaceId, String target, String keyword, Pageable pageable) {
         String memberId = sessionMemberProvider.getMemberId();
         Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
         Long receiverId = workspace.findWorkspaceParticipantByMemberId(memberId).getId();
 
         return new PageResponse<>(
-                workspaceRepository.findMessages(workspace, receiverId, pageable)
+                workspaceRepository.findMessages(workspace, receiverId, target, keyword, pageable)
                         .map(message ->
                                 new MessageSummary(
                                         message,

@@ -10,11 +10,14 @@ public class WorkspaceParticipantProfile {
 
     private String name;
 
+    private String email;
+
     private String imageUrl;
 
     public WorkspaceParticipantProfile(WorkspaceParticipant workspaceParticipant) {
         this.workspaceParticipantId = workspaceParticipant.getId();
         this.name = workspaceParticipant.getProfile().getName();
+        this.email = workspaceParticipant.getProfile().getEmail();
         this.imageUrl = workspaceParticipant.getProfile().getImageUrl();
     }
 }

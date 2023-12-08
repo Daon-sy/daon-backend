@@ -2,19 +2,17 @@ package com.daon.backend.task.infrastructure.workspace;
 
 import com.daon.backend.task.domain.workspace.*;
 import com.daon.backend.task.dto.WorkspaceSummary;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
-import static com.daon.backend.task.domain.workspace.QMessage.*;
+import static com.daon.backend.task.domain.workspace.QMessage.message;
 import static com.daon.backend.task.domain.workspace.QWorkspace.workspace;
 import static com.daon.backend.task.domain.workspace.QWorkspaceParticipant.workspaceParticipant;
 
@@ -110,8 +108,21 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
     }
 
     @Override
-    public Page<Message> findMessages(Workspace workspace, Long receiverId, Pageable pageable) {
-        return messageJpaRepository.findAllByWorkspaceAndReceiverIdOrderByCreatedAtDesc(workspace, receiverId, pageable);
+    public Page<Message> findMessages(Workspace workspace, Long receiverId, String target, String keyword, Pageable pageable) {
+        BooleanBuilder builder = new BooleanBuilder();
+        if (target.equals("title")) {
+            builder.and(message.title.containsIgnoreCase(keyword));
+        } else if (target.equals("sender")) {
+            builder.and(message.senderName.containsIgnoreCase(keyword));
+        }
+
+        List<Message> messages = queryFactory
+                .selectFrom(message)
+                .where(builder.and(message.workspace.id.eq(workspace.getId())))
+                .orderBy(message.createdAt.desc())
+                .fetch();
+
+        return new PageImpl<>(messages, pageable, messages.size());
     }
 
     @Override
