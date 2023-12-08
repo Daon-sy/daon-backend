@@ -31,8 +31,12 @@ public class Message extends BaseEntity {
     // workspaceParticipantId
     private Long receiverId;
 
+    private String receiverName;
+
     // workspaceParticipantId
     private Long senderId;
+
+    private String senderName;
 
     @Audited(withModifiedFlag = true, targetAuditMode = RelationTargetAuditMode.NOT_AUDITED)
     @ManyToOne(fetch = FetchType.LAZY)
@@ -57,7 +61,9 @@ public class Message extends BaseEntity {
         this.content = content;
         this.readed = false;
         this.receiverId = receiverId;
+        this.receiverName = receiver.getProfile().getName();
         this.senderId = senderId;
+        this.senderName = sender.getProfile().getName();
         this.workspace = workspace;
         this.sender = sender;
         this.receiver = receiver;
