@@ -53,7 +53,7 @@ public class SearchQueryRepository {
                         workspaceParticipant.workspace.eq(workspace).and(
                             workspaceParticipant.memberId.eq(memberId))
                     )
-                .where(workspace.title.contains(keyword)
+                .where(workspace.title.containsIgnoreCase(keyword)
                         .and(workspace.removed.isFalse()))
                 .orderBy(
                         pageable.getSort().stream()
@@ -74,7 +74,7 @@ public class SearchQueryRepository {
                             workspaceParticipant.workspace.eq(workspace).and(
                                     workspaceParticipant.memberId.eq(memberId))
                     )
-                .where(workspace.title.contains(keyword)
+                .where(workspace.title.containsIgnoreCase(keyword)
                         .and(workspace.removed.isFalse()))
                 .distinct()
                 .fetchFirst();
@@ -108,7 +108,7 @@ public class SearchQueryRepository {
                             )
                     )
                     .join(project.workspace, workspace)
-                .where(project.title.contains(keyword)
+                .where(project.title.containsIgnoreCase(keyword)
                         .and(project.removed.isFalse()))
                 .orderBy(
                         pageable.getSort().stream()
@@ -131,7 +131,7 @@ public class SearchQueryRepository {
                                 projectParticipant.memberId.eq(memberId)
                         )
                 )
-                .where(project.title.contains(keyword)
+                .where(project.title.containsIgnoreCase(keyword)
                         .and(project.removed.isFalse()))
                 .fetchFirst();
 
@@ -187,7 +187,7 @@ public class SearchQueryRepository {
                 .join(task.board, board)
                 .leftJoin(task.taskManager, projectParticipant)
                 .leftJoin(taskBookmark).on(task.eq(taskBookmark.task).and(taskBookmark.memberId.eq(memberId)))
-                .where(task.title.contains(keyword)
+                .where(task.title.containsIgnoreCase(keyword)
                         .and(task.removed.isFalse()))
                 .orderBy(
                         pageable.getSort().stream()
@@ -210,7 +210,7 @@ public class SearchQueryRepository {
                                     projectParticipant.memberId.eq(memberId)
                             )
                     )
-                .where(task.title.contains(keyword)
+                .where(task.title.containsIgnoreCase(keyword)
                         .and(task.removed.isFalse()))
                 .fetchFirst();
 

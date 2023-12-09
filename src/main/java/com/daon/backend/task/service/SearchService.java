@@ -34,7 +34,7 @@ public class SearchService {
                         keyword,
                         PageRequest.of(
                                 0,
-                                5,
+                                3,
                                 Sort.by(List.of(Sort.Order.by("createdAt").with(Sort.Direction.DESC)))
                         )
                 ),
@@ -42,7 +42,7 @@ public class SearchService {
                         keyword,
                         PageRequest.of(
                                 0,
-                                10,
+                                5,
                                 Sort.by(List.of(Sort.Order.by("createdAt").with(Sort.Direction.DESC)))
                         )
                 )
