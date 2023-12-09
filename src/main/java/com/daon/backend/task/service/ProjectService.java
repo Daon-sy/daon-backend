@@ -134,6 +134,7 @@ public class ProjectService {
         Project project = projectRepository.findProjectById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
+        projectRepository.deleteAllTaskBookmarkRelatedProjectParticipant(projectParticipantId);
         projectRepository.deleteTaskManagerByProjectParticipantId(projectParticipantId);
         project.deportProject(projectParticipantId);
     }
@@ -146,6 +147,7 @@ public class ProjectService {
         Project project = projectRepository.findProjectById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
+        project.getParticipants().forEach(projectParticipant -> projectRepository.deleteAllTaskBookmarkRelatedProjectParticipant(projectParticipant.getId()));
         projectRepository.deleteTasksAndBoardsRelatedProject(projectId);
         project.deleteProject();
     }

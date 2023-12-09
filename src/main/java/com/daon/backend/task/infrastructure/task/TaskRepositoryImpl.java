@@ -62,11 +62,6 @@ public class TaskRepositoryImpl implements TaskRepository {
     }
 
     @Override
-    public List<Task> findAllTasksByProjectId(Long projectId) {
-        return taskJpaRepository.findAllTasksByProjectId(projectId);
-    }
-
-    @Override
     public boolean existsTaskBookmarkByTaskIdAndProjectParticipantId(Long taskId, Long projectParticipantId) {
         return taskBookmarkJpaRepository.existsTaskBookmarkByTaskIdAndParticipant_Id(taskId, projectParticipantId);
     }
@@ -244,6 +239,14 @@ public class TaskRepositoryImpl implements TaskRepository {
         }
 
         return new SliceImpl<>(taskHistories, pageable, hasNext);
+    }
+
+    @Override
+    public void deleteAllTaskBookmark(Long taskId) {
+        queryFactory
+                .delete(taskBookmark)
+                .where(taskBookmark.task.id.eq(taskId))
+                .execute();
     }
 
     private TaskHistory generateTaskHistory(Object[] currentHistory, Object[] prevHistory, Long projectId) {

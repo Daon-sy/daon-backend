@@ -20,6 +20,7 @@ import static com.daon.backend.task.domain.board.QBoard.board;
 import static com.daon.backend.task.domain.project.QProject.project;
 import static com.daon.backend.task.domain.project.QProjectParticipant.projectParticipant;
 import static com.daon.backend.task.domain.task.QTask.task;
+import static com.daon.backend.task.domain.task.QTaskBookmark.taskBookmark;
 
 @Repository
 @RequiredArgsConstructor
@@ -133,4 +134,13 @@ public class ProjectRepositoryImpl implements ProjectRepository {
                 .execute();
         em.flush();
     }
+
+    @Override
+    public void deleteAllTaskBookmarkRelatedProjectParticipant(Long projectParticipantId) {
+        queryFactory
+                .delete(taskBookmark)
+                .where(taskBookmark.participant.id.eq(projectParticipantId))
+                .execute();
+    }
+
 }

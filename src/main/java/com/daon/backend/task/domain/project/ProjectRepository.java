@@ -26,4 +26,6 @@ public interface ProjectRepository {
     void deleteTaskManagerByProjectParticipantId(Long projectParticipantId);
 
     void deleteTasksAndBoardsRelatedProject(Long projectId);
+
+    void deleteAllTaskBookmarkRelatedProjectParticipant(Long projectParticipantId);
 }
