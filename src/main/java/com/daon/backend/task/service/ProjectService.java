@@ -63,13 +63,13 @@ public class ProjectService {
      */
     @Transactional
     public void inviteWorkspaceParticipant(Long workspaceId, Long projectId, InviteWorkspaceParticipantRequestDto requestDto) {
-        Long workspaceParticipantId = requestDto.getWorkspaceParticipantId();
+        Long invitedWorkspaceParticipantId = requestDto.getWorkspaceParticipantId();
         Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
-        WorkspaceParticipant workspaceParticipant =
-                workspace.findWorkspaceParticipantByWorkspaceParticipantId(workspaceParticipantId, workspaceId);
+        WorkspaceParticipant invitedWorkspaceParticipant =
+                workspace.findWorkspaceParticipantByWorkspaceParticipantId(invitedWorkspaceParticipantId, workspaceId);
         Project project = workspace.findProject(projectId);
-        project.addParticipant(workspaceParticipant.getMemberId(), workspaceParticipant);
+        project.addParticipant(invitedWorkspaceParticipant);
     }
 
     public boolean isProjectParticipants(Long projectId, String memberId) {
