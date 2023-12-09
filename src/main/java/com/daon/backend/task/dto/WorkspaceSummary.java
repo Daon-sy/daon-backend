@@ -17,14 +17,6 @@ public class WorkspaceSummary {
 
     private String description;
 
-    public WorkspaceSummary(Long workspaceId, String title, String imageUrl, Division division, String description) {
-        this.workspaceId = workspaceId;
-        this.title = title;
-        this.imageUrl = imageUrl;
-        this.division = division;
-        this.description = description;
-    }
-
     public WorkspaceSummary(Workspace workspace) {
         this.workspaceId = workspace.getId();
         this.title = workspace.getTitle();

@@ -25,7 +25,9 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import java.lang.reflect.Field;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,6 +66,18 @@ public class TaskRepositoryImpl implements TaskRepository {
     @Override
     public boolean existsTaskBookmarkByTaskIdAndProjectParticipantId(Long taskId, Long projectParticipantId) {
         return taskBookmarkJpaRepository.existsTaskBookmarkByTaskIdAndParticipant_Id(taskId, projectParticipantId);
+    }
+
+    @Override
+    public List<Task> findTasksForLessThanThreeDaysOld() {
+        LocalDateTime currentDate = LocalDateTime.of(LocalDate.now(), LocalTime.MIN);
+        LocalDateTime plusThreeDays = LocalDateTime.of(LocalDate.from(currentDate.plusDays(3)), LocalTime.MAX);
+
+        return queryFactory
+                .selectFrom(task)
+                .where(task.endDate.between(currentDate, plusThreeDays))
+                .orderBy(task.endDate.asc())
+                .fetch();
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.daon.backend.mail;
+package com.daon.backend.mail.service;
 
 import com.daon.backend.common.exception.AbstractException;
 

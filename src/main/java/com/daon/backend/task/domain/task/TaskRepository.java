@@ -19,6 +19,8 @@ public interface TaskRepository {
 
     boolean existsTaskBookmarkByTaskIdAndProjectParticipantId(Long taskId, Long projectParticipantId);
 
+    List<Task> findTasksForLessThanThreeDaysOld();
+
     List<TaskSummary> findTaskSummaries(String memberId, Long workspaceId, TaskSearchParams params);
 
     Slice<TaskSearchResult> searchTaskSummariesByTitle(String memberId, String title, Pageable pageable);
