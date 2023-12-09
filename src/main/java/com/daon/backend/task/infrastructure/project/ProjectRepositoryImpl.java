@@ -58,7 +58,14 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 
     @Override
     public List<ProjectParticipant> findProjectParticipantsByProjectId(Long projectId) {
-        return projectParticipantJpaRepository.findProjectParticipantsByProjectIdOrderByCreatedAtAsc(projectId);
+        return queryFactory
+                .selectFrom(projectParticipant)
+                .where(projectParticipant.project.id.eq(projectId))
+                .orderBy(
+                        projectParticipant.workspaceParticipant.role.desc(),
+                        projectParticipant.workspaceParticipant.profile.name.asc()
+                )
+                .fetch();
     }
 
     @Override
