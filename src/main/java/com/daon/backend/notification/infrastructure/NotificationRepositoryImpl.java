@@ -2,47 +2,47 @@ package com.daon.backend.notification.infrastructure;
 
 import com.daon.backend.notification.domain.Notification;
 import com.daon.backend.notification.domain.NotificationRepository;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
-import static com.daon.backend.notification.domain.QNotification.notification;
-
-@RequiredArgsConstructor
 @Repository
+@RequiredArgsConstructor
 public class NotificationRepositoryImpl implements NotificationRepository {
 
     private final NotificationJpaRepository notificationJpaRepository;
-    private final JPAQueryFactory queryFactory;
 
     @Override
-    public Notification save(Notification notification) {
-        return notificationJpaRepository.save(notification);
+    public void save(Notification notification) {
+        notificationJpaRepository.save(notification);
     }
 
     @Override
-    public List<Notification> findNotifications(String memberId) {
-        return notificationJpaRepository.findNotificationsByMemberId(memberId);
+    public Optional<Notification> findById(Long id) {
+        return notificationJpaRepository.findById(id);
+    }
+
+    @Override
+    public List<Notification> findNotificationsUnreadByMemberId(String memberId) {
+        return notificationJpaRepository.findByTargetMemberIdAndReadFalse(memberId);
+    }
+
+    @Override
+    public Page<Notification> findNotificationsReadByMemberId(String memberId, Pageable pageable) {
+        return notificationJpaRepository.findByTargetMemberIdAndReadTrue(memberId, pageable);
     }
 
     @Override
     public List<Notification> findNotSentNotifications(String memberId, long now) {
-        return queryFactory
-                .selectFrom(notification)
-                .where(notification.whenEventPublished.gt(now)
-                        .and(notification.memberId.eq(memberId)))
-                .fetch();
+        return notificationJpaRepository.findByTargetMemberIdAndWhenEventPublishedGreaterThan(memberId, now);
     }
 
     @Override
-    public void readNotification(Long notificationId) {
-        notificationJpaRepository.deleteById(notificationId);
-    }
-
-    @Override
-    public void deleteNotifications(String memberId) {
-        notificationJpaRepository.deleteAllByMemberId(memberId);
+    public void deleteById(Long id) {
+        notificationJpaRepository.deleteById(id);
     }
 }
