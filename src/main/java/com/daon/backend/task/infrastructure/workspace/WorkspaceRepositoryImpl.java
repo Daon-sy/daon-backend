@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,8 +23,8 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
 
     private final WorkspaceJpaRepository workspaceJpaRepository;
     private final WorkspaceParticipantJpaRepository workspaceParticipantJpaRepository;
-    private final MessageJpaRepository messageJpaRepository;
     private final JPAQueryFactory queryFactory;
+    private final EntityManager em;
 
     @Override
     public Workspace save(Workspace workspace) {
@@ -133,6 +134,14 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
                 .set(message.readed, true)
                 .where(message.workspace.id.eq(workspaceId)
                         .and(message.receiverId.eq(receiverId)))
+                .execute();
+    }
+
+    @Override
+    public void deleteAllMessagesRelatedWorkspaceParticipant(Long workspaceParticipantId) {
+        queryFactory
+                .delete(message)
+                .where(message.receiverId.eq(workspaceParticipantId))
                 .execute();
     }
 

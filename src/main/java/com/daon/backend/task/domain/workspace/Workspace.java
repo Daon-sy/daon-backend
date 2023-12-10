@@ -232,6 +232,7 @@ public class Workspace extends BaseEntity {
     }
 
     public void deleteWorkspace() {
+        this.messages.clear();
         this.participants.clear();
         this.invitations.clear();
         this.removed = true;
