@@ -2,6 +2,7 @@ package com.daon.backend.member.infrastructure;
 
 import com.daon.backend.member.domain.Member;
 import com.daon.backend.member.domain.MemberRepository;
+import com.daon.backend.member.dto.MemberSettingsResponseDto;
 import com.daon.backend.member.dto.MemberSummary;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -39,6 +40,22 @@ public class MemberRepositoryImpl implements MemberRepository {
     @Override
     public boolean existsByEmail(String email) {
         return emailJpaRepository.existsEmailByEmail(email);
+    }
+
+    @Override
+    public Optional<MemberSettingsResponseDto> findSettingsByMemberId(String memberId) {
+        return Optional.ofNullable(
+                queryFactory
+                        .select(
+                                Projections.constructor(
+                                        MemberSettingsResponseDto.class,
+                                        member.settings.notified
+                                )
+                        )
+                        .from(member)
+                        .where(member.id.eq(memberId))
+                        .fetchOne()
+        );
     }
 
     @Override

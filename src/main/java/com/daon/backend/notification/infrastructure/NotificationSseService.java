@@ -195,7 +195,7 @@ public class NotificationSseService {
         emitterMap.forEach((key, emitter) -> {
             try {
                 emitter.send(SseEmitter.event().name("heartbeat").data(""));
-            } catch (IOException e) {
+            } catch (Exception e) {
                 emitterRepository.deleteById(key);
             }
         });
