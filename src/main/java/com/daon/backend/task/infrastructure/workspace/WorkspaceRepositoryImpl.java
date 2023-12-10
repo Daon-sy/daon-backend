@@ -118,7 +118,8 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
 
         List<Message> messages = queryFactory
                 .selectFrom(message)
-                .where(builder.and(message.workspace.id.eq(workspace.getId())))
+                .where(builder.and(message.workspace.id.eq(workspace.getId()))
+                        .and(message.receiverId.eq(receiverId)))
                 .orderBy(message.createdAt.desc())
                 .fetch();
 

@@ -307,7 +307,7 @@ public class WorkspaceService {
         message.readMessage();
 
         Long senderId = message.getSenderId();
-        WorkspaceParticipant sender = workspace.findWorkspaceParticipantByWorkspaceParticipantId(senderId, workspaceId);
+        WorkspaceParticipant sender = workspace.findWorkspaceParticipantForMessage(senderId);
 
         return new FindMessageResponseDto(message, sender);
     }
@@ -326,9 +326,7 @@ public class WorkspaceService {
                         .map(message ->
                                 new MessageSummary(
                                         message,
-                                        workspace.findWorkspaceParticipantByWorkspaceParticipantId(
-                                                message.getSenderId(),
-                                                workspaceId)
+                                        workspace.findWorkspaceParticipantForMessage(message.getSenderId())
                                 )
                         )
         );

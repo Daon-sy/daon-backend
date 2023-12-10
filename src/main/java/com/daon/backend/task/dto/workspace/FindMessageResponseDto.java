@@ -27,6 +27,10 @@ public class FindMessageResponseDto {
         this.title = message.getTitle();
         this.content = message.getContent();
         this.createdAt = message.getCreatedAt();
-        this.sender = new WorkspaceParticipantProfile(workspaceParticipant);
+        if (workspaceParticipant != null) {
+            this.sender = new WorkspaceParticipantProfile(workspaceParticipant);
+        } else {
+            this.sender = null;
+        }
     }
 }
