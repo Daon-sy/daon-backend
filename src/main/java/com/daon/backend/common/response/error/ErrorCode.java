@@ -50,6 +50,7 @@ public enum ErrorCode {
     // 프로젝트
     PROJECT_NOT_FOUND(4000, "존재하지 않는 프로젝트입니다."),
     NOT_PROJECT_PARTICIPANT(4001, "해당 프로젝트의 회원이 아닙니다."),
+    ALREADY_INVITED_WORKSPACE_PARTICIPANT(4002, "해당 프로젝트에 이미 참여 중인 회원입니다."),
 
     BOARD_NOT_FOUND(4100, "사용 중인 보드가 없습니다."),
     SAME_BOARD_EXISTS(4101, "동일한 이름의 보드가 존재합니다."),

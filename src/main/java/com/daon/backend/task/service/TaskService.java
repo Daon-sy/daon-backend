@@ -146,6 +146,7 @@ public class TaskService {
     public void deleteTask(Long taskId) {
         Task task = taskRepository.findTaskById(taskId)
                 .orElseThrow(() -> new TaskNotFoundException(taskId));
+        taskRepository.deleteAllTaskBookmark(taskId);
         task.deleteTask();
     }
 

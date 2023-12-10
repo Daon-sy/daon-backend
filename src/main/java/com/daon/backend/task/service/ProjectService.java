@@ -63,13 +63,13 @@ public class ProjectService {
      */
     @Transactional
     public void inviteWorkspaceParticipant(Long workspaceId, Long projectId, InviteWorkspaceParticipantRequestDto requestDto) {
-        Long workspaceParticipantId = requestDto.getWorkspaceParticipantId();
+        Long invitedWorkspaceParticipantId = requestDto.getWorkspaceParticipantId();
         Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
-        WorkspaceParticipant workspaceParticipant =
-                workspace.findWorkspaceParticipantByWorkspaceParticipantId(workspaceParticipantId, workspaceId);
+        WorkspaceParticipant invitedWorkspaceParticipant =
+                workspace.findWorkspaceParticipantByWorkspaceParticipantId(invitedWorkspaceParticipantId, workspaceId);
         Project project = workspace.findProject(projectId);
-        project.addParticipant(workspaceParticipant.getMemberId(), workspaceParticipant);
+        project.addParticipant(invitedWorkspaceParticipant);
     }
 
     public boolean isProjectParticipants(Long projectId, String memberId) {
@@ -134,6 +134,7 @@ public class ProjectService {
         Project project = projectRepository.findProjectById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
+        projectRepository.deleteAllTaskBookmarkRelatedProjectParticipant(projectParticipantId);
         projectRepository.deleteTaskManagerByProjectParticipantId(projectParticipantId);
         project.deportProject(projectParticipantId);
     }
@@ -146,6 +147,7 @@ public class ProjectService {
         Project project = projectRepository.findProjectById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
+        project.getParticipants().forEach(projectParticipant -> projectRepository.deleteAllTaskBookmarkRelatedProjectParticipant(projectParticipant.getId()));
         projectRepository.deleteTasksAndBoardsRelatedProject(projectId);
         project.deleteProject();
     }

@@ -3,6 +3,7 @@ package com.daon.backend.task.controller.exceptionHandler;
 import com.daon.backend.common.exception.DomainSpecificAdvice;
 import com.daon.backend.common.response.error.ErrorCode;
 import com.daon.backend.common.response.error.ErrorResponse;
+import com.daon.backend.task.domain.project.AlreadyInvitedWorkspaceParticipantException;
 import com.daon.backend.task.domain.project.NotProjectParticipantException;
 import com.daon.backend.task.domain.project.ProjectNotFoundException;
 import lombok.extern.slf4j.Slf4j;
@@ -26,5 +27,13 @@ public class ProjectExceptionHandler {
         log.error("{}", e.getMessage());
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
                 .body(ErrorResponse.createError(ErrorCode.PROJECT_NOT_FOUND));
+    }
+
+    @ExceptionHandler(AlreadyInvitedWorkspaceParticipantException.class)
+    public ResponseEntity<ErrorResponse> alreadyInvitedWorkspaceParticipantExceptionHandle(
+            AlreadyInvitedWorkspaceParticipantException e) {
+        log.error("{}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.createError(ErrorCode.ALREADY_INVITED_WORKSPACE_PARTICIPANT));
     }
 }

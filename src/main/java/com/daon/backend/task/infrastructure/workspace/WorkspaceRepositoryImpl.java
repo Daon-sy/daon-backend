@@ -21,8 +21,6 @@ import static com.daon.backend.task.domain.workspace.QWorkspaceParticipant.works
 public class WorkspaceRepositoryImpl implements WorkspaceRepository {
 
     private final WorkspaceJpaRepository workspaceJpaRepository;
-    private final WorkspaceParticipantJpaRepository workspaceParticipantJpaRepository;
-    private final MessageJpaRepository messageJpaRepository;
     private final JPAQueryFactory queryFactory;
 
     @Override
@@ -47,7 +45,14 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
 
     @Override
     public List<WorkspaceParticipant> findWorkspaceParticipantsByWorkspaceId(Long workspaceId) {
-        return workspaceParticipantJpaRepository.findWorkspaceParticipantsByWorkspaceIdOrderByCreatedAtAsc(workspaceId);
+        return queryFactory
+                .selectFrom(workspaceParticipant)
+                .where(workspaceParticipant.workspace.id.eq(workspaceId))
+                .orderBy(
+                        workspaceParticipant.role.desc(),
+                        workspaceParticipant.profile.name.asc()
+                )
+                .fetch();
     }
 
     @Override
@@ -118,7 +123,8 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
 
         List<Message> messages = queryFactory
                 .selectFrom(message)
-                .where(builder.and(message.workspace.id.eq(workspace.getId())))
+                .where(builder.and(message.workspace.id.eq(workspace.getId()))
+                        .and(message.receiverId.eq(receiverId)))
                 .orderBy(message.createdAt.desc())
                 .fetch();
 
