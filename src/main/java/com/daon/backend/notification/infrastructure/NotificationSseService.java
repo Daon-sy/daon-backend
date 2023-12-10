@@ -1,12 +1,9 @@
 package com.daon.backend.notification.infrastructure;
 
-import com.daon.backend.member.service.SessionMemberProvider;
 import com.daon.backend.notification.domain.*;
-import com.daon.backend.notification.dto.FindNotificationsResponse;
-import com.daon.backend.notification.dto.NotificationSummary;
+import com.daon.backend.notification.dto.NotificationDto;
 import com.daon.backend.notification.dto.TasksNotificationParams;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.daon.backend.notification.domain.Notification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -16,21 +13,18 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 import java.io.IOException;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
 @Transactional
 @Service
-public class NotificationService {
+public class NotificationSseService {
 
-    private final SessionMemberProvider sessionMemberProvider;
+    private final SessionMemberProviderImpl sessionMemberProvider;
     private final EmitterRepository emitterRepository;
     private final NotificationRepository notificationRepository;
-    private final ObjectMapper objectMapper;
 
     private static final String TASKS_EMITTER_ID_PREFIX = "tasks_";
     private static final String TASK_EMITTER_ID_PREFIX = "task_";
@@ -89,27 +83,27 @@ public class NotificationService {
     private void sendLostData(String lastEventId, String memberId, String emitterId, SseEmitter emitter) {
         long now = Long.parseLong(lastEventId.substring(memberId.length() + 1));
 
-        List<Notification> notifications = notificationRepository.findNotSentNotifications(memberId, now);
-        notifications.forEach(notification -> sendNotification(
+        notificationRepository.findNotSentNotifications(memberId, now)
+                .forEach(notification -> sendNotification(
                         emitter,
                         emitterId,
                         emitterId,
-                        notification.getNotificationData(),
+                        new NotificationDto(notification).getData(),
                         String.valueOf(notification.getNotificationType())
-                )
-        );
+                ));
     }
 
     /**
      * 알림 이벤트 응답 보내기
      */
-    public void sendAlarm(NotificationType type, Object data, String memberId) throws JsonProcessingException {
+    public void sendAlarm(Notification notification) {
         long whenEventPublished = System.currentTimeMillis();
 
+        String memberId = notification.getTargetMemberId();
         String eventId = memberId + "_" + whenEventPublished;
-        Notification notification = notificationRepository.save(
-                createNotification(type, objectMapper.writeValueAsString(data), memberId, whenEventPublished)
-        );
+
+        notificationRepository.save(notification);
+        NotificationDto notificationDto = new NotificationDto(notification);
 
         Map<String, SseEmitter> emitters = emitterRepository.findAllEmitterStartWithMemberId(memberId);
         emitters.forEach(
@@ -117,22 +111,10 @@ public class NotificationService {
                         emitter,
                         eventId,
                         key,
-                        new NotificationSummary(notification),
-                        String.valueOf(type)
+                        notificationDto,
+                        String.valueOf(notification.getNotificationType())
                 )
         );
-    }
-
-    private Notification createNotification(NotificationType notificationType,
-                                            String notificationData,
-                                            String memberId,
-                                            long now) {
-        return Notification.builder()
-                .notificationType(notificationType)
-                .notificationData(notificationData)
-                .memberId(memberId)
-                .whenEventPublished(now)
-                .build();
     }
 
     /**
@@ -219,31 +201,4 @@ public class NotificationService {
         });
     }
 
-    /**
-     * 알림 목록 조회
-     */
-    public FindNotificationsResponse findNotifications() {
-        String memberId = sessionMemberProvider.getMemberId();
-
-        return new FindNotificationsResponse(
-                notificationRepository.findNotifications(memberId).stream()
-                        .map(NotificationSummary::new)
-                        .collect(Collectors.toList())
-        );
-    }
-
-    /**
-     * 알림 읽음 처리
-     */
-    public void readNotification(Long notificationId) {
-        notificationRepository.readNotification(notificationId);
-    }
-
-    /**
-     * 알림 목록 삭제
-     */
-    public void deleteNotifications() {
-        String memberId = sessionMemberProvider.getMemberId();
-        notificationRepository.deleteNotifications(memberId);
-    }
 }
