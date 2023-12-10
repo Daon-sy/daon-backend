@@ -1,11 +1,12 @@
-package com.daon.backend.mail;
+package com.daon.backend.mail.dto;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class SendVerificationEmailRequestDto {
+public class VerificationEmailCodeRequestDto {
 
     private String email;
+    private String code;
 }

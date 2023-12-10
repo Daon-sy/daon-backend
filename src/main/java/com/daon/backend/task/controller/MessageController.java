@@ -53,8 +53,10 @@ public class MessageController {
     @CheckRole(authority = MSG_READ)
     @GetMapping("/api/workspaces/{workspaceId}/messages")
     public PageResponse<MessageSummary> findMessages(@PathVariable Long workspaceId,
-                                                     @PageableDefault Pageable pageable) {
-        return workspaceService.findMessages(workspaceId, pageable);
+                                                     @RequestParam String target,
+                                                     @RequestParam String keyword,
+                                                     @PageableDefault(size = 7) Pageable pageable) {
+        return workspaceService.findMessages(workspaceId, target, keyword, pageable);
     }
 
     @Operation(summary = "쪽지 삭제", description = "쪽지 삭제 요청입니다.")
