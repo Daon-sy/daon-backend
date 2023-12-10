@@ -1,11 +1,15 @@
 package com.daon.backend.task.service;
 
+import com.daon.backend.common.response.slice.PageResponse;
 import com.daon.backend.task.domain.workspace.*;
 import com.daon.backend.task.domain.workspace.exception.WorkspaceNotFoundException;
 import com.daon.backend.task.dto.WorkspaceNoticeSummary;
 import com.daon.backend.task.dto.workspace.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,15 +50,16 @@ public class WorkspaceNoticeService{
     /**
     * 워크스페이스 공지사항 목록 조회
     * */
-    public FindWorkspaceNoticesResponseDto findWorkspaceNotices(Long workspaceId){
-        List<WorkspaceNotice> workspaceNotices = workspaceNoticeRepository.findWorkspaceNoticesByWorkspaceId(workspaceId);
+    public PageResponse<WorkspaceNoticeSummary> findWorkspaceNotices(Long workspaceId, Pageable pageable) {
+        Page<WorkspaceNotice> workspaceNotices = workspaceNoticeRepository.findWorkspaceNoticesByWorkspaceId(workspaceId, pageable);
 
-        return new FindWorkspaceNoticesResponseDto(
-                workspaceNotices.stream()
-                        .map(WorkspaceNoticeSummary::new)
-                        .collect(Collectors.toList())
-        );
+        List<WorkspaceNoticeSummary> noticeSummaries = workspaceNotices.getContent().stream()
+                .map(WorkspaceNoticeSummary::new)
+                .collect(Collectors.toList());
+
+        return new PageResponse<>(new PageImpl<>(noticeSummaries, pageable, workspaceNotices.getTotalElements()));
     }
+
 
     /**
      * 워크스페이스 공지사항 단건 조회
