@@ -13,4 +13,5 @@ public interface WorkspaceNoticeJpaRepository extends JpaRepository<WorkspaceNot
     Optional<WorkspaceNotice> findWorkspaceNoticeById(Long noticeId);
     void deleteById(Long noticeId);
     Page<WorkspaceNotice> findWorkspaceNoticeByWorkspaceIdOrderByCreatedAtDesc(Long workspaceId, Pageable pageable);
+    Page<WorkspaceNotice> findWorkspaceNoticeByWorkspaceIdAndContentContainingOrderByCreatedAtDesc(Long workspaceId, String keyword, Pageable pageable);
 }

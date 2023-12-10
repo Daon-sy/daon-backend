@@ -50,8 +50,14 @@ public class WorkspaceNoticeService{
     /**
     * 워크스페이스 공지사항 목록 조회
     * */
-    public PageResponse<WorkspaceNoticeSummary> findWorkspaceNotices(Long workspaceId, Pageable pageable) {
-        Page<WorkspaceNotice> workspaceNotices = workspaceNoticeRepository.findWorkspaceNoticesByWorkspaceId(workspaceId, pageable);
+    public PageResponse<WorkspaceNoticeSummary> findWorkspaceNotices(Long workspaceId, String keyword, Pageable pageable) {
+        Page<WorkspaceNotice> workspaceNotices;
+
+        if (keyword != null && !keyword.isEmpty()) {
+            workspaceNotices = workspaceNoticeRepository.findWorkspaceNoticesByWorkspaceIdAndKeyword(workspaceId, keyword, pageable);
+        } else {
+            workspaceNotices = workspaceNoticeRepository.findWorkspaceNoticesByWorkspaceId(workspaceId, pageable);
+        }
 
         List<WorkspaceNoticeSummary> noticeSummaries = workspaceNotices.getContent().stream()
                 .map(WorkspaceNoticeSummary::new)

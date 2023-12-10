@@ -48,8 +48,9 @@ public class WorkspaceNoticeController {
     @GetMapping
     public PageResponse<WorkspaceNoticeSummary> findWorkspaceNotices(
             @PathVariable Long workspaceId,
+            @RequestParam(required = false) String keyword,
             @PageableDefault(size = 4, page = 0) Pageable pageable) {
-        return workspaceNoticeService.findWorkspaceNotices(workspaceId, pageable);
+        return workspaceNoticeService.findWorkspaceNotices(workspaceId, keyword, pageable);
     }
 
     @Operation(summary = "워크스페이스 공지사항 단건 조회", description = "워크스페이스 공지사항 단건 조회 요청입니다.")

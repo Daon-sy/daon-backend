@@ -11,4 +11,5 @@ public interface WorkspaceNoticeRepository {
     Optional<WorkspaceNotice> findWorkspaceNoticeById(Long noticeId);
     void deleteById(Long noticeId);
     Page<WorkspaceNotice> findWorkspaceNoticesByWorkspaceId(Long workspaceId, Pageable pageable);
+    Page<WorkspaceNotice> findWorkspaceNoticesByWorkspaceIdAndKeyword(Long workspaceId, String keyword, Pageable pageable);
 }

@@ -27,6 +27,11 @@ public class WorkspaceNoticeRepositoryImpl implements WorkspaceNoticeRepository 
     }
 
     @Override
+    public Page<WorkspaceNotice> findWorkspaceNoticesByWorkspaceIdAndKeyword(Long workspaceId, String keyword, Pageable pageable) {
+        return workspaceNoticeJpaRepository.findWorkspaceNoticeByWorkspaceIdAndContentContainingOrderByCreatedAtDesc(workspaceId, keyword, pageable);
+    }
+
+    @Override
     public Optional<WorkspaceNotice> findWorkspaceNoticeById(Long noticeId) {
         return workspaceNoticeJpaRepository.findWorkspaceNoticeById(noticeId);
     }
