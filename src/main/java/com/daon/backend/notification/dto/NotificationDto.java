@@ -18,6 +18,7 @@ public class NotificationDto {
     private Long notificationId;
     private NotificationData data;
     private NotificationType type;
+    private boolean read;
 
     public NotificationDto(Long notificationId, NotificationData data, NotificationType type) {
         this.notificationId = notificationId;
@@ -28,6 +29,7 @@ public class NotificationDto {
     public NotificationDto(Notification notification) {
         this.notificationId = notification.getId();
         this.type = notification.getNotificationType();
+        this.read = notification.isRead();
 
         switch (this.type) {
             case REGISTERED_TASK_MANAGER: {

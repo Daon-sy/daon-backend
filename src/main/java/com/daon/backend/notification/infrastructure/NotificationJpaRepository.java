@@ -9,9 +9,9 @@ import java.util.List;
 
 public interface NotificationJpaRepository<T extends Notification> extends JpaRepository<T, Long> {
 
-    List<Notification> findByTargetMemberIdAndReadFalse(String memberId);
+    List<Notification> findByTargetMemberIdAndReadFalseOrderByCreatedAtDesc(String memberId);
 
-    Page<Notification> findByTargetMemberIdAndReadTrue(String memberId, Pageable pageable);
+    Page<Notification> findByTargetMemberIdAndReadTrueOrderByCreatedAtDesc(String memberId, Pageable pageable);
 
-    List<Notification> findByTargetMemberIdAndWhenEventPublishedGreaterThan(String memberId, long now);
+    List<Notification> findByTargetMemberIdAndWhenEventPublishedGreaterThanOrderByCreatedAtDesc(String memberId, long now);
 }

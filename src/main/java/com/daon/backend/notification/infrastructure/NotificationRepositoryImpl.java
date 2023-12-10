@@ -28,17 +28,17 @@ public class NotificationRepositoryImpl implements NotificationRepository {
 
     @Override
     public List<Notification> findNotificationsUnreadByMemberId(String memberId) {
-        return notificationJpaRepository.findByTargetMemberIdAndReadFalse(memberId);
+        return notificationJpaRepository.findByTargetMemberIdAndReadFalseOrderByCreatedAtDesc(memberId);
     }
 
     @Override
     public Page<Notification> findNotificationsReadByMemberId(String memberId, Pageable pageable) {
-        return notificationJpaRepository.findByTargetMemberIdAndReadTrue(memberId, pageable);
+        return notificationJpaRepository.findByTargetMemberIdAndReadTrueOrderByCreatedAtDesc(memberId, pageable);
     }
 
     @Override
     public List<Notification> findNotSentNotifications(String memberId, long now) {
-        return notificationJpaRepository.findByTargetMemberIdAndWhenEventPublishedGreaterThan(memberId, now);
+        return notificationJpaRepository.findByTargetMemberIdAndWhenEventPublishedGreaterThanOrderByCreatedAtDesc(memberId, now);
     }
 
     @Override
