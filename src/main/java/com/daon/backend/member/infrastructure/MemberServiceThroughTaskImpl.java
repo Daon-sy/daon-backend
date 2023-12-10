@@ -1,6 +1,7 @@
 package com.daon.backend.member.infrastructure;
 
 import com.daon.backend.member.service.MemberServiceThroughTask;
+import com.daon.backend.task.domain.project.ProjectRepository;
 import com.daon.backend.task.domain.workspace.Role;
 import com.daon.backend.task.domain.workspace.Workspace;
 import com.daon.backend.task.domain.workspace.WorkspaceParticipant;
@@ -17,6 +18,7 @@ public class MemberServiceThroughTaskImpl implements MemberServiceThroughTask {
 
     private final WorkspaceService workspaceService;
     private final WorkspaceRepository workspaceRepository;
+    private final ProjectRepository projectRepository;
 
     @Override
     public void deleteRelatedTaskDomains(String memberId) {
@@ -29,6 +31,14 @@ public class MemberServiceThroughTaskImpl implements MemberServiceThroughTask {
             if (adminCount != 1) {
                 workspaceService.withdrawWorkspace(workspace.getId());
             } else {
+                workspace.getWorkspaceParticipants().forEach(
+                        workspaceParticipant -> workspaceParticipant.getParticipants().forEach(
+                                projectParticipant ->
+                                        projectRepository.deleteAllTaskBookmarkRelatedProjectParticipant(
+                                                projectParticipant.getId()
+                                        )
+                        )
+                );
                 workspace.deleteWorkspace();
                 workspaceRepository.deleteAllRelatedWorkspace(workspace.getId());
             }

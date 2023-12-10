@@ -74,17 +74,28 @@ public class Project extends BaseEntity {
         return participants.stream().filter(participant -> participant.getId().equals(projectParticipantId)).findFirst();
     }
 
-    public void addParticipant(String memberId, WorkspaceParticipant workspaceParticipant) {
-        this.participants.add(new ProjectParticipant(this, workspaceParticipant, memberId));
+    public void addParticipant(WorkspaceParticipant invitedWorkspaceParticipant) {
+        Long invitedWorkspaceParticipantId = invitedWorkspaceParticipant.getId();
+        if (participants.stream()
+                .anyMatch(projectParticipant ->
+                        projectParticipant.getWorkspaceParticipant().getId()
+                                .equals(invitedWorkspaceParticipantId))) {
+            throw new AlreadyInvitedWorkspaceParticipantException(invitedWorkspaceParticipantId);
+        }
+
+        String invitedWorkspaceParticipantMemberId = invitedWorkspaceParticipant.getMemberId();
+        this.participants.add(
+                new ProjectParticipant(this, invitedWorkspaceParticipant, invitedWorkspaceParticipantMemberId)
+        );
 
         Events.raise(new InviteProjectAlarmEvent(
                 new InviteProjectAlarmResponseDto(
-                        workspaceParticipant.getWorkspace().getId(),
-                        workspaceParticipant.getWorkspace().getTitle(),
+                        invitedWorkspaceParticipant.getWorkspace().getId(),
+                        invitedWorkspaceParticipant.getWorkspace().getTitle(),
                         this.id,
                         this.title
                 ),
-                memberId)
+                invitedWorkspaceParticipantMemberId)
         );
     }
 

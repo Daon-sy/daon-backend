@@ -1,6 +1,7 @@
 package com.daon.backend.task.service;
 
 import com.daon.backend.common.response.slice.PageResponse;
+import com.daon.backend.task.domain.project.ProjectRepository;
 import com.daon.backend.task.domain.workspace.*;
 import com.daon.backend.task.domain.workspace.exception.CanNotDeletePersonalWorkspaceException;
 import com.daon.backend.task.domain.workspace.exception.CanNotModifyMyRoleException;
@@ -23,6 +24,7 @@ import java.util.stream.Collectors;
 public class WorkspaceService {
 
     private final WorkspaceRepository workspaceRepository;
+    private final ProjectRepository projectRepository;
     private final SessionMemberProvider sessionMemberProvider;
     private final DbMemberProvider dbMemberProvider;
 
@@ -233,6 +235,11 @@ public class WorkspaceService {
         WorkspaceParticipant workspaceParticipant = workspace.getWorkspaceParticipant(workspaceParticipantId);
         String workspaceParticipantMemberId = workspaceParticipant.getMemberId();
 
+        workspaceParticipant.getParticipants().forEach(
+                projectParticipant ->
+                        projectRepository.deleteAllTaskBookmarkRelatedProjectParticipant(projectParticipant.getId()
+                        )
+        );
         workspaceRepository.deleteAllMessagesRelatedWorkspaceParticipant(workspaceParticipantId);
         workspaceRepository.deleteAllRelatedWorkspaceParticipant(workspaceParticipantId, workspaceParticipantMemberId);
         workspace.deportWorkspace(workspaceParticipantId, workspaceParticipantMemberId);
@@ -249,6 +256,14 @@ public class WorkspaceService {
             throw new CanNotDeletePersonalWorkspaceException(workspaceId);
         }
 
+        workspace.getWorkspaceParticipants().forEach(
+                workspaceParticipant -> workspaceParticipant.getParticipants().forEach(
+                        projectParticipant ->
+                                projectRepository.deleteAllTaskBookmarkRelatedProjectParticipant(
+                                        projectParticipant.getId()
+                                )
+                )
+        );
         workspace.deleteWorkspace();
         workspaceRepository.deleteAllRelatedWorkspace(workspaceId);
     }

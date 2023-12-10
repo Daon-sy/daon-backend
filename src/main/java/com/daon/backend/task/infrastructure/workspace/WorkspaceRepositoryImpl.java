@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,9 +21,7 @@ import static com.daon.backend.task.domain.workspace.QWorkspaceParticipant.works
 public class WorkspaceRepositoryImpl implements WorkspaceRepository {
 
     private final WorkspaceJpaRepository workspaceJpaRepository;
-    private final WorkspaceParticipantJpaRepository workspaceParticipantJpaRepository;
     private final JPAQueryFactory queryFactory;
-    private final EntityManager em;
 
     @Override
     public Workspace save(Workspace workspace) {
@@ -48,7 +45,14 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
 
     @Override
     public List<WorkspaceParticipant> findWorkspaceParticipantsByWorkspaceId(Long workspaceId) {
-        return workspaceParticipantJpaRepository.findWorkspaceParticipantsByWorkspaceIdOrderByCreatedAtAsc(workspaceId);
+        return queryFactory
+                .selectFrom(workspaceParticipant)
+                .where(workspaceParticipant.workspace.id.eq(workspaceId))
+                .orderBy(
+                        workspaceParticipant.role.desc(),
+                        workspaceParticipant.profile.name.asc()
+                )
+                .fetch();
     }
 
     @Override

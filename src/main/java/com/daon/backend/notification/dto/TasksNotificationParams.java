@@ -25,7 +25,7 @@ public class TasksNotificationParams {
         } else if (my) {
             return "_my_";
         } else if (boardId != null) {
-            return "_board_" + boardId + "_project_" + projectId + "_"; // tasks_1_board_1_project_3
+            return "_board_" + boardId + "_project_" + projectId + "_";
         } else {
             return "_project_" + projectId + "_";
         }
