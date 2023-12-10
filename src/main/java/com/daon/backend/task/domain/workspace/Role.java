@@ -23,7 +23,7 @@ public enum Role {
     PROJECT_ADMIN(
             "프로젝트 관리자",
             List.of(
-                    WS_READ,
+                    WS_READ, WSN_READ,
                     MSG_CREATE, MSG_READ, MSG_DELETE,
                     PF_READ, PF_UPDATE,
                     PJ_CREATE, PJ_READ, PJ_UPDATE, PJ_DELETE, PJ_DROP,
@@ -39,7 +39,7 @@ public enum Role {
     BASIC_PARTICIPANT(
             "일반 참여자",
             List.of(
-                    WS_READ,
+                    WS_READ, WSN_READ,
                     MSG_CREATE, MSG_READ, MSG_DELETE,
                     PF_READ, PF_UPDATE,
                     PJ_READ,
