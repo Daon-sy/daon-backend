@@ -3,6 +3,8 @@ package com.daon.backend.task.infrastructure.workspace;
 import com.daon.backend.task.domain.workspace.WorkspaceNotice;
 import com.daon.backend.task.domain.workspace.WorkspaceNoticeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -20,8 +22,13 @@ public class WorkspaceNoticeRepositoryImpl implements WorkspaceNoticeRepository 
     }
 
     @Override
-    public List<WorkspaceNotice> findWorkspaceNoticesByWorkspaceId(Long workspaceId) {
-        return workspaceNoticeJpaRepository.findWorkspaceNoticeByWorkspaceIdOrderByCreatedAtDesc(workspaceId);
+    public Page<WorkspaceNotice> findWorkspaceNoticesByWorkspaceId(Long workspaceId, Pageable pageable) {
+        return workspaceNoticeJpaRepository.findWorkspaceNoticeByWorkspaceIdOrderByCreatedAtDesc(workspaceId, pageable);
+    }
+
+    @Override
+    public Page<WorkspaceNotice> findWorkspaceNoticesByWorkspaceIdAndKeyword(Long workspaceId, String keyword, Pageable pageable) {
+        return workspaceNoticeJpaRepository.findWorkspaceNoticeByWorkspaceIdAndContentContainingOrderByCreatedAtDesc(workspaceId, keyword, pageable);
     }
 
     @Override
@@ -33,6 +40,8 @@ public class WorkspaceNoticeRepositoryImpl implements WorkspaceNoticeRepository 
     public void deleteById(Long noticeId) {
         workspaceNoticeJpaRepository.deleteById(noticeId);
     }
+
+
 
 
 }

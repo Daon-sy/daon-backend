@@ -1,7 +1,9 @@
 package com.daon.backend.task.controller;
 
+import com.daon.backend.common.response.slice.PageResponse;
 import com.daon.backend.task.domain.authority.Authority;
 import com.daon.backend.task.domain.authority.CheckRole;
+import com.daon.backend.task.dto.WorkspaceNoticeSummary;
 import com.daon.backend.task.dto.workspace.*;
 import com.daon.backend.task.service.WorkspaceNoticeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -10,6 +12,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -42,8 +46,11 @@ public class WorkspaceNoticeController {
     })
     @CheckRole(authority = Authority.WSN_READ)
     @GetMapping
-    public FindWorkspaceNoticesResponseDto findWorkspaceNotices(@PathVariable Long workspaceId){
-        return workspaceNoticeService.findWorkspaceNotices(workspaceId);
+    public PageResponse<WorkspaceNoticeSummary> findWorkspaceNotices(
+            @PathVariable Long workspaceId,
+            @RequestParam(required = false) String keyword,
+            @PageableDefault(size = 4, page = 0) Pageable pageable) {
+        return workspaceNoticeService.findWorkspaceNotices(workspaceId, keyword, pageable);
     }
 
     @Operation(summary = "워크스페이스 공지사항 단건 조회", description = "워크스페이스 공지사항 단건 조회 요청입니다.")
