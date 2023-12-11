@@ -82,7 +82,8 @@ public class NotificationDto {
                 this.data = NotificationData.builder()
                         .time(noti.getCreatedAt())
                         .workspace(new WorkspaceData(noti.getWorkspace()))
-                        .message(new MessageData(noti.getMessage()))
+                        .sender(new MessageSenderData(noti.getMessage()))
+                        .messageId(noti.getMessage().getMessageId())
                         .build();
                 break;
             }
@@ -101,15 +102,17 @@ public class NotificationDto {
         private WorkspaceData workspace;
         private ProjectData project;
         private TaskData task;
-        private MessageData message;
+        private Long messageId;
+        private MessageSenderData sender;
 
         @Builder
-        public NotificationData(LocalDateTime time, WorkspaceData workspace, ProjectData project, TaskData task, MessageData message) {
+        public NotificationData(LocalDateTime time, WorkspaceData workspace, ProjectData project, TaskData task, Long messageId, MessageSenderData sender) {
             this.time = time;
             this.workspace = workspace;
             this.project = project;
             this.task = task;
-            this.message = message;
+            this.messageId = messageId;
+            this.sender = sender;
         }
 
     }
@@ -163,15 +166,13 @@ public class NotificationDto {
     }
 
     @Getter
-    public static class MessageData {
-        private Long messageId;
+    public static class MessageSenderData {
         private Long workspaceParticipantId;
         private String name;
         private String email;
         private String imageUrl;
 
-        public MessageData(Message message) {
-            this.messageId = message.getMessageId();
+        public MessageSenderData(Message message) {
             this.workspaceParticipantId = message.getWorkspaceParticipantId();
             this.name = message.getName();
             this.email = message.getEmail();
