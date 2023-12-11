@@ -1,11 +1,9 @@
 package com.daon.backend.image.controller;
 
 import com.daon.backend.image.dto.UploadImageResponseDto;
-import com.daon.backend.image.service.ImageFileService;
 import com.daon.backend.image.dto.UploadedImage;
+import com.daon.backend.image.service.ImageFileService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,9 +21,6 @@ public class ImageController {
     private final ImageFileService imageFileService;
 
     @Operation(summary = "이미지 업로드", description = "이미지 업로드 요청입니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "이미지 업로드 성공")
-    })
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public UploadImageResponseDto uploadImage(@RequestParam("image") MultipartFile imageFile) {

@@ -6,8 +6,6 @@ import com.daon.backend.task.dto.board.FindBoardsResponseDto;
 import com.daon.backend.task.dto.board.ModifyBoardRequestDto;
 import com.daon.backend.task.service.BoardService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -24,9 +22,6 @@ public class BoardController {
     private final BoardService boardService;
 
     @Operation(summary = "보드 생성", description = "보드 생성 요청입니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "보드 생성 성공")
-    })
     @ResponseStatus(HttpStatus.CREATED)
     @CheckRole(authority = BD_CREATE)
     @PostMapping
@@ -36,9 +31,6 @@ public class BoardController {
     }
 
     @Operation(summary = "보드 목록 조회", description = "보드 목록 조회 요청입니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "보드 목록 조회 성공")
-    })
     @CheckRole(authority = BD_READ)
     @GetMapping
     public FindBoardsResponseDto findBoards(@PathVariable Long projectId) {
@@ -46,9 +38,6 @@ public class BoardController {
     }
 
     @Operation(summary = "보드 수정", description = "보드 수정 요청입니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "보드 수정 성공")
-    })
     @CheckRole(authority = BD_UPDATE)
     @PutMapping("/{boardId}")
     public void modifyBoard(@PathVariable Long projectId,
@@ -58,9 +47,6 @@ public class BoardController {
     }
 
     @Operation(summary = "보드 삭제", description = "보드 삭제 요청입니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "보드 삭제 성공")
-    })
     @CheckRole(authority = BD_DELETE)
     @DeleteMapping("/{boardId}")
     public void deleteBoard(@PathVariable Long projectId,

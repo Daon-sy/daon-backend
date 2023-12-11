@@ -4,8 +4,6 @@ import com.daon.backend.common.response.slice.PageResponse;
 import com.daon.backend.task.dto.search.SearchResponseDto;
 import com.daon.backend.task.service.SearchService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -25,18 +23,12 @@ public class SearchController {
     private final SearchService searchService;
 
     @Operation(summary = "통합 검색", description = "통합 검색 요청입니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "통합 검색 성공")
-    })
     @GetMapping("/search")
     public SearchResponseDto integratedSearch(@RequestParam String keyword) {
         return searchService.integratedSearchByTitle(keyword);
     }
 
     @Operation(summary = "워크스페이스 검색", description = "워크스페이스 검색 요청입니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "워크스페이스 검색 성공")
-    })
     @GetMapping("/search/workspaces")
     public PageResponse<SearchResponseDto.WorkspaceResult> workspaceSearch(
             @RequestParam String keyword,
@@ -46,9 +38,6 @@ public class SearchController {
     }
 
     @Operation(summary = "프로젝트 검색", description = "프로젝트 검색 요청입니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "프로젝트 검색 성공")
-    })
     @GetMapping("/search/projects")
     public PageResponse<SearchResponseDto.ProjectResult> projectSearch(
             @RequestParam String keyword,
@@ -58,9 +47,6 @@ public class SearchController {
     }
 
     @Operation(summary = "할 일 검색", description = "할 일 검색 요청입니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "할 일 검색 성공")
-    })
     @GetMapping("/search/tasks")
     public PageResponse<SearchResponseDto.TaskResult> taskSearch(
             @RequestParam String keyword,
