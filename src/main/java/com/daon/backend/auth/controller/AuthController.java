@@ -5,15 +5,16 @@ import com.daon.backend.auth.domain.UnauthenticatedMemberException;
 import com.daon.backend.auth.dto.SignInRequestDto;
 import com.daon.backend.auth.service.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -33,9 +34,6 @@ public class AuthController {
     private final AuthService authService;
 
     @Operation(summary = "로그인", description = "로그인 요청입니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "로그인 성공")
-    })
     @PostMapping("/sign-in")
     public ResponseEntity<Void> signIn(@RequestBody @Valid SignInRequestDto requestDto) {
         Tokens tokens = authService.signIn(requestDto);
@@ -59,9 +57,6 @@ public class AuthController {
     }
 
     @Operation(summary = "로그아웃", description = "로그아웃 요청입니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "로그아웃 성공")
-    })
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(HttpServletRequest request) {
         String refreshToken = getRefreshTokenValue(request);
@@ -79,9 +74,6 @@ public class AuthController {
     }
 
     @Operation(summary = "엑세스 토큰 재발급", description = "엑세스 토큰을 재발급하여 인증 헤더에 담아줍니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "재발급 성공")
-    })
     @PostMapping("/reissue")
     public ResponseEntity<Void> reissueToken(HttpServletRequest request) {
         String refreshTokenValue = getRefreshTokenValue(request);

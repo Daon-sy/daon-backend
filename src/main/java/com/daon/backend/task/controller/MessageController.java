@@ -7,8 +7,6 @@ import com.daon.backend.task.dto.workspace.MessageSummary;
 import com.daon.backend.task.dto.workspace.SendMessageRequestDto;
 import com.daon.backend.task.service.WorkspaceService;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -24,9 +22,6 @@ public class MessageController {
     private final WorkspaceService workspaceService;
 
     @Operation(summary = "쪽지 보내기", description = "쪽지 생성 요청입니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "쪽지 보내기 성공")
-    })
     @ResponseStatus(HttpStatus.CREATED)
     @CheckRole(authority = MSG_CREATE)
     @PostMapping("/api/workspaces/{workspaceId}/messages")
@@ -36,9 +31,6 @@ public class MessageController {
     }
 
     @Operation(summary = "쪽지 단건 조회", description = "쪽지 단건 조회 요청입니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "쪽지 단건 조회 성공")
-    })
     @CheckRole(authority = MSG_READ)
     @GetMapping("/api/workspaces/{workspaceId}/messages/{messageId}")
     public FindMessageResponseDto findMessage(@PathVariable Long workspaceId,
@@ -47,9 +39,6 @@ public class MessageController {
     }
 
     @Operation(summary = "쪽지 목록 조회", description = "쪽지 목록 조회 요청입니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "쪽지 목록 조회 성공")
-    })
     @CheckRole(authority = MSG_READ)
     @GetMapping("/api/workspaces/{workspaceId}/messages")
     public PageResponse<MessageSummary> findMessages(@PathVariable Long workspaceId,
@@ -60,9 +49,6 @@ public class MessageController {
     }
 
     @Operation(summary = "쪽지 삭제", description = "쪽지 삭제 요청입니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "쪽지 삭제 성공")
-    })
     @CheckRole(authority = MSG_DELETE)
     @DeleteMapping("/api/workspaces/{workspaceId}/messages/{messageId}")
     public void deleteMessage(@PathVariable Long workspaceId,
@@ -71,9 +57,6 @@ public class MessageController {
     }
 
     @Operation(summary = "쪽지 모두 읽기", description = "쪽지 모두 읽기 요청입니다.")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "쪽지 모두 읽기 성공")
-    })
     @CheckRole(authority = MSG_READ)
     @PostMapping("/api/workspaces/{workspaceId}/messages/me")
     public void readAllMessages(@PathVariable Long workspaceId) {
