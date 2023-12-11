@@ -165,7 +165,7 @@ public class WorkspaceService {
     }
 
     /**
-     * 워크스페이스 단 건 조회
+     * 워크스페이스 단건 조회
      */
     public FindWorkspaceResponseDto findWorkspace(Long workspaceId) {
         Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)

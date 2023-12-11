@@ -50,7 +50,12 @@ class MemberServiceTest extends MockConfig {
 
         savedMemberId = memberRepository.save(member).getId();
 
-        SecurityContextHolder.getContext().setAuthentication(new UsernamePasswordAuthenticationToken(new MemberPrincipal(savedMemberId), null));
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(
+                        new MemberPrincipal(savedMemberId),
+                        null
+                )
+        );
     }
 
     @DisplayName("회원 가입")
@@ -66,7 +71,7 @@ class MemberServiceTest extends MockConfig {
 
     @DisplayName("회원 정보 수정")
     @Test
-    void modifyMember() throws PasswordMismatchException {
+    void modifyMember() {
         // given
         String name = "수정한 이름";
         ModifyMemberRequestDto requestDto = new ModifyMemberRequestDto(name, null, "1234");
