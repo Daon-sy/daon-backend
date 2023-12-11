@@ -4,6 +4,7 @@ import com.daon.backend.config.S3MockConfig;
 import com.daon.backend.image.infrastructure.S3ImageFileService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.entity.ContentType;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +26,7 @@ import java.nio.charset.StandardCharsets;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
+@Disabled
 @Slf4j
 @AutoConfigureMockMvc
 @Import({

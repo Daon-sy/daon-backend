@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface MemberRepository {
 
-    void save(Member member);
+    Member save(Member member);
 
     Optional<Member> findByUsername(String username);
 

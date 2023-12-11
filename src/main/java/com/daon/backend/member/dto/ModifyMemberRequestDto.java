@@ -21,5 +21,4 @@ public class ModifyMemberRequestDto {
     @NotBlank
     @Length(max = 30)
     private String prevPassword;
-
 }

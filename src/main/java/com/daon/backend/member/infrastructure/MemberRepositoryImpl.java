@@ -23,8 +23,8 @@ public class MemberRepositoryImpl implements MemberRepository {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public void save(Member member) {
-        memberJpaRepository.save(member);
+    public Member save(Member member) {
+        return memberJpaRepository.save(member);
     }
 
     @Override
