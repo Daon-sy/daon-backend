@@ -127,6 +127,13 @@ public class Workspace extends BaseEntity {
                 .orElseThrow(() -> new NotWorkspaceParticipantException(workspaceId));
     }
 
+    public WorkspaceParticipant findWorkspaceParticipantForMessage(Long workspaceParticipantId) {
+        return this.participants.stream()
+                .filter(workspaceParticipant -> workspaceParticipant.getId().equals(workspaceParticipantId))
+                .findFirst()
+                .orElse(null);
+    }
+
     public WorkspaceParticipant findWorkspaceParticipantByMemberId(String memberId) {
         return this.participants.stream()
                 .filter(workspaceParticipant -> workspaceParticipant.getMemberId().equals(memberId))
@@ -225,6 +232,7 @@ public class Workspace extends BaseEntity {
     }
 
     public void deleteWorkspace() {
+        this.messages.clear();
         this.participants.clear();
         this.invitations.clear();
         this.removed = true;

@@ -141,4 +141,12 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
                 .execute();
     }
 
+    @Override
+    public void deleteAllMessagesRelatedWorkspaceParticipant(Long workspaceParticipantId) {
+        queryFactory
+                .delete(message)
+                .where(message.receiverId.eq(workspaceParticipantId))
+                .execute();
+    }
+
 }

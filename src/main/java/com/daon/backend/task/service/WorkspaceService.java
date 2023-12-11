@@ -216,6 +216,7 @@ public class WorkspaceService {
 
         if (workspace.canWithdrawWorkspace()) {
             Long workspaceParticipantId = workspace.findWorkspaceParticipantByMemberId(memberId).getId();
+            workspaceRepository.deleteAllMessagesRelatedWorkspaceParticipant(workspaceParticipantId);
             workspaceRepository.deleteAllRelatedWorkspaceParticipant(workspaceParticipantId, memberId);
             workspace.withdrawWorkspace(memberId);
         } else {
@@ -239,6 +240,7 @@ public class WorkspaceService {
                         projectRepository.deleteAllTaskBookmarkRelatedProjectParticipant(projectParticipant.getId()
                         )
         );
+        workspaceRepository.deleteAllMessagesRelatedWorkspaceParticipant(workspaceParticipantId);
         workspaceRepository.deleteAllRelatedWorkspaceParticipant(workspaceParticipantId, workspaceParticipantMemberId);
         workspace.deportWorkspace(workspaceParticipantId, workspaceParticipantMemberId);
     }
@@ -322,7 +324,7 @@ public class WorkspaceService {
         message.readMessage();
 
         Long senderId = message.getSenderId();
-        WorkspaceParticipant sender = workspace.findWorkspaceParticipantByWorkspaceParticipantId(senderId, workspaceId);
+        WorkspaceParticipant sender = workspace.findWorkspaceParticipantForMessage(senderId);
 
         return new FindMessageResponseDto(message, sender);
     }
@@ -341,9 +343,7 @@ public class WorkspaceService {
                         .map(message ->
                                 new MessageSummary(
                                         message,
-                                        workspace.findWorkspaceParticipantByWorkspaceParticipantId(
-                                                message.getSenderId(),
-                                                workspaceId)
+                                        workspace.findWorkspaceParticipantForMessage(message.getSenderId())
                                 )
                         )
         );
