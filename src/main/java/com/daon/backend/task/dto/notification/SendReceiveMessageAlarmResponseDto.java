@@ -17,7 +17,7 @@ public class SendReceiveMessageAlarmResponseDto {
     private Long messageId;
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime createdAt;
+    private LocalDateTime time;
 
     public SendReceiveMessageAlarmResponseDto(Long workspaceId,
                                               String workspaceTitle,
@@ -27,6 +27,6 @@ public class SendReceiveMessageAlarmResponseDto {
         this.workspace = new WorkspaceSummaryForNotification(workspaceId, workspaceTitle);
         this.sender = new WorkspaceParticipantProfile(sender);
         this.messageId = messageId;
-        this.createdAt = createdAt;
+        this.time = createdAt;
     }
 }

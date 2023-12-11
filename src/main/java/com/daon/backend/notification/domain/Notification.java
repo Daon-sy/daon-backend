@@ -1,6 +1,7 @@
 package com.daon.backend.notification.domain;
 
 import com.daon.backend.config.BaseEntity;
+import com.daon.backend.notification.domain.data.Message;
 import com.daon.backend.notification.domain.data.Project;
 import com.daon.backend.notification.domain.data.Task;
 import com.daon.backend.notification.domain.data.Workspace;
@@ -61,6 +62,10 @@ public abstract class Notification extends BaseEntity {
 
     public static Notification registeredTaskManager(String targetMemberId, Workspace workspace, Project project, Task task) {
         return new RegisteredTaskManagerNotification(targetMemberId, workspace, project, task);
+    }
+
+    public static Notification receiveMessage(String targetMemberId, Workspace workspace, Message message) {
+        return new ReceiveMessageNotification(targetMemberId, workspace, message);
     }
 
     @Entity @Getter
@@ -153,6 +158,24 @@ public abstract class Notification extends BaseEntity {
             this.workspace = workspace;
             this.project = project;
             this.task = task;
+        }
+    }
+
+    @Entity @Getter
+    @DiscriminatorValue("RECEIVE_MESSAGE")
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
+    public static class ReceiveMessageNotification extends Notification {
+
+        @Embedded
+        private Workspace workspace;
+
+        @Embedded
+        private Message message;
+
+        protected ReceiveMessageNotification(String targetMemberId, Workspace workspace, Message message) {
+            super(NotificationType.RECEIVE_MESSAGE, targetMemberId, System.currentTimeMillis());
+            this.workspace = workspace;
+            this.message = message;
         }
     }
 }
