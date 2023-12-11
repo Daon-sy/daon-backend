@@ -37,6 +37,9 @@ public class Member extends BaseEntity {
 
     private String name;
 
+    @Embedded
+    private Settings settings;
+
     private boolean removed;
 
     @NotAudited
@@ -48,6 +51,7 @@ public class Member extends BaseEntity {
         this.username = username;
         this.password = passwordEncoder.encode(password);
         this.name = name;
+        this.settings = new Settings();
 
         this.createEmail(email);
     }
@@ -83,6 +87,10 @@ public class Member extends BaseEntity {
 
     public void withdrawMember() {
         this.removed = true;
+    }
+
+    public void changeSettings(Settings settings) {
+        this.settings = settings;
     }
 
     @PostPersist
