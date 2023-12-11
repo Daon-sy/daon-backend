@@ -2,6 +2,7 @@ package com.daon.backend.notification.dto;
 
 import com.daon.backend.notification.domain.Notification;
 import com.daon.backend.notification.domain.NotificationType;
+import com.daon.backend.notification.domain.data.Message;
 import com.daon.backend.notification.domain.data.Project;
 import com.daon.backend.notification.domain.data.Task;
 import com.daon.backend.notification.domain.data.Workspace;
@@ -76,6 +77,15 @@ public class NotificationDto {
                         .build();
                 break;
             }
+            case RECEIVE_MESSAGE: {
+                Notification.ReceiveMessageNotification noti = (Notification.ReceiveMessageNotification) notification;
+                this.data = NotificationData.builder()
+                        .time(noti.getCreatedAt())
+                        .workspace(new WorkspaceData(noti.getWorkspace()))
+                        .message(new MessageData(noti.getMessage()))
+                        .build();
+                break;
+            }
             default:
                 this.data = null;
         }
@@ -91,13 +101,15 @@ public class NotificationDto {
         private WorkspaceData workspace;
         private ProjectData project;
         private TaskData task;
+        private MessageData message;
 
         @Builder
-        public NotificationData(LocalDateTime time, WorkspaceData workspace, ProjectData project, TaskData task) {
+        public NotificationData(LocalDateTime time, WorkspaceData workspace, ProjectData project, TaskData task, MessageData message) {
             this.time = time;
             this.workspace = workspace;
             this.project = project;
             this.task = task;
+            this.message = message;
         }
 
     }
@@ -147,6 +159,23 @@ public class NotificationDto {
         public TaskData(Task task) {
             this.taskId = task.getId();
             this.taskTitle = task.getTitle();
+        }
+    }
+
+    @Getter
+    public static class MessageData {
+        private Long messageId;
+        private Long workspaceParticipantId;
+        private String name;
+        private String email;
+        private String imageUrl;
+
+        public MessageData(Message message) {
+            this.messageId = message.getMessageId();
+            this.workspaceParticipantId = message.getWorkspaceParticipantId();
+            this.name = message.getName();
+            this.email = message.getEmail();
+            this.imageUrl = message.getImageUrl();
         }
     }
 }
