@@ -18,6 +18,11 @@ public class MemberController {
 
     private final MemberService memberService;
 
+    @PostMapping("/username")
+    public void checkUsername(@RequestBody @Valid CheckUsernameRequestDto requestDto) {
+        memberService.checkUsername(requestDto.getUsername());
+    }
+
     @Operation(summary = "회원가입", description = "회원가입 요청입니다.")
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/sign-up")
@@ -56,7 +61,7 @@ public class MemberController {
     public void deleteEmail(@PathVariable Long memberEmailId) {
         memberService.deleteEmail(memberEmailId);
     }
-  
+
     @Operation(summary = "회원 탈퇴", description = "회원 탈퇴 요청입니다.")
     @DeleteMapping("/me")
     public void withdrawMember() {

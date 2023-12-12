@@ -121,4 +121,11 @@ public class MemberService {
         memberServiceThroughTask.deleteRelatedTaskDomains(memberId);
         member.withdrawMember();
     }
+
+    public void checkUsername(String username) {
+        memberRepository.findByUsername(username)
+                .ifPresent(member -> {
+                    throw new AlreadyExistsMemberException(member.getUsername());
+                });
+    }
 }
