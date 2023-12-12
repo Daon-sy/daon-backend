@@ -103,7 +103,7 @@ public class ProjectService {
     }
 
     /**
-     * 프로젝트 단 건 조회
+     * 프로젝트 단건 조회
      */
     public FindProjectResponseDto findProject(Long projectId) {
         Project project = projectRepository.findProjectById(projectId)

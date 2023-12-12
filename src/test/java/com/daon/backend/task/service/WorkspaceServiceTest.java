@@ -98,28 +98,28 @@ class WorkspaceServiceTest extends MockConfig {
     @Test
     void findWorkspace() {
         // when
-        FindWorkspaceResponseDto response = workspaceService.findWorkspace(workspaceId);
+        FindWorkspaceResponseDto responseDto = workspaceService.findWorkspace(workspaceId);
 
         // then
-        assertEquals(workspaceId, response.getWorkspaceId());
-        assertEquals("워크스페이스 제목", response.getTitle());
-        assertNull(response.getImageUrl());
-        assertEquals("워크스페이스 설명", response.getDescription());
-        assertEquals("워크스페이스 주제", response.getSubject());
-        assertEquals("GROUP", response.getDivision());
+        assertEquals(workspaceId, responseDto.getWorkspaceId());
+        assertEquals("워크스페이스 제목", responseDto.getTitle());
+        assertNull(responseDto.getImageUrl());
+        assertEquals("워크스페이스 설명", responseDto.getDescription());
+        assertEquals("워크스페이스 주제", responseDto.getSubject());
+        assertEquals("GROUP", responseDto.getDivision());
     }
 
     @DisplayName("워크스페이스 목록 조회")
     @Test
     void findWorkspaces() {
         // when
-        FindWorkspacesResponseDto response = workspaceService.findWorkspaces();
+        FindWorkspacesResponseDto responseDto = workspaceService.findWorkspaces();
 
-        System.out.println(response.getWorkspaces().size());
+        System.out.println(responseDto.getWorkspaces().size());
 
         // then
-        assertEquals(1, response.getWorkspaces().size());
-        assertEquals(workspaceId, response.getWorkspaces().get(0).getWorkspaceId());
+        assertEquals(1, responseDto.getWorkspaces().size());
+        assertEquals(workspaceId, responseDto.getWorkspaces().get(0).getWorkspaceId());
     }
 
     @DisplayName("워크스페이스 수정")
@@ -137,12 +137,12 @@ class WorkspaceServiceTest extends MockConfig {
 
         // when
         workspaceService.modifyWorkspace(requestDto, workspaceId);
-        FindWorkspaceResponseDto response = workspaceService.findWorkspace(workspaceId);
+        FindWorkspaceResponseDto responseDto = workspaceService.findWorkspace(workspaceId);
 
         // then
-        assertEquals(workspaceId, response.getWorkspaceId());
-        assertEquals(title, response.getTitle());
-        assertEquals(description, response.getDescription());
+        assertEquals(workspaceId, responseDto.getWorkspaceId());
+        assertEquals(title, responseDto.getTitle());
+        assertEquals(description, responseDto.getDescription());
     }
 
     @DisplayName("워크스페이스 삭제")
@@ -288,10 +288,10 @@ class WorkspaceServiceTest extends MockConfig {
     @Test
     void findWorkspaceParticipants() {
         // when
-        FindWorkspaceParticipantsResponseDto response = workspaceService.findWorkspaceParticipants(workspaceId);
+        FindWorkspaceParticipantsResponseDto responseDto = workspaceService.findWorkspaceParticipants(workspaceId);
 
         // then
-        assertEquals(1, response.getWorkspaceParticipants().size());
+        assertEquals(1, responseDto.getWorkspaceParticipants().size());
     }
 
     @DisplayName("워크스페이스 참여자 권한 변경")
@@ -329,7 +329,6 @@ class WorkspaceServiceTest extends MockConfig {
         em.flush();
 
         WorkspaceParticipant workspaceParticipant = workspace.findWorkspaceParticipantByMemberId(testMemberId);
-        log.info("workspacePariticpant id: {}", workspaceParticipant.getId());
 
         ModifyRoleRequestDto modifyRoleRequestDto = new ModifyRoleRequestDto(
                 workspaceParticipant.getId(),

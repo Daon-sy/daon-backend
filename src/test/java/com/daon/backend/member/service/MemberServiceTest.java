@@ -93,11 +93,11 @@ class MemberServiceTest extends MockConfig {
         String username = "user";
 
         // when
-        FindMemberResponseDto response = memberService.findMember();
+        FindMemberResponseDto responseDto = memberService.findMember();
 
         // then
-        assertEquals(name, response.getName());
-        assertEquals(username, response.getUsername());
+        assertEquals(name, responseDto.getName());
+        assertEquals(username, responseDto.getUsername());
     }
 
     @DisplayName("이메일 추가")
