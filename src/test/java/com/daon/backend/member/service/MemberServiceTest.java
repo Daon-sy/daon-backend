@@ -69,6 +69,16 @@ class MemberServiceTest extends MockConfig {
         assertEquals(member.getName(), findMember.getName());
     }
 
+    @DisplayName("회원 아이디 중복 확인")
+    @Test
+    void checkUsername() {
+        // given
+        String testUsername = "user";
+
+        // when then
+        assertThrows(AlreadyExistsMemberException.class, () -> memberService.checkUsername(testUsername));
+    }
+
     @DisplayName("회원 정보 수정")
     @Test
     void modifyMember() {

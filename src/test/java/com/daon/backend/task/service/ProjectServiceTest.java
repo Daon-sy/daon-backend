@@ -24,11 +24,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@Transactional
 @SpringBootTest
 class ProjectServiceTest extends MockConfig {
 
@@ -57,8 +57,6 @@ class ProjectServiceTest extends MockConfig {
 
     private Long projectId;
 
-    private String savedMemberId;
-
     @BeforeEach
     void setUp() {
         Member member = Member.builder()
@@ -69,7 +67,7 @@ class ProjectServiceTest extends MockConfig {
                 .passwordEncoder(passwordEncoder)
                 .build();
 
-        savedMemberId = memberRepository.save(member).getId();
+        String savedMemberId = memberRepository.save(member).getId();
         SecurityContextHolder.getContext().setAuthentication(
                 new UsernamePasswordAuthenticationToken(
                         new MemberPrincipal(savedMemberId),
@@ -100,6 +98,7 @@ class ProjectServiceTest extends MockConfig {
         em.clear();
     }
 
+    @Transactional
     @DisplayName("프로젝트 생성")
     @Test
     void createProject() {
@@ -111,6 +110,7 @@ class ProjectServiceTest extends MockConfig {
         assertEquals("프로젝트 설명", project.getDescription());
     }
 
+    @Transactional
     @DisplayName("프로젝트 단건 조회")
     @Test
     void findProject() {
@@ -123,6 +123,7 @@ class ProjectServiceTest extends MockConfig {
         assertEquals("프로젝트 설명", responseDto.getDescription());
     }
 
+    @Transactional
     @DisplayName("프로젝트 목록 조회")
     @Test
     void findProjects() {
@@ -134,6 +135,7 @@ class ProjectServiceTest extends MockConfig {
         assertEquals(workspaceId, responseDto.getWorkspaceId());
     }
 
+    @Transactional
     @DisplayName("프로젝트 수정")
     @Test
     void modifyProject() {
@@ -151,6 +153,7 @@ class ProjectServiceTest extends MockConfig {
         assertEquals(description, project.getDescription());
     }
 
+    @Transactional
     @DisplayName("프로젝트 초대")
     @Test
     void inviteWorkspaceParticipant() {
@@ -190,6 +193,7 @@ class ProjectServiceTest extends MockConfig {
         assertEquals(2, projectParticipants.size());
     }
 
+    @Transactional
     @DisplayName("프로젝트 나의 정보 조회")
     @Test
     void findMyProfile() {
@@ -201,6 +205,7 @@ class ProjectServiceTest extends MockConfig {
         assertEquals("user@email.com", responseDto.getEmail());
     }
 
+    @Transactional
     @DisplayName("프로젝트 참여자 목록 조회")
     @Test
     void findProjectParticipants() {
@@ -211,6 +216,7 @@ class ProjectServiceTest extends MockConfig {
         assertEquals(1, projectParticipants.getProjectParticipants().size());
     }
 
+    @Transactional
     @DisplayName("프로젝트 참여자 강퇴")
     @Test
     void deportProjectParticipant() {
@@ -230,13 +236,10 @@ class ProjectServiceTest extends MockConfig {
 
         workspace.addParticipant(
                 testMemberId,
-                new Profile(
-                        "홍길동",
-                        null,
-                        "user1@email.com"
-                )
+                new Profile("홍길동", null, "user1@email.com")
         );
         em.flush();
+        em.clear();
 
         Long workspaceParticipantId = workspace.findWorkspaceParticipantByMemberId(testMemberId).getId();
         projectService.inviteWorkspaceParticipant(
@@ -244,8 +247,16 @@ class ProjectServiceTest extends MockConfig {
                 projectId,
                 new InviteWorkspaceParticipantRequestDto(workspaceParticipantId)
         );
-        DeportProjectParticipantRequestDto requestDto = new DeportProjectParticipantRequestDto(workspaceParticipantId);
+        em.flush();
+        em.clear();
 
+        System.out.println(workspaceParticipantId);
+        System.out.println();
+        System.out.println(
+                workspaceRepository.findWorkspaceById(workspaceId).get().getProjects().stream().filter(p -> p.getId() == projectId).findFirst().orElseThrow().getParticipants().stream().map(pp -> pp.getWorkspaceParticipant().getId()).collect(Collectors.toList())
+        );
+
+        DeportProjectParticipantRequestDto requestDto = new DeportProjectParticipantRequestDto(workspaceParticipantId);
         // when
         projectService.deportProjectParticipant(projectId, requestDto);
         Project project = projectRepository.findProjectById(projectId).orElseThrow();
@@ -254,6 +265,7 @@ class ProjectServiceTest extends MockConfig {
         assertEquals(1, project.getParticipants().size());
     }
 
+    @Transactional
     @DisplayName("프로젝트 탈퇴")
     @Test
     void withdrawProject() {
@@ -265,6 +277,7 @@ class ProjectServiceTest extends MockConfig {
         assertEquals(0, project.getParticipants().size());
     }
 
+    @Transactional
     @DisplayName("프로젝트 삭제")
     @Test
     void deleteProject() {
