@@ -50,6 +50,7 @@ public class SecurityConfig {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/api/members/sign-up").permitAll()
+                .antMatchers("/api/members/username").permitAll()
                 .antMatchers("/api/auth/**").permitAll()
                 .antMatchers("/api/members/**").hasRole(Role.MEMBER.name())
                 .antMatchers("/api/images/**").hasRole(Role.MEMBER.name())
