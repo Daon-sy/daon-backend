@@ -105,6 +105,7 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
         workspaceJpaRepository.deleteTasksRelatedWorkspace(workspaceId);
         workspaceJpaRepository.deleteBoardsRelatedWorkspace(workspaceId);
         workspaceJpaRepository.deleteProjectsRelatedWorkspace(workspaceId);
+        workspaceJpaRepository.deleteTaskRepliesRelatedWorkspace(workspaceId);
     }
 
     @Override
@@ -147,6 +148,11 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
                 .delete(message)
                 .where(message.receiverId.eq(workspaceParticipantId))
                 .execute();
+    }
+
+    @Override
+    public void deleteAllReplyWriterRelatedMemberId(Long workspaceParticipantId, String memberId) {
+        workspaceJpaRepository.deleteAllReplyWriterRelatedMemberId(workspaceParticipantId, memberId);
     }
 
 }

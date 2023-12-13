@@ -151,6 +151,7 @@ public class Task extends BaseEntity {
 
     public void deleteTask() {
         deleteTaskManager();
+        this.taskReplies.clear();
         this.removed = true;
 
         Events.raise(new TaskRemovedEvent(this));

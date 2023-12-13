@@ -21,9 +21,15 @@ public interface ProjectRepository {
 
     Slice<ProjectSummary> searchProjectSummariesByTitle(String memberId, String title, Pageable pageable);
 
-    void deleteTaskManagerRelatedProjectByMemberId(Long projectId, String memberId);
+    void deleteTaskManagerRelatedProjectAndMemberId(Long projectId, String memberId);
 
     void deleteTaskManagerByProjectParticipantId(Long projectParticipantId);
+
+    void deleteReplyWriterRelatedProjectByMemberId(Long projectId, String memberId);
+
+    void deleteReplyWriterRelatedProjectParticipant(Long projectParticipantId);
+
+    void deleteReplyWriterRelatedProject(Long projectId);
 
     void deleteTasksAndBoardsRelatedProject(Long projectId);
 

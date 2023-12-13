@@ -216,6 +216,7 @@ public class WorkspaceService {
 
         if (workspace.canWithdrawWorkspace()) {
             Long workspaceParticipantId = workspace.findWorkspaceParticipantByMemberId(memberId).getId();
+            workspaceRepository.deleteAllReplyWriterRelatedMemberId(workspaceParticipantId, memberId);
             workspaceRepository.deleteAllMessagesRelatedWorkspaceParticipant(workspaceParticipantId);
             workspaceRepository.deleteAllRelatedWorkspaceParticipant(workspaceParticipantId, memberId);
             workspace.withdrawWorkspace(memberId);
@@ -241,6 +242,7 @@ public class WorkspaceService {
                         )
         );
         workspaceRepository.deleteAllMessagesRelatedWorkspaceParticipant(workspaceParticipantId);
+        workspaceRepository.deleteAllReplyWriterRelatedMemberId(workspaceParticipantId, workspaceParticipantMemberId);
         workspaceRepository.deleteAllRelatedWorkspaceParticipant(workspaceParticipantId, workspaceParticipantMemberId);
         workspace.deportWorkspace(workspaceParticipantId, workspaceParticipantMemberId);
     }
