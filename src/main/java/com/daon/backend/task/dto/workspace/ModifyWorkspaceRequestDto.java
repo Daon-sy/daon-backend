@@ -1,12 +1,9 @@
 package com.daon.backend.task.dto.workspace;
 
-import com.daon.backend.task.domain.workspace.Division;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.validation.constraints.Size;
 
 @Getter
