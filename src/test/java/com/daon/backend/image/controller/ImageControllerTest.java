@@ -2,14 +2,17 @@ package com.daon.backend.image.controller;
 
 import com.daon.backend.config.S3MockConfig;
 import com.daon.backend.image.infrastructure.S3ImageFileService;
+import com.daon.backend.task.infrastructure.CheckRoleInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.entity.ContentType;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -26,7 +29,7 @@ import java.nio.charset.StandardCharsets;
 
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 
-@Disabled
+//@Disabled
 @Slf4j
 @AutoConfigureMockMvc
 @Import({
@@ -39,11 +42,17 @@ public class ImageControllerTest {
     @Autowired
     MockMvc mockMvc;
 
+    @MockBean
+    CheckRoleInterceptor checkRoleInterceptor;
+
     @WithMockUser(roles = "MEMBER")
     @Test
     @DisplayName("이미지 업로드 테스트")
     void imageUploadTest() throws Exception {
         //given
+        BDDMockito.given(checkRoleInterceptor.preHandle(BDDMockito.any(), BDDMockito.any(), BDDMockito.any()))
+                .willReturn(true);
+
         MockMultipartFile mockMultipartFile = new MockMultipartFile(
                 "image",
                 "test-img.png",
@@ -63,6 +72,6 @@ public class ImageControllerTest {
 
         //then
         perform.andExpect(MockMvcResultMatchers.status().isCreated())
-                .andExpect(MockMvcResultMatchers.jsonPath("$.data.imageUrl").isNotEmpty());
+                .andExpect(MockMvcResultMatchers.jsonPath("$.imageUrl").isNotEmpty());
     }
 }
