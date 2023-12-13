@@ -22,6 +22,7 @@ public class MailController {
     public void sendVerificationEmail(@RequestBody SendVerificationEmailRequestDto requestDto) {
         mailService.sendCodeToEmail(requestDto.getEmail());
     }
+
     @Operation(summary = "인증 번호 확인 조회", description = "인증 번호 확인 요청입니다.")
     @PostMapping("/check")
     public void verificationEmail(@RequestBody VerificationEmailCodeRequestDto requestDto) {
