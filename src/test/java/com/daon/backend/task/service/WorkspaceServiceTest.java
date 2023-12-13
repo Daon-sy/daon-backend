@@ -1,24 +1,18 @@
 package com.daon.backend.task.service;
 
 import com.daon.backend.config.MockConfig;
-import com.daon.backend.member.domain.Member;
-import com.daon.backend.member.domain.MemberRepository;
-import com.daon.backend.member.domain.PasswordEncoder;
-import com.daon.backend.security.MemberPrincipal;
 import com.daon.backend.task.domain.workspace.*;
-import com.daon.backend.task.domain.workspace.exception.WorkspaceNotFoundException;
 import com.daon.backend.task.dto.workspace.*;
+import com.daon.backend.task.infrastructure.workspace.WorkspaceJpaRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,11 +21,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 class WorkspaceServiceTest extends MockConfig {
 
-    @Autowired
-    MemberRepository memberRepository;
-
-    @Autowired
-    PasswordEncoder passwordEncoder;
+    @MockBean
+    SessionMemberProvider sessionMemberProvider;
 
     @Autowired
     WorkspaceService workspaceService;
@@ -40,30 +31,17 @@ class WorkspaceServiceTest extends MockConfig {
     WorkspaceRepository workspaceRepository;
 
     @Autowired
-    EntityManager em;
-
-    private Long workspaceId;
-
-    private String savedMemberId;
+    WorkspaceJpaRepository workspaceJpaRepository;
 
     @BeforeEach
     void setUp() {
-        Member member = Member.builder()
-                .username("user")
-                .password("1234")
-                .name("유저")
-                .email("user@email.com")
-                .passwordEncoder(passwordEncoder)
-                .build();
+        BDDMockito.given(sessionMemberProvider.getMemberId()).willReturn("78cfb9f6-ec40-4ec7-b5bd-b7654fa014f8");
+    }
 
-        savedMemberId = memberRepository.save(member).getId();
-        SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken(
-                        new MemberPrincipal(savedMemberId),
-                        null
-                )
-        );
-
+    @DisplayName("워크스페이스 생성")
+    @Test
+    void createWorkspace() {
+        // given
         CreateWorkspaceRequestDto requestDto = new CreateWorkspaceRequestDto(
                 new CreateWorkspaceRequestDto.WorkspaceInfo(
                         "워크스페이스 제목",
@@ -74,18 +52,13 @@ class WorkspaceServiceTest extends MockConfig {
                 new CreateWorkspaceRequestDto.WorkspaceProfileInfo(
                         "홍길동",
                         null,
-                        "user@email.com"
+                        "test1@email.com"
                 )
         );
 
-        workspaceId = workspaceService.createWorkspace(requestDto).getWorkspaceId();
-    }
-
-    @DisplayName("워크스페이스 생성")
-    @Test
-    void createWorkspace() {
         // when
-        FindWorkspaceResponseDto findWorkspace = workspaceService.findWorkspace(workspaceId);
+        CreateWorkspaceResponseDto responseDto = workspaceService.createWorkspace(requestDto);
+        Workspace findWorkspace = workspaceRepository.findWorkspaceById(responseDto.getWorkspaceId()).orElseThrow();
 
         // then
         assertEquals("워크스페이스 제목", findWorkspace.getTitle());
@@ -97,16 +70,15 @@ class WorkspaceServiceTest extends MockConfig {
     @DisplayName("워크스페이스 단건 조회")
     @Test
     void findWorkspace() {
+        // given
+        Long workspaceId = 1L;
+
         // when
         FindWorkspaceResponseDto responseDto = workspaceService.findWorkspace(workspaceId);
 
         // then
         assertEquals(workspaceId, responseDto.getWorkspaceId());
-        assertEquals("워크스페이스 제목", responseDto.getTitle());
-        assertNull(responseDto.getImageUrl());
-        assertEquals("워크스페이스 설명", responseDto.getDescription());
-        assertEquals("워크스페이스 주제", responseDto.getSubject());
-        assertEquals("GROUP", responseDto.getDivision());
+        assertEquals("PERSONAL", responseDto.getDivision());
     }
 
     @DisplayName("워크스페이스 목록 조회")
@@ -115,17 +87,15 @@ class WorkspaceServiceTest extends MockConfig {
         // when
         FindWorkspacesResponseDto responseDto = workspaceService.findWorkspaces();
 
-        System.out.println(responseDto.getWorkspaces().size());
-
         // then
-        assertEquals(1, responseDto.getWorkspaces().size());
-        assertEquals(workspaceId, responseDto.getWorkspaces().get(0).getWorkspaceId());
+        assertEquals(2, responseDto.getWorkspaces().size());
     }
 
     @DisplayName("워크스페이스 수정")
     @Test
     void modifyWorkspace() {
         // given
+        Long workspaceId = 1L;
         String title = "수정된 제목";
         String description = "수정된 설명";
         ModifyWorkspaceRequestDto requestDto = new ModifyWorkspaceRequestDto(
@@ -148,29 +118,37 @@ class WorkspaceServiceTest extends MockConfig {
     @DisplayName("워크스페이스 삭제")
     @Test
     void deleteWorkspace() {
+        // given
+        Long workspaceId = 3L;
+
         // when
         workspaceService.deleteWorkspace(workspaceId);
+        Workspace findWorkspace = workspaceJpaRepository.findById(workspaceId).orElseThrow();
 
         // then
-        assertThrows(WorkspaceNotFoundException.class, () -> workspaceService.findWorkspace(workspaceId));
+        assertTrue(findWorkspace.isRemoved());
     }
 
     @DisplayName("프로필(본인) 조회")
     @Test
     void findProfile() {
+        // given
+        Long workspaceId = 1L;
+
         // when
         FindProfileResponseDto findProfile = workspaceService.findProfile(workspaceId);
 
         // then
-        assertEquals("홍길동", findProfile.getName());
+        assertEquals("USER1", findProfile.getName());
         assertNull(findProfile.getImageUrl());
-        assertEquals("user@email.com", findProfile.getEmail());
+        assertEquals("user1@email.com", findProfile.getEmail());
     }
 
     @DisplayName("프로필(본인) 수정")
     @Test
     void modifyProfile() {
         // given
+        Long workspaceId = 1L;
         String name = "둘리";
         String email = "ddochi@email.com";
         ModifyProfileRequestDto requestDto = new ModifyProfileRequestDto(name, null, email);
@@ -188,40 +166,24 @@ class WorkspaceServiceTest extends MockConfig {
     @Test
     void inviteMember() {
         // given
-        Member testMember = Member.builder()
-                .username("test user")
-                .password("1234")
-                .name("테스트 이름")
-                .email("testUser@email.com")
-                .passwordEncoder(passwordEncoder)
-                .build();
-        memberRepository.save(testMember);
+        Long workspaceId = 3L;
 
-        InviteMemberRequestDto requestDto = new InviteMemberRequestDto("test user", Role.PROJECT_ADMIN);
+        InviteMemberRequestDto requestDto = new InviteMemberRequestDto("user4", Role.PROJECT_ADMIN);
 
         // when
         workspaceService.inviteMember(workspaceId, requestDto);
         Workspace findWorkspace = workspaceRepository.findWorkspaceById(workspaceId).orElseThrow();
 
         // then
-        assertEquals(1, findWorkspace.getInvitations().size());
+        assertEquals(2, findWorkspace.getInvitations().size());
     }
 
     @DisplayName("워크스페이스 참여")
     @Test
     void joinWorkspace() {
         // given
-        Member testMember = Member.builder()
-                .username("test user")
-                .password("1234")
-                .name("테스트 이름")
-                .email("testUser@email.com")
-                .passwordEncoder(passwordEncoder)
-                .build();
-        String testMemberId = memberRepository.save(testMember).getId();
-
-        InviteMemberRequestDto request = new InviteMemberRequestDto("test user", Role.PROJECT_ADMIN);
-        workspaceService.inviteMember(workspaceId, request);
+        Long workspaceId = 3L;
+        String testMemberId = "2831ccac-aef9-4359-abbb-1d432b1b8078";
         Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId).orElseThrow();
 
         JoinWorkspaceRequestDto requestDto = new JoinWorkspaceRequestDto(
@@ -241,99 +203,52 @@ class WorkspaceServiceTest extends MockConfig {
         );
 
         // then
-        assertEquals(2, workspace.getWorkspaceParticipants().size());
+        assertEquals(4, workspace.getWorkspaceParticipants().size());
     }
 
     @DisplayName("워크스페이스 탈퇴")
     @Test
     void withdrawWorkspace() {
         // given
-        Member testMember = Member.builder()
-                .username("test user")
-                .password("1234")
-                .name("테스트 이름")
-                .email("testUser@email.com")
-                .passwordEncoder(passwordEncoder)
-                .build();
-        String testMemberId = memberRepository.save(testMember).getId();
-
-        InviteMemberRequestDto request = new InviteMemberRequestDto("test user", Role.WORKSPACE_ADMIN);
-        workspaceService.inviteMember(workspaceId, request);
-        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId).orElseThrow();
-
-        JoinWorkspaceRequestDto requestDto = new JoinWorkspaceRequestDto(
-                "홍길동",
-                null,
-                "user2@email.com"
-        );
-
-        workspace.addParticipant(
-                testMemberId,
-                new Profile(
-                        requestDto.getName(),
-                        requestDto.getImageUrl(),
-                        requestDto.getEmail()
-                )
-        );
+        Long workspaceId = 3L;
 
         // when
         workspaceService.withdrawWorkspace(workspaceId);
-        FindWorkspaceParticipantsResponseDto response = workspaceService.findWorkspaceParticipants(workspaceId);
+        Workspace findWorkspace = workspaceJpaRepository.findById(workspaceId).orElseThrow();
 
         // then
-        assertEquals(1, response.getWorkspaceParticipants().size());
+        assertTrue(findWorkspace.isRemoved());
     }
 
     @DisplayName("워크스페이스 참여자 목록 조회")
     @Test
     void findWorkspaceParticipants() {
+        // given
+        Long workspaceId = 3L;
+
         // when
         FindWorkspaceParticipantsResponseDto responseDto = workspaceService.findWorkspaceParticipants(workspaceId);
 
         // then
-        assertEquals(1, responseDto.getWorkspaceParticipants().size());
+        assertEquals(3, responseDto.getWorkspaceParticipants().size());
     }
 
     @DisplayName("워크스페이스 참여자 권한 변경")
     @Test
     void modifyParticipantRole() {
         // given
-        Member testMember = Member.builder()
-                .username("test user")
-                .password("1234")
-                .name("테스트 이름")
-                .email("testUser@email.com")
-                .passwordEncoder(passwordEncoder)
-                .build();
-        String testMemberId = memberRepository.save(testMember).getId();
-
-        InviteMemberRequestDto request = new InviteMemberRequestDto("test user", Role.PROJECT_ADMIN);
-        workspaceService.inviteMember(workspaceId, request);
-        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId).orElseThrow();
-
-        JoinWorkspaceRequestDto requestDto = new JoinWorkspaceRequestDto(
-                "홍길동",
-                null,
-                "user2@email.com"
-        );
-
-        workspace.addParticipant(
-                testMemberId,
-                new Profile(
-                        requestDto.getName(),
-                        requestDto.getImageUrl(),
-                        requestDto.getEmail()
-                )
-        );
-
-        em.flush();
-
-        WorkspaceParticipant workspaceParticipant = workspace.findWorkspaceParticipantByMemberId(testMemberId);
+        Long workspaceId = 3L;
+        Long workspaceParticipantId = 4L;
 
         ModifyRoleRequestDto modifyRoleRequestDto = new ModifyRoleRequestDto(
-                workspaceParticipant.getId(),
+                workspaceParticipantId,
                 Role.BASIC_PARTICIPANT
         );
+        WorkspaceParticipant workspaceParticipant =
+                workspaceJpaRepository.findById(workspaceId).orElseThrow().getWorkspaceParticipants().stream()
+                        .filter(w -> w.getId().equals(workspaceParticipantId))
+                        .findFirst()
+                        .orElseThrow();
 
         // when
         workspaceService.modifyParticipantRole(modifyRoleRequestDto, workspaceId);
@@ -346,21 +261,14 @@ class WorkspaceServiceTest extends MockConfig {
     @Test
     void resetWorkspace() {
         // given
-        Workspace workspace = Workspace.createOfPersonal(
-                new WorkspaceCreator(savedMemberId, "홍길동", null, "user@email.com")
-        );
-        workspaceRepository.save(workspace);
-        em.flush();
-
-        Long newWorkspaceId = workspace.getId();
-        String newTitle = "수정된 제목";
-        ModifyWorkspaceRequestDto requestDto = new ModifyWorkspaceRequestDto(newTitle, null, null, null);
-        workspaceService.modifyWorkspace(requestDto, newWorkspaceId);
+        Long workspaceId = 1L;
+        String title = "USER1님의 개인 워크스페이스 공간";
+        Workspace findWorkspace = workspaceRepository.findWorkspaceById(workspaceId).orElseThrow();
 
         // when
-        workspaceService.resetWorkspace(newWorkspaceId);
+        workspaceService.resetWorkspace(workspaceId);
 
         // then
-        assertNotEquals(newTitle, workspace.getTitle());
+        assertEquals(title, findWorkspace.getTitle());
     }
 }

@@ -1,123 +1,62 @@
 package com.daon.backend.task.service;
 
 import com.daon.backend.config.MockConfig;
-import com.daon.backend.member.domain.Member;
-import com.daon.backend.member.domain.MemberRepository;
-import com.daon.backend.member.domain.PasswordEncoder;
-import com.daon.backend.security.MemberPrincipal;
+import com.daon.backend.task.domain.board.Board;
 import com.daon.backend.task.domain.project.Project;
 import com.daon.backend.task.domain.project.ProjectRepository;
 import com.daon.backend.task.dto.board.CreateBoardRequestDto;
 import com.daon.backend.task.dto.board.FindBoardsResponseDto;
 import com.daon.backend.task.dto.board.ModifyBoardRequestDto;
-import com.daon.backend.task.dto.project.CreateProjectRequestDto;
-import com.daon.backend.task.dto.workspace.CreateWorkspaceRequestDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Transactional
 @SpringBootTest
 public class BoardServiceTest extends MockConfig {
 
-    @Autowired
-    MemberRepository memberRepository;
-
-    @Autowired
-    PasswordEncoder passwordEncoder;
+    @MockBean
+    SessionMemberProvider sessionMemberProvider;
 
     @Autowired
     BoardService boardService;
 
     @Autowired
-    WorkspaceService workspaceService;
-
-    @Autowired
-    ProjectService projectService;
-
-    @Autowired
     ProjectRepository projectRepository;
-
-    @Autowired
-    EntityManager em;
-
-    private Project project;
-
-    private Long projectId;
-
-    private Long boardId;
 
     @BeforeEach
     void setUp() {
-        Member member = Member.builder()
-                .username("user")
-                .password("1234")
-                .name("유저")
-                .email("user@email.com")
-                .passwordEncoder(passwordEncoder)
-                .build();
-
-        String savedMemberId = memberRepository.save(member).getId();
-        SecurityContextHolder.getContext().setAuthentication(
-                new UsernamePasswordAuthenticationToken(
-                        new MemberPrincipal(savedMemberId),
-                        null
-                )
-        );
-
-        CreateWorkspaceRequestDto createWorkspaceRequestDto = new CreateWorkspaceRequestDto(
-                new CreateWorkspaceRequestDto.WorkspaceInfo(
-                        "워크스페이스 제목",
-                        null,
-                        "워크스페이스 설명",
-                        "워크스페이스 주제"
-                ),
-                new CreateWorkspaceRequestDto.WorkspaceProfileInfo(
-                        "홍길동",
-                        null,
-                        "user@email.com"
-                )
-        );
-
-        Long workspaceId = workspaceService.createWorkspace(createWorkspaceRequestDto).getWorkspaceId();
-
-        CreateProjectRequestDto createProjectRequestDto =
-                new CreateProjectRequestDto("프로젝트 제목", "프로젝트 설명");
-        projectId = projectService.createProject(workspaceId, createProjectRequestDto).getProjectId();
-
-        CreateBoardRequestDto createBoardRequestDto = new CreateBoardRequestDto("보드 제목");
-        boardService.createBoard(projectId, createBoardRequestDto);
-
-        em.flush();
-        em.clear();
-
-        project = projectRepository.findProjectById(projectId).orElseThrow();
-        boardId = project.getBoards().get(1).getId();
+        BDDMockito.given(sessionMemberProvider.getMemberId()).willReturn("78cfb9f6-ec40-4ec7-b5bd-b7654fa014f8");
     }
 
     @DisplayName("보드 생성")
     @Test
     void createBoard() {
+        // given
+        Long projectId = 1L;
+        CreateBoardRequestDto requestDto = new CreateBoardRequestDto("보드 제목");
+
         // when
-        boardService.findBoards(projectId);
+        boardService.createBoard(projectId, requestDto);
 
         // then
-        assertEquals(2, project.getBoards().size());
+        Project project = projectRepository.findProjectById(projectId).orElseThrow();
+        assertEquals(3, project.getBoards().size());
     }
 
     @DisplayName("보드 목록 조회")
     @Test
     void findBoards() {
+        // given
+        Long projectId = 1L;
+
         // when
         FindBoardsResponseDto boards = boardService.findBoards(projectId);
 
@@ -129,25 +68,32 @@ public class BoardServiceTest extends MockConfig {
     @Test
     void modifyBoard() {
         // given
-        ModifyBoardRequestDto requestDto = new ModifyBoardRequestDto("수정된 제목");
+        Long projectId = 1L;
+        Long boardId = 1L;
+        String editTitle = "수정된 제목";
+
+        ModifyBoardRequestDto requestDto = new ModifyBoardRequestDto(editTitle);
 
         // when
         boardService.modifyBoard(projectId, boardId, requestDto);
-        em.flush();
 
         // then
-        assertEquals("수정된 제목", project.getBoards().get(1).getTitle());
+        Board findBoard = projectRepository.findProjectById(projectId).orElseThrow().getBoards().get(0);
+        assertEquals(boardId, findBoard.getId());
+        assertEquals(editTitle, findBoard.getTitle());
     }
 
     @DisplayName("보드 삭제")
     @Test
     void deleteBoard() {
+        // given
+        Long projectId = 1L;
+        Long boardId = 2L;
+
         // when
         boardService.deleteBoard(projectId, boardId);
-        em.flush();
-        em.clear();
 
         // then
-        assertTrue(project.getBoards().get(1).isRemoved());
+        assertEquals(1, boardService.findBoards(projectId).getBoards().size());
     }
 }

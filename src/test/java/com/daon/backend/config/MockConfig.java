@@ -2,6 +2,7 @@ package com.daon.backend.config;
 
 import com.daon.backend.image.infrastructure.S3ImageFileService;
 import com.daon.backend.mail.service.MailService;
+import com.daon.backend.task.infrastructure.SearchQueryRepository;
 import org.springframework.boot.test.mock.mockito.MockBean;
 
 public abstract class MockConfig {
@@ -17,4 +18,7 @@ public abstract class MockConfig {
 
     @MockBean
     MailService mailService;
+
+    @MockBean
+    SearchQueryRepository searchQueryRepository;
 }
