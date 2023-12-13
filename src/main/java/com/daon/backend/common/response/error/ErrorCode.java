@@ -18,6 +18,7 @@ public enum ErrorCode {
 
     UNABLE_TO_SEND_EMAIL(1600, "인증 이메일 전송에 실패했습니다. 서버에 문의 부탁 드립니다."),
     EMAIL_VERIFICATION_TIME_EXPIRE(1601, "이메일 인증 시간이 지났습니다. 다시 요청해 주세요."),
+    INCORRECT_MAIL_CHECK_CODE(1602, "인증 번호가 일치하지 않습니다."),
 
     TYPE_NOT_SPECIFIC(1700, "SSE 연결 요청(할 일 목록 조회)에 타입이 지정되지 않았습니다. Param을 확인해 주세요."),
 
