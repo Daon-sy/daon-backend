@@ -103,8 +103,13 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     }
 
     @Override
-    public void deleteTaskManagerRelatedProjectByMemberId(Long projectId, String memberId) {
+    public void deleteTaskManagerRelatedProjectAndMemberId(Long projectId, String memberId) {
         projectJpaRepository.deleteTaskManagerRelatedProjectByMemberId(projectId, memberId);
+    }
+
+    @Override
+    public void deleteReplyWriterRelatedProjectByMemberId(Long projectId, String memberId) {
+        projectJpaRepository.deleteReplyWriterRelatedProjectByMemberId(projectId, memberId);
     }
 
     @Override
@@ -115,6 +120,16 @@ public class ProjectRepositoryImpl implements ProjectRepository {
                 .where(task.taskManager.id.eq(projectParticipantId))
                 .execute();
         em.flush();
+    }
+
+    @Override
+    public void deleteReplyWriterRelatedProjectParticipant(Long projectParticipantId) {
+        projectJpaRepository.deleteReplyWriterRelatedProjectParticipant(projectParticipantId);
+    }
+
+    @Override
+    public void deleteReplyWriterRelatedProject(Long projectId) {
+        projectJpaRepository.deleteReplyWriterRelatedProject(projectId);
     }
 
     @Override

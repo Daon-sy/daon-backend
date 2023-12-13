@@ -1,10 +1,12 @@
 package com.daon.backend.task.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@AllArgsConstructor
 public class TaskSearchParams {
 
     private Long projectId;

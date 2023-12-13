@@ -122,6 +122,9 @@ public class MemberService {
         member.withdrawMember();
     }
 
+    /**
+     * 회원 아이디 중복 확인
+     */
     public void checkUsername(String username) {
         memberRepository.findByUsername(username)
                 .ifPresent(member -> {

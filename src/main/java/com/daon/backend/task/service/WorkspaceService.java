@@ -165,7 +165,7 @@ public class WorkspaceService {
     }
 
     /**
-     * 워크스페이스 단 건 조회
+     * 워크스페이스 단건 조회
      */
     public FindWorkspaceResponseDto findWorkspace(Long workspaceId) {
         Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
@@ -216,6 +216,7 @@ public class WorkspaceService {
 
         if (workspace.canWithdrawWorkspace()) {
             Long workspaceParticipantId = workspace.findWorkspaceParticipantByMemberId(memberId).getId();
+            workspaceRepository.deleteAllReplyWriterRelatedMemberId(workspaceParticipantId, memberId);
             workspaceRepository.deleteAllMessagesRelatedWorkspaceParticipant(workspaceParticipantId);
             workspaceRepository.deleteAllRelatedWorkspaceParticipant(workspaceParticipantId, memberId);
             workspace.withdrawWorkspace(memberId);
@@ -241,6 +242,7 @@ public class WorkspaceService {
                         )
         );
         workspaceRepository.deleteAllMessagesRelatedWorkspaceParticipant(workspaceParticipantId);
+        workspaceRepository.deleteAllReplyWriterRelatedMemberId(workspaceParticipantId, workspaceParticipantMemberId);
         workspaceRepository.deleteAllRelatedWorkspaceParticipant(workspaceParticipantId, workspaceParticipantMemberId);
         workspace.deportWorkspace(workspaceParticipantId, workspaceParticipantMemberId);
     }

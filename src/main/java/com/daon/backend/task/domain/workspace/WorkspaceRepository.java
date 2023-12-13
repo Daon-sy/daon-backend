@@ -31,4 +31,6 @@ public interface WorkspaceRepository {
     void readAllMessages(Long workspaceId, Long receiverId);
 
     void deleteAllMessagesRelatedWorkspaceParticipant(Long workspaceParticipantId);
+
+    void deleteAllReplyWriterRelatedMemberId(Long workspaceParticipantId, String memberId);
 }

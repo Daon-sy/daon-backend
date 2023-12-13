@@ -34,7 +34,7 @@ public class WorkspaceNotice extends BaseEntity {
 
     @Audited(withModifiedFlag = true, targetAuditMode = NOT_AUDITED)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "workspace_partipant_id")
+    @JoinColumn(name = "workspace_participant_id")
     private WorkspaceParticipant workspaceNoticeWriter;
 
 

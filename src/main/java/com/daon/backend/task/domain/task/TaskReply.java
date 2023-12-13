@@ -27,7 +27,7 @@ public class TaskReply extends BaseEntity {
     private Task task; //할일
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "writer_id", nullable = false, updatable = false)
+    @JoinColumn(name = "writer_id")
     private ProjectParticipant taskReplyWriter; //작성자
 
     @Builder

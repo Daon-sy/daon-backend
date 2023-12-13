@@ -22,6 +22,7 @@ public class CreateWorkspaceRequestDto {
 
     @Getter
     @NoArgsConstructor
+    @AllArgsConstructor
     public static class WorkspaceInfo {
 
         @NotBlank
@@ -39,6 +40,7 @@ public class CreateWorkspaceRequestDto {
 
     @Getter
     @NoArgsConstructor
+    @AllArgsConstructor
     public static class WorkspaceProfileInfo {
 
         @NotBlank

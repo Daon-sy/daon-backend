@@ -34,8 +34,21 @@ public interface WorkspaceJpaRepository extends JpaRepository<Workspace, Long> {
     @Modifying
     @Query("UPDATE Task t " +
             "SET t.taskManager = null " +
+            "WHERE t.project IN (SELECT p FROM Project p WHERE p.workspace.id = :workspaceId)")
+    void deleteTaskRepliesRelatedWorkspace(Long workspaceId);
+
+    @Modifying
+    @Query("UPDATE Task t " +
+            "SET t.taskManager = null " +
             "WHERE t.taskManager IN (SELECT pp FROM ProjectParticipant pp " +
             "                        WHERE pp.workspaceParticipant.id = :workspaceParticipant)")
     void deleteTaskManagerRelatedWorkspaceParticipant(Long workspaceParticipant);
 
+    @Modifying
+    @Query("UPDATE TaskReply t " +
+            "SET t.taskReplyWriter = null " +
+            "WHERE t.taskReplyWriter IN (SELECT pp FROM ProjectParticipant pp" +
+            "                            WHERE pp.workspaceParticipant.id =: workspaceParticipantId " +
+            "                               AND pp.memberId =: memberId)")
+    void deleteAllReplyWriterRelatedMemberId(Long workspaceParticipantId, String memberId);
 }

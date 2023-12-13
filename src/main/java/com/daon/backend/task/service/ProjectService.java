@@ -103,7 +103,7 @@ public class ProjectService {
     }
 
     /**
-     * 프로젝트 단 건 조회
+     * 프로젝트 단건 조회
      */
     public FindProjectResponseDto findProject(Long projectId) {
         Project project = projectRepository.findProjectById(projectId)
@@ -121,7 +121,8 @@ public class ProjectService {
         Project project = projectRepository.findProjectById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
-        projectRepository.deleteTaskManagerRelatedProjectByMemberId(projectId, memberId);
+        projectRepository.deleteTaskManagerRelatedProjectAndMemberId(projectId, memberId);
+        projectRepository.deleteReplyWriterRelatedProjectByMemberId(projectId, memberId);
         project.withdrawProject(memberId);
     }
 
@@ -134,6 +135,7 @@ public class ProjectService {
         Project project = projectRepository.findProjectById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
+        projectRepository.deleteReplyWriterRelatedProjectParticipant(projectParticipantId);
         projectRepository.deleteAllTaskBookmarkRelatedProjectParticipant(projectParticipantId);
         projectRepository.deleteTaskManagerByProjectParticipantId(projectParticipantId);
         project.deportProject(projectParticipantId);
@@ -147,7 +149,9 @@ public class ProjectService {
         Project project = projectRepository.findProjectById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
-        project.getParticipants().forEach(projectParticipant -> projectRepository.deleteAllTaskBookmarkRelatedProjectParticipant(projectParticipant.getId()));
+        project.getParticipants().forEach(projectParticipant ->
+                projectRepository.deleteAllTaskBookmarkRelatedProjectParticipant(projectParticipant.getId())
+        );
         projectRepository.deleteTasksAndBoardsRelatedProject(projectId);
         project.deleteProject();
     }
