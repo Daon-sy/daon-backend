@@ -55,4 +55,12 @@ public class WorkspaceParticipant extends BaseEntity {
     public void modifyRole(Role role) {
         this.role = Optional.ofNullable(role).orElse(this.role);
     }
+
+    public boolean memberIdEquals(String memberId) {
+        return this.memberId.equals(memberId);
+    }
+
+    public boolean isWorkspaceAdmin() {
+        return role.equals(Role.WORKSPACE_ADMIN);
+    }
 }

@@ -5,6 +5,7 @@ import com.daon.backend.task.domain.workspace.*;
 import com.daon.backend.task.dto.workspace.*;
 import com.daon.backend.task.infrastructure.workspace.WorkspaceJpaRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -13,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityManager;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -33,9 +36,15 @@ class WorkspaceServiceTest extends MockConfig {
     @Autowired
     WorkspaceJpaRepository workspaceJpaRepository;
 
+    @Autowired
+    EntityManager em;
+
+    final String wsAdminMemberId = "78cfb9f6-ec40-4ec7-b5bd-b7654fa014f8";
+    final String wsBasicParticipantMemberId = "4c624615-7123-4a63-9ade-0fd5889452cd";
+
     @BeforeEach
     void setUp() {
-        BDDMockito.given(sessionMemberProvider.getMemberId()).willReturn("78cfb9f6-ec40-4ec7-b5bd-b7654fa014f8");
+        BDDMockito.given(sessionMemberProvider.getMemberId()).willReturn(wsAdminMemberId);
     }
 
     @DisplayName("워크스페이스 생성")
@@ -206,18 +215,42 @@ class WorkspaceServiceTest extends MockConfig {
         assertEquals(4, workspace.getWorkspaceParticipants().size());
     }
 
-    @DisplayName("워크스페이스 탈퇴")
+    @DisplayName("워크스페이스 탈퇴 - 탈퇴할 사용자가 WORKSPACE_ADMIN이고, 본인만 WORKSPACE_ADMIN이 이면, 워크스페이스가 삭제된다.")
     @Test
-    void withdrawWorkspace() {
+    void withdrawWorkspace_WORKSPACE_ADMIN() {
         // given
         Long workspaceId = 3L;
 
         // when
         workspaceService.withdrawWorkspace(workspaceId);
-        Workspace findWorkspace = workspaceJpaRepository.findById(workspaceId).orElseThrow();
+//        em.flush();
+//        em.clear();
 
         // then
-        assertTrue(findWorkspace.isRemoved());
+        Workspace resultWorkspace = workspaceJpaRepository.findById(workspaceId).orElseThrow();
+        Assertions.assertThat(resultWorkspace.isRemoved()).isTrue();
+    }
+
+    @DisplayName("워크스페이스 탈퇴 - 다른 참여자들이 있을 때, BASIC_PARTICIPANT가 탈퇴하면 해당 사용자만 삭제되고 워크스페이스는 삭제되지 않는다.")
+    @Test
+    void withdrawWorkspace_BASIC_PARTICIPANT() {
+        // given
+        BDDMockito.given(sessionMemberProvider.getMemberId())
+                .willReturn(wsBasicParticipantMemberId);
+        Long workspaceId = 3L;
+        Workspace workspaceBeforeTest = workspaceJpaRepository.findById(workspaceId).orElseThrow();
+        int participantSizeBeforeTest = workspaceBeforeTest.getParticipants().size();
+
+        // when
+        workspaceService.withdrawWorkspace(workspaceId);
+        em.flush();
+        em.clear();
+
+        // then
+        Workspace resultWorkspace = workspaceJpaRepository.findById(workspaceId).orElseThrow();
+        Assertions.assertThat(resultWorkspace.isRemoved()).isFalse();
+        Assertions.assertThat(resultWorkspace.getWorkspaceParticipants().size()).isEqualTo(participantSizeBeforeTest - 1);
+        Assertions.assertThat(resultWorkspace.getWorkspaceParticipants().stream().anyMatch(wsp -> wsp.memberIdEquals(wsBasicParticipantMemberId))).isFalse();
     }
 
     @DisplayName("워크스페이스 참여자 목록 조회")

@@ -102,10 +102,10 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
 
     @Override
     public void deleteAllRelatedWorkspace(Long workspaceId) {
+        workspaceJpaRepository.deleteTaskRepliesRelatedWorkspace(workspaceId);
         workspaceJpaRepository.deleteTasksRelatedWorkspace(workspaceId);
         workspaceJpaRepository.deleteBoardsRelatedWorkspace(workspaceId);
         workspaceJpaRepository.deleteProjectsRelatedWorkspace(workspaceId);
-        workspaceJpaRepository.deleteTaskRepliesRelatedWorkspace(workspaceId);
     }
 
     @Override

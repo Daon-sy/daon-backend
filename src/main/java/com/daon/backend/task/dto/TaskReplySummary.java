@@ -30,7 +30,10 @@ public class TaskReplySummary {
         this.replyId = taskReply.getId();
         this.taskId = taskReply.getTask().getId();
         this.content = taskReply.getContent();
-        this.writer = new TaskReplyWriter(taskReply.getTaskReplyWriter());
+//        this.writer = new TaskReplyWriter(taskReply.getTaskReplyWriter());
+        this.writer = taskReply.getTaskReplyWriter() != null ?
+                new TaskReplyWriter(taskReply.getTaskReplyWriter()) :
+                new TaskReplyWriter(0L, "탈퇴한 사용자", null);
         this.isWriter = taskReply.getTaskReplyWriter().getMemberId().equals(currentParticipant.getMemberId());
         this.createdAt = taskReply.getCreatedAt();
         this.modifiedAt = taskReply.getModifiedAt();
