@@ -70,7 +70,10 @@ public class BoardService {
         Project project = projectRepository.findProjectById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
-        if (project.getBoards().size() > 1) {
+        long activeBoardCount = project.getBoards().stream()
+                .filter(board -> !board.isRemoved())
+                .count();
+        if (activeBoardCount > 1) {
             boardRepository.deleteTasksRelatedBoard(boardId);
             boardRepository.findBoardById(boardId)
                     .orElseThrow(() -> new BoardNotFoundException(projectId, boardId))
