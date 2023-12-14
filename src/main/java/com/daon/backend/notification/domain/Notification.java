@@ -1,10 +1,7 @@
 package com.daon.backend.notification.domain;
 
 import com.daon.backend.config.BaseEntity;
-import com.daon.backend.notification.domain.data.Message;
-import com.daon.backend.notification.domain.data.Project;
-import com.daon.backend.notification.domain.data.Task;
-import com.daon.backend.notification.domain.data.Workspace;
+import com.daon.backend.notification.domain.data.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -60,8 +57,8 @@ public abstract class Notification extends BaseEntity {
         return new InvitedProjectNotification(targetMemberId, workspace, project);
     }
 
-    public static Notification registeredTaskManager(String targetMemberId, Workspace workspace, Project project, Task task) {
-        return new RegisteredTaskManagerNotification(targetMemberId, workspace, project, task);
+    public static Notification registeredTaskManager(String targetMemberId, Workspace workspace, Project project, Board board, Task task) {
+        return new RegisteredTaskManagerNotification(targetMemberId, workspace, project, board, task);
     }
 
     public static Notification receiveMessage(String targetMemberId, Workspace workspace, Message message) {
@@ -151,12 +148,16 @@ public abstract class Notification extends BaseEntity {
         private Project project;
 
         @Embedded
+        private Board board;
+
+        @Embedded
         private Task task;
 
-        protected RegisteredTaskManagerNotification(String targetMemberId, Workspace workspace, Project project, Task task) {
+        protected RegisteredTaskManagerNotification(String targetMemberId, Workspace workspace, Project project, Board board, Task task) {
             super(NotificationType.REGISTERED_TASK_MANAGER, targetMemberId, System.currentTimeMillis());
             this.workspace = workspace;
             this.project = project;
+            this.board = board;
             this.task = task;
         }
     }

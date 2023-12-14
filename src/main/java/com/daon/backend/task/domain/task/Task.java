@@ -4,7 +4,6 @@ import com.daon.backend.common.event.Events;
 import com.daon.backend.config.BaseEntity;
 import com.daon.backend.task.domain.board.Board;
 import com.daon.backend.task.domain.project.ProjectParticipant;
-import com.daon.backend.task.dto.notification.DesignatedManagerAlarmResponseDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -85,11 +84,6 @@ public class Task extends BaseEntity {
 
     public void modifyTask(String title, String content, LocalDateTime startDate, LocalDateTime endDate, boolean emergency,
                            TaskProgressStatus progressStatus, Board board, ProjectParticipant taskManager) {
-        if ((this.taskManager == null && taskManager != null) ||
-                (this.taskManager != null && taskManager != null && !taskManager.getId().equals(this.getTaskManager().getId()))) {
-            publishSendAlarmEvent(taskManager);
-        }
-
         this.title = title;
         this.content = content;
         this.startDate = startDate;
@@ -98,9 +92,6 @@ public class Task extends BaseEntity {
         this.progressStatus = progressStatus;
         this.board = board;
         this.taskManager = taskManager;
-
-        publishSendTaskEvent();
-        publishSendTasksEvent();
     }
 
     public void addTaskBookmark(TaskBookmark taskBookmark) {
@@ -113,9 +104,6 @@ public class Task extends BaseEntity {
 
     public void modifyProgressStatus(TaskProgressStatus progressStatus) {
         this.progressStatus = Optional.ofNullable(progressStatus).orElse(this.progressStatus);
-
-        publishSendTaskEvent();
-        publishSendTasksEvent();
     }
 
     public void modifyTaskReplyContent(Long taskReplyId, String content) {
@@ -136,33 +124,18 @@ public class Task extends BaseEntity {
         );
     }
 
-    private void publishSendAlarmEvent(ProjectParticipant taskManager) {
-        Events.raise(new DesignatedManagerAlarmEvent(
-                new DesignatedManagerAlarmResponseDto(
-                        this.board.getProject().getWorkspace().getId(),
-                        this.board.getProject().getWorkspace().getTitle(),
-                        this.board.getProject().getId(),
-                        this.board.getProject().getTitle(),
-                        this.id,
-                        this.title
-                ),
-                taskManager.getMemberId()
-        ));
-    }
-
-    private void publishSendTasksEvent() {
-        Events.raise(new SendFindTasksEvent(
-                this.board.getProject().getWorkspace().getId(), this.board.getProject().getId(), this.board.getId()
-                )
-        );
-    }
-
-    private void publishSendTaskEvent() {
-        Events.raise(new SendFindTaskEvent(this.id));
-    }
-
     @PostPersist
     private void raiseTaskCreatedEvent() {
-        Events.raise(new TaskCreatedEvent(this));
+        Events.raise(TaskEvent.created(this));
+    }
+
+    @PostUpdate
+    private void raiseTaskModifiedEvent() {
+        Events.raise(TaskEvent.modified(this));
+    }
+
+    @PostRemove
+    private void raiseTaskRemovedEvent() {
+        Events.raise(TaskEvent.removed(this));
     }
 }

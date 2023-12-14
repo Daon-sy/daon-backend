@@ -16,13 +16,15 @@ public class NotificationDataDto {
 
     private WorkspaceData workspace;
     private ProjectData project;
+    private BoardData board;
     private TaskData task;
 
     @Builder
-    public NotificationDataDto(LocalDateTime time, WorkspaceData workspace, ProjectData project, TaskData task) {
+    public NotificationDataDto(LocalDateTime time, WorkspaceData workspace, ProjectData project, BoardData board, TaskData task) {
         this.time = time;
         this.workspace = workspace;
         this.project = project;
+        this.board = board;
         this.task = task;
     }
 
@@ -45,6 +47,17 @@ public class NotificationDataDto {
         public ProjectData(Long projectId, String projectTitle) {
             this.projectId = projectId;
             this.projectTitle = projectTitle;
+        }
+    }
+
+    @Getter
+    public static class BoardData {
+        private Long boardId;
+        private String boardTitle;
+
+        public BoardData(Long boardId, String boardTitle) {
+            this.boardId = boardId;
+            this.boardTitle = boardTitle;
         }
     }
 
