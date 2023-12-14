@@ -1,8 +1,8 @@
 package com.daon.backend.mail.infrastructure;
 
 import com.daon.backend.common.redis.RedisRepository;
-import com.daon.backend.mail.dto.VerificationEmailResponseDto;
 import com.daon.backend.mail.service.EmailVerificationTimeExpireException;
+import com.daon.backend.mail.service.IncorrectMailCheckCodeException;
 import com.daon.backend.mail.service.MailService;
 import com.daon.backend.mail.service.UnableToSendEmailException;
 import com.daon.backend.member.domain.AlreadyExistsEmailException;
@@ -12,7 +12,6 @@ import com.daon.backend.task.domain.task.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
@@ -97,12 +96,11 @@ public class MailServiceImpl implements MailService {
      * 인증 메일 검증
      */
     @Override
-    public VerificationEmailResponseDto verifiedCode(String email, String code) {
-        if (checkCorrectCode(email, code)) {
-            redisRepository.remove(AUTH_CODE_PREFIX + email);
-            return new VerificationEmailResponseDto(true);
+    public void verifiedCode(String email, String code) {
+        if (!checkCorrectCode(email, code)) {
+            throw new IncorrectMailCheckCodeException(email, code);
         }
-        return new VerificationEmailResponseDto(false);
+        redisRepository.remove(AUTH_CODE_PREFIX + email);
     }
 
     private boolean checkCorrectCode(String email, String code) {

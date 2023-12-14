@@ -4,6 +4,7 @@ import com.daon.backend.common.exception.DomainSpecificAdvice;
 import com.daon.backend.common.response.error.ErrorCode;
 import com.daon.backend.common.response.error.ErrorResponse;
 import com.daon.backend.mail.service.EmailVerificationTimeExpireException;
+import com.daon.backend.mail.service.IncorrectMailCheckCodeException;
 import com.daon.backend.mail.service.UnableToSendEmailException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -22,9 +23,16 @@ public class MailExceptionHandler {
     }
 
     @ExceptionHandler(EmailVerificationTimeExpireException.class)
-    public ResponseEntity<ErrorResponse> mmailVerificationTimeExpireExceptionHandle(EmailVerificationTimeExpireException e) {
+    public ResponseEntity<ErrorResponse> mailVerificationTimeExpireExceptionHandle(EmailVerificationTimeExpireException e) {
         log.error("{}", e.getMessage());
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                 .body(ErrorResponse.createError(ErrorCode.EMAIL_VERIFICATION_TIME_EXPIRE));
+    }
+
+    @ExceptionHandler(IncorrectMailCheckCodeException.class)
+    public ResponseEntity<ErrorResponse> incorrectMailCheckCodeExceptionHandle(IncorrectMailCheckCodeException e) {
+        log.error("{}", e.getMessage());
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                .body(ErrorResponse.createError(ErrorCode.INCORRECT_MAIL_CHECK_CODE));
     }
 }
