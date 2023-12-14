@@ -41,8 +41,6 @@ public class Workspace extends BaseEntity {
     @Column(length = 10)
     private String subject;
 
-    private boolean removed;
-
     @OneToMany(mappedBy = "workspace", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<WorkspaceParticipant> participants = new ArrayList<>();
 
@@ -52,7 +50,7 @@ public class Workspace extends BaseEntity {
     @OneToMany(mappedBy = "workspace", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<Project> projects = new ArrayList<>();
 
-    @OneToMany(mappedBy = "workspace", cascade = {CascadeType.ALL}, orphanRemoval = true)
+    @OneToMany(mappedBy = "workspace", cascade = {CascadeType.ALL, CascadeType.REMOVE}, orphanRemoval = true)
     private List<WorkspaceNotice> workspaceNotices = new ArrayList<>();
 
     @OneToMany(mappedBy = "workspace", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
@@ -174,10 +172,6 @@ public class Workspace extends BaseEntity {
         }
     }
 
-    public void removeWorkspaceInvitation(String memberId) {
-        this.invitations.removeIf(workspaceInvitation -> workspaceInvitation.getMemberId().equals(memberId));
-    }
-
     public WorkspaceNotice findWorkspaceNoticeById(Long noticeId) {
         return this.workspaceNotices.stream()
                 .filter(notice -> notice.getId().equals(noticeId))
@@ -188,18 +182,6 @@ public class Workspace extends BaseEntity {
     public void removeWorkspaceNotice(Long noticeId) {
         WorkspaceNotice notice = findWorkspaceNoticeById(noticeId);
         this.workspaceNotices.remove(notice);
-    }
-
-    public boolean checkInvitedMember(String memberId) {
-        return this.invitations.stream()
-                .anyMatch(workspaceInvitation -> workspaceInvitation.getMemberId().equals(memberId));
-    }
-
-    public WorkspaceParticipant getWorkspaceParticipant(Long workspaceParticipantId) {
-        return this.participants.stream()
-                .filter(workspaceParticipant -> workspaceParticipant.getId().equals(workspaceParticipantId))
-                .findFirst()
-                .orElseThrow(() -> new NotWorkspaceParticipantException(this.id));
     }
 
     public List<WorkspaceParticipant> getWorkspaceParticipants() {
@@ -215,25 +197,24 @@ public class Workspace extends BaseEntity {
     }
 
     public void withdrawWorkspace(String memberId) {
-        this.participants.removeIf(workspaceParticipant -> workspaceParticipant.memberIdEquals(memberId));
+        boolean isRemoved = this.participants.removeIf(workspaceParticipant ->
+                workspaceParticipant.memberIdEquals(memberId)
+        );
+        if (!isRemoved) {
+            throw new NotWorkspaceParticipantException(memberId, this.id);
+        }
     }
 
-    public void deportWorkspace(Long workspaceParticipantId, String workspaceParticipantMemberId) {
-        this.participants.removeIf(
-                workspaceParticipant -> workspaceParticipant.getId().equals(workspaceParticipantId)
-        );
+    public void deportWorkspace(Long workspaceParticipantId) {
+        WorkspaceParticipant workspaceParticipant = this.participants.stream()
+                .filter(w -> w.getId().equals(workspaceParticipantId))
+                .findFirst()
+                .orElseThrow(() -> new NotWorkspaceParticipantException(this.id));
 
         Events.raise(new DeportationWorkspaceAlarmEvent(
                 new DeportationWorkspaceAlarmResponseDto(this.id, this.title),
-                workspaceParticipantMemberId
+                workspaceParticipant.getMemberId()
         ));
-    }
-
-    public void deleteWorkspace() {
-        this.messages.clear();
-        this.participants.clear();
-        this.invitations.clear();
-        this.removed = true;
     }
 
     public void resetWorkspace(String memberId) {
@@ -285,5 +266,12 @@ public class Workspace extends BaseEntity {
     public void deleteMessage(Long messageId, Long receiverId) {
         Message findMessage = findMessage(messageId, receiverId);
         this.messages.removeIf(message -> message.equals(findMessage));
+    }
+
+    public void deleteProject(Long projectId) {
+        boolean isRemoved = this.projects.removeIf(project -> project.getId().equals(projectId));
+        if (!isRemoved) {
+            throw new ProjectNotFoundException(projectId);
+        }
     }
 }

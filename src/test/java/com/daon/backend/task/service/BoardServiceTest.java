@@ -16,7 +16,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
 @SpringBootTest
@@ -48,7 +48,7 @@ public class BoardServiceTest extends MockConfig {
 
         // then
         Project project = projectRepository.findProjectById(projectId).orElseThrow();
-        assertEquals(3, project.getBoards().size());
+        assertThat(project.getBoards().size()).isEqualTo(3);
     }
 
     @DisplayName("보드 목록 조회")
@@ -61,7 +61,7 @@ public class BoardServiceTest extends MockConfig {
         FindBoardsResponseDto boards = boardService.findBoards(projectId);
 
         // then
-        assertEquals(2, boards.getBoards().size());
+        assertThat(boards.getBoards().size()).isEqualTo(2);
     }
 
     @DisplayName("보드 수정")
@@ -79,8 +79,8 @@ public class BoardServiceTest extends MockConfig {
 
         // then
         Board findBoard = projectRepository.findProjectById(projectId).orElseThrow().getBoards().get(0);
-        assertEquals(boardId, findBoard.getId());
-        assertEquals(editTitle, findBoard.getTitle());
+        assertThat(findBoard.getId()).isEqualTo(boardId);
+        assertThat(findBoard.getTitle()).isEqualTo(editTitle);
     }
 
     @DisplayName("보드 삭제")
@@ -94,6 +94,7 @@ public class BoardServiceTest extends MockConfig {
         boardService.deleteBoard(projectId, boardId);
 
         // then
-        assertEquals(1, boardService.findBoards(projectId).getBoards().size());
+        int boardSize = boardService.findBoards(projectId).getBoards().size();
+        assertThat(boardSize).isEqualTo(1);
     }
 }

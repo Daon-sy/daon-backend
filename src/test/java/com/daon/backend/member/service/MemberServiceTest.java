@@ -4,6 +4,7 @@ import com.daon.backend.config.MockConfig;
 import com.daon.backend.member.domain.Member;
 import com.daon.backend.member.dto.*;
 import com.daon.backend.member.infrastructure.MemberJpaRepository;
+import com.daon.backend.security.MemberNotAuthenticatedException;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,7 +15,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 
 @Slf4j
 @Transactional
@@ -62,9 +63,9 @@ class MemberServiceTest extends MockConfig {
                 filter(m -> m.getUsername().equals("testUser")).findFirst().orElseThrow();
 
         // then
-        assertEquals(username, findMember.getUsername());
-        assertEquals(name, findMember.getName());
-        assertEquals(1, findMember.getEmails().size());
+        assertThat(findMember.getUsername()).isEqualTo(username);
+        assertThat(findMember.getName()).isEqualTo(name);
+        assertThat(findMember.getEmails().size()).isEqualTo(1);
     }
 
     @DisplayName("회원 아이디 중복 확인")
@@ -74,7 +75,8 @@ class MemberServiceTest extends MockConfig {
         String testUsername = "user1";
 
         // when then
-        assertThrows(AlreadyExistsMemberException.class, () -> memberService.checkUsername(testUsername));
+        assertThatExceptionOfType(AlreadyExistsMemberException.class)
+                .isThrownBy(() -> memberService.checkUsername(testUsername));
     }
 
     @DisplayName("회원 정보 수정")
@@ -88,7 +90,7 @@ class MemberServiceTest extends MockConfig {
         memberService.modifyMember(requestDto);
 
         // then
-        assertEquals(editName, member.getName());
+        assertThat(member.getName()).isEqualTo(editName);
     }
 
     @DisplayName("회원(본인) 정보 조회")
@@ -102,8 +104,8 @@ class MemberServiceTest extends MockConfig {
         FindMemberResponseDto responseDto = memberService.findMember();
 
         // then
-        assertEquals(name, responseDto.getName());
-        assertEquals(username, responseDto.getUsername());
+        assertThat(responseDto.getName()).isEqualTo(name);
+        assertThat(responseDto.getUsername()).isEqualTo(username);
     }
 
     @DisplayName("이메일 추가")
@@ -117,8 +119,8 @@ class MemberServiceTest extends MockConfig {
         memberService.createEmail(requestDto);
 
         // then
-        assertEquals(2, member.getEmails().size());
-        assertEquals(newEmail, member.getEmails().get(1).getEmail());
+        assertThat(member.getEmails().size()).isEqualTo(2);
+        assertThat(member.getEmails().get(1).getEmail()).isEqualTo(newEmail);
     }
 
     @DisplayName("이메일 목록 조회")
@@ -133,8 +135,8 @@ class MemberServiceTest extends MockConfig {
         FindEmailsResponseDto responseDto = memberService.findEmails();
 
         // then
-        assertEquals(2, responseDto.getTotalCount());
-        assertEquals(newEmail, responseDto.getMemberEmails().get(1).getEmail());
+        assertThat(responseDto.getTotalCount()).isEqualTo(2);
+        assertThat(responseDto.getMemberEmails().get(1).getEmail()).isEqualTo(newEmail);
     }
 
     @DisplayName("이메일 삭제")
@@ -152,17 +154,21 @@ class MemberServiceTest extends MockConfig {
         memberService.deleteEmail(emailId);
 
         // then
-        assertEquals(1, member.getEmails().size());
+        assertThat(member.getEmails().size()).isEqualTo(1);
     }
 
     @DisplayName("회원 탈퇴")
     @Test
     void withdrawMember() {
-        // when
+        // given when
         memberService.withdrawMember();
-        Member findMember = memberJpaRepository.findById(member.getId()).orElseThrow();
+//
+        String otherMemberId = "4c624615-7123-4a63-9ade-0fd5889452cd";
+        BDDMockito.given(sessionMemberProvider.getMemberId())
+                .willReturn(otherMemberId);
 
         // then
-        assertTrue(findMember.isRemoved());
+        int countMembers = memberJpaRepository.findAll().size();
+        assertThat(countMembers).isEqualTo(3);
     }
 }

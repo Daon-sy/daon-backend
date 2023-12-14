@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -28,7 +29,7 @@ public class ProjectService {
      */
     @Transactional
     public CreateProjectResponseDto createProject(Long workspaceId, CreateProjectRequestDto requestDto) {
-        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
+        Workspace workspace = workspaceRepository.findById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
         String memberId = sessionMemberProvider.getMemberId();
         WorkspaceParticipant workspaceParticipant = workspace.findWorkspaceParticipantByMemberId(memberId);
@@ -64,7 +65,7 @@ public class ProjectService {
     @Transactional
     public void inviteWorkspaceParticipant(Long workspaceId, Long projectId, InviteWorkspaceParticipantRequestDto requestDto) {
         Long invitedWorkspaceParticipantId = requestDto.getWorkspaceParticipantId();
-        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
+        Workspace workspace = workspaceRepository.findById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
         WorkspaceParticipant invitedWorkspaceParticipant =
                 workspace.findWorkspaceParticipantByWorkspaceParticipantId(invitedWorkspaceParticipantId, workspaceId);
@@ -120,9 +121,9 @@ public class ProjectService {
         String memberId = sessionMemberProvider.getMemberId();
         Project project = projectRepository.findProjectById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
+        Long projectParticipantId = project.findProjectParticipantByMemberId(memberId).getId();
 
-        projectRepository.deleteTaskManagerRelatedProjectAndMemberId(projectId, memberId);
-        projectRepository.deleteReplyWriterRelatedProjectByMemberId(projectId, memberId);
+        projectRepository.deleteTaskManager(projectParticipantId);
         project.withdrawProject(memberId);
     }
 
@@ -135,9 +136,7 @@ public class ProjectService {
         Project project = projectRepository.findProjectById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
-        projectRepository.deleteReplyWriterRelatedProjectParticipant(projectParticipantId);
-        projectRepository.deleteAllTaskBookmarkRelatedProjectParticipant(projectParticipantId);
-        projectRepository.deleteTaskManagerByProjectParticipantId(projectParticipantId);
+        projectRepository.deleteTaskManager(projectParticipantId);
         project.deportProject(projectParticipantId);
     }
 
@@ -145,15 +144,10 @@ public class ProjectService {
      * 프로젝트 삭제
      */
     @Transactional
-    public void deleteProject(Long projectId) {
-        Project project = projectRepository.findProjectById(projectId)
-                .orElseThrow(() -> new ProjectNotFoundException(projectId));
-
-        project.getParticipants().forEach(projectParticipant ->
-                projectRepository.deleteAllTaskBookmarkRelatedProjectParticipant(projectParticipant.getId())
-        );
-        projectRepository.deleteTasksAndBoardsRelatedProject(projectId);
-        project.deleteProject();
+    public void deleteProject(Long workspaceId, Long projectId) {
+        Workspace workspace = workspaceRepository.findById(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+        workspace.deleteProject(projectId);
     }
 
     /**

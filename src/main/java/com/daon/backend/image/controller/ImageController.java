@@ -15,14 +15,13 @@ import org.springframework.web.multipart.MultipartFile;
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "Image", description = "Image domain API")
-@RequestMapping("/api/images")
 public class ImageController {
 
     private final ImageFileService imageFileService;
 
     @Operation(summary = "이미지 업로드", description = "이미지 업로드 요청입니다.")
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping
+    @PostMapping("/api/images")
     public UploadImageResponseDto uploadImage(@RequestParam("image") MultipartFile imageFile) {
         UploadedImage uploadedImage = imageFileService.upload(imageFile);
         return new UploadImageResponseDto(uploadedImage.getUrl());

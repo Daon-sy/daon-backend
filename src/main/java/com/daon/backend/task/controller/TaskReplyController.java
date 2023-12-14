@@ -24,7 +24,6 @@ import static com.daon.backend.task.domain.authority.Authority.*;
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "Reply", description = "Reply domain API")
-@RequestMapping("/api/workspaces/{workspaceId}/projects/{projectId}/tasks/{taskId}/reply")
 public class TaskReplyController {
 
     private final TaskReplyService taskReplyService;
@@ -32,7 +31,7 @@ public class TaskReplyController {
     @Operation(summary = "할일 댓글 생성", description = "할일 댓글 생성 요청입니다.")
     @ResponseStatus(HttpStatus.CREATED)
     @CheckRole(authority = REP_CREATE)
-    @PostMapping
+    @PostMapping("/api/workspaces/{workspaceId}/projects/{projectId}/boards/{boardId}/tasks/{taskId}/reply")
     public CreateTaskReplyResponseDto createTaskReply(@PathVariable Long projectId,
                                                       @PathVariable Long taskId,
                                                       @RequestBody @Valid CreateTaskReplyRequestDto requestDto) {
@@ -41,7 +40,7 @@ public class TaskReplyController {
 
     @Operation(summary = "할일 댓글 목록 조회", description = "할일 댓글 목록 조회 요청입니다.")
     @CheckRole(authority = REP_READ)
-    @GetMapping
+    @GetMapping("/api/workspaces/{workspaceId}/projects/{projectId}/boards/{boardId}/tasks/{taskId}/reply")
     public PageResponse<TaskReplySummary> findTaskReplies(@PathVariable Long projectId,
                                                           @PathVariable Long taskId,
                                                           @PageableDefault Pageable pageable) {
@@ -50,7 +49,7 @@ public class TaskReplyController {
 
     @Operation(summary = "할일 댓글 수정", description = "할일 댓글 수정 요청입니다.")
     @CheckRole(authority = REP_UPDATE)
-    @PutMapping("/{taskReplyId}")
+    @PutMapping("/api/workspaces/{workspaceId}/projects/{projectId}/boards/{boardId}/tasks/{taskId}/reply/{taskReplyId}")
     public void modifyTaskReply(@PathVariable Long projectId,
                                 @PathVariable Long taskId,
                                 @PathVariable Long taskReplyId,
@@ -60,7 +59,7 @@ public class TaskReplyController {
 
     @Operation(summary = "할일 댓글 삭제", description = "할일 댓글 삭제 요청입니다.")
     @CheckRole(authority = REP_DELETE)
-    @DeleteMapping("/{taskReplyId}")
+    @DeleteMapping("/api/workspaces/{workspaceId}/projects/{projectId}/boards/{boardId}/tasks/{taskId}/reply/{taskReplyId}")
     public void deleteTaskReply(@PathVariable Long projectId,
                                 @PathVariable Long taskId,
                                 @PathVariable Long taskReplyId) {

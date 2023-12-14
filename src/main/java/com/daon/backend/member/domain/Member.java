@@ -40,8 +40,6 @@ public class Member extends BaseEntity {
     @Embedded
     private Settings settings;
 
-    private boolean removed;
-
     @NotAudited
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Email> emails = new ArrayList<>();
@@ -77,16 +75,12 @@ public class Member extends BaseEntity {
     }
 
     public void removeEmail(Long memberEmailId) {
-        this.emails.remove(
-                this.emails.stream()
-                        .filter(memberEmail -> memberEmail.getId().equals(memberEmailId))
-                        .findFirst()
-                        .orElseThrow(() -> new EmailNotFoundException(memberEmailId))
+        boolean isRemoved = this.emails.removeIf(
+                email -> email.getId().equals(memberEmailId)
         );
-    }
-
-    public void withdrawMember() {
-        this.removed = true;
+        if (!isRemoved) {
+            throw new EmailNotFoundException(memberEmailId);
+        }
     }
 
     public void changeSettings(Settings settings) {

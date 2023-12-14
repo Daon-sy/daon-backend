@@ -4,11 +4,11 @@ import com.daon.backend.common.event.Events;
 import com.daon.backend.config.BaseEntity;
 import com.daon.backend.task.domain.board.Board;
 import com.daon.backend.task.domain.board.BoardNotFoundException;
+import com.daon.backend.task.domain.board.CanNotDeleteBoardException;
 import com.daon.backend.task.domain.board.SameBoardExistsException;
-import com.daon.backend.task.domain.task.Task;
-import com.daon.backend.task.domain.task.TaskNotFoundException;
 import com.daon.backend.task.domain.workspace.Workspace;
 import com.daon.backend.task.domain.workspace.WorkspaceParticipant;
+import com.daon.backend.task.domain.workspace.exception.NotWorkspaceParticipantException;
 import com.daon.backend.task.dto.notification.DeportationProjectAlarmResponseDto;
 import com.daon.backend.task.dto.notification.InviteProjectAlarmResponseDto;
 import lombok.AccessLevel;
@@ -35,8 +35,6 @@ public class Project extends BaseEntity {
 
     private String description;
 
-    private boolean removed;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "workspace_id")
     private Workspace workspace;
@@ -46,9 +44,6 @@ public class Project extends BaseEntity {
 
     @OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<Board> boards = new ArrayList<>();
-
-    @OneToMany(mappedBy = "project", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
-    private List<Task> tasks = new ArrayList<>();
 
     @Builder
     public Project(Workspace workspace, String title, String description, ProjectCreator projectCreator) {
@@ -66,12 +61,18 @@ public class Project extends BaseEntity {
         addBoard(DEFAULT_BOARD_TITLE);
     }
 
-    public Optional<ProjectParticipant> findProjectParticipantByMemberId(String memberId) {
-        return participants.stream().filter(participant -> participant.getMemberId().equals(memberId)).findFirst();
+    public ProjectParticipant findProjectParticipantByMemberId(String memberId) {
+        return participants.stream()
+                .filter(participant -> participant.getMemberId().equals(memberId))
+                .findFirst()
+                .orElseThrow(() -> new NotProjectParticipantException(memberId, this.id));
     }
 
-    public Optional<ProjectParticipant> findProjectParticipantByProjectParticipantId(Long projectParticipantId) {
-        return participants.stream().filter(participant -> participant.getId().equals(projectParticipantId)).findFirst();
+    public ProjectParticipant findProjectParticipantByProjectParticipantId(Long projectParticipantId) {
+        return participants.stream()
+                .filter(participant -> participant.getId().equals(projectParticipantId))
+                .findFirst()
+                .orElseThrow(() -> new NotProjectParticipantException(this.id));
     }
 
     public void addParticipant(WorkspaceParticipant invitedWorkspaceParticipant) {
@@ -113,13 +114,6 @@ public class Project extends BaseEntity {
                 .orElseThrow(() -> new BoardNotFoundException(this.getId(), boardId));
     }
 
-    public Task getTaskByTaskId(Long taskId) {
-        return tasks.stream()
-                .filter(task -> task.getId().equals(taskId))
-                .findFirst()
-                .orElseThrow(() -> new TaskNotFoundException(this.getId(), taskId));
-    }
-
     public void throwIfTitleExist(String title) {
         boards.stream()
                 .filter(board -> board.getTitle().equals(title))
@@ -139,9 +133,12 @@ public class Project extends BaseEntity {
     }
 
     public void withdrawProject(String memberId) {
-        this.participants.removeIf(
-                projectParticipant -> projectParticipant.getMemberId().equals(memberId)
+        boolean isRemoved = this.participants.removeIf(projectParticipant ->
+                projectParticipant.getMemberId().equals(memberId)
         );
+        if (!isRemoved) {
+            throw new NotProjectParticipantException(memberId, this.id);
+        }
     }
 
     public void deportProject(Long projectParticipantId) {
@@ -161,8 +158,14 @@ public class Project extends BaseEntity {
         ));
     }
 
-    public void deleteProject() {
-        this.participants.clear();
-        this.removed = true;
+    public void deleteBoard(Long boardId) {
+        if (this.getBoards().size() > 1) {
+            boolean isRemoved = this.boards.removeIf(board -> board.getId().equals(boardId));
+            if (!isRemoved) {
+                throw new BoardNotFoundException(this.id, boardId);
+            }
+        } else {
+            throw new CanNotDeleteBoardException();
+        }
     }
 }

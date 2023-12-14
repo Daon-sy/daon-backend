@@ -141,11 +141,11 @@ public class SendEventHandler {
 
     @TransactionalEventListener
     @Async
-    public void handleTaskCreatedEvent(TaskCreatedEvent event) throws Exception {
+    public void handleTaskCreatedEvent(TaskCreatedEvent event) {
         Task task = event.getTask();
         notifyTaskListUpdated(task);
 
-        Project project = task.getProject();
+        Project project = task.getBoard().getProject();
         Workspace workspace = project.getWorkspace();
         notificationSseService.sendAlarm(
                 Notification.registeredTaskManager(
@@ -167,7 +167,7 @@ public class SendEventHandler {
     }
 
     private void notifyTaskListUpdated(Task task) {
-        Project project = task.getProject();
+        Project project = task.getBoard().getProject();
         Workspace workspace = project.getWorkspace();
         Board board = task.getBoard();
         notificationSseService.sendFindTasksEventNotification(

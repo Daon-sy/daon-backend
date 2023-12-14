@@ -1,7 +1,6 @@
 package com.daon.backend.task.service;
 
 import com.daon.backend.common.response.slice.PageResponse;
-import com.daon.backend.task.domain.project.ProjectRepository;
 import com.daon.backend.task.domain.workspace.*;
 import com.daon.backend.task.domain.workspace.exception.CanNotDeletePersonalWorkspaceException;
 import com.daon.backend.task.domain.workspace.exception.CanNotModifyMyRoleException;
@@ -24,7 +23,6 @@ import java.util.stream.Collectors;
 public class WorkspaceService {
 
     private final WorkspaceRepository workspaceRepository;
-    private final ProjectRepository projectRepository;
     private final SessionMemberProvider sessionMemberProvider;
     private final DbMemberProvider dbMemberProvider;
 
@@ -96,7 +94,7 @@ public class WorkspaceService {
     }
 
     public boolean isWorkspaceParticipants(Long workspaceId, String memberId) {
-        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
+        Workspace workspace = workspaceRepository.findById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
 
         return workspace.isWorkspaceParticipantsByMemberId(memberId);
@@ -107,7 +105,7 @@ public class WorkspaceService {
      */
     @Transactional
     public void modifyWorkspace(ModifyWorkspaceRequestDto requestDto, Long workspaceId) {
-        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
+        Workspace workspace = workspaceRepository.findById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
         workspace.modifyWorkspace(
                 requestDto.getTitle(),
@@ -123,7 +121,7 @@ public class WorkspaceService {
     @Transactional
     public void modifyParticipantRole(ModifyRoleRequestDto requestDto, Long workspaceId) {
         Long workspaceParticipantId = requestDto.getWorkspaceParticipantId();
-        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
+        Workspace workspace = workspaceRepository.findById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
         WorkspaceParticipant workspaceParticipant =
                 workspace.findWorkspaceParticipantByWorkspaceParticipantId(workspaceParticipantId, workspaceId);
@@ -141,7 +139,7 @@ public class WorkspaceService {
     @Transactional
     public void modifyProfile(Long workspaceId, ModifyProfileRequestDto requestDto) {
         String memberId = sessionMemberProvider.getMemberId();
-        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
+        Workspace workspace = workspaceRepository.findById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
 
         WorkspaceParticipant workspaceParticipant = workspace.findWorkspaceParticipantByMemberId(memberId);
@@ -157,7 +155,7 @@ public class WorkspaceService {
      */
     public FindProfileResponseDto findProfile(Long workspaceId) {
         String memberId = sessionMemberProvider.getMemberId();
-        Workspace findWorkspace = workspaceRepository.findWorkspaceById(workspaceId)
+        Workspace findWorkspace = workspaceRepository.findById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
         WorkspaceParticipant workspaceParticipant = findWorkspace.findWorkspaceParticipantByMemberId(memberId);
 
@@ -168,7 +166,7 @@ public class WorkspaceService {
      * 워크스페이스 단건 조회
      */
     public FindWorkspaceResponseDto findWorkspace(Long workspaceId) {
-        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
+        Workspace workspace = workspaceRepository.findById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
 
         return new FindWorkspaceResponseDto(workspace);
@@ -180,7 +178,7 @@ public class WorkspaceService {
     @Transactional
     public void inviteMember(Long workspaceId, InviteMemberRequestDto requestDto) {
         String invitedMemberId = dbMemberProvider.getMemberIdByUsername(requestDto.getUsername());
-        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
+        Workspace workspace = workspaceRepository.findById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
 
         workspace.addWorkspaceInvitation(invitedMemberId, new WorkspaceInvitation(invitedMemberId, workspace, requestDto.getRole()));
@@ -192,7 +190,7 @@ public class WorkspaceService {
     @Transactional
     public void joinWorkspace(Long workspaceId, JoinWorkspaceRequestDto requestDto) {
         String memberId = sessionMemberProvider.getMemberId();
-        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
+        Workspace workspace = workspaceRepository.findById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
 
         workspace.addParticipant(
@@ -211,14 +209,12 @@ public class WorkspaceService {
     @Transactional
     public void withdrawWorkspace(Long workspaceId) {
         String memberId = sessionMemberProvider.getMemberId();
-        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
+        Workspace workspace = workspaceRepository.findById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
 
         if (workspace.canWithdrawWorkspace(memberId)) {
             Long workspaceParticipantId = workspace.findWorkspaceParticipantByMemberId(memberId).getId();
-            workspaceRepository.deleteAllReplyWriterRelatedMemberId(workspaceParticipantId, memberId);
-            workspaceRepository.deleteAllMessagesRelatedWorkspaceParticipant(workspaceParticipantId);
-            workspaceRepository.deleteAllRelatedWorkspaceParticipant(workspaceParticipantId, memberId);
+            workspaceRepository.deleteTaskManager(workspaceParticipantId);
             workspace.withdrawWorkspace(memberId);
         } else {
             deleteWorkspace(workspaceId);
@@ -230,21 +226,12 @@ public class WorkspaceService {
      */
     @Transactional
     public void deportWorkspaceParticipant(Long workspaceId, DeportWorkspaceParticipantRequestDto requestDto) {
-        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
+        Workspace workspace = workspaceRepository.findById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
         Long workspaceParticipantId = requestDto.getWorkspaceParticipantId();
-        WorkspaceParticipant workspaceParticipant = workspace.getWorkspaceParticipant(workspaceParticipantId);
-        String workspaceParticipantMemberId = workspaceParticipant.getMemberId();
 
-        workspaceParticipant.getParticipants().forEach(
-                projectParticipant ->
-                        projectRepository.deleteAllTaskBookmarkRelatedProjectParticipant(projectParticipant.getId()
-                        )
-        );
-        workspaceRepository.deleteAllMessagesRelatedWorkspaceParticipant(workspaceParticipantId);
-        workspaceRepository.deleteAllReplyWriterRelatedMemberId(workspaceParticipantId, workspaceParticipantMemberId);
-        workspaceRepository.deleteAllRelatedWorkspaceParticipant(workspaceParticipantId, workspaceParticipantMemberId);
-        workspace.deportWorkspace(workspaceParticipantId, workspaceParticipantMemberId);
+        workspaceRepository.deleteTaskManager(workspaceParticipantId);
+        workspace.deportWorkspace(workspaceParticipantId);
     }
 
     /**
@@ -252,22 +239,14 @@ public class WorkspaceService {
      */
     @Transactional
     public void deleteWorkspace(Long workspaceId) {
-        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
+        Workspace workspace = workspaceRepository.findById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+
         if (workspace.isPersonal()) {
             throw new CanNotDeletePersonalWorkspaceException(workspaceId);
         }
 
-        workspace.getWorkspaceParticipants().forEach(
-                workspaceParticipant -> workspaceParticipant.getParticipants().forEach(
-                        projectParticipant ->
-                                projectRepository.deleteAllTaskBookmarkRelatedProjectParticipant(
-                                        projectParticipant.getId()
-                                )
-                )
-        );
-        workspace.deleteWorkspace();
-        workspaceRepository.deleteAllRelatedWorkspace(workspaceId);
+        workspaceRepository.deleteById(workspaceId);
     }
 
     /**
@@ -275,7 +254,7 @@ public class WorkspaceService {
      */
     @Transactional
     public void resetWorkspace(Long workspaceId) {
-        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
+        Workspace workspace = workspaceRepository.findById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
         String memberId = sessionMemberProvider.getMemberId();
         workspace.resetWorkspace(memberId);
@@ -294,7 +273,7 @@ public class WorkspaceService {
     @Transactional
     public void createMessage(Long workspaceId, SendMessageRequestDto requestDto) {
         String memberId = sessionMemberProvider.getMemberId();
-        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
+        Workspace workspace = workspaceRepository.findById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
 
         WorkspaceParticipant receiver = workspace.findWorkspaceParticipantByWorkspaceParticipantId(
@@ -318,7 +297,7 @@ public class WorkspaceService {
     @Transactional
     public FindMessageResponseDto findMessage(Long workspaceId, Long messageId) {
         String memberId = sessionMemberProvider.getMemberId();
-        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
+        Workspace workspace = workspaceRepository.findById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
         Long receiverId = workspace.findWorkspaceParticipantByMemberId(memberId).getId();
 
@@ -336,7 +315,7 @@ public class WorkspaceService {
      */
     public PageResponse<MessageSummary> findMessages(Long workspaceId, String target, String keyword, Pageable pageable) {
         String memberId = sessionMemberProvider.getMemberId();
-        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
+        Workspace workspace = workspaceRepository.findById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
         Long receiverId = workspace.findWorkspaceParticipantByMemberId(memberId).getId();
 
@@ -357,7 +336,7 @@ public class WorkspaceService {
     @Transactional
     public void deleteMessage(Long workspaceId, Long messageId) {
         String memberId = sessionMemberProvider.getMemberId();
-        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
+        Workspace workspace = workspaceRepository.findById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
         Long receiverId = workspace.findWorkspaceParticipantByMemberId(memberId).getId();
 
@@ -370,7 +349,7 @@ public class WorkspaceService {
     @Transactional
     public void readAllMessages(Long workspaceId) {
         String memberId = sessionMemberProvider.getMemberId();
-        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
+        Workspace workspace = workspaceRepository.findById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
         Long receiverId = workspace.findWorkspaceParticipantByMemberId(memberId).getId();
 

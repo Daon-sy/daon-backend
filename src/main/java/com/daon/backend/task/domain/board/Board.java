@@ -3,6 +3,7 @@ package com.daon.backend.task.domain.board;
 import com.daon.backend.config.BaseEntity;
 import com.daon.backend.task.domain.project.Project;
 import com.daon.backend.task.domain.task.Task;
+import com.daon.backend.task.domain.task.TaskNotFoundException;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,8 +22,6 @@ public class Board extends BaseEntity {
 
     private String title;
 
-    private boolean removed;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "project_id")
     private Project project;
@@ -39,7 +38,18 @@ public class Board extends BaseEntity {
         this.title = title;
     }
 
-    public void deleteBoard() {
-        this.removed = true;
+    public Task findTask(Long taskId) {
+        return this.tasks.stream()
+                .filter(task -> task.getId().equals(taskId))
+                .findFirst()
+                .orElseThrow(() -> new TaskNotFoundException(this.getId(), taskId));
+    }
+
+
+    public void deleteTask(Long taskId) {
+        boolean isRemoved = this.tasks.removeIf(task -> task.getId().equals(taskId));
+        if (!isRemoved) {
+            throw new TaskNotFoundException(this.id, taskId);
+        }
     }
 }

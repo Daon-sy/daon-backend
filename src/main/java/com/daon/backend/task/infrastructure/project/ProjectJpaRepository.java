@@ -10,32 +10,12 @@ import java.util.Optional;
 
 public interface ProjectJpaRepository extends JpaRepository<Project, Long> {
 
-    @EntityGraph(attributePaths = {"workspace", "tasks"})
-    Optional<Project> findProjectByIdAndRemovedFalse(Long projectId);
+    @EntityGraph(attributePaths = "workspace")
+    Optional<Project> findProjectById(Long projectId);
 
     @Modifying
     @Query("UPDATE Task t " +
-            "SET t.taskManager = NULL " +
-            "WHERE t.taskManager IN (SELECT pp FROM ProjectParticipant pp WHERE pp.memberId = :memberId) " +
-            "AND t.project.id = :projectId")
-    void deleteTaskManagerRelatedProjectByMemberId(Long projectId, String memberId);
-
-    @Modifying
-    @Query("UPDATE TaskReply t " +
-            "SET t.taskReplyWriter = NULL " +
-            "WHERE t.taskReplyWriter IN (SELECT pp FROM ProjectParticipant pp WHERE pp.memberId = :memberId " +
-            "AND t.task.project.id = :projectId)")
-    void deleteReplyWriterRelatedProjectByMemberId(Long projectId, String memberId);
-
-    @Modifying
-    @Query("UPDATE TaskReply t " +
-            "SET t.taskReplyWriter = NULL " +
-            "WHERE t.taskReplyWriter IN (SELECT pp FROM ProjectParticipant pp WHERE pp.id = :projectParticipantId)")
-    void deleteReplyWriterRelatedProjectParticipant(Long projectParticipantId);
-
-    @Modifying
-    @Query("UPDATE TaskReply t " +
-            "SET t.taskReplyWriter = NULL " +
-            "WHERE t.taskReplyWriter IN (SELECT pp FROM ProjectParticipant pp WHERE pp.project.id = :projectId)")
-    void deleteReplyWriterRelatedProject(Long projectId);
+            "SET t.taskManager = null " +
+            "WHERE t.taskManager IN (SELECT pp FROM ProjectParticipant pp WHERE pp.id = :projectParticipantId)")
+    void deleteTaskManager(Long projectParticipantId);
 }

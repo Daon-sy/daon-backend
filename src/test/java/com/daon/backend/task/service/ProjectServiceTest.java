@@ -2,10 +2,9 @@ package com.daon.backend.task.service;
 
 import com.daon.backend.config.MockConfig;
 import com.daon.backend.task.domain.project.Project;
+import com.daon.backend.task.domain.project.ProjectNotFoundException;
 import com.daon.backend.task.domain.project.ProjectParticipant;
 import com.daon.backend.task.domain.project.ProjectRepository;
-import com.daon.backend.task.domain.workspace.Workspace;
-import com.daon.backend.task.domain.workspace.WorkspaceRepository;
 import com.daon.backend.task.dto.project.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -18,8 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @Transactional
 @SpringBootTest
@@ -34,9 +33,6 @@ class ProjectServiceTest extends MockConfig {
     @Autowired
     ProjectRepository projectRepository;
 
-    @Autowired
-    WorkspaceRepository workspaceRepository;
-
     @BeforeEach
     void setUp() {
         BDDMockito.given(sessionMemberProvider.getMemberId()).willReturn("78cfb9f6-ec40-4ec7-b5bd-b7654fa014f8");
@@ -47,16 +43,18 @@ class ProjectServiceTest extends MockConfig {
     void createProject() {
         // given
         Long workspaceId = 3L;
+        String title = "프로젝트 제목";
+        String description = "프로젝트 설명";
         CreateProjectRequestDto requestDto =
-                new CreateProjectRequestDto("프로젝트 제목", "프로젝트 설명");
+                new CreateProjectRequestDto(title, description);
 
         // when
         CreateProjectResponseDto responseDto = projectService.createProject(workspaceId, requestDto);
 
         // then
         Project findProject = projectRepository.findProjectById(responseDto.getProjectId()).orElseThrow();
-        assertEquals("프로젝트 제목", findProject.getTitle());
-        assertEquals("프로젝트 설명", findProject.getDescription());
+        assertThat(findProject.getTitle()).isEqualTo(title);
+        assertThat(findProject.getDescription()).isEqualTo(description);
     }
 
     @DisplayName("프로젝트 단건 조회")
@@ -69,9 +67,9 @@ class ProjectServiceTest extends MockConfig {
         FindProjectResponseDto responseDto = projectService.findProject(projectId);
 
         // then
-        assertEquals(projectId, responseDto.getProjectId());
-        assertEquals("project1", responseDto.getTitle());
-        assertNull(responseDto.getDescription());
+        assertThat(responseDto.getProjectId()).isEqualTo(projectId);
+        assertThat(responseDto.getTitle()).isEqualTo("project1");
+        assertThat(responseDto.getDescription()).isNull();
     }
 
     @DisplayName("프로젝트 목록 조회")
@@ -84,8 +82,8 @@ class ProjectServiceTest extends MockConfig {
         FindProjectsResponseDto responseDto = projectService.findProjects(workspaceId);
 
         // then
-        assertEquals(1, responseDto.getProjects().size());
-        assertEquals(workspaceId, responseDto.getWorkspaceId());
+        assertThat(responseDto.getProjects().size()).isEqualTo(1);
+        assertThat(responseDto.getWorkspaceId()).isEqualTo(workspaceId);
     }
 
     @DisplayName("프로젝트 수정")
@@ -102,8 +100,8 @@ class ProjectServiceTest extends MockConfig {
         Project project = projectRepository.findProjectById(projectId).orElseThrow();
 
         // then
-        assertEquals(title, project.getTitle());
-        assertEquals(description, project.getDescription());
+        assertThat(project.getTitle()).isEqualTo(title);
+        assertThat(project.getDescription()).isEqualTo(description);
     }
 
     @DisplayName("프로젝트 초대")
@@ -122,7 +120,7 @@ class ProjectServiceTest extends MockConfig {
         List<ProjectParticipant> projectParticipants = projectRepository.findProjectParticipantsByProjectId(projectId);
 
         // then
-        assertEquals(3, projectParticipants.size());
+        assertThat(projectParticipants.size()).isEqualTo(3);
     }
 
     @DisplayName("프로젝트 나의 정보 조회")
@@ -135,8 +133,8 @@ class ProjectServiceTest extends MockConfig {
         FindMyProfileResponseDto responseDto = projectService.findMyProfile(projectId);
 
         // then
-        assertEquals("WS_USER1", responseDto.getName());
-        assertEquals("user1@email.com", responseDto.getEmail());
+        assertThat(responseDto.getName()).isEqualTo("WS_USER1");
+        assertThat(responseDto.getEmail()).isEqualTo("user1@email.com");
     }
 
     @DisplayName("프로젝트 참여자 목록 조회")
@@ -149,7 +147,7 @@ class ProjectServiceTest extends MockConfig {
         FindProjectParticipantsResponseDto projectParticipants = projectService.findProjectParticipants(projectId);
 
         // then
-        assertEquals(2, projectParticipants.getProjectParticipants().size());
+        assertThat(projectParticipants.getProjectParticipants().size()).isEqualTo(2);
     }
 
     @DisplayName("프로젝트 참여자 강퇴")
@@ -165,7 +163,7 @@ class ProjectServiceTest extends MockConfig {
 
         // then
         List<ProjectParticipant> projectParticipants = projectRepository.findProjectParticipantsByProjectId(projectId);
-        assertEquals(1, projectParticipants.size());
+        assertThat(projectParticipants.size()).isEqualTo(1);
     }
 
     @DisplayName("프로젝트 탈퇴")
@@ -179,7 +177,7 @@ class ProjectServiceTest extends MockConfig {
 
         // then
         List<ProjectParticipant> projectParticipants = projectRepository.findProjectParticipantsByProjectId(projectId);
-        assertEquals(1, projectParticipants.size());
+        assertThat(projectParticipants.size()).isEqualTo(1);
     }
 
     @DisplayName("프로젝트 삭제")
@@ -190,10 +188,10 @@ class ProjectServiceTest extends MockConfig {
         Long projectId = 1L;
 
         // when
-        projectService.deleteProject(projectId);
+        projectService.deleteProject(workspaceId, projectId);
 
         // then
-        Workspace findWorkspace = workspaceRepository.findWorkspaceById(workspaceId).orElseThrow();
-        assertEquals(1, findWorkspace.getProjects().stream().filter(Project::isRemoved).count());
+        assertThatExceptionOfType(ProjectNotFoundException.class)
+                .isThrownBy(() -> projectService.findProject(projectId));
     }
 }

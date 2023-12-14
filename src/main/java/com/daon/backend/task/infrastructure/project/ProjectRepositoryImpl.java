@@ -3,24 +3,15 @@ package com.daon.backend.task.infrastructure.project;
 import com.daon.backend.task.domain.project.Project;
 import com.daon.backend.task.domain.project.ProjectParticipant;
 import com.daon.backend.task.domain.project.ProjectRepository;
-import com.daon.backend.task.dto.ProjectSummary;
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
-import org.springframework.data.domain.SliceImpl;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 
-import static com.daon.backend.task.domain.board.QBoard.board;
 import static com.daon.backend.task.domain.project.QProject.project;
 import static com.daon.backend.task.domain.project.QProjectParticipant.projectParticipant;
-import static com.daon.backend.task.domain.task.QTask.task;
-import static com.daon.backend.task.domain.task.QTaskBookmark.taskBookmark;
 
 @Repository
 @RequiredArgsConstructor
@@ -29,7 +20,6 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     private final ProjectJpaRepository projectJpaRepository;
     private final ProjectParticipantJpaRepository projectParticipantJpaRepository;
     private final JPAQueryFactory queryFactory;
-    private final EntityManager em;
 
     @Override
     public Project save(Project project) {
@@ -38,7 +28,7 @@ public class ProjectRepositoryImpl implements ProjectRepository {
 
     @Override
     public Optional<Project> findProjectById(Long projectId) {
-        return projectJpaRepository.findProjectByIdAndRemovedFalse(projectId);
+        return projectJpaRepository.findProjectById(projectId);
     }
 
     @Override
@@ -70,92 +60,7 @@ public class ProjectRepositoryImpl implements ProjectRepository {
     }
 
     @Override
-    public Slice<ProjectSummary> searchProjectSummariesByTitle(String memberId, String title, Pageable pageable) {
-        final int pageSize = pageable.getPageSize();
-        final long offset = pageable.getOffset();
-
-        List<ProjectSummary> projectSummaries = queryFactory
-                .select(
-                        Projections.constructor(
-                                ProjectSummary.class,
-                                project.id,
-                                project.title,
-                                project.description
-                        )
-                )
-                .from(project)
-                .innerJoin(project.participants, projectParticipant)
-                .where(project.title.contains(title)
-                        .and(projectParticipant.memberId.eq(memberId))
-                        .and(project.removed.isFalse()))
-                .orderBy(project.modifiedAt.desc())
-                .offset(offset)
-                .limit(pageSize + 1)
-                .fetch();
-
-        boolean hasNext = false;
-        if (projectSummaries.size() > pageSize) {
-            projectSummaries.remove(pageSize);
-            hasNext = true;
-        }
-
-        return new SliceImpl<>(projectSummaries, pageable, hasNext);
+    public void deleteTaskManager(Long projectParticipantId) {
+        projectJpaRepository.deleteTaskManager(projectParticipantId);
     }
-
-    @Override
-    public void deleteTaskManagerRelatedProjectAndMemberId(Long projectId, String memberId) {
-        projectJpaRepository.deleteTaskManagerRelatedProjectByMemberId(projectId, memberId);
-    }
-
-    @Override
-    public void deleteReplyWriterRelatedProjectByMemberId(Long projectId, String memberId) {
-        projectJpaRepository.deleteReplyWriterRelatedProjectByMemberId(projectId, memberId);
-    }
-
-    @Override
-    public void deleteTaskManagerByProjectParticipantId(Long projectParticipantId) {
-        queryFactory
-                .update(task)
-                .set(task.taskManager, (ProjectParticipant) null)
-                .where(task.taskManager.id.eq(projectParticipantId))
-                .execute();
-        em.flush();
-    }
-
-    @Override
-    public void deleteReplyWriterRelatedProjectParticipant(Long projectParticipantId) {
-        projectJpaRepository.deleteReplyWriterRelatedProjectParticipant(projectParticipantId);
-    }
-
-    @Override
-    public void deleteReplyWriterRelatedProject(Long projectId) {
-        projectJpaRepository.deleteReplyWriterRelatedProject(projectId);
-    }
-
-    @Override
-    public void deleteTasksAndBoardsRelatedProject(Long projectId) {
-        queryFactory
-                .update(task)
-                .set(task.taskManager, (ProjectParticipant) null)
-                .set(task.removed, true)
-                .where(task.project.id.eq(projectId))
-                .execute();
-        em.flush();
-
-        queryFactory
-                .update(board)
-                .set(board.removed, true)
-                .where(board.project.id.eq(projectId))
-                .execute();
-        em.flush();
-    }
-
-    @Override
-    public void deleteAllTaskBookmarkRelatedProjectParticipant(Long projectParticipantId) {
-        queryFactory
-                .delete(taskBookmark)
-                .where(taskBookmark.participant.id.eq(projectParticipantId))
-                .execute();
-    }
-
 }

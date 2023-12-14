@@ -22,8 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @Transactional
 @SpringBootTest
@@ -64,7 +64,7 @@ public class MessageServiceTest extends MockConfig {
         List<Message> messages = messageJpaRepository.findAll();
 
         // then
-        assertEquals(3, messages.size());
+        assertThat(messages.size()).isEqualTo(3);
     }
 
     @DisplayName("쪽지 단건 조회")
@@ -78,9 +78,9 @@ public class MessageServiceTest extends MockConfig {
         FindMessageResponseDto responseDto = workspaceService.findMessage(workspaceId, messageId);
 
         // then
-        assertEquals(messageId, responseDto.getMessageId());
-        assertEquals("message title1", responseDto.getTitle());
-        assertEquals("message content1", responseDto.getContent());
+        assertThat(responseDto.getMessageId()).isEqualTo(messageId);
+        assertThat(responseDto.getTitle()).isEqualTo("message title1");
+        assertThat(responseDto.getContent()).isEqualTo("message content1");
     }
 
     @DisplayName("쪽지 목록 조회")
@@ -89,7 +89,7 @@ public class MessageServiceTest extends MockConfig {
         // given
         Long workspaceId = 3L;
         Long receiverId = 3L;
-        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId).orElseThrow();
+        Workspace workspace = workspaceRepository.findById(workspaceId).orElseThrow();
         int page = 0;
         int size = 10;
         Pageable pageable = PageRequest.of(page, size);
@@ -100,8 +100,8 @@ public class MessageServiceTest extends MockConfig {
         Page<Message> messages = workspaceRepository.findMessages(workspace, receiverId, target, keyword, pageable);
 
         // then
-        assertEquals(2, messages.getContent().size());
-        assertEquals(size, messages.getSize());
+        assertThat(messages.getContent().size()).isEqualTo(2);
+        assertThat(messages.getSize()).isEqualTo(size);
     }
 
     @DisplayName("쪽지 삭제")
@@ -115,7 +115,8 @@ public class MessageServiceTest extends MockConfig {
         workspaceService.deleteMessage(workspaceId, messageId);
 
         // then
-        assertThrows(MessageNotFoundException.class, () -> workspaceService.findMessage(workspaceId, messageId));
+        assertThatExceptionOfType(MessageNotFoundException.class)
+                .isThrownBy(() -> workspaceService.findMessage(workspaceId, messageId));
     }
 
     @DisplayName("쪽지 모두 읽기")
@@ -129,9 +130,9 @@ public class MessageServiceTest extends MockConfig {
         workspaceRepository.readAllMessages(workspaceId, receiverId);
 
         // then
-        long count = workspaceRepository.findWorkspaceById(workspaceId).orElseThrow().getMessages().stream()
+        long count = workspaceRepository.findById(workspaceId).orElseThrow().getMessages().stream()
                 .filter(Message::isReaded)
                 .count();
-        assertEquals(2, count);
+        assertThat(count).isEqualTo(2);
     }
 }

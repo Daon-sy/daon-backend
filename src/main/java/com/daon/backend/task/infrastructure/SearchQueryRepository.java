@@ -3,7 +3,10 @@ package com.daon.backend.task.infrastructure;
 import com.daon.backend.task.domain.project.Project;
 import com.daon.backend.task.domain.task.Task;
 import com.daon.backend.task.domain.workspace.Workspace;
-import com.daon.backend.task.dto.*;
+import com.daon.backend.task.dto.BoardSummary;
+import com.daon.backend.task.dto.ProjectSummary;
+import com.daon.backend.task.dto.TaskManager;
+import com.daon.backend.task.dto.WorkspaceSummary;
 import com.daon.backend.task.dto.search.SearchResponseDto;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -53,8 +56,7 @@ public class SearchQueryRepository {
                         workspaceParticipant.workspace.eq(workspace).and(
                             workspaceParticipant.memberId.eq(memberId))
                     )
-                .where(workspace.title.containsIgnoreCase(keyword)
-                        .and(workspace.removed.isFalse()))
+                .where(workspace.title.containsIgnoreCase(keyword))
                 .orderBy(
                         pageable.getSort().stream()
                                 .map(order -> new OrderSpecifier(
@@ -74,8 +76,7 @@ public class SearchQueryRepository {
                             workspaceParticipant.workspace.eq(workspace).and(
                                     workspaceParticipant.memberId.eq(memberId))
                     )
-                .where(workspace.title.containsIgnoreCase(keyword)
-                        .and(workspace.removed.isFalse()))
+                .where(workspace.title.containsIgnoreCase(keyword))
                 .distinct()
                 .fetchFirst();
 
@@ -108,8 +109,7 @@ public class SearchQueryRepository {
                             )
                     )
                     .join(project.workspace, workspace)
-                .where(project.title.containsIgnoreCase(keyword)
-                        .and(project.removed.isFalse()))
+                .where(project.title.containsIgnoreCase(keyword))
                 .orderBy(
                         pageable.getSort().stream()
                                 .map(order -> new OrderSpecifier(
@@ -131,8 +131,7 @@ public class SearchQueryRepository {
                                 projectParticipant.memberId.eq(memberId)
                         )
                 )
-                .where(project.title.containsIgnoreCase(keyword)
-                        .and(project.removed.isFalse()))
+                .where(project.title.containsIgnoreCase(keyword))
                 .fetchFirst();
 
         return new PageImpl<>(result, pageable, totalCount);
@@ -148,7 +147,7 @@ public class SearchQueryRepository {
                                 task.id,
                                 Projections.constructor(
                                         ProjectSummary.class,
-                                        task.project
+                                        task.board.project
                                 ),
                                 Projections.constructor(
                                         BoardSummary.class,
@@ -177,7 +176,8 @@ public class SearchQueryRepository {
                         )
                 )
                 .from(task)
-                .join(task.project, project)
+                .join(task.board, board)
+                .join(board.project, project)
                 .join(projectParticipant).on(
                         projectParticipant.project.eq(project).and(
                                 projectParticipant.memberId.eq(memberId)
@@ -187,8 +187,7 @@ public class SearchQueryRepository {
                 .join(task.board, board)
                 .leftJoin(task.taskManager, projectParticipant)
                 .leftJoin(taskBookmark).on(task.eq(taskBookmark.task).and(taskBookmark.memberId.eq(memberId)))
-                .where(task.title.containsIgnoreCase(keyword)
-                        .and(task.removed.isFalse()))
+                .where(task.title.containsIgnoreCase(keyword))
                 .orderBy(
                         pageable.getSort().stream()
                                 .map(order -> new OrderSpecifier(
@@ -204,14 +203,13 @@ public class SearchQueryRepository {
         Long totalCount = queryFactory
                 .select(task.count())
                 .from(task)
-                    .join(task.project, project)
+                    .join(task.board.project, project)
                     .join(projectParticipant).on(
                             projectParticipant.project.eq(project).and(
                                     projectParticipant.memberId.eq(memberId)
                             )
                     )
-                .where(task.title.containsIgnoreCase(keyword)
-                        .and(task.removed.isFalse()))
+                .where(task.title.containsIgnoreCase(keyword))
                 .fetchFirst();
 
         return new PageImpl<>(result, pageable, totalCount);

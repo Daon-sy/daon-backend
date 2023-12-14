@@ -87,8 +87,7 @@ public class TaskReplyService {
         Project project = projectRepository.findProjectById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
-        return project.findProjectParticipantByMemberId(memberId)
-                .orElseThrow(() -> new NotProjectParticipantException(memberId, projectId));
+        return project.findProjectParticipantByMemberId(memberId);
     }
 
     public Task getTaskOrElseThrow(Long taskId) {

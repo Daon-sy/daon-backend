@@ -2,6 +2,8 @@ package com.daon.backend.task.service;
 
 import com.daon.backend.common.response.slice.SliceResponse;
 import com.daon.backend.task.domain.board.Board;
+import com.daon.backend.task.domain.board.BoardNotFoundException;
+import com.daon.backend.task.domain.board.BoardRepository;
 import com.daon.backend.task.domain.project.*;
 import com.daon.backend.task.domain.task.Task;
 import com.daon.backend.task.domain.task.TaskBookmark;
@@ -21,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class TaskService {
 
     private final ProjectRepository projectRepository;
+    private final BoardRepository boardRepository;
     private final TaskRepository taskRepository;
     private final SessionMemberProvider sessionMemberProvider;
 
@@ -35,8 +38,7 @@ public class TaskService {
         Long taskManagerId = requestDto.getTaskManagerId();
         ProjectParticipant taskManager = null;
         if (taskManagerId != null) {
-            taskManager = project.findProjectParticipantByProjectParticipantId(taskManagerId)
-                    .orElseThrow(() -> new NotProjectParticipantException(projectId));
+            taskManager = project.findProjectParticipantByProjectParticipantId(taskManagerId);
         }
 
         Board board = project.getBoardByBoardId(requestDto.getBoardId());
@@ -48,7 +50,6 @@ public class TaskService {
                 .endDate(requestDto.getEndDate())
                 .emergency(requestDto.isEmergency())
                 .taskManager(taskManager)
-                .project(project)
                 .board(board)
                 .build();
 
@@ -80,13 +81,12 @@ public class TaskService {
         Project project = projectRepository.findProjectById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
         Board board = project.getBoardByBoardId(requestDto.getBoardId());
-        Task task = project.getTaskByTaskId(taskId);
+        Task task = board.findTask(taskId);
 
         Long taskManagerId = requestDto.getTaskManagerId();
         ProjectParticipant taskManager = null;
         if (taskManagerId != null) {
-            taskManager = project.findProjectParticipantByProjectParticipantId(taskManagerId)
-                    .orElseThrow(() -> new NotProjectParticipantException(projectId));
+            taskManager = project.findProjectParticipantByProjectParticipantId(taskManagerId);
         }
 
         task.modifyTask(
@@ -143,11 +143,11 @@ public class TaskService {
      * 할 일  삭제
      */
     @Transactional
-    public void deleteTask(Long taskId) {
-        Task task = taskRepository.findTaskById(taskId)
-                .orElseThrow(() -> new TaskNotFoundException(taskId));
-        taskRepository.deleteAllTaskBookmark(taskId);
-        task.deleteTask();
+    public void deleteTask(Long boardId, Long taskId) {
+        Board board = boardRepository.findBoardById(boardId)
+                .orElseThrow(() -> new BoardNotFoundException(boardId));
+
+        board.deleteTask(taskId);
     }
 
     /**

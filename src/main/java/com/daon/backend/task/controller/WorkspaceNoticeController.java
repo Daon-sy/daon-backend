@@ -24,7 +24,6 @@ import javax.validation.Valid;
 @RestController
 @RequiredArgsConstructor
 @Tag(name = "WorkspaceNotice", description = "WorkspaceNotice domain API")
-@RequestMapping("/api/workspaces/{workspaceId}/notices")
 public class WorkspaceNoticeController {
 
     private final WorkspaceNoticeService workspaceNoticeService;
@@ -32,7 +31,7 @@ public class WorkspaceNoticeController {
     @Operation(summary = "워크스페이스 공지사항 생성", description = "워크스페이스 공지사항 생성 요청입니다.")
     @ResponseStatus(HttpStatus.CREATED)
     @CheckRole(authority = Authority.WSN_CREATE)
-    @PostMapping
+    @PostMapping("/api/workspaces/{workspaceId}/notices")
     public CreateWorkspaceNoticeResponseDto createWorkspaceNotice(@PathVariable Long workspaceId,
                                                                   @RequestBody CreateWorkspaceNoticeRequestDto requestDto){
         return workspaceNoticeService.createWorkspaceNotice(workspaceId, requestDto);
@@ -40,24 +39,24 @@ public class WorkspaceNoticeController {
 
     @Operation(summary = "워크스페이스 공지사항 목록 조회", description = "워크스페이스 공지사항 목록 조회 요청입니다.")
     @CheckRole(authority = Authority.WSN_READ)
-    @GetMapping
+    @GetMapping("/api/workspaces/{workspaceId}/notices")
     public PageResponse<WorkspaceNoticeSummary> findWorkspaceNotices(
             @PathVariable Long workspaceId,
             @RequestParam(required = false) String keyword,
-            @PageableDefault(size = 4, page = 0) Pageable pageable) {
+            @PageableDefault(size = 4) Pageable pageable) {
         return workspaceNoticeService.findWorkspaceNotices(workspaceId, keyword, pageable);
     }
 
     @Operation(summary = "워크스페이스 공지사항 단건 조회", description = "워크스페이스 공지사항 단건 조회 요청입니다.")
     @CheckRole(authority = Authority.WSN_READ)
-    @GetMapping("/{noticeId}")
+    @GetMapping("/api/workspaces/{workspaceId}/notices/{noticeId}")
     public FindWorkspaceNoticeResponseDto findWorkspaceNotice(@PathVariable Long noticeId){
         return workspaceNoticeService.findWorkspaceNotice(noticeId);
     }
 
     @Operation(summary = "워크스페이스 공지사항 수정", description = "워크스페이스 공지사항 수정 요청입니다.")
     @CheckRole(authority = Authority.WSN_UPDATE)
-    @PatchMapping("/{noticeId}")
+    @PatchMapping("/api/workspaces/{workspaceId}/notices/{noticeId}")
     public void modifyWorkspaceNotice(@PathVariable Long workspaceId,
                                       @PathVariable Long noticeId,
                                       @RequestBody @Valid ModifyWorkspaceNoticeRequestDto requestDto) {
@@ -66,7 +65,7 @@ public class WorkspaceNoticeController {
 
     @Operation(summary = "워크스페이스 공지사항 삭제", description = "워크스페이스 공지사항 삭제 요청입니다.")
     @CheckRole(authority = Authority.WSN_DELETE)
-    @DeleteMapping("/{noticeId}")
+    @DeleteMapping("/api/workspaces/{workspaceId}/notices/{noticeId}")
     public void deleteWorkspaceNotice(@PathVariable Long workspaceId,
                                       @PathVariable Long noticeId){
         workspaceNoticeService.deleteWorkspaceNotice(workspaceId, noticeId);

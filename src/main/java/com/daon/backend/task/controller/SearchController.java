@@ -17,19 +17,18 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api")
 public class SearchController {
 
     private final SearchService searchService;
 
     @Operation(summary = "통합 검색", description = "통합 검색 요청입니다.")
-    @GetMapping("/search")
+    @GetMapping("/api/search")
     public SearchResponseDto integratedSearch(@RequestParam String keyword) {
         return searchService.integratedSearchByTitle(keyword);
     }
 
     @Operation(summary = "워크스페이스 검색", description = "워크스페이스 검색 요청입니다.")
-    @GetMapping("/search/workspaces")
+    @GetMapping("/api/search/workspaces")
     public PageResponse<SearchResponseDto.WorkspaceResult> workspaceSearch(
             @RequestParam String keyword,
             @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
@@ -38,7 +37,7 @@ public class SearchController {
     }
 
     @Operation(summary = "프로젝트 검색", description = "프로젝트 검색 요청입니다.")
-    @GetMapping("/search/projects")
+    @GetMapping("/api/search/projects")
     public PageResponse<SearchResponseDto.ProjectResult> projectSearch(
             @RequestParam String keyword,
             @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
@@ -47,7 +46,7 @@ public class SearchController {
     }
 
     @Operation(summary = "할 일 검색", description = "할 일 검색 요청입니다.")
-    @GetMapping("/search/tasks")
+    @GetMapping("/api/search/tasks")
     public PageResponse<SearchResponseDto.TaskResult> taskSearch(
             @RequestParam String keyword,
             @PageableDefault(sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable

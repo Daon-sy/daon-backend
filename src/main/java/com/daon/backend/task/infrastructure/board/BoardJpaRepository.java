@@ -10,7 +10,7 @@ import java.util.Optional;
 public interface BoardJpaRepository extends JpaRepository<Board, Long> {
 
     @EntityGraph(attributePaths = {"project", "tasks"})
-    Optional<Board> findBoardByIdAndRemovedFalse(Long boardId);
+    Optional<Board> findBoardById(Long boardId);
 
-    List<Board> findBoardsByProjectIdAndRemovedFalseOrderByCreatedAtAsc(Long projectId);
+    List<Board> findBoardsByProjectIdOrderByCreatedAtAsc(Long projectId);
 }

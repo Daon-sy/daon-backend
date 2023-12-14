@@ -9,32 +9,31 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
-@RequestMapping("/api")
 @RestController
 public class NotificationController {
 
     private final NotificationService notificationService;
 
     @Operation(summary = "미확인 알림 목록 조회", description = "미확인 알림 목록 조회 요청입니다.")
-    @GetMapping("/notifications-unread")
+    @GetMapping("/api/notifications-unread")
     public NotificationsUnreadResponseDto findNotificationsUnread() {
         return notificationService.findNotificationsUnread();
     }
 
     @Operation(summary = "확인한 알림 목록 조회", description = "확인한 알림 목록 조회 요청입니다.")
-    @GetMapping("/notifications-read")
+    @GetMapping("/api/notifications-read")
     public NotificationsReadResponseDto findNotificationsRead(Pageable pageable) {
         return notificationService.findNotificationsRead(pageable);
     }
 
     @Operation(summary = "알림 읽음 처리", description = "알림 읽음 처리 요청입니다.")
-    @PostMapping("/notifications/{notificationId}/read")
+    @PostMapping("/api/notifications/{notificationId}/read")
     public void readNotification(@PathVariable Long notificationId) {
         notificationService.readNotification(notificationId);
     }
 
     @Operation(summary = "알림 삭제 처리", description = "알림 삭제 처리 요청입니다.")
-    @DeleteMapping("/notifications/{notificationId}")
+    @DeleteMapping("/api/notifications/{notificationId}")
     public void deleteNotification(@PathVariable Long notificationId) {
         notificationService.deleteNotification(notificationId);
     }

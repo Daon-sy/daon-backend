@@ -17,5 +17,6 @@ public interface MemberRepository {
     boolean existsByEmail(String email);
 
     Optional<MemberSettingsResponseDto> findSettingsByMemberId(String memberId);
-    List<MemberSummary> searchMembersByUsername(String username);
+
+    void deleteMemberById(String memberId);
 }

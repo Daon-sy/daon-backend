@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.envers.Audited;
+
 import javax.persistence.*;
 import java.util.Objects;
 import java.util.Optional;

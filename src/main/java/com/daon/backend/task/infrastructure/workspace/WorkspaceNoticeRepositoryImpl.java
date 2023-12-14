@@ -7,7 +7,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
-import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -27,12 +26,20 @@ public class WorkspaceNoticeRepositoryImpl implements WorkspaceNoticeRepository 
     }
 
     @Override
-    public Page<WorkspaceNotice> findWorkspaceNoticesByWorkspaceIdAndKeyword(Long workspaceId, String keyword, Pageable pageable) {
-        return workspaceNoticeJpaRepository.findWorkspaceNoticeByWorkspaceIdAndContentContainingOrderByCreatedAtDesc(workspaceId, keyword, pageable);
+    public Page<WorkspaceNotice> findWorkspaceNoticesByWorkspaceIdAndKeyword(
+            Long workspaceId,
+            String keyword,
+            Pageable pageable) {
+
+        return workspaceNoticeJpaRepository.findWorkspaceNoticeByWorkspaceIdAndContentContainingOrderByCreatedAtDesc(
+                workspaceId,
+                keyword,
+                pageable
+        );
     }
 
     @Override
-    public Optional<WorkspaceNotice> findWorkspaceNoticeById(Long noticeId) {
+    public Optional<WorkspaceNotice> findById(Long noticeId) {
         return workspaceNoticeJpaRepository.findWorkspaceNoticeById(noticeId);
     }
 
@@ -40,8 +47,4 @@ public class WorkspaceNoticeRepositoryImpl implements WorkspaceNoticeRepository 
     public void deleteById(Long noticeId) {
         workspaceNoticeJpaRepository.deleteById(noticeId);
     }
-
-
-
-
 }

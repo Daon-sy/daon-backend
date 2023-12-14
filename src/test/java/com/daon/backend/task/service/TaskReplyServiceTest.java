@@ -21,7 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
 @SpringBootTest
@@ -58,7 +58,7 @@ public class TaskReplyServiceTest extends MockConfig {
         TaskReply taskReply = taskReplyJpaRepository.findById(responseDto.getReplyId()).orElseThrow();
 
         // then
-        assertEquals(replyContent, taskReply.getContent());
+        assertThat(taskReply.getContent()).isEqualTo(replyContent);
     }
 
     @DisplayName("댓글 목록 조회")
@@ -75,8 +75,8 @@ public class TaskReplyServiceTest extends MockConfig {
         PageResponse<TaskReplySummary> taskReplies = taskReplyService.findTaskReplies(projectId, taskId, pageable);
 
         // then
-        assertEquals(1, taskReplies.getContentSize());
-        assertEquals(size, taskReplies.getPageSize());
+        assertThat(taskReplies.getContentSize()).isEqualTo(1);
+        assertThat(taskReplies.getPageSize()).isEqualTo(size);
     }
 
     @DisplayName("댓글 수정")
@@ -94,8 +94,8 @@ public class TaskReplyServiceTest extends MockConfig {
         TaskReply taskReply = taskReplyJpaRepository.findById(taskReplyId).orElseThrow();
 
         // then
-        assertEquals(taskReplyId, taskReply.getId());
-        assertEquals(content, taskReply.getContent());
+        assertThat(taskReply.getId()).isEqualTo(taskReplyId);
+        assertThat(taskReply.getContent()).isEqualTo(content);
     }
 
     @DisplayName("댓글 삭제")
@@ -111,6 +111,6 @@ public class TaskReplyServiceTest extends MockConfig {
         Task task = taskRepository.findTaskById(taskId).orElseThrow();
 
         // then
-        assertEquals(0, task.getTaskReplies().size());
+        assertThat(task.getTaskReplies().size()).isEqualTo(0);
     }
 }
