@@ -210,14 +210,12 @@ public class Workspace extends BaseEntity {
         return this.division.equals(Division.PERSONAL);
     }
 
-    public boolean canWithdrawWorkspace() {
-        return this.participants.stream()
-                .filter(workspaceParticipant -> workspaceParticipant.getRole().equals(Role.WORKSPACE_ADMIN))
-                .count() > 1;
+    public boolean canWithdrawWorkspace(String memberId) {
+        return this.participants.stream().anyMatch(wsp -> !wsp.memberIdEquals(memberId) && wsp.isWorkspaceAdmin());
     }
 
     public void withdrawWorkspace(String memberId) {
-        this.participants.removeIf(workspaceParticipant -> workspaceParticipant.getMemberId().equals(memberId));
+        this.participants.removeIf(workspaceParticipant -> workspaceParticipant.memberIdEquals(memberId));
     }
 
     public void deportWorkspace(Long workspaceParticipantId, String workspaceParticipantMemberId) {

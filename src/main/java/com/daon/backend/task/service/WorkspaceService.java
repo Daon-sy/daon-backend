@@ -214,7 +214,7 @@ public class WorkspaceService {
         Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
 
-        if (workspace.canWithdrawWorkspace()) {
+        if (workspace.canWithdrawWorkspace(memberId)) {
             Long workspaceParticipantId = workspace.findWorkspaceParticipantByMemberId(memberId).getId();
             workspaceRepository.deleteAllReplyWriterRelatedMemberId(workspaceParticipantId, memberId);
             workspaceRepository.deleteAllMessagesRelatedWorkspaceParticipant(workspaceParticipantId);
