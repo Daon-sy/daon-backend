@@ -22,7 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
 @SpringBootTest
@@ -60,8 +60,8 @@ public class WorkspaceNoticeServiceTest extends MockConfig {
 
         // then
         WorkspaceNotice notice = workspaceNoticeJpaRepository.findById(responseDto.getNoticeId()).orElseThrow();
-        assertEquals(noticeTitle, notice.getTitle());
-        assertEquals(noticeContent, notice.getContent());
+        assertThat(notice.getTitle()).isEqualTo(noticeTitle);
+        assertThat(notice.getContent()).isEqualTo(noticeContent);
     }
 
     @DisplayName("공지사항 단건 조회")
@@ -74,9 +74,9 @@ public class WorkspaceNoticeServiceTest extends MockConfig {
         FindWorkspaceNoticeResponseDto responseDto = workspaceNoticeService.findWorkspaceNotice(workspaceNoticeId);
 
         // then
-        assertEquals(workspaceNoticeId, responseDto.getNoticeId());
-        assertEquals("notice title", responseDto.getTitle());
-        assertEquals("notice content", responseDto.getContent());
+        assertThat(responseDto.getNoticeId()).isEqualTo(workspaceNoticeId);
+        assertThat(responseDto.getTitle()).isEqualTo("notice title");
+        assertThat(responseDto.getContent()).isEqualTo("notice content");
     }
 
     @DisplayName("공지사항 목록 조회")
@@ -93,8 +93,8 @@ public class WorkspaceNoticeServiceTest extends MockConfig {
                 workspaceNoticeService.findWorkspaceNotices(workspaceId, null, pageable);
 
         // then
-        assertEquals(1, responseDto.getContent().size());
-        assertEquals(size, responseDto.getPageSize());
+        assertThat(responseDto.getContentSize()).isEqualTo(1);
+        assertThat(responseDto.getPageSize()).isEqualTo(size);
     }
 
     @DisplayName("공지사항 수정")
@@ -112,9 +112,9 @@ public class WorkspaceNoticeServiceTest extends MockConfig {
         WorkspaceNotice workspaceNotice = workspaceNoticeJpaRepository.findById(workspaceNoticeId).orElseThrow();
 
         // then
-        assertEquals(workspaceNoticeId, workspaceNotice.getId());
-        assertEquals(editTitle, workspaceNotice.getTitle());
-        assertEquals(editContent, workspaceNotice.getContent());
+        assertThat(workspaceNotice.getId()).isEqualTo(workspaceNoticeId);
+        assertThat(workspaceNotice.getTitle()).isEqualTo(editTitle);
+        assertThat(workspaceNotice.getContent()).isEqualTo(editContent);
     }
 
     @DisplayName("공지사항 삭제")
@@ -126,9 +126,9 @@ public class WorkspaceNoticeServiceTest extends MockConfig {
 
         // when
         workspaceNoticeService.deleteWorkspaceNotice(workspaceId, workspaceNoticeId);
-        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId).orElseThrow();
+        Workspace workspace = workspaceRepository.findById(workspaceId).orElseThrow();
 
         // then
-        assertEquals(0, workspace.getWorkspaceNotices().size());
+        assertThat(workspace.getWorkspaceNotices().size()).isEqualTo(0);
     }
 }

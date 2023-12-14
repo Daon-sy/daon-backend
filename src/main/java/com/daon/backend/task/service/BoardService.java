@@ -3,7 +3,6 @@ package com.daon.backend.task.service;
 import com.daon.backend.task.domain.board.Board;
 import com.daon.backend.task.domain.board.BoardNotFoundException;
 import com.daon.backend.task.domain.board.BoardRepository;
-import com.daon.backend.task.domain.board.CanNotDeleteBoardException;
 import com.daon.backend.task.domain.project.Project;
 import com.daon.backend.task.domain.project.ProjectNotFoundException;
 import com.daon.backend.task.domain.project.ProjectRepository;
@@ -70,16 +69,6 @@ public class BoardService {
         Project project = projectRepository.findProjectById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
 
-        long activeBoardCount = project.getBoards().stream()
-                .filter(board -> !board.isRemoved())
-                .count();
-        if (activeBoardCount > 1) {
-            boardRepository.deleteTasksRelatedBoard(boardId);
-            boardRepository.findBoardById(boardId)
-                    .orElseThrow(() -> new BoardNotFoundException(projectId, boardId))
-                    .deleteBoard();
-        } else {
-            throw new CanNotDeleteBoardException();
-        }
+        project.deleteBoard(boardId);
     }
 }

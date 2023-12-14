@@ -31,7 +31,7 @@ public class WorkspaceNoticeService{
     * */
     @Transactional
     public CreateWorkspaceNoticeResponseDto createWorkspaceNotice(Long workspaceId, CreateWorkspaceNoticeRequestDto requestDto){
-        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
+        Workspace workspace = workspaceRepository.findById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
         String memberId = sessionMemberProvider.getMemberId();
         WorkspaceParticipant workspaceNoticeWriter = workspace.findWorkspaceParticipantByMemberId(memberId);
@@ -71,7 +71,7 @@ public class WorkspaceNoticeService{
      * 워크스페이스 공지사항 단건 조회
      * */
     public FindWorkspaceNoticeResponseDto findWorkspaceNotice(Long noticeId){
-        WorkspaceNotice workspaceNotice = workspaceNoticeRepository.findWorkspaceNoticeById(noticeId)
+        WorkspaceNotice workspaceNotice = workspaceNoticeRepository.findById(noticeId)
                 .orElseThrow(() -> new WorkspaceNoticeNotFoundException(noticeId));
 
         return new FindWorkspaceNoticeResponseDto(workspaceNotice);
@@ -82,7 +82,7 @@ public class WorkspaceNoticeService{
      * */
     @Transactional
     public void modifyWorkspaceNoticeContent(Long workspaceId, Long noticeId, ModifyWorkspaceNoticeRequestDto requestDto){
-        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
+        Workspace workspace = workspaceRepository.findById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
         String memberId = sessionMemberProvider.getMemberId();
         WorkspaceParticipant workspaceNoticeWriter = workspace.findWorkspaceParticipantByMemberId(memberId);
@@ -95,7 +95,7 @@ public class WorkspaceNoticeService{
      * */
     @Transactional
     public void deleteWorkspaceNotice(Long workspaceId, Long noticeId) {
-        Workspace workspace = workspaceRepository.findWorkspaceById(workspaceId)
+        Workspace workspace = workspaceRepository.findById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
         workspace.removeWorkspaceNotice(noticeId);
     }

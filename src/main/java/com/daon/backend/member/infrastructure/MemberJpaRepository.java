@@ -9,8 +9,8 @@ import java.util.Optional;
 public interface MemberJpaRepository extends JpaRepository<Member, String> {
 
     @EntityGraph(attributePaths = "emails")
-    Optional<Member> findByIdAndRemovedFalse(String memberId);
+    Optional<Member> findMemberById(String memberId);
 
     @EntityGraph(attributePaths = "emails")
-    Optional<Member> findByUsernameAndRemovedFalse(String username);
+    Optional<Member> findByUsername(String username);
 }

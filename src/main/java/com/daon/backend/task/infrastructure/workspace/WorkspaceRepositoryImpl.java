@@ -1,17 +1,19 @@
 package com.daon.backend.task.infrastructure.workspace;
 
+import com.daon.backend.task.domain.task.QTask;
 import com.daon.backend.task.domain.workspace.*;
-import com.daon.backend.task.dto.WorkspaceSummary;
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 import java.util.Optional;
 
+import static com.daon.backend.task.domain.task.QTask.*;
 import static com.daon.backend.task.domain.workspace.QMessage.message;
 import static com.daon.backend.task.domain.workspace.QWorkspace.workspace;
 import static com.daon.backend.task.domain.workspace.QWorkspaceParticipant.workspaceParticipant;
@@ -29,8 +31,8 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
     }
 
     @Override
-    public Optional<Workspace> findWorkspaceById(Long workspaceId) {
-        return workspaceJpaRepository.findWorkspaceByIdAndRemovedFalse(workspaceId);
+    public Optional<Workspace> findById(Long workspaceId) {
+        return workspaceJpaRepository.findWorkspaceById(workspaceId);
     }
 
     @Override
@@ -66,54 +68,6 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
     }
 
     @Override
-    public Slice<WorkspaceSummary> searchWorkspaceSummariesByTitle(String memberId, String title, Pageable pageable) {
-        final int pageSize = pageable.getPageSize();
-        final long offset = pageable.getOffset();
-
-        List<WorkspaceSummary> workspaceSummaries = queryFactory
-                .select(
-                        Projections.constructor(
-                                WorkspaceSummary.class,
-                                workspace.id,
-                                workspace.title,
-                                workspace.imageUrl,
-                                workspace.division,
-                                workspace.description
-                        )
-                )
-                .from(workspace)
-                .innerJoin(workspace.participants, workspaceParticipant)
-                .where(workspace.title.contains(title)
-                        .and(workspaceParticipant.memberId.eq(memberId))
-                        .and(workspace.removed.isFalse()))
-                .orderBy(workspace.modifiedAt.desc())
-                .offset(offset)
-                .limit(pageSize + 1)
-                .fetch();
-
-        boolean hasNext = false;
-        if (workspaceSummaries.size() > pageSize) {
-            workspaceSummaries.remove(pageSize);
-            hasNext = true;
-        }
-
-        return new SliceImpl<>(workspaceSummaries, pageable, hasNext);
-    }
-
-    @Override
-    public void deleteAllRelatedWorkspace(Long workspaceId) {
-        workspaceJpaRepository.deleteTaskRepliesRelatedWorkspace(workspaceId);
-        workspaceJpaRepository.deleteTasksRelatedWorkspace(workspaceId);
-        workspaceJpaRepository.deleteBoardsRelatedWorkspace(workspaceId);
-        workspaceJpaRepository.deleteProjectsRelatedWorkspace(workspaceId);
-    }
-
-    @Override
-    public void deleteAllRelatedWorkspaceParticipant(Long workspaceParticipantId, String memberId) {
-        workspaceJpaRepository.deleteTaskManagerRelatedWorkspaceParticipant(workspaceParticipantId);
-    }
-
-    @Override
     public Page<Message> findMessages(Workspace workspace, Long receiverId, String target, String keyword, Pageable pageable) {
         BooleanBuilder builder = new BooleanBuilder();
         if (target.equals("title")) {
@@ -143,16 +97,12 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
     }
 
     @Override
-    public void deleteAllMessagesRelatedWorkspaceParticipant(Long workspaceParticipantId) {
-        queryFactory
-                .delete(message)
-                .where(message.receiverId.eq(workspaceParticipantId))
-                .execute();
+    public void deleteById(Long workspaceId) {
+        workspaceJpaRepository.deleteById(workspaceId);
     }
 
     @Override
-    public void deleteAllReplyWriterRelatedMemberId(Long workspaceParticipantId, String memberId) {
-        workspaceJpaRepository.deleteAllReplyWriterRelatedMemberId(workspaceParticipantId, memberId);
+    public void deleteTaskManager(Long workspaceParticipantId) {
+        workspaceJpaRepository.deleteTaskManager(workspaceParticipantId);
     }
-
 }

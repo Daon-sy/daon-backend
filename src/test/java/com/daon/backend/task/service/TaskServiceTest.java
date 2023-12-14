@@ -20,7 +20,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
 @Transactional
 @SpringBootTest
@@ -62,9 +63,9 @@ public class TaskServiceTest extends MockConfig {
         Task task = taskRepository.findTaskById(responseDto.getTaskId()).orElseThrow();
 
         // then
-        assertEquals(title, task.getTitle());
-        assertEquals(taskManagerId, task.getTaskManager().getId());
-        assertEquals(boardId, task.getBoard().getId());
+        assertThat(task.getTitle()).isEqualTo(title);
+        assertThat(task.getTaskManager().getId()).isEqualTo(taskManagerId);
+        assertThat(task.getBoard().getId()).isEqualTo(boardId);
     }
 
     @DisplayName("할 일 단건 조회")
@@ -77,8 +78,8 @@ public class TaskServiceTest extends MockConfig {
         FindTaskResponseDto responseDto = taskService.findTask(taskId);
 
         // then
-        assertEquals(taskId, responseDto.getTaskId());
-        assertEquals("Task", responseDto.getTitle());
+        assertThat(responseDto.getTaskId()).isEqualTo(taskId);
+        assertThat(responseDto.getTitle()).isEqualTo("Task");
     }
 
     @DisplayName("할 일 목록 조회")
@@ -94,7 +95,7 @@ public class TaskServiceTest extends MockConfig {
         FindTasksResponseDto responseDto = taskService.searchTasks(workspaceId, searchParams);
 
         // then
-        assertEquals(1, responseDto.getTasks().size());
+        assertThat(responseDto.getTasks().size()).isEqualTo(1);
     }
 
     @DisplayName("할 일 히스토리 조회")
@@ -111,8 +112,8 @@ public class TaskServiceTest extends MockConfig {
         SliceResponse<TaskHistory> taskHistory = taskService.findTaskHistory(projectId, taskId, pageable);
 
         // then
-        assertEquals(size, taskHistory.getPageSize());
-        assertEquals(0, taskHistory.getContent().size());
+        assertThat(taskHistory.getPageSize()).isEqualTo(size);
+        assertThat(taskHistory.getContentSize()).isEqualTo(0);
     }
 
     @DisplayName("할 일 수정")
@@ -140,9 +141,9 @@ public class TaskServiceTest extends MockConfig {
         Task task = taskRepository.findTaskById(taskId).orElseThrow();
 
         // then
-        assertEquals(taskId, task.getId());
-        assertEquals(title, task.getTitle());
-        assertEquals(taskManagerId, task.getTaskManager().getId());
+        assertThat(task.getId()).isEqualTo(taskId);
+        assertThat(task.getTitle()).isEqualTo(title);
+        assertThat(task.getTaskManager().getId()).isEqualTo(taskManagerId);
     }
 
     @DisplayName("할 일 진행 상태 변경")
@@ -158,8 +159,8 @@ public class TaskServiceTest extends MockConfig {
         Task task = taskRepository.findTaskById(taskId).orElseThrow();
 
         // then
-        assertEquals(taskId, task.getId());
-        assertEquals(TaskProgressStatus.PROCEEDING, task.getProgressStatus());
+        assertThat(task.getId()).isEqualTo(taskId);
+        assertThat(task.getProgressStatus()).isEqualTo(TaskProgressStatus.PROCEEDING);
     }
 
     @DisplayName("북마크 설정/해제")
@@ -174,20 +175,21 @@ public class TaskServiceTest extends MockConfig {
         SetBookmarkResponseDto responseDto2 = taskService.setBookmark(projectId, taskId);
 
         // then
-        assertTrue(responseDto1.isCreated());
-        assertFalse(responseDto2.isCreated());
+        assertThat(responseDto1.isCreated()).isTrue();
+        assertThat(responseDto2.isCreated()).isFalse();
     }
 
     @DisplayName("할 일 삭제")
     @Test
     void deleteTask() {
         // given
+        Long projectId = 1L;
         Long taskId = 1L;
 
         // when
-        taskService.deleteTask(taskId);
+        taskService.deleteTask(projectId, taskId);
 
         // then
-        assertThrows(TaskNotFoundException.class, () -> taskService.findTask(taskId));
+        assertThatExceptionOfType(TaskNotFoundException.class).isThrownBy(() -> taskService.findTask(taskId));
     }
 }

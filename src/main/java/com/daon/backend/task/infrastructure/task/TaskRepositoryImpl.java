@@ -60,7 +60,7 @@ public class TaskRepositoryImpl implements TaskRepository {
 
     @Override
     public Optional<Task> findTaskById(Long taskId) {
-        return taskJpaRepository.findTaskByIdAndRemovedFalse(taskId);
+        return taskJpaRepository.findTaskById(taskId);
     }
 
     @Override
@@ -84,7 +84,7 @@ public class TaskRepositoryImpl implements TaskRepository {
     public List<TaskSummary> findTaskSummaries(String memberId, Long workspaceId, TaskSearchParams params) {
         BooleanBuilder builder = new BooleanBuilder();
         if (params.getProjectId() != null) {
-            builder.and(task.project.id.eq(params.getProjectId()));
+            builder.and(task.board.project.id.eq(params.getProjectId()));
         }
 
         if (params.getBoardId() != null) {
@@ -106,7 +106,7 @@ public class TaskRepositoryImpl implements TaskRepository {
                                 task.id,
                                 constructor(
                                         ProjectSummary.class,
-                                        task.project
+                                        task.board.project
                                 ),
                                 constructor(
                                         BoardSummary.class,
@@ -129,58 +129,13 @@ public class TaskRepositoryImpl implements TaskRepository {
                         )
                 )
                 .from(task)
-                    .join(task.project, project)
-                    .leftJoin(task.board, board)
+                    .join(task.board, board)
+                    .leftJoin(board.project, project)
                     .leftJoin(task.taskManager, projectParticipant)
                     .leftJoin(taskBookmark).on(task.eq(taskBookmark.task).and(taskBookmark.memberId.eq(memberId)))
-                .where(builder.and(task.removed.isFalse())
-                        .and(project.workspace.id.eq(workspaceId)))
+                .where(project.workspace.id.eq(workspaceId))
                 .orderBy(task.emergency.desc(), task.modifiedAt.desc())
                 .fetch();
-    }
-
-    @Override
-    public Slice<TaskSearchResult> searchTaskSummariesByTitle(String memberId, String title, Pageable pageable) {
-        final int pageSize = pageable.getPageSize();
-        final long offset = pageable.getOffset();
-
-        List<TaskSearchResult> taskSearchResults = queryFactory
-                .select(
-                        constructor(
-                                TaskSearchResult.class,
-                                task.id,
-                                constructor(
-                                        ProjectSummary.class,
-                                        task.project
-                                ),
-                                constructor(
-                                        TaskManager.class,
-                                        task.taskManager
-                                ),
-                                task.title,
-                                task.startDate,
-                                task.endDate,
-                                task.progressStatus,
-                                task.emergency
-                        )
-                )
-                .from(task)
-                .innerJoin(task.project.participants, projectParticipant)
-                .where(task.title.contains(title)
-                        .and(projectParticipant.memberId.eq(memberId))
-                        .and(task.removed.isFalse()))
-                .orderBy(task.modifiedAt.desc())
-                .offset(offset)
-                .limit(pageSize + 1)
-                .fetch();
-
-        boolean hasNext = false;
-        if (taskSearchResults.size() > pageSize) {
-            taskSearchResults.remove(pageSize);
-            hasNext = true;
-        }
-
-        return new SliceImpl<>(taskSearchResults, pageable, hasNext);
     }
 
     @Override
@@ -193,7 +148,7 @@ public class TaskRepositoryImpl implements TaskRepository {
                                         task.id,
                                         constructor(
                                                 ProjectSummary.class,
-                                                task.project
+                                                task.board.project
                                         ),
                                         constructor(
                                                 BoardSummary.class,
@@ -215,12 +170,11 @@ public class TaskRepositoryImpl implements TaskRepository {
                                 )
                         )
                         .from(task)
-                        .join(task.project, project)
-                        .leftJoin(task.board, board)
+                        .join(task.board, board)
+                        .leftJoin(board.project, project)
                         .leftJoin(task.taskManager, projectParticipant)
                         .leftJoin(taskBookmark).on(task.eq(taskBookmark.task).and(taskBookmark.memberId.eq(memberId)))
-                        .where(task.id.eq(taskId)
-                                .and(task.removed.isFalse()))
+                        .where(task.id.eq(taskId))
                         .fetchOne()
         );
     }
@@ -253,14 +207,6 @@ public class TaskRepositoryImpl implements TaskRepository {
         }
 
         return new SliceImpl<>(taskHistories, pageable, hasNext);
-    }
-
-    @Override
-    public void deleteAllTaskBookmark(Long taskId) {
-        queryFactory
-                .delete(taskBookmark)
-                .where(taskBookmark.task.id.eq(taskId))
-                .execute();
     }
 
     private TaskHistory generateTaskHistory(Object[] currentHistory, Object[] prevHistory, Long projectId) {

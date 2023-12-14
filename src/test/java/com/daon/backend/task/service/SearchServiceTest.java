@@ -19,7 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.assertj.core.api.Assertions.assertThat;
 
 @Transactional
 @SpringBootTest
@@ -62,10 +62,10 @@ public class SearchServiceTest {
         SearchResponseDto responseDto = searchService.integratedSearchByTitle(keyword);
 
         // then
-        assertEquals(0, responseDto.getWorkspaces().getContentSize());
-        assertEquals(1, responseDto.getProjects().getContentSize());
-        assertEquals(projectId, responseDto.getProjects().getContent().get(0).getProjectId());
-        assertEquals(0, responseDto.getTasks().getContentSize());
+        assertThat(responseDto.getWorkspaces().getContentSize()).isEqualTo(0);
+        assertThat(responseDto.getProjects().getContentSize()).isEqualTo(1);
+        assertThat(responseDto.getProjects().getContent().get(0).getProjectId()).isEqualTo(projectId);
+        assertThat(responseDto.getTasks().getContentSize()).isEqualTo(0);
     }
 
     @DisplayName("워크스페이스 검색")
@@ -80,8 +80,8 @@ public class SearchServiceTest {
         PageResponse<SearchResponseDto.WorkspaceResult> responseDto = searchService.searchWorkspaces(keyword, pageable);
 
         // then
-        assertEquals(1, responseDto.getContentSize());
-        assertEquals(workspaceId, responseDto.getContent().get(0).getWorkspaceId());
+        assertThat(responseDto.getContentSize()).isEqualTo(1);
+        assertThat(responseDto.getContent().get(0).getWorkspaceId()).isEqualTo(workspaceId);
     }
 
     @DisplayName("프로젝트 검색")
@@ -96,8 +96,8 @@ public class SearchServiceTest {
         PageResponse<SearchResponseDto.ProjectResult> responseDto = searchService.searchProjects(keyword, pageable);
 
         // then
-        assertEquals(1, responseDto.getContentSize());
-        assertEquals(projectId, responseDto.getContent().get(0).getProjectId());
+        assertThat(responseDto.getContentSize()).isEqualTo(1);
+        assertThat(responseDto.getContent().get(0).getProjectId()).isEqualTo(projectId);
     }
 
     @DisplayName("할 일 검색")
@@ -112,8 +112,8 @@ public class SearchServiceTest {
         PageResponse<SearchResponseDto.TaskResult> responseDto = searchService.searchTasks(keyword, pageable);
 
         // then
-        assertEquals(1, responseDto.getContentSize());
-        assertEquals(taskId, responseDto.getContent().get(0).getTaskId());
+        assertThat(responseDto.getContentSize()).isEqualTo(1);
+        assertThat(responseDto.getContent().get(0).getTaskId()).isEqualTo(taskId);
     }
 
     private Pageable getPageable() {

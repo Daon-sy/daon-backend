@@ -1,9 +1,7 @@
 package com.daon.backend.task.controller;
 
 import com.daon.backend.common.response.slice.SliceResponse;
-import com.daon.backend.task.domain.authority.Authority;
 import com.daon.backend.task.domain.authority.CheckRole;
-import com.daon.backend.task.dto.TaskSearchParams;
 import com.daon.backend.task.dto.task.*;
 import com.daon.backend.task.dto.task.history.TaskHistory;
 import com.daon.backend.task.service.TaskService;
@@ -31,7 +29,7 @@ public class TaskController {
     @Operation(summary = "할 일 생성", description = "할 일 생성 요청입니다.")
     @ResponseStatus(HttpStatus.CREATED)
     @CheckRole(authority = TSK_CREATE)
-    @PostMapping("/api/workspaces/{workspaceId}/projects/{projectId}/tasks")
+    @PostMapping("/api/workspaces/{workspaceId}/projects/{projectId}/boards/{boardId}/tasks")
     public CreateTaskResponseDto createTask(@PathVariable("projectId") Long projectId,
                                             @RequestBody @Valid CreateTaskRequestDto requestDto) {
         return taskService.createTask(projectId, requestDto);
@@ -39,7 +37,7 @@ public class TaskController {
 
     @Operation(summary = "할 일 수정", description = "할 일 수정 요청입니다.")
     @CheckRole(authority = TSK_UPDATE)
-    @PutMapping("/api/workspaces/{workspaceId}/projects/{projectId}/tasks/{taskId}")
+    @PutMapping("/api/workspaces/{workspaceId}/projects/{projectId}/boards/{boardId}/tasks/{taskId}")
     public void modifyTask(@PathVariable Long projectId,
                            @PathVariable Long taskId,
                            @RequestBody @Valid ModifyTaskRequestDto requestDto) {
@@ -48,21 +46,14 @@ public class TaskController {
 
     @Operation(summary = "할 일 단건 조회", description = "할 일 단건 조회 요청입니다.")
     @CheckRole(authority = TSK_READ)
-    @GetMapping("/api/workspaces/{workspaceId}/projects/{projectId}/tasks/{taskId}")
+    @GetMapping("/api/workspaces/{workspaceId}/projects/{projectId}/boards/{boardId}/tasks/{taskId}")
     public FindTaskResponseDto findTask(@PathVariable Long taskId) {
         return taskService.findTask(taskId);
     }
 
-    @Operation(summary = "할 일 목록 조회", description = "할 일 목록 조회 요청입니다.")
-    @CheckRole(authority = Authority.TSK_READ)
-    @GetMapping("/api/workspaces/{workspaceId}/projects/tasks")
-    public FindTasksResponseDto searchTasks(@PathVariable Long workspaceId, @ModelAttribute TaskSearchParams params) {
-        return taskService.searchTasks(workspaceId, params);
-    }
-
     @Operation(summary = "할 일 진행 상태 변경", description = "할 일 진행 상태 변경 요청입니다.")
     @CheckRole(authority = TSK_UPDATE)
-    @PatchMapping("/api/workspaces/{workspaceId}/projects/{projectId}/tasks/{taskId}")
+    @PatchMapping("/api/workspaces/{workspaceId}/projects/{projectId}/boards/{boardId}/tasks/{taskId}")
     public void modifyProgressStatus(@PathVariable Long projectId,
                                      @PathVariable Long taskId,
                                      @RequestBody ModifyProgressStatusRequestDto requestDto) {
@@ -71,7 +62,7 @@ public class TaskController {
 
     @Operation(summary = "북마크 설정/해제", description = "북마크 설정/해제 요청입니다.")
     @CheckRole(authority = TSK_READ)
-    @PostMapping("/api/workspaces/{workspaceId}/projects/{projectId}/tasks/{taskId}/bookmark")
+    @PostMapping("/api/workspaces/{workspaceId}/projects/{projectId}/boards/{boardId}/tasks/{taskId}/bookmark")
     public SetBookmarkResponseDto setBookmark(@PathVariable Long projectId,
                                               @PathVariable Long taskId) {
         return taskService.setBookmark(projectId, taskId);
@@ -79,14 +70,15 @@ public class TaskController {
 
     @Operation(summary = "할 일 삭제", description = "할 일 삭제 요청입니다..")
     @CheckRole(authority = TSK_DELETE)
-    @DeleteMapping("/api/workspaces/{workspaceId}/projects/{projectId}/tasks/{taskId}")
-    public void deleteTask(@PathVariable Long taskId) {
-        taskService.deleteTask(taskId);
+    @DeleteMapping("/api/workspaces/{workspaceId}/projects/{projectId}/boards/{boardId}/tasks/{taskId}")
+    public void deleteTask(@PathVariable Long projectId,
+                           @PathVariable Long taskId) {
+        taskService.deleteTask(projectId, taskId);
     }
 
     @Operation(summary = "할 일 히스토리 조회", description = "할 일 히스토리 조회 요청입니다..")
     @CheckRole(authority = TSK_READ)
-    @GetMapping("/api/workspaces/{workspaceId}/projects/{projectId}/tasks/{taskId}/history")
+    @GetMapping("/api/workspaces/{workspaceId}/projects/{projectId}/boards/{boardId}/tasks/{taskId}/history")
     public SliceResponse<TaskHistory> taskHistory(@PathVariable Long projectId,
                                                   @PathVariable Long taskId,
                                                   @PageableDefault Pageable pageable) {

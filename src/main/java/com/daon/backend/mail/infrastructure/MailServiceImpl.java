@@ -123,9 +123,9 @@ public class MailServiceImpl implements MailService {
                     .collect(Collectors.groupingBy(
                             task -> task.getTaskManager().getWorkspaceParticipant().getProfile().getEmail(),
                             Collectors.groupingBy(
-                                    task -> task.getProject().getWorkspace().getTitle(),
+                                    task -> task.getBoard().getProject().getWorkspace().getTitle(),
                                     Collectors.groupingBy(
-                                            task -> task.getProject().getTitle(),
+                                            task -> task.getBoard().getProject().getTitle(),
                                             Collectors.toList()
                                     )
                             )

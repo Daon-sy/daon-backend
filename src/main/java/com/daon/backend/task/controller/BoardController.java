@@ -15,7 +15,6 @@ import javax.validation.Valid;
 import static com.daon.backend.task.domain.authority.Authority.*;
 
 @RequiredArgsConstructor
-@RequestMapping("/api/workspaces/{workspaceId}/projects/{projectId}/boards")
 @RestController
 public class BoardController {
 
@@ -24,7 +23,7 @@ public class BoardController {
     @Operation(summary = "보드 생성", description = "보드 생성 요청입니다.")
     @ResponseStatus(HttpStatus.CREATED)
     @CheckRole(authority = BD_CREATE)
-    @PostMapping
+    @PostMapping("/api/workspaces/{workspaceId}/projects/{projectId}/boards")
     public void createBoard(@PathVariable Long projectId,
                             @RequestBody @Valid CreateBoardRequestDto requestDto) {
         boardService.createBoard(projectId, requestDto);
@@ -39,7 +38,7 @@ public class BoardController {
 
     @Operation(summary = "보드 수정", description = "보드 수정 요청입니다.")
     @CheckRole(authority = BD_UPDATE)
-    @PutMapping("/{boardId}")
+    @PutMapping("/api/workspaces/{workspaceId}/projects/{projectId}/boards/{boardId}")
     public void modifyBoard(@PathVariable Long projectId,
                             @PathVariable Long boardId,
                             @RequestBody @Valid ModifyBoardRequestDto requestDto) {
@@ -48,7 +47,7 @@ public class BoardController {
 
     @Operation(summary = "보드 삭제", description = "보드 삭제 요청입니다.")
     @CheckRole(authority = BD_DELETE)
-    @DeleteMapping("/{boardId}")
+    @DeleteMapping("/api/workspaces/{workspaceId}/projects/{projectId}/boards/{boardId}")
     public void deleteBoard(@PathVariable Long projectId,
                             @PathVariable Long boardId) {
         boardService.deleteBoard(projectId, boardId);

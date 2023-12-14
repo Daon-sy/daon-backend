@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface TaskJpaRepository extends JpaRepository<Task, Long> {
 
-    @EntityGraph(attributePaths = {"taskManager", "project", "board", "taskBookmarks"})
-    Optional<Task> findTaskByIdAndRemovedFalse(Long taskId);
+    @EntityGraph(attributePaths = {"taskManager", "board", "taskBookmarks"})
+    Optional<Task> findTaskById(Long taskId);
 }
 

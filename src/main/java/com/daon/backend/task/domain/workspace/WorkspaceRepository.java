@@ -1,9 +1,7 @@
 package com.daon.backend.task.domain.workspace;
 
-import com.daon.backend.task.dto.WorkspaceSummary;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Slice;
 
 import java.util.List;
 import java.util.Optional;
@@ -12,7 +10,7 @@ public interface WorkspaceRepository {
 
     Workspace save(Workspace workspace);
 
-    Optional<Workspace> findWorkspaceById(Long workspaceId);
+    Optional<Workspace> findById(Long workspaceId);
 
     List<Workspace> findWorkspacesByMemberId(String memberId);
 
@@ -20,17 +18,11 @@ public interface WorkspaceRepository {
 
     Role findParticipantRoleByMemberIdAndWorkspaceId(String memberId, Long workspaceId);
 
-    Slice<WorkspaceSummary> searchWorkspaceSummariesByTitle(String memberId, String title, Pageable pageable);
-
-    void deleteAllRelatedWorkspace(Long workspaceId);
-
-    void deleteAllRelatedWorkspaceParticipant(Long workspaceParticipantId, String memberId);
-
     Page<Message> findMessages(Workspace workspace, Long receiverId, String target, String keyword, Pageable pageable);
 
     void readAllMessages(Long workspaceId, Long receiverId);
 
-    void deleteAllMessagesRelatedWorkspaceParticipant(Long workspaceParticipantId);
+    void deleteById(Long workspaceId);
 
-    void deleteAllReplyWriterRelatedMemberId(Long workspaceParticipantId, String memberId);
+    void deleteTaskManager(Long workspaceParticipantId);
 }

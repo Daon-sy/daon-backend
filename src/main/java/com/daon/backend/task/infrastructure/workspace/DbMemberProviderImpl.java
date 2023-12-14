@@ -47,7 +47,6 @@ public class DbMemberProviderImpl implements DbMemberProvider {
                 .leftJoin(workspaceInvitation)
                     .on(workspaceInvitation.workspace.id.eq(workspaceId).and(workspaceInvitation.memberId.eq(member.id)))
                 .where(member.username.contains(username)
-                        .and(member.removed.isFalse())
                         .and(workspaceParticipant.id.isNull()))
                 .fetch();
     }

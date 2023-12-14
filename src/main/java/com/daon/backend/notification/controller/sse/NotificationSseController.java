@@ -10,14 +10,13 @@ import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 
 @Slf4j
 @RequiredArgsConstructor
-@RequestMapping("/api")
 @RestController
 public class NotificationSseController {
 
     private final NotificationSseService notificationSseService;
 
     @Operation(summary = "실시간 이벤트(알림) 구독", description = "실시간 이벤트(알림) 구독 요청입니다.")
-    @GetMapping(value = "/notifications/subscribe", produces = "text/event-stream")
+    @GetMapping(value = "/api/notifications/subscribe", produces = "text/event-stream")
     public SseEmitter subscribeAlarm(
             @RequestHeader(value = "Last-Event-ID", required = false, defaultValue = "") String lastEventId) {
 
@@ -25,7 +24,7 @@ public class NotificationSseController {
     }
 
     @Operation(summary = "실시간 이벤트(할 일 목록 조회) 구독", description = "실시간 이벤트(할 일 목록 조회) 구독 요청입니다.")
-    @GetMapping(value = "/subscribe/workspaces/{workspaceId}/type", produces = "text/event-stream")
+    @GetMapping(value = "/api/subscribe/workspaces/{workspaceId}/type", produces = "text/event-stream")
     public SseEmitter subscribeTasks(@PathVariable Long workspaceId ,
                                      @ModelAttribute TasksNotificationParams params) {
 
@@ -33,7 +32,7 @@ public class NotificationSseController {
     }
 
     @Operation(summary = "실시간 이벤트(할 일 상세 조회) 구독", description = "실시간 이벤트(할 일 상세 조회) 구독 요청입니다.")
-    @GetMapping( value = "/subscribe/workspaces/projects/tasks/{taskId}", produces = "text/event-stream")
+    @GetMapping( value = "/api/subscribe/workspaces/projects/tasks/{taskId}", produces = "text/event-stream")
     public SseEmitter subscribeTask(@PathVariable Long taskId) {
 
         return notificationSseService.subscribeTask(taskId);

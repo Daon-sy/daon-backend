@@ -3,7 +3,6 @@ package com.daon.backend.task.domain.task;
 import com.daon.backend.common.event.Events;
 import com.daon.backend.config.BaseEntity;
 import com.daon.backend.task.domain.board.Board;
-import com.daon.backend.task.domain.project.Project;
 import com.daon.backend.task.domain.project.ProjectParticipant;
 import com.daon.backend.task.dto.notification.DesignatedManagerAlarmResponseDto;
 import lombok.AccessLevel;
@@ -51,17 +50,10 @@ public class Task extends BaseEntity {
     // workspaceParticipantId
     private Long creatorId;
 
-    private boolean removed;
-
     @Audited(withModifiedFlag = true, targetAuditMode = NOT_AUDITED)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "task_manager_id")
     private ProjectParticipant taskManager;
-
-    @Audited(withModifiedFlag = true, targetAuditMode = NOT_AUDITED)
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "project_id", nullable = false)
-    private Project project;
 
     @Audited(withModifiedFlag = true, targetAuditMode = NOT_AUDITED)
     @ManyToOne(fetch = FetchType.LAZY)
@@ -78,7 +70,7 @@ public class Task extends BaseEntity {
 
     @Builder
     public Task(String title, String content, LocalDateTime startDate, LocalDateTime endDate, boolean emergency,
-                Long creatorId, ProjectParticipant taskManager, Project project, Board board) {
+                Long creatorId, ProjectParticipant taskManager, Board board) {
         this.title = title;
         this.content = content;
         this.startDate = startDate;
@@ -86,7 +78,6 @@ public class Task extends BaseEntity {
         this.emergency = emergency;
         this.creatorId = creatorId;
         this.taskManager = taskManager;
-        this.project = project;
         this.board = board;
 
         this.progressStatus = TaskProgressStatus.TODO;
@@ -145,25 +136,13 @@ public class Task extends BaseEntity {
         );
     }
 
-    public void deleteTaskManager() {
-        this.taskManager = null;
-    }
-
-    public void deleteTask() {
-        deleteTaskManager();
-        this.taskReplies.clear();
-        this.removed = true;
-
-        Events.raise(new TaskRemovedEvent(this));
-    }
-
     private void publishSendAlarmEvent(ProjectParticipant taskManager) {
         Events.raise(new DesignatedManagerAlarmEvent(
                 new DesignatedManagerAlarmResponseDto(
-                        this.project.getWorkspace().getId(),
-                        this.project.getWorkspace().getTitle(),
-                        this.project.getId(),
-                        this.project.getTitle(),
+                        this.board.getProject().getWorkspace().getId(),
+                        this.board.getProject().getWorkspace().getTitle(),
+                        this.board.getProject().getId(),
+                        this.board.getProject().getTitle(),
                         this.id,
                         this.title
                 ),
@@ -173,7 +152,7 @@ public class Task extends BaseEntity {
 
     private void publishSendTasksEvent() {
         Events.raise(new SendFindTasksEvent(
-                this.project.getWorkspace().getId(), this.project.getId(), this.board.getId()
+                this.board.getProject().getWorkspace().getId(), this.board.getProject().getId(), this.board.getId()
                 )
         );
     }

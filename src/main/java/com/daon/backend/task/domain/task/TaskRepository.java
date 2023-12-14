@@ -2,7 +2,6 @@ package com.daon.backend.task.domain.task;
 
 import com.daon.backend.task.dto.TaskDetail;
 import com.daon.backend.task.dto.TaskSearchParams;
-import com.daon.backend.task.dto.TaskSearchResult;
 import com.daon.backend.task.dto.TaskSummary;
 import com.daon.backend.task.dto.task.history.TaskHistory;
 import org.springframework.data.domain.Pageable;
@@ -23,11 +22,7 @@ public interface TaskRepository {
 
     List<TaskSummary> findTaskSummaries(String memberId, Long workspaceId, TaskSearchParams params);
 
-    Slice<TaskSearchResult> searchTaskSummariesByTitle(String memberId, String title, Pageable pageable);
-
     Optional<TaskDetail> findTaskDetail(String memberId, Long taskId);
 
     Slice<TaskHistory> findTaskHistoriesByProjectIdAndTaskId(Long projectId, Long taskId, Pageable pageable);
-
-    void deleteAllTaskBookmark(Long taskId);
 }

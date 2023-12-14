@@ -115,11 +115,9 @@ public class MemberService {
     @Transactional
     public void withdrawMember() {
         String memberId = sessionMemberProvider.getMemberId();
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(() -> MemberNotFoundException.byMemberId(memberId));
 
         memberServiceThroughTask.deleteRelatedTaskDomains(memberId);
-        member.withdrawMember();
+        memberRepository.deleteMemberById(memberId);
     }
 
     /**
