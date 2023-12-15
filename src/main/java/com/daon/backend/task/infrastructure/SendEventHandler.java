@@ -3,15 +3,11 @@ package com.daon.backend.task.infrastructure;
 import com.daon.backend.notification.domain.Notification;
 import com.daon.backend.notification.domain.data.Message;
 import com.daon.backend.notification.infrastructure.NotificationSseService;
-import com.daon.backend.task.domain.board.Board;
 import com.daon.backend.task.domain.project.DeportationProjectAlarmEvent;
 import com.daon.backend.task.domain.project.InviteProjectAlarmEvent;
-import com.daon.backend.task.domain.project.Project;
-import com.daon.backend.task.domain.task.*;
 import com.daon.backend.task.domain.workspace.DeportationWorkspaceAlarmEvent;
 import com.daon.backend.task.domain.workspace.InviteWorkspaceAlarmEvent;
 import com.daon.backend.task.domain.workspace.SendReceiveMessageAlarmEvent;
-import com.daon.backend.task.domain.workspace.Workspace;
 import lombok.RequiredArgsConstructor;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
@@ -83,29 +79,6 @@ public class SendEventHandler {
 
     @TransactionalEventListener
     @Async
-    public void handle(DesignatedManagerAlarmEvent event) {
-        notificationSseService.sendAlarm(
-                Notification.registeredTaskManager(
-                        event.getMemberId(),
-                        new com.daon.backend.notification.domain.data.Workspace(
-                                event.getData().getWorkspace().getWorkspaceId(),
-                                event.getData().getWorkspace().getWorkspaceTitle()
-                        ),
-                        new com.daon.backend.notification.domain.data.Project(
-                                event.getData().getProject().getProjectId(),
-                                event.getData().getProject().getProjectTitle()
-                        ),
-                        new com.daon.backend.notification.domain.data.Task(
-                                event.getData().getTask().getTaskId(),
-                                event.getData().getTask().getTaskTitle()
-                        )
-                )
-        );
-    }
-
-
-    @TransactionalEventListener
-    @Async
     public void handle(SendReceiveMessageAlarmEvent event) {
         notificationSseService.sendAlarm(
                 Notification.receiveMessage(
@@ -123,64 +96,5 @@ public class SendEventHandler {
                         )
                 )
         );
-    }
-
-    @TransactionalEventListener
-    @Async
-    public void handle(SendFindTaskEvent event) {
-        notificationSseService.sendFindTaskEventNotification(event.getTaskId());
-    }
-
-    @TransactionalEventListener
-    @Async
-    public void handle(SendFindTasksEvent event) {
-        notificationSseService.sendFindTasksEventNotification(
-                event.getWorkspaceId(), event.getProjectId(), event.getBoardId()
-        );
-    }
-
-    @TransactionalEventListener
-    @Async
-    public void handleTaskCreatedEvent(TaskCreatedEvent event) {
-        Task task = event.getTask();
-        notifyTaskListUpdated(task);
-
-        Project project = task.getBoard().getProject();
-        Workspace workspace = project.getWorkspace();
-        notificationSseService.sendAlarm(
-                Notification.registeredTaskManager(
-                        task.getTaskManager().getMemberId(),
-                        new com.daon.backend.notification.domain.data.Workspace(
-                                workspace.getId(),
-                                workspace.getTitle()
-                        ),
-                        new com.daon.backend.notification.domain.data.Project(
-                                project.getId(),
-                                project.getTitle()
-                        ),
-                        new com.daon.backend.notification.domain.data.Task(
-                                task.getId(),
-                                task.getTitle()
-                        )
-                )
-        );
-    }
-
-    private void notifyTaskListUpdated(Task task) {
-        Project project = task.getBoard().getProject();
-        Workspace workspace = project.getWorkspace();
-        Board board = task.getBoard();
-        notificationSseService.sendFindTasksEventNotification(
-                workspace.getId(),
-                project.getId(),
-                board.getId()
-        );
-    }
-
-    @TransactionalEventListener
-    @Async
-    public void handleTaskRemovedEvent(TaskRemovedEvent event) {
-        Task task = event.getTask();
-        notifyTaskListUpdated(task);
     }
 }

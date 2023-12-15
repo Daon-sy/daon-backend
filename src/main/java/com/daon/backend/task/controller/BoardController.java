@@ -31,7 +31,7 @@ public class BoardController {
 
     @Operation(summary = "보드 목록 조회", description = "보드 목록 조회 요청입니다.")
     @CheckRole(authority = BD_READ)
-    @GetMapping
+    @GetMapping("/api/workspaces/{workspaceId}/projects/{projectId}/boards")
     public FindBoardsResponseDto findBoards(@PathVariable Long projectId) {
         return boardService.findBoards(projectId);
     }
