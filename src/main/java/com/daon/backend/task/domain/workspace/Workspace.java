@@ -210,6 +210,7 @@ public class Workspace extends BaseEntity {
                 .filter(w -> w.getId().equals(workspaceParticipantId))
                 .findFirst()
                 .orElseThrow(() -> new NotWorkspaceParticipantException(this.id));
+        this.participants.remove(workspaceParticipant);
 
         Events.raise(new DeportationWorkspaceAlarmEvent(
                 new DeportationWorkspaceAlarmResponseDto(this.id, this.title),
