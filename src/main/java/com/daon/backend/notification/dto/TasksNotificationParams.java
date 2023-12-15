@@ -11,16 +11,16 @@ public class TasksNotificationParams {
 
     private Long boardId;
 
-    private boolean bookmark;
+    private boolean bookmarked;
 
     private boolean my;
 
     public boolean checkValidRequest() {
-        return projectId != null || boardId != null || bookmark || my;
+        return projectId != null || boardId != null || bookmarked || my;
     }
 
     public String getSuffixByParam() {
-        if (bookmark) {
+        if (bookmarked) {
             return "_bookmark_";
         } else if (my) {
             return "_my_";
