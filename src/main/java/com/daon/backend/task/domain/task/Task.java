@@ -76,10 +76,29 @@ public class Task extends BaseEntity {
         this.endDate = endDate;
         this.emergency = emergency;
         this.creatorId = creatorId;
-        this.taskManager = taskManager;
         this.board = board;
 
+        assignTo(taskManager);
+
         this.progressStatus = TaskProgressStatus.TODO;
+    }
+
+    public void assignTo(ProjectParticipant taskManager) {
+        if (taskManager == null) {
+            this.taskManager = null;
+            return;
+        }
+
+        if (this.taskManager == null) {
+            this.taskManager = taskManager;
+            Events.raise(TaskEvent.assigned(this));
+            return;
+        }
+
+        if (!this.taskManager.getId().equals(taskManager.getId())) {
+            this.taskManager = taskManager;
+            Events.raise(TaskEvent.assigned(this));
+        }
     }
 
     public void modifyTask(String title, String content, LocalDateTime startDate, LocalDateTime endDate, boolean emergency,
@@ -91,7 +110,8 @@ public class Task extends BaseEntity {
         this.emergency = emergency;
         this.progressStatus = progressStatus;
         this.board = board;
-        this.taskManager = taskManager;
+
+        assignTo(taskManager);
     }
 
     public void addTaskBookmark(TaskBookmark taskBookmark) {

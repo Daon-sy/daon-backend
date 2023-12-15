@@ -2,6 +2,8 @@ package com.daon.backend.task.domain.task;
 
 import lombok.Getter;
 
+import javax.validation.constraints.NotNull;
+
 public class TaskEvent {
 
     public static Created created(Task task) {
@@ -14,6 +16,10 @@ public class TaskEvent {
 
     public static Removed removed(Task task) {
         return new Removed(task);
+    }
+
+    public static Assigned assigned(Task task) {
+        return new Assigned(task);
     }
 
     @Getter
@@ -39,6 +45,15 @@ public class TaskEvent {
         private Task task;
 
         public Removed(Task task) {
+            this.task = task;
+        }
+    }
+
+    @Getter
+    public static class Assigned {
+        private Task task;
+
+        public Assigned(@NotNull Task task) {
             this.task = task;
         }
     }

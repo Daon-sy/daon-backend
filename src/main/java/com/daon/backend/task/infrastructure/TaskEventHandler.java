@@ -23,8 +23,46 @@ public class TaskEventHandler {
     @TransactionalEventListener
     public void handleCreatedTask(TaskEvent.Created event) {
         Task task = event.getTask();
-        sendMessageToTaskManager(task);
         notifyTaskListUpdated(task);
+    }
+
+    // 해당 Task 포함된 프로젝트 페이지에 Task 변경 알림 전송
+    private void notifyTaskListUpdated(Task task) {
+        Project project = task.getBoard().getProject();
+        Workspace workspace = project.getWorkspace();
+        Board board = task.getBoard();
+        notificationSseService.sendFindTasksEventNotification(
+                workspace.getId(),
+                project.getId(),
+                board.getId()
+        );
+    }
+
+    @Async
+    @TransactionalEventListener
+    public void handleModifiedTask(TaskEvent.Modified event) {
+        Task task = event.getTask();
+        notifyTaskListUpdated(task);
+        notifyTaskDetailUpdated(task);
+    }
+
+    // 해당 할 일을 보고있는 페이지에 할 일 데이터 전송
+    private void notifyTaskDetailUpdated(Task task) {
+        notificationSseService.sendFindTaskEventNotification(task.getId());
+    }
+
+    @Async
+    @TransactionalEventListener
+    public void handleRemovedTask(TaskEvent.Removed event) {
+        Task task = event.getTask();
+        notifyTaskListUpdated(task);
+    }
+
+    @Async
+    @TransactionalEventListener
+    public void handleAssigned(TaskEvent.Assigned event) {
+        Task task = event.getTask();
+        sendMessageToTaskManager(task);
     }
 
     // 담당자에게 알림 전송
@@ -57,38 +95,5 @@ public class TaskEventHandler {
                     )
             );
         }
-    }
-
-    // 해당 Task 포함된 프로젝트 페이지에 Task 변경 알림 전송
-    private void notifyTaskListUpdated(Task task) {
-        Project project = task.getBoard().getProject();
-        Workspace workspace = project.getWorkspace();
-        Board board = task.getBoard();
-        notificationSseService.sendFindTasksEventNotification(
-                workspace.getId(),
-                project.getId(),
-                board.getId()
-        );
-    }
-
-    @Async
-    @TransactionalEventListener
-    public void handleModifiedTask(TaskEvent.Modified event) {
-        Task task = event.getTask();
-        sendMessageToTaskManager(task);
-        notifyTaskListUpdated(task);
-        notifyTaskDetailUpdated(task);
-    }
-
-    // 해당 할 일을 보고있는 페이지에 할 일 데이터 전송
-    private void notifyTaskDetailUpdated(Task task) {
-        notificationSseService.sendFindTaskEventNotification(task.getId());
-    }
-
-    @Async
-    @TransactionalEventListener
-    public void handleRemovedTask(TaskEvent.Removed event) {
-        Task task = event.getTask();
-        notifyTaskListUpdated(task);
     }
 }
