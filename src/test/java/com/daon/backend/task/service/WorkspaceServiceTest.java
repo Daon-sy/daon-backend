@@ -16,6 +16,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.stream.Collectors;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 
@@ -131,6 +133,10 @@ class WorkspaceServiceTest extends MockConfig {
     @DisplayName("워크스페이스 삭제")
     @Test
     void deleteWorkspace() {
+        System.out.println(
+                workspaceJpaRepository.findAll().stream().map(Workspace::getId).collect(Collectors.toList())
+        );
+
         // given
         Long workspaceId = 3L;
 

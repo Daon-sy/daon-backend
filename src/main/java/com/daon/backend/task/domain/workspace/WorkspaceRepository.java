@@ -24,7 +24,7 @@ public interface WorkspaceRepository {
 
     void deleteById(Long workspaceId);
 
-    void deleteTaskManager(Long projectParticipantId);
+    void deleteTaskManager(Long workspaceParticipantId);
 
     void deleteMessages(Long workspaceParticipantId);
 }
