@@ -1,6 +1,7 @@
 package com.daon.backend.task.service;
 
 import com.daon.backend.common.response.slice.PageResponse;
+import com.daon.backend.task.domain.task.TaskRepository;
 import com.daon.backend.task.domain.workspace.*;
 import com.daon.backend.task.domain.workspace.exception.CanNotDeletePersonalWorkspaceException;
 import com.daon.backend.task.domain.workspace.exception.CanNotModifyMyRoleException;
@@ -11,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -206,16 +208,18 @@ public class WorkspaceService {
     /**
      * 워크스페이스 탈퇴
      */
-    @Transactional
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void withdrawWorkspace(Long workspaceId) {
         String memberId = sessionMemberProvider.getMemberId();
         Workspace workspace = workspaceRepository.findById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
 
         if (workspace.canWithdrawWorkspace(memberId)) {
-            Long workspaceParticipantId = workspace.findWorkspaceParticipantByMemberId(memberId).getId();
-            workspaceRepository.deleteTaskManager(workspaceParticipantId);
-            workspace.withdrawWorkspace(memberId);
+            WorkspaceParticipant workspaceParticipant = workspace.findWorkspaceParticipantByMemberId(memberId);
+            workspaceRepository.deleteMessages(workspaceParticipant.getId());
+            workspaceParticipant.getParticipants()
+                    .forEach(projectParticipant -> workspaceRepository.deleteTaskManager(projectParticipant.getId()));
+            workspace.withdrawWorkspace(workspaceParticipant);
         } else {
             deleteWorkspace(workspaceId);
         }
@@ -230,6 +234,7 @@ public class WorkspaceService {
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
         Long workspaceParticipantId = requestDto.getWorkspaceParticipantId();
 
+        workspaceRepository.deleteMessages(workspaceParticipantId);
         workspaceRepository.deleteTaskManager(workspaceParticipantId);
         workspace.deportWorkspace(workspaceParticipantId);
     }

@@ -196,13 +196,8 @@ public class Workspace extends BaseEntity {
         return this.participants.stream().anyMatch(wsp -> !wsp.memberIdEquals(memberId) && wsp.isWorkspaceAdmin());
     }
 
-    public void withdrawWorkspace(String memberId) {
-        boolean isRemoved = this.participants.removeIf(workspaceParticipant ->
-                workspaceParticipant.memberIdEquals(memberId)
-        );
-        if (!isRemoved) {
-            throw new NotWorkspaceParticipantException(memberId, this.id);
-        }
+    public void withdrawWorkspace(WorkspaceParticipant workspaceParticipant) {
+        this.participants.remove(workspaceParticipant);
     }
 
     public void deportWorkspace(Long workspaceParticipantId) {
