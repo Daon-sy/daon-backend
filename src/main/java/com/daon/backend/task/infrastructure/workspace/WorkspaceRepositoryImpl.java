@@ -1,6 +1,6 @@
 package com.daon.backend.task.infrastructure.workspace;
 
-import com.daon.backend.task.domain.task.QTask;
+import com.daon.backend.task.domain.project.ProjectParticipant;
 import com.daon.backend.task.domain.workspace.*;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -10,10 +10,11 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
+import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 
-import static com.daon.backend.task.domain.task.QTask.*;
+import static com.daon.backend.task.domain.task.QTask.task;
 import static com.daon.backend.task.domain.workspace.QMessage.message;
 import static com.daon.backend.task.domain.workspace.QWorkspace.workspace;
 import static com.daon.backend.task.domain.workspace.QWorkspaceParticipant.workspaceParticipant;
@@ -24,6 +25,7 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
 
     private final WorkspaceJpaRepository workspaceJpaRepository;
     private final JPAQueryFactory queryFactory;
+    private final EntityManager em;
 
     @Override
     public Workspace save(Workspace workspace) {
@@ -102,7 +104,23 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
     }
 
     @Override
-    public void deleteTaskManager(Long workspaceParticipantId) {
-        workspaceJpaRepository.deleteTaskManager(workspaceParticipantId);
+    public void deleteTaskManager(Long projectParticipantId) {
+        queryFactory
+                .update(task)
+                .set(task.taskManager, (ProjectParticipant) null)
+                .where(task.taskManager.id.eq(projectParticipantId))
+                .execute();
+        em.flush();
+
+//        workspaceJpaRepository.deleteTaskManager(workspaceParticipantId);
+//        workspaceJpaRepository.flush();
+    }
+
+    @Override
+    public void deleteMessages(Long workspaceParticipantId) {
+        queryFactory
+                .delete(message)
+                .where(message.receiverId.eq(workspaceParticipantId))
+                .execute();
     }
 }
