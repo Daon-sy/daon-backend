@@ -4,15 +4,15 @@ import com.daon.backend.config.MockConfig;
 import com.daon.backend.member.domain.Member;
 import com.daon.backend.member.dto.*;
 import com.daon.backend.member.infrastructure.MemberJpaRepository;
-import com.daon.backend.security.MemberNotAuthenticatedException;
+import com.daon.backend.security.MemberPrincipal;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.mockito.BDDMockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -21,9 +21,6 @@ import static org.assertj.core.api.Assertions.*;
 @Transactional
 @SpringBootTest
 class MemberServiceTest extends MockConfig {
-
-    @MockBean
-    SessionMemberProvider sessionMemberProvider;
 
     @Autowired
     MemberService memberService;
@@ -35,8 +32,13 @@ class MemberServiceTest extends MockConfig {
 
     @BeforeEach
     void setUp() {
-        BDDMockito.given(sessionMemberProvider.getMemberId())
-                .willReturn("78cfb9f6-ec40-4ec7-b5bd-b7654fa014f8");
+        SecurityContextHolder.getContext().setAuthentication(
+                new UsernamePasswordAuthenticationToken(
+                        new MemberPrincipal("78cfb9f6-ec40-4ec7-b5bd-b7654fa014f8"),
+                        null,
+                        null
+                )
+        );
 
         member = memberJpaRepository.findAll().stream().
                 filter(m -> m.getUsername().equals("user1")).findFirst().orElseThrow();
@@ -162,10 +164,6 @@ class MemberServiceTest extends MockConfig {
     void withdrawMember() {
         // given when
         memberService.withdrawMember();
-//
-        String otherMemberId = "4c624615-7123-4a63-9ade-0fd5889452cd";
-        BDDMockito.given(sessionMemberProvider.getMemberId())
-                .willReturn(otherMemberId);
 
         // then
         int countMembers = memberJpaRepository.findAll().size();

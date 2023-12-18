@@ -13,7 +13,7 @@ public interface WorkspaceJpaRepository extends JpaRepository<Workspace, Long> {
     @EntityGraph(attributePaths = "participants")
     Optional<Workspace> findWorkspaceById(Long workspaceId);
 
-    @Modifying
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
     @Query("UPDATE Task t " +
             "SET t.taskManager = null " +
             "WHERE t.taskManager IN (SELECT pp FROM ProjectParticipant pp WHERE pp.workspaceParticipant.id = :workspaceParticipantId)")
