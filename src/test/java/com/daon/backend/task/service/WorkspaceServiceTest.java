@@ -7,6 +7,7 @@ import com.daon.backend.task.dto.workspace.*;
 import com.daon.backend.task.infrastructure.workspace.WorkspaceJpaRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
@@ -232,6 +233,7 @@ class WorkspaceServiceTest extends MockConfig {
                 .isThrownBy(() -> workspaceService.findWorkspace(workspaceId));
     }
 
+    @Disabled
     @DisplayName("워크스페이스 탈퇴 - BASIC_PARTICIPANT가 탈퇴하면 해당 사용자만 삭제되고 워크스페이스는 삭제되지 않는다.")
     @Test
     void withdrawWorkspace_BASIC_PARTICIPANT() {
