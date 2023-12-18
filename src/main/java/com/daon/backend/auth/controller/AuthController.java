@@ -87,7 +87,7 @@ public class AuthController {
                 .toString()
                 : null;
 
-        log.info("토큰 재발급 완료");
+        log.debug("토큰 재발급 완료");
 
         return ResponseEntity.status(HttpStatus.OK)
                 .headers(httpHeaders -> {
