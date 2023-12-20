@@ -9,7 +9,6 @@ import com.daon.backend.task.domain.task.Task;
 import com.daon.backend.task.domain.task.TaskEvent;
 import com.daon.backend.task.domain.workspace.Workspace;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
 
@@ -19,7 +18,6 @@ public class TaskEventHandler {
 
     private final NotificationSseService notificationSseService;
 
-    @Async
     @TransactionalEventListener
     public void handleCreatedTask(TaskEvent.Created event) {
         Task task = event.getTask();
@@ -38,7 +36,6 @@ public class TaskEventHandler {
         );
     }
 
-    @Async
     @TransactionalEventListener
     public void handleModifiedTask(TaskEvent.Modified event) {
         Task task = event.getTask();
@@ -51,14 +48,12 @@ public class TaskEventHandler {
         notificationSseService.sendFindTaskEventNotification(task.getId());
     }
 
-    @Async
     @TransactionalEventListener
     public void handleRemovedTask(TaskEvent.Removed event) {
         Task task = event.getTask();
         notifyTaskListUpdated(task);
     }
 
-    @Async
     @TransactionalEventListener
     public void handleAssigned(TaskEvent.Assigned event) {
         Task task = event.getTask();
