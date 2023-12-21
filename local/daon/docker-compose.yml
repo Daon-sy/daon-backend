@@ -1,0 +1,17 @@
+version: '3.7'
+
+services:
+  daon-api:
+    container_name: daon-api
+    image: hi0u/daon-backend
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      TZ: Asia/Seoul
+      spring.profiles.active: local
+      spring.redis.host: host.docker.internal
+      spring.redis.port: 6379
+      spring.datasource.url: jdbc:postgresql://host.docker.internal:5432/local_db
+    networks:
+      default:

@@ -89,6 +89,23 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
     }
 
     @Override
+    public Page<Message> findSendMessages(Workspace workspace, Long senderId, String target, String keyword, Pageable pageable) {
+        BooleanBuilder builder = new BooleanBuilder();
+        if (target.equals("title")) {
+            builder.and(message.title.containsIgnoreCase(keyword));
+        }
+
+        List<Message> messages = queryFactory
+                .selectFrom(message)
+                .where(builder.and(message.workspace.id.eq(workspace.getId()))
+                        .and(message.senderId.eq(senderId)))
+                .orderBy(message.createdAt.desc())
+                .fetch();
+
+        return new PageImpl<>(messages, pageable, messages.size());
+    }
+
+    @Override
     public void readAllMessages(Long workspaceId, Long receiverId) {
         queryFactory
                 .update(message)
