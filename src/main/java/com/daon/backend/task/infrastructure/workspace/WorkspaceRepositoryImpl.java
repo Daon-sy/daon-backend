@@ -121,16 +121,8 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
     }
 
     @Override
-    public void deleteTaskManager(Long projectParticipantId) {
-        queryFactory
-                .update(task)
-                .set(task.taskManager, (ProjectParticipant) null)
-                .where(task.taskManager.id.eq(projectParticipantId))
-                .execute();
-        em.flush();
-
-//        workspaceJpaRepository.deleteTaskManager(workspaceParticipantId);
-//        workspaceJpaRepository.flush();
+    public void deleteTaskManager(Long workspaceParticipantId) {
+        workspaceJpaRepository.deleteTaskManager(workspaceParticipantId);
     }
 
     @Override

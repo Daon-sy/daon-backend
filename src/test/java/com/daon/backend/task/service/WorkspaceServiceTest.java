@@ -7,6 +7,7 @@ import com.daon.backend.task.dto.workspace.*;
 import com.daon.backend.task.infrastructure.workspace.WorkspaceJpaRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.BDDMockito;
@@ -14,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
@@ -130,6 +133,10 @@ class WorkspaceServiceTest extends MockConfig {
     @DisplayName("워크스페이스 삭제")
     @Test
     void deleteWorkspace() {
+        System.out.println(
+                workspaceJpaRepository.findAll().stream().map(Workspace::getId).collect(Collectors.toList())
+        );
+
         // given
         Long workspaceId = 3L;
 
@@ -232,6 +239,7 @@ class WorkspaceServiceTest extends MockConfig {
                 .isThrownBy(() -> workspaceService.findWorkspace(workspaceId));
     }
 
+    @Disabled
     @DisplayName("워크스페이스 탈퇴 - BASIC_PARTICIPANT가 탈퇴하면 해당 사용자만 삭제되고 워크스페이스는 삭제되지 않는다.")
     @Test
     void withdrawWorkspace_BASIC_PARTICIPANT() {

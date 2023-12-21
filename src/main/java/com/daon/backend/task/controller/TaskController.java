@@ -72,8 +72,9 @@ public class TaskController {
     @CheckRole(authority = TSK_DELETE)
     @DeleteMapping("/api/workspaces/{workspaceId}/projects/{projectId}/boards/{boardId}/tasks/{taskId}")
     public void deleteTask(@PathVariable Long projectId,
+                           @PathVariable Long boardId,
                            @PathVariable Long taskId) {
-        taskService.deleteTask(projectId, taskId);
+        taskService.deleteTask(boardId, taskId);
     }
 
     @Operation(summary = "할 일 히스토리 조회", description = "할 일 히스토리 조회 요청입니다..")

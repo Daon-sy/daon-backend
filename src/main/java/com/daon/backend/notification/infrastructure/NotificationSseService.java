@@ -40,10 +40,6 @@ public class NotificationSseService {
 
         SseEmitter emitter = emitterInitialSetting(emitterId);
 
-        if (hasLostData(lastEventId)) {
-            sendLostData(lastEventId, memberId, emitterId, emitter);
-        }
-
         return emitter;
     }
 
@@ -74,23 +70,6 @@ public class NotificationSseService {
         } catch (IOException e) {
             emitterRepository.deleteById(emitterId);
         }
-    }
-
-    private boolean hasLostData(String lastEventId) {
-        return !lastEventId.isEmpty();
-    }
-
-    private void sendLostData(String lastEventId, String memberId, String emitterId, SseEmitter emitter) {
-        long now = Long.parseLong(lastEventId.substring(memberId.length() + 1));
-
-        notificationRepository.findNotSentNotifications(memberId, now)
-                .forEach(notification -> sendNotification(
-                        emitter,
-                        emitterId,
-                        emitterId,
-                        new NotificationDto(notification).getData(),
-                        String.valueOf(notification.getNotificationType())
-                ));
     }
 
     /**
@@ -187,7 +166,7 @@ public class NotificationSseService {
         });
     }
 
-    @Scheduled(fixedRate = 130_000)
+    @Scheduled(fixedRate = 120_000)
     protected void sendHeartbeat() {
         Map<String, SseEmitter> emitterMap = emitterRepository.findAll();
         log.debug("send heartbeat to all emitter... emitter count: {}", emitterMap.values().size());
@@ -196,6 +175,7 @@ public class NotificationSseService {
             try {
                 emitter.send(SseEmitter.event().name("heartbeat").data(""));
             } catch (Exception e) {
+                log.debug("{}", e.getMessage());
                 emitterRepository.deleteById(key);
             }
         });

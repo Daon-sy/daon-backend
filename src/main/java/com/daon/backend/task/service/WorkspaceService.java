@@ -207,7 +207,7 @@ public class WorkspaceService {
     /**
      * 워크스페이스 탈퇴
      */
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public void withdrawWorkspace(Long workspaceId) {
         String memberId = sessionMemberProvider.getMemberId();
         Workspace workspace = workspaceRepository.findById(workspaceId)

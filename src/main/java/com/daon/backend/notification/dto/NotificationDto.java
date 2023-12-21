@@ -2,10 +2,7 @@ package com.daon.backend.notification.dto;
 
 import com.daon.backend.notification.domain.Notification;
 import com.daon.backend.notification.domain.NotificationType;
-import com.daon.backend.notification.domain.data.Message;
-import com.daon.backend.notification.domain.data.Project;
-import com.daon.backend.notification.domain.data.Task;
-import com.daon.backend.notification.domain.data.Workspace;
+import com.daon.backend.notification.domain.data.*;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Builder;
@@ -39,6 +36,7 @@ public class NotificationDto {
                         .time(noti.getCreatedAt())
                         .workspace(new WorkspaceData(noti.getWorkspace()))
                         .project(new ProjectData(noti.getProject()))
+                        .board(new BoardData(noti.getBoard()))
                         .task(new TaskData(noti.getTask()))
                         .build();
                 break;
@@ -100,14 +98,16 @@ public class NotificationDto {
 
         private WorkspaceData workspace;
         private ProjectData project;
+        private BoardData board;
         private TaskData task;
         private MessageData message;
 
         @Builder
-        public NotificationData(LocalDateTime time, WorkspaceData workspace, ProjectData project, TaskData task, MessageData message) {
+        public NotificationData(LocalDateTime time, WorkspaceData workspace, ProjectData project, BoardData board, TaskData task, MessageData message) {
             this.time = time;
             this.workspace = workspace;
             this.project = project;
+            this.board = board;
             this.task = task;
             this.message = message;
         }
@@ -142,6 +142,22 @@ public class NotificationDto {
         public ProjectData(Project project) {
             this.projectId = project.getId();
             this.projectTitle = project.getTitle();
+        }
+    }
+
+    @Getter
+    public static class BoardData {
+        private Long boardId;
+        private String boardTitle;
+
+        public BoardData(Long boardId, String boardTitle) {
+            this.boardId = boardId;
+            this.boardTitle = boardTitle;
+        }
+
+        public BoardData(Board board) {
+            this.boardId = board.getId();
+            this.boardTitle = board.getTitle();
         }
     }
 
