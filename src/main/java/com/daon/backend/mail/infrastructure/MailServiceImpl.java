@@ -115,7 +115,7 @@ public class MailServiceImpl implements MailService {
      * 할 일 D-3 메일 전송
      * 전송 시간 : 매일 자정
      */
-    @Scheduled(cron = "0 50 17 * * *")
+    @Scheduled(cron = "0 0 12 * * *")
     public void sendEmailForTasksLessThanThreeDaysOld() {
         List<Task> findTasks = taskRepository.findTasksForLessThanThreeDaysOld();
         if (!findTasks.isEmpty()) {
