@@ -5,6 +5,7 @@ import com.daon.backend.task.domain.authority.CheckRole;
 import com.daon.backend.task.dto.workspace.FindMessageResponseDto;
 import com.daon.backend.task.dto.workspace.MessageSummary;
 import com.daon.backend.task.dto.workspace.SendMessageRequestDto;
+import com.daon.backend.task.dto.workspace.SendMessageSummary;
 import com.daon.backend.task.service.WorkspaceService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.RequiredArgsConstructor;
@@ -38,14 +39,24 @@ public class MessageController {
         return workspaceService.findMessage(workspaceId, messageId);
     }
 
-    @Operation(summary = "쪽지 목록 조회", description = "쪽지 목록 조회 요청입니다.")
+    @Operation(summary = "받은 쪽지 목록 조회", description = "받은 쪽지 목록 조회 요청입니다.")
     @CheckRole(authority = MSG_READ)
     @GetMapping("/api/workspaces/{workspaceId}/messages")
     public PageResponse<MessageSummary> findMessages(@PathVariable Long workspaceId,
-                                                     @RequestParam String target,
-                                                     @RequestParam String keyword,
+                                                     @RequestParam(required = false) String target,
+                                                     @RequestParam(required = false) String keyword,
                                                      @PageableDefault(size = 7) Pageable pageable) {
         return workspaceService.findMessages(workspaceId, target, keyword, pageable);
+    }
+
+    @Operation(summary = "보낸 쪽지 목록 조회", description = "보낸 쪽지 목록 조회 요청입니다.")
+    @CheckRole(authority = MSG_READ)
+    @GetMapping("/api/workspaces/{workspaceId}/send-messages")
+    public PageResponse<SendMessageSummary> findSendMessages(@PathVariable Long workspaceId,
+                                                             @RequestParam(required = false) String target,
+                                                             @RequestParam(required = false) String keyword,
+                                                             @PageableDefault(size = 7) Pageable pageable) {
+        return workspaceService.findSendMessages(workspaceId, target, keyword, pageable);
     }
 
     @Operation(summary = "쪽지 삭제", description = "쪽지 삭제 요청입니다.")

@@ -1,7 +1,6 @@
 package com.daon.backend.task.service;
 
 import com.daon.backend.common.response.slice.PageResponse;
-import com.daon.backend.task.domain.task.TaskRepository;
 import com.daon.backend.task.domain.workspace.*;
 import com.daon.backend.task.domain.workspace.exception.CanNotDeletePersonalWorkspaceException;
 import com.daon.backend.task.domain.workspace.exception.CanNotModifyMyRoleException;
@@ -316,7 +315,7 @@ public class WorkspaceService {
     }
 
     /**
-     * 쪽지 목록 조회
+     * 받은 쪽지 목록 조회
      */
     public PageResponse<MessageSummary> findMessages(Long workspaceId, String target, String keyword, Pageable pageable) {
         String memberId = sessionMemberProvider.getMemberId();
@@ -332,6 +331,26 @@ public class WorkspaceService {
                                         workspace.findWorkspaceParticipantForMessage(message.getSenderId())
                                 )
                         )
+        );
+    }
+
+    /**
+     * 보낸 쪽지 목록 조회
+     */
+
+    public PageResponse<SendMessageSummary> findSendMessages(Long workspaceId, String target, String keyword, Pageable pageable) {
+        String memberId = sessionMemberProvider.getMemberId();
+        Workspace workspace = workspaceRepository.findById(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+        Long senderId = workspace.findWorkspaceParticipantByMemberId(memberId).getId();
+
+        return new PageResponse<>(
+                workspaceRepository.findSendMessages(workspace, senderId, target, keyword, pageable)
+                        .map(message ->
+                                new SendMessageSummary(
+                                        message,
+                                        workspace.findWorkspaceParticipantForMessage(message.getReceiverId())
+                                ))
         );
     }
 
