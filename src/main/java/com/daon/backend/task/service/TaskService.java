@@ -77,10 +77,10 @@ public class TaskService {
      * 할 일 수정
      */
     @Transactional
-    public void modifyTask(Long projectId, Long taskId, ModifyTaskRequestDto requestDto) {
+    public void modifyTask(Long projectId, Long boardId, Long taskId, ModifyTaskRequestDto requestDto) {
         Project project = projectRepository.findProjectById(projectId)
                 .orElseThrow(() -> new ProjectNotFoundException(projectId));
-        Board board = project.getBoardByBoardId(requestDto.getBoardId());
+        Board board = project.getBoardByBoardId(boardId);
         Task task = board.findTask(taskId);
 
         Long taskManagerId = requestDto.getTaskManagerId();
@@ -96,7 +96,7 @@ public class TaskService {
                 requestDto.getEndDate(),
                 requestDto.isEmergency(),
                 requestDto.getProgressStatus(),
-                board,
+                project.getBoardByBoardId(requestDto.getBoardId()),
                 taskManager
         );
     }

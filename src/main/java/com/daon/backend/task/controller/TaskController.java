@@ -39,9 +39,10 @@ public class TaskController {
     @CheckRole(authority = TSK_UPDATE)
     @PutMapping("/api/workspaces/{workspaceId}/projects/{projectId}/boards/{boardId}/tasks/{taskId}")
     public void modifyTask(@PathVariable Long projectId,
+                           @PathVariable Long boardId,
                            @PathVariable Long taskId,
                            @RequestBody @Valid ModifyTaskRequestDto requestDto) {
-        taskService.modifyTask(projectId, taskId, requestDto);
+        taskService.modifyTask(projectId, boardId, taskId, requestDto);
     }
 
     @Operation(summary = "할 일 단건 조회", description = "할 일 단건 조회 요청입니다.")
