@@ -9,7 +9,6 @@ import com.daon.backend.task.domain.workspace.DeportationWorkspaceAlarmEvent;
 import com.daon.backend.task.domain.workspace.InviteWorkspaceAlarmEvent;
 import com.daon.backend.task.domain.workspace.SendReceiveMessageAlarmEvent;
 import lombok.RequiredArgsConstructor;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
 
@@ -20,7 +19,6 @@ public class SendEventHandler {
     private final NotificationSseService notificationSseService;
 
     @TransactionalEventListener
-    @Async
     public void handle(InviteWorkspaceAlarmEvent event) {
         notificationSseService.sendAlarm(
                 Notification.inviteWorkspace(event.getMemberId(), new com.daon.backend.notification.domain.data.Workspace(
@@ -31,7 +29,6 @@ public class SendEventHandler {
     }
 
     @TransactionalEventListener
-    @Async
     public void handle(DeportationWorkspaceAlarmEvent event) {
         notificationSseService.sendAlarm(
                 Notification.deportationWorkspace(event.getMemberId(), new com.daon.backend.notification.domain.data.Workspace(
@@ -42,7 +39,6 @@ public class SendEventHandler {
     }
 
     @TransactionalEventListener
-    @Async
     public void handle(InviteProjectAlarmEvent event) {
         notificationSseService.sendAlarm(
                 Notification.inviteProject(
@@ -60,7 +56,6 @@ public class SendEventHandler {
     }
 
     @TransactionalEventListener
-    @Async
     public void handle(DeportationProjectAlarmEvent event) {
         notificationSseService.sendAlarm(
                 Notification.deportationProject(
@@ -78,7 +73,6 @@ public class SendEventHandler {
     }
 
     @TransactionalEventListener
-    @Async
     public void handle(SendReceiveMessageAlarmEvent event) {
         notificationSseService.sendAlarm(
                 Notification.receiveMessage(

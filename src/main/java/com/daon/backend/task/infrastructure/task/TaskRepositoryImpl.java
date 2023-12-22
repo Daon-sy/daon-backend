@@ -3,6 +3,7 @@ package com.daon.backend.task.infrastructure.task;
 import com.daon.backend.common.history.Revision;
 import com.daon.backend.task.domain.board.Board;
 import com.daon.backend.task.domain.project.ProjectParticipant;
+import com.daon.backend.task.domain.project.QProjectParticipant;
 import com.daon.backend.task.domain.task.Task;
 import com.daon.backend.task.domain.task.TaskRepository;
 import com.daon.backend.task.dto.*;
@@ -99,6 +100,7 @@ public class TaskRepositoryImpl implements TaskRepository {
             builder.and(task.taskManager.memberId.eq(memberId));
         }
 
+        QProjectParticipant qProjectParticipant = new QProjectParticipant("qP");
         return queryFactory
                 .select(
                         constructor(
@@ -131,9 +133,10 @@ public class TaskRepositoryImpl implements TaskRepository {
                 .from(task)
                     .join(task.board, board)
                     .leftJoin(board.project, project)
+                    .leftJoin(qProjectParticipant).on(qProjectParticipant.project.eq(project).and(qProjectParticipant.memberId.eq(memberId)))
                     .leftJoin(task.taskManager, projectParticipant)
                     .leftJoin(taskBookmark).on(task.eq(taskBookmark.task).and(taskBookmark.memberId.eq(memberId)))
-                .where(project.workspace.id.eq(workspaceId))
+                .where(project.workspace.id.eq(workspaceId).and(qProjectParticipant.isNotNull()).and(builder))
                 .orderBy(task.emergency.desc(), task.modifiedAt.desc())
                 .fetch();
     }

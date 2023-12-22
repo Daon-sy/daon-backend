@@ -5,7 +5,10 @@ import com.daon.backend.member.service.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -63,8 +66,16 @@ public class MemberController {
 
     @Operation(summary = "회원 탈퇴", description = "회원 탈퇴 요청입니다.")
     @DeleteMapping("/api/members/me")
-    public void withdrawMember() {
+    public ResponseEntity<Void> withdrawMember() {
         memberService.withdrawMember();
+        ResponseCookie rtkCookie = ResponseCookie.from("rtk", "")
+                .path("/")
+                .maxAge(0)
+                .build();
+
+        return ResponseEntity.ok()
+                .headers(httpHeaders -> httpHeaders.add(HttpHeaders.SET_COOKIE, rtkCookie.toString()))
+                .build();
     }
 }
 

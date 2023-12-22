@@ -137,7 +137,7 @@ public class TaskServiceTest extends MockConfig {
         );
 
         // when
-        taskService.modifyTask(projectId, taskId, requestDto);
+        taskService.modifyTask(projectId, boardId, taskId, requestDto);
         Task task = taskRepository.findTaskById(taskId).orElseThrow();
 
         // then
