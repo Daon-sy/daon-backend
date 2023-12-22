@@ -9,7 +9,7 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Getter
-public class SendMessageSummary {
+public class FindSendMessageResponseDto {
 
     private Long messageId;
 
@@ -22,9 +22,7 @@ public class SendMessageSummary {
 
     private WorkspaceParticipantProfile receiver;
 
-    private boolean readed;
-
-    public SendMessageSummary(Message message, WorkspaceParticipant workspaceParticipant) {
+    public FindSendMessageResponseDto(Message message, WorkspaceParticipant workspaceParticipant) {
         this.messageId = message.getId();
         this.title = message.getTitle();
         this.content = message.getContent();
@@ -34,6 +32,5 @@ public class SendMessageSummary {
         } else {
             this.receiver = null;
         }
-        this.readed = message.isReaded();
     }
 }

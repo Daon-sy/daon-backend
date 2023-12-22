@@ -20,7 +20,7 @@ public class MessageSummary {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime createdAt;
 
-    private WorkspaceParticipantProfile sender;
+    private WorkspaceParticipantProfile profile;
 
     private boolean readed;
 
@@ -30,9 +30,9 @@ public class MessageSummary {
         this.content = message.getContent();
         this.createdAt = message.getCreatedAt();
         if (workspaceParticipant != null) {
-            this.sender = new WorkspaceParticipantProfile(workspaceParticipant);
+            this.profile = new WorkspaceParticipantProfile(workspaceParticipant);
         } else {
-            this.sender = null;
+            this.profile = null;
         }
         this.readed = message.isReaded();
     }
