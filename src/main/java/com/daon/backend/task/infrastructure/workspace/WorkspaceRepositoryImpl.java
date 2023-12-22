@@ -43,7 +43,10 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
                 .selectFrom(workspace)
                 .innerJoin(workspace.participants, workspaceParticipant)
                 .where(workspaceParticipant.memberId.eq(memberId))
-                .orderBy(workspace.createdAt.asc())
+                .orderBy(
+                        workspace.division.desc(),
+                        workspace.title.asc()
+                )
                 .fetch();
     }
 

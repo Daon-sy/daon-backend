@@ -137,7 +137,7 @@ public class TaskRepositoryImpl implements TaskRepository {
                     .leftJoin(task.taskManager, projectParticipant)
                     .leftJoin(taskBookmark).on(task.eq(taskBookmark.task).and(taskBookmark.memberId.eq(memberId)))
                 .where(project.workspace.id.eq(workspaceId).and(qProjectParticipant.isNotNull()).and(builder))
-                .orderBy(task.emergency.desc(), task.modifiedAt.desc())
+                .orderBy(task.emergency.desc(), task.modifiedAt.asc())
                 .fetch();
     }
 
