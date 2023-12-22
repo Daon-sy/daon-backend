@@ -43,7 +43,7 @@ public class ProjectRepositoryImpl implements ProjectRepository {
                 .innerJoin(project.participants, projectParticipant)
                 .where(projectParticipant.memberId.eq(memberId)
                         .and(project.workspace.id.eq(workspaceId)))
-                .orderBy(project.createdAt.asc())
+                .orderBy(project.title.asc())
                 .fetch();
     }
 
