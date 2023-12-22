@@ -3,6 +3,7 @@ package com.daon.backend.member.infrastructure;
 import com.daon.backend.member.domain.MemberCreatedEvent;
 import com.daon.backend.task.service.WorkspaceService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -13,6 +14,7 @@ public class MemberCreatedEventHandler {
 
     private final WorkspaceService workspaceService;
 
+    @Async
     @TransactionalEventListener(
             classes = MemberCreatedEvent.class,
             phase = TransactionPhase.AFTER_COMMIT
