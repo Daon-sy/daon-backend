@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -296,7 +295,7 @@ public class WorkspaceService {
     }
 
     /**
-     * 쪽지 단건 조회
+     * 받은 쪽지 단건 조회
      */
     @Transactional
     public FindMessageResponseDto findMessage(Long workspaceId, Long messageId) {
@@ -312,6 +311,22 @@ public class WorkspaceService {
         WorkspaceParticipant sender = workspace.findWorkspaceParticipantForMessage(senderId);
 
         return new FindMessageResponseDto(message, sender);
+    }
+
+    /**
+     * 보낸 쪽지 단건 조회
+     */
+    @Transactional
+    public FindSendMessageResponseDto findSendMessage(Long workspaceId, Long messageId) {
+        Workspace workspace = workspaceRepository.findById(workspaceId)
+                .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+        Message message = workspace.findSendMessage(messageId);
+        message.readMessage();
+
+        Long receiverId = message.getReceiverId();
+        WorkspaceParticipant receiver = workspace.findWorkspaceParticipantForMessage(receiverId);
+
+        return new FindSendMessageResponseDto(message, receiver);
     }
 
     /**
@@ -338,7 +353,7 @@ public class WorkspaceService {
      * 보낸 쪽지 목록 조회
      */
 
-    public PageResponse<SendMessageSummary> findSendMessages(Long workspaceId, String target, String keyword, Pageable pageable) {
+    public PageResponse<MessageSummary> findSendMessages(Long workspaceId, String target, String keyword, Pageable pageable) {
         String memberId = sessionMemberProvider.getMemberId();
         Workspace workspace = workspaceRepository.findById(workspaceId)
                 .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
@@ -347,7 +362,7 @@ public class WorkspaceService {
         return new PageResponse<>(
                 workspaceRepository.findSendMessages(workspace, senderId, target, keyword, pageable)
                         .map(message ->
-                                new SendMessageSummary(
+                                new MessageSummary(
                                         message,
                                         workspace.findWorkspaceParticipantForMessage(message.getReceiverId())
                                 ))

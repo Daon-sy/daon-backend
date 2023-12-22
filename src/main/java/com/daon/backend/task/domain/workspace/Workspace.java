@@ -252,11 +252,18 @@ public class Workspace extends BaseEntity {
                 .findFirst()
                 .orElseThrow(() -> new MessageNotFoundException(messageId));
 
-        if (!findMessage.getReceiverId().equals(receiverId)) {
-            throw new NotTheMessageReceiverException();
-        }
+//        if (!findMessage.getReceiverId().equals(receiverId)) {
+//            throw new NotTheMessageReceiverException();
+//        }
 
         return findMessage;
+    }
+
+    public Message findSendMessage(Long messageId) {
+        return this.messages.stream()
+                .filter(message -> message.getId().equals(messageId))
+                .findFirst()
+                .orElseThrow(() -> new MessageNotFoundException(messageId));
     }
 
     public void deleteMessage(Long messageId, Long receiverId) {
