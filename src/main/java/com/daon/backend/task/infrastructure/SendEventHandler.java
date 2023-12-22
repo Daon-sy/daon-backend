@@ -9,6 +9,7 @@ import com.daon.backend.task.domain.workspace.DeportationWorkspaceAlarmEvent;
 import com.daon.backend.task.domain.workspace.InviteWorkspaceAlarmEvent;
 import com.daon.backend.task.domain.workspace.SendReceiveMessageAlarmEvent;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionalEventListener;
 
@@ -18,6 +19,7 @@ public class SendEventHandler {
 
     private final NotificationSseService notificationSseService;
 
+    @Async
     @TransactionalEventListener
     public void handle(InviteWorkspaceAlarmEvent event) {
         notificationSseService.sendAlarm(
@@ -28,6 +30,7 @@ public class SendEventHandler {
         );
     }
 
+    @Async
     @TransactionalEventListener
     public void handle(DeportationWorkspaceAlarmEvent event) {
         notificationSseService.sendAlarm(
@@ -38,6 +41,7 @@ public class SendEventHandler {
         );
     }
 
+    @Async
     @TransactionalEventListener
     public void handle(InviteProjectAlarmEvent event) {
         notificationSseService.sendAlarm(
@@ -55,6 +59,7 @@ public class SendEventHandler {
         );
     }
 
+    @Async
     @TransactionalEventListener
     public void handle(DeportationProjectAlarmEvent event) {
         notificationSseService.sendAlarm(
