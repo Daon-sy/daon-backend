@@ -77,6 +77,7 @@ public class SendEventHandler {
         );
     }
 
+    @Async
     @TransactionalEventListener
     public void handle(SendReceiveMessageAlarmEvent event) {
         notificationSseService.sendAlarm(
