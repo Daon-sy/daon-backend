@@ -7,7 +7,6 @@ import com.daon.backend.notification.domain.Notification;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
@@ -162,21 +161,6 @@ public class NotificationSseService {
             Long findTaskId = Long.valueOf(StringUtils.substringBetween(key, TASK_EMITTER_ID_PREFIX, "_"));
             if (Objects.equals(taskId, findTaskId)) {
                 sendNotification(emitter, key, key, null, NOTIFICATION_TYPE_MESSAGE);
-            }
-        });
-    }
-
-    @Scheduled(fixedRate = 120_000)
-    protected void sendHeartbeat() {
-        Map<String, SseEmitter> emitterMap = emitterRepository.findAll();
-        log.debug("send heartbeat to all emitter... emitter count: {}", emitterMap.values().size());
-
-        emitterMap.forEach((key, emitter) -> {
-            try {
-                emitter.send(SseEmitter.event().name("heartbeat").data(""));
-            } catch (Exception e) {
-                log.debug("{}", e.getMessage());
-                emitterRepository.deleteById(key);
             }
         });
     }
