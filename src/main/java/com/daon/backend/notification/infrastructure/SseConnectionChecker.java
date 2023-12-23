@@ -16,7 +16,7 @@ public class SseConnectionChecker {
 
     private final EmitterRepository emitterRepository;
 
-    @Scheduled(fixedRate = 120_000)
+    @Scheduled(fixedRate = 60_000)
     protected void sendHeartbeat() {
         Map<String, SseEmitter> emitterMap = emitterRepository.findAll();
         log.debug("send heartbeat to all emitter... emitter count: {}", emitterMap.values().size());
