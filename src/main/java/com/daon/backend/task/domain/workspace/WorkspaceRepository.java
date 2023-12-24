@@ -1,5 +1,7 @@
 package com.daon.backend.task.domain.workspace;
 
+import com.daon.backend.task.domain.project.Project;
+import com.daon.backend.task.domain.project.ProjectParticipant;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -29,4 +31,10 @@ public interface WorkspaceRepository {
     void deleteTaskManager(Long workspaceParticipantId);
 
     void deleteMessages(Long workspaceParticipantId);
+
+    void deleteTaskReplies(Long workspaceParticipantId);
+
+    List<Project> findProjectBy(WorkspaceParticipant wsp);
+
+    void flush();
 }

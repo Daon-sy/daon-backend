@@ -200,6 +200,10 @@ public class Workspace extends BaseEntity {
         this.participants.remove(workspaceParticipant);
     }
 
+    public void withdrawWorkspace(String memberId) {
+        this.participants.removeIf(workspaceParticipant -> workspaceParticipant.memberIdEquals(memberId));
+    }
+
     public void deportWorkspace(Long workspaceParticipantId) {
         WorkspaceParticipant workspaceParticipant = this.participants.stream()
                 .filter(w -> w.getId().equals(workspaceParticipantId))

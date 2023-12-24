@@ -61,10 +61,6 @@ public class Task extends BaseEntity {
 
     @NotAudited
     @OneToMany(mappedBy = "task", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
-    private List<TaskBookmark> taskBookmarks = new ArrayList<>();
-
-    @NotAudited
-    @OneToMany(mappedBy = "task", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
     private List<TaskReply> taskReplies = new ArrayList<>();
 
     @Builder
@@ -112,14 +108,6 @@ public class Task extends BaseEntity {
         this.board = board;
 
         assignTo(taskManager);
-    }
-
-    public void addTaskBookmark(TaskBookmark taskBookmark) {
-        this.taskBookmarks.add(taskBookmark);
-    }
-
-    public void removeTaskBookmark(ProjectParticipant projectParticipant) {
-        this.taskBookmarks.removeIf(taskBookmark -> taskBookmark.getParticipant().equals(projectParticipant));
     }
 
     public void modifyProgressStatus(TaskProgressStatus progressStatus) {

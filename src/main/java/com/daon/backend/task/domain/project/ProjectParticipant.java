@@ -1,7 +1,8 @@
 package com.daon.backend.task.domain.project;
 
 import com.daon.backend.config.BaseEntity;
-import com.daon.backend.task.domain.task.TaskReply;
+import com.daon.backend.task.domain.task.Task;
+import com.daon.backend.task.domain.task.TaskBookmark;
 import com.daon.backend.task.domain.workspace.WorkspaceParticipant;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -30,13 +31,21 @@ public class ProjectParticipant extends BaseEntity {
     @JoinColumn(name = "workspace_partipant_id")
     private WorkspaceParticipant workspaceParticipant;
 
-    @OneToMany(mappedBy = "taskReplyWriter", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
-    private List<TaskReply> taskReplies = new ArrayList<>();
+    @OneToMany(mappedBy = "participant", cascade = {CascadeType.PERSIST, CascadeType.REMOVE}, orphanRemoval = true)
+    private List<TaskBookmark> taskBookmarks = new ArrayList<>();
 
     @Builder
     public ProjectParticipant(Project project, WorkspaceParticipant workspaceParticipant, String memberId) {
         this.project = project;
         this.workspaceParticipant = workspaceParticipant;
         this.memberId = memberId;
+    }
+
+    public void addTaskBookmark(Task task) {
+        this.taskBookmarks.add(new TaskBookmark(task, this, memberId));
+    }
+
+    public void removeTaskBookmark(Task task) {
+        this.taskBookmarks.removeIf(taskBookmark -> taskBookmark.getTask().getId().equals(task.getId()));
     }
 }
