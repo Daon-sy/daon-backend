@@ -12,5 +12,6 @@ public interface ProjectParticipantJpaRepository extends JpaRepository<ProjectPa
     @Override
     Optional<ProjectParticipant> findById(Long id);
 
+    @EntityGraph(attributePaths = {"workspaceParticipant", "project", "taskBookmarks"})
     Optional<ProjectParticipant> findProjectParticipantByProjectIdAndMemberId(Long projectId, String memberId);
 }

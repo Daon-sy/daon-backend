@@ -119,10 +119,10 @@ public class TaskService {
 
         boolean isBookmarked = taskRepository.existsTaskBookmarkByTaskIdAndProjectParticipantId(taskId, projectParticipantId);
         if (isBookmarked) {
-            task.removeTaskBookmark(projectParticipant);
+            projectParticipant.removeTaskBookmark(task);
             created = false;
         } else {
-            task.addTaskBookmark(new TaskBookmark(task, projectParticipant, memberId));
+            projectParticipant.addTaskBookmark(task);
             created = true;
         }
 

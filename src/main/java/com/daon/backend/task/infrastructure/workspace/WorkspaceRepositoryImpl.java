@@ -1,5 +1,6 @@
 package com.daon.backend.task.infrastructure.workspace;
 
+import com.daon.backend.task.domain.project.Project;
 import com.daon.backend.task.domain.project.ProjectParticipant;
 import com.daon.backend.task.domain.workspace.*;
 import com.querydsl.core.BooleanBuilder;
@@ -14,7 +15,8 @@ import javax.persistence.EntityManager;
 import java.util.List;
 import java.util.Optional;
 
-import static com.daon.backend.task.domain.task.QTask.task;
+import static com.daon.backend.task.domain.project.QProjectParticipant.projectParticipant;
+import static com.daon.backend.task.domain.task.QTaskReply.*;
 import static com.daon.backend.task.domain.workspace.QMessage.message;
 import static com.daon.backend.task.domain.workspace.QWorkspace.workspace;
 import static com.daon.backend.task.domain.workspace.QWorkspaceParticipant.workspaceParticipant;
@@ -134,5 +136,32 @@ public class WorkspaceRepositoryImpl implements WorkspaceRepository {
                 .delete(message)
                 .where(message.receiverId.eq(workspaceParticipantId))
                 .execute();
+    }
+
+    @Override
+    public void deleteTaskReplies(Long workspaceParticipantId) {
+        List<Long> projectParticipantIds = queryFactory.select(projectParticipant.id)
+                .from(projectParticipant)
+                .where(projectParticipant.workspaceParticipant.id.eq(workspaceParticipantId))
+                .fetch();
+
+        queryFactory
+                .delete(taskReply)
+                .where(taskReply.taskReplyWriter.id.in(projectParticipantIds))
+                .execute();
+    }
+
+    @Override
+    public List<Project> findProjectBy(WorkspaceParticipant wsp) {
+        return queryFactory.select(projectParticipant.project)
+                .from(projectParticipant)
+                .where(projectParticipant.workspaceParticipant.eq(wsp))
+                .fetch();
+    }
+
+    @Override
+    public void flush() {
+        em.flush();
+        em.clear();
     }
 }

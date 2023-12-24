@@ -1,6 +1,7 @@
 package com.daon.backend.task.service;
 
 import com.daon.backend.common.response.slice.PageResponse;
+import com.daon.backend.task.domain.project.Project;
 import com.daon.backend.task.domain.workspace.*;
 import com.daon.backend.task.domain.workspace.exception.CanNotDeletePersonalWorkspaceException;
 import com.daon.backend.task.domain.workspace.exception.CanNotModifyMyRoleException;
@@ -215,9 +216,19 @@ public class WorkspaceService {
         if (workspace.canWithdrawWorkspace(memberId)) {
             WorkspaceParticipant workspaceParticipant = workspace.findWorkspaceParticipantByMemberId(memberId);
             workspaceRepository.deleteMessages(workspaceParticipant.getId());
-            workspaceParticipant.getParticipants()
-                    .forEach(projectParticipant -> workspaceRepository.deleteTaskManager(projectParticipant.getId()));
-            workspace.withdrawWorkspace(workspaceParticipant);
+            workspaceRepository.deleteTaskManager(workspaceParticipant.getId());
+            workspaceRepository.deleteTaskReplies(workspaceParticipant.getId());
+            workspaceRepository.flush();
+
+            for (Project project : workspaceRepository.findProjectBy(workspaceParticipant)) {
+                project.withdrawProject(workspaceParticipant.getMemberId());
+            }
+            workspaceRepository.flush();
+
+            // 워크스페이스에서 사용자 삭제
+            workspace = workspaceRepository.findById(workspaceId)
+                    .orElseThrow(() -> new WorkspaceNotFoundException(workspaceId));
+            workspace.withdrawWorkspace(memberId);
         } else {
             deleteWorkspace(workspaceId);
         }
