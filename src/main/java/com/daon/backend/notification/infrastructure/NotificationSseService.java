@@ -17,7 +17,6 @@ import java.util.Objects;
 
 @Slf4j
 @RequiredArgsConstructor
-@Transactional
 @Service
 public class NotificationSseService {
 
@@ -33,6 +32,7 @@ public class NotificationSseService {
     /**
      * 알람 이벤트 구독
      */
+    @Transactional
     public SseEmitter subscribeAlarm(String lastEventId) {
         String memberId = sessionMemberProvider.getMemberId();
         String emitterId = memberId + "_" + System.currentTimeMillis();
@@ -74,6 +74,7 @@ public class NotificationSseService {
     /**
      * 알림 이벤트 응답 보내기
      */
+    @Transactional
     public void sendAlarm(Notification notification) {
         long whenEventPublished = System.currentTimeMillis();
 
@@ -98,6 +99,7 @@ public class NotificationSseService {
     /**
      * 할 일 목록 이벤트 구독
      */
+    @Transactional
     public SseEmitter subscribeTasks(Long workspaceId, TasksNotificationParams params) {
         if (!params.checkValidRequest()) {
             throw new TypeNotSpecifiedException();
@@ -145,6 +147,7 @@ public class NotificationSseService {
     /**
      * 할 일 상세 보기 이벤트 구독
      */
+    @Transactional
     public SseEmitter subscribeTask(Long taskId) {
         String memberId = sessionMemberProvider.getMemberId();
         String emitterId = TASK_EMITTER_ID_PREFIX + taskId + "_" + memberId;
