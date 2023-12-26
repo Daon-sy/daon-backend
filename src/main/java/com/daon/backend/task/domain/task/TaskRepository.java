@@ -25,4 +25,6 @@ public interface TaskRepository {
     Optional<TaskDetail> findTaskDetail(String memberId, Long taskId);
 
     Slice<TaskHistory> findTaskHistoriesByProjectIdAndTaskId(Long projectId, Long taskId, Pageable pageable);
+
+    void deleteTaskBookmark(Long taskId);
 }

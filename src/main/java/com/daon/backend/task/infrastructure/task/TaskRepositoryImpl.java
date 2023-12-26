@@ -212,6 +212,14 @@ public class TaskRepositoryImpl implements TaskRepository {
         return new SliceImpl<>(taskHistories, pageable, hasNext);
     }
 
+    @Override
+    public void deleteTaskBookmark(Long taskId) {
+        queryFactory
+                .delete(taskBookmark)
+                .where(taskBookmark.task.id.eq(taskId))
+                .execute();
+    }
+
     private TaskHistory generateTaskHistory(Object[] currentHistory, Object[] prevHistory, Long projectId) {
         Revision revision = (Revision) currentHistory[1];
         Set<String> modifiedFields = (Set<String>) currentHistory[3];
