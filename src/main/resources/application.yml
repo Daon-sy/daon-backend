@@ -12,3 +12,4 @@ logging:
     com.daon.backend.auth.infrastructure: debug
     com.daon.backend.security: debug
     com.daon.backend.notification.infrastructure: debug
+    com.daon.backend.mail.infrastructure: debug
