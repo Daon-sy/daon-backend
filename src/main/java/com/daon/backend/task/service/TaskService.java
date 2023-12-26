@@ -147,6 +147,7 @@ public class TaskService {
         Board board = boardRepository.findBoardById(boardId)
                 .orElseThrow(() -> new BoardNotFoundException(boardId));
 
+        taskRepository.deleteTaskBookmark(taskId);
         board.deleteTask(taskId);
     }
 
