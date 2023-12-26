@@ -1,0 +1,45 @@
+spring:
+  datasource:
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:mem_db
+    username: sa
+    password:
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    defer-datasource-initialization: true
+
+  redis:
+    port: 6379
+    host: 127.0.0.1
+
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:import.sql
+cors:
+  allowed-origins:
+    http://localhost
+
+cloud:
+  aws:
+    credentials:
+      access-key: 123123
+      secret-key: 123123123
+    s3:
+      bucket: daon-test
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
+s3:
+  dir-name: test
+
+jwt:
+  secret-key: caf300c52e11305552342ed9494dd606517151d6b11fcd06067181508a697bbe2db83bff378e4c2e218ed79924e49a0508a322be7eea23b9553138e383db6955
+  access-token:
+    expiration: 5 # sec
+  refresh-token:
+    expiration: 10 #sec
+    reissue-condition: 3 #sec

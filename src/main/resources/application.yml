@@ -7,3 +7,8 @@ spring:
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
+logging:
+  level:
+    com.daon.backend.auth.infrastructure: debug
+    com.daon.backend.security: debug
+    com.daon.backend.notification.infrastructure: debug
