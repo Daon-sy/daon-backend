@@ -117,6 +117,7 @@ public class MailServiceImpl implements MailService {
      */
     @Scheduled(cron = "0 0 7 * * *")
     public void sendEmailForTasksLessThanThreeDaysOld() {
+        log.debug("send scheduled email start...");
         List<Task> findTasks = taskRepository.findTasksForLessThanThreeDaysOld();
         if (!findTasks.isEmpty()) {
             Map<String, Map<String, Map<String, List<Task>>>> tasksForEmail = findTasks.stream()
@@ -137,6 +138,7 @@ public class MailServiceImpl implements MailService {
                 sendEmail(toEmail, subject, text);
             });
         }
+        log.debug("send scheduled email end...");
     }
 
     private String buildEmailText(Map<String, Map<String, List<Task>>> tasksForEmail) {

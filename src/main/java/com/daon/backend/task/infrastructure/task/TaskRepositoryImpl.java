@@ -76,7 +76,7 @@ public class TaskRepositoryImpl implements TaskRepository {
 
         return queryFactory
                 .selectFrom(task)
-                .where(task.endDate.between(currentDate, plusThreeDays))
+                .where(task.endDate.between(currentDate, plusThreeDays).and(task.taskManager.isNotNull()))
                 .orderBy(task.endDate.asc())
                 .fetch();
     }
